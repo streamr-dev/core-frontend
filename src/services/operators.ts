@@ -249,7 +249,7 @@ export async function getOperatorDelegationAmount(
 
     const operatorContract = new Contract(operatorId, operatorABI, provider) as Operator
 
-    const amount = await operatorContract.balanceOf(address)
+    const amount = await operatorContract.balanceInData(address)
 
     return toBN(amount)
 }

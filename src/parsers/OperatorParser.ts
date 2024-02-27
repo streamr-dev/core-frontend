@@ -22,6 +22,8 @@ const OperatorParser = z.object({
                     .transform(({ id }) => id),
                 valueDataWei: z.string().transform(toBN),
                 operatorTokenBalanceWei: z.string().transform(toBN),
+                latestDelegationTimestamp: z.coerce.number(),
+                earliestUndelegationTimestamp: z.coerce.number(),
             })
             .transform(({ valueDataWei: amount, ...rest }) => ({
                 ...rest,
@@ -39,6 +41,7 @@ const OperatorParser = z.object({
     ),
     operatorsCutFraction: z.string().transform(fromAtto),
     owner: z.string(),
+    contractVersion: z.coerce.number(),
     operatorTokenTotalSupplyWei: z.string().transform(toBN),
     valueWithoutEarnings: z.string().transform(toBN),
     valueUpdateBlockNumber: z.coerce.number().optional(),

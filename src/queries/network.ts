@@ -26,6 +26,8 @@ gql`
             }
             valueDataWei
             operatorTokenBalanceWei
+            latestDelegationTimestamp
+            earliestUndelegationTimestamp
             id
         }
         slashingEvents(first: 1000) {
@@ -57,6 +59,7 @@ gql`
         cumulativeProfitsWei
         cumulativeOperatorsCutWei
         operatorsCutFraction
+        contractVersion
     }
 
     query getAllOperators(

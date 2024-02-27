@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import moment from 'moment'
 import { Alert } from '~/components/Alert'
 import {
     RejectionReason,
@@ -103,10 +104,20 @@ export default function UndelegateFundsModal({
             .minus(toBN(rawAmount))
             .isLessThan(minimumSelfDelegationPercentage.multipliedBy(delegatedTotal))
 
+    const earliestUndelegationTimestamp = operator.delegations.find(
+        (d) => d.delegator.toLowerCase() === wallet?.toLowerCase(),
+    )?.earliestUndelegationTimestamp
+
+    const isTooEarlyToUndelegate =
+        operator.contractVersion > 0 &&
+        earliestUndelegationTimestamp != null &&
+        earliestUndelegationTimestamp * 1000 > Date.now()
+
     const canSubmit =
         finalValue.isFinite() &&
         finalValue.isGreaterThan(0) &&
-        !(isSelfDelegationTooLow && !hasZeroDeployed)
+        !(isSelfDelegationTooLow && !hasZeroDeployed) &&
+        !isTooEarlyToUndelegate
 
     const [busy, setBusy] = useState(false)
 
@@ -270,6 +281,15 @@ export default function UndelegateFundsModal({
                         that you&apos;re shutting down, and will most likely cause them to
                         undelegate.
                     </Alert>
+                )}
+                {isTooEarlyToUndelegate && (
+                    <Alert
+                        type="error"
+                        title={`You can not undelegate because your minimum delegation period
+                        is still active. It will expire on ${moment(
+                            earliestUndelegationTimestamp * 1000,
+                        ).format('YYYY-MM-DD HH:mm')}.`}
+                    />
                 )}
             </Footer>
         </FormModal>

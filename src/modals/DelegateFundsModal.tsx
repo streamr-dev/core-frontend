@@ -76,6 +76,13 @@ export default function DelegateFundsModal({
         ? fromDecimals(minimumSelfDelegationFraction, 18)
         : toBN(0)
 
+    const minimumDelegationSecondsValue = useConfigValueFromChain(
+        'minimumDelegationSeconds',
+    )
+    const minimumDelegationSeconds = minimumDelegationSecondsValue
+        ? toBN(minimumDelegationSecondsValue)
+        : toBN(0)
+
     const [rawAmount, setRawAmount] = useState(amountProp)
 
     useEffect(() => {
@@ -264,6 +271,17 @@ export default function DelegateFundsModal({
                         )}
                     </>
                 )}
+            </>
+            <>
+                {operator.contractVersion > 0 &&
+                    minimumDelegationSeconds.isGreaterThan(0) && (
+                        <Alert
+                            type="notice"
+                            title={`You will need to stay delegated for at least ${minimumDelegationSeconds
+                                .dividedBy(60 * 60 * 24)
+                                .toFixed()} days.`}
+                        ></Alert>
+                    )}
             </>
         </FormModal>
     )

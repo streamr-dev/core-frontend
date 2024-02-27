@@ -48,6 +48,7 @@ export type ConfigKey =
     | 'minimumSelfDelegationFraction'
     | 'maxQueueSeconds'
     | 'slashingFraction'
+    | 'minimumDelegationSeconds'
 
 export interface Chain {
     name: string
