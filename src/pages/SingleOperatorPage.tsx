@@ -186,7 +186,7 @@ export const SingleOperatorPage = () => {
                             saveOperator(currentChainId, currentOperator)
                         }}
                     />
-                    {operator.contractVersion < 1 && (
+                    {/*operator.contractVersion < 1 && (
                         <NoticeBar>
                             <NoticeWrap>
                                 <TooltipIconWrap $color="#ff5c00">
@@ -201,7 +201,7 @@ export const SingleOperatorPage = () => {
                                 </div>
                             </NoticeWrap>
                         </NoticeBar>
-                    )}
+                    )*/}
                 </>
             )}
             <LayoutColumn>
