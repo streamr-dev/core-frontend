@@ -26,7 +26,7 @@ import routes from '~/routes'
 import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { COLORS } from '~/shared/utils/styled'
+import { COLORS, TABLET } from '~/shared/utils/styled'
 
 export function StreamsPage() {
     const [search, setSearch] = useState('')
@@ -97,6 +97,7 @@ export function StreamsPage() {
                 <FiltersBar>
                     <FiltersWrap>
                         <Tabs
+                            fullWidthOnMobile
                             selection={tab}
                             onSelectionChange={(id) => {
                                 navigate(routes.streams.index({ tab: id }))
@@ -116,11 +117,11 @@ export function StreamsPage() {
                             </Tab>
                         </Tabs>
                     </FiltersWrap>
-                    <div>
+                    <CreateStreamButtonWrap>
                         <Button as={Link} to={routes.streams.new()}>
                             Create stream
                         </Button>
-                    </div>
+                    </CreateStreamButtonWrap>
                 </FiltersBar>
             </ActionBarContainer>
             <LayoutColumn>
@@ -168,4 +169,12 @@ const MessagesPerSecondDisplay = styled.div`
     gap: 4px;
     height: 32px;
     padding: 0 12px;
+`
+
+const CreateStreamButtonWrap = styled.div`
+    display: none;
+
+    @media ${TABLET} {
+        display: block;
+    }
 `
