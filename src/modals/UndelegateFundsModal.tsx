@@ -108,10 +108,16 @@ export default function UndelegateFundsModal({
         (d) => d.delegator.toLowerCase() === wallet?.toLowerCase(),
     )?.earliestUndelegationTimestamp
 
+    const isTooEarlyToUndelegate =
+        operator.contractVersion > 0 &&
+        earliestUndelegationTimestamp != null &&
+        earliestUndelegationTimestamp * 1000 > Date.now()
+
     const canSubmit =
         finalValue.isFinite() &&
         finalValue.isGreaterThan(0) &&
-        !(isSelfDelegationTooLow && !hasZeroDeployed)
+        !(isSelfDelegationTooLow && !hasZeroDeployed) &&
+        !isTooEarlyToUndelegate
 
     const [busy, setBusy] = useState(false)
 
@@ -276,17 +282,15 @@ export default function UndelegateFundsModal({
                         undelegate.
                     </Alert>
                 )}
-                {operator.contractVersion > 0 &&
-                    earliestUndelegationTimestamp != null &&
-                    earliestUndelegationTimestamp * 1000 > Date.now() && (
-                        <Alert
-                            type="error"
-                            title={`You can not undelegate because your minimum delegation period
+                {isTooEarlyToUndelegate && (
+                    <Alert
+                        type="error"
+                        title={`You can not undelegate because your minimum delegation period
                         is still active. It will expire on ${moment(
                             earliestUndelegationTimestamp * 1000,
                         ).format('YYYY-MM-DD HH:mm')}.`}
-                        />
-                    )}
+                    />
+                )}
             </Footer>
         </FormModal>
     )
