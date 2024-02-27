@@ -28,7 +28,7 @@ export function NotFoundPageContent() {
                     />
                 }
                 link={
-                    <React.Fragment>
+                    <>
                         <Button kind="special" as={Link} to={routes.streams.index()}>
                             Go to streams
                         </Button>
@@ -38,7 +38,7 @@ export function NotFoundPageContent() {
                         <Button kind="special" as={Link} to={routes.root()}>
                             Go to public site
                         </Button>
-                    </React.Fragment>
+                    </>
                 }
                 linkOnMobile
             >

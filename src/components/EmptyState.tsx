@@ -88,9 +88,10 @@ const LinkWrap = styled.div<{ $linkOnMobile?: boolean }>`
     @media (min-width: 745px) {
         align-items: unset;
         flex-direction: row;
+        margin-top: 1.5em;
 
         a + a {
-            margin-left: 32px;
+            margin: 0 0 0 32px;
         }
     }
 `
