@@ -9,6 +9,7 @@ import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
+import { BN } from '~/utils/bn'
 import { OperatorAvatar } from './avatars'
 
 /**
@@ -103,10 +104,10 @@ export function StreamIdCell({
  */
 export function FundedUntilCell({
     projectedInsolvencyAt,
-    isPaying,
+    remainingBalance,
 }: {
     projectedInsolvencyAt: number | null
-    isPaying: boolean
+    remainingBalance: BN
 }) {
     const value =
         projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
@@ -114,7 +115,7 @@ export function FundedUntilCell({
     return (
         <Iconized>
             {value == null ? <>N/A</> : <>{value.format('YYYY-MM-DD')}</>}
-            {!isPaying && (
+            {remainingBalance.isLessThanOrEqualTo(0) && (
                 <Tooltip content="Sponsorship expired">
                     <TooltipIconWrap $color="#ff5c00">
                         <JiraFailedBuildStatusIcon label="Error" />
@@ -129,13 +130,34 @@ const Iconized = styled.div`
     align-items: center;
     display: grid;
     gap: 8px;
-    grid-template-columns: auto 18px;
+    grid-template-columns: auto auto;
 
     ${TooltipIconWrap} svg {
         width: 18px;
         height: 18px;
     }
 `
+
+export function SponsorshipApyCell({
+    spotAPY,
+    isRunning,
+}: {
+    spotAPY: number
+    isRunning: boolean
+}) {
+    return (
+        <Iconized>
+            {`${(spotAPY * 100).toFixed(0)}%`}
+            {!isRunning && (
+                <Tooltip content="Sponsorship not runnning">
+                    <TooltipIconWrap $color="#ff5c00">
+                        <JiraFailedBuildStatusIcon label="Error" />
+                    </TooltipIconWrap>
+                </Tooltip>
+            )}
+        </Iconized>
+    )
+}
 
 export function NumberOfOperatorsCell({
     sponsorship,

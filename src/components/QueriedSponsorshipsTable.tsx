@@ -13,7 +13,12 @@ import {
     useFundSponsorshipCallback,
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
-import { FundedUntilCell, NumberOfOperatorsCell, StreamIdCell } from '~/components/Table'
+import {
+    FundedUntilCell,
+    NumberOfOperatorsCell,
+    SponsorshipApyCell,
+    StreamIdCell,
+} from '~/components/Table'
 import { abbr } from '~/utils'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { OrderDirection } from '~/types'
@@ -116,15 +121,12 @@ export function QueriedSponsorshipsTable({
                     },
                     {
                         displayName: 'APY',
-                        valueMapper: (element) => {
-                            const { isRunning, remainingBalance, spotAPY } = element
-
-                            if (!isRunning || remainingBalance.isLessThanOrEqualTo(0)) {
-                                return 'N/A'
-                            }
-
-                            return `${(spotAPY * 100).toFixed(0)}%`
-                        },
+                        valueMapper: (element) => (
+                            <SponsorshipApyCell
+                                spotAPY={element.spotAPY}
+                                isRunning={element.isRunning}
+                            />
+                        ),
                         align: 'end',
                         isSticky: false,
                         key: 'apy',
@@ -135,10 +137,7 @@ export function QueriedSponsorshipsTable({
                         valueMapper: (element) => (
                             <FundedUntilCell
                                 projectedInsolvencyAt={element.projectedInsolvencyAt}
-                                isPaying={
-                                    element.isRunning &&
-                                    element.remainingBalance.isGreaterThan(0)
-                                }
+                                remainingBalance={element.remainingBalance}
                             />
                         ),
                         align: 'start',
