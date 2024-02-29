@@ -7,7 +7,7 @@ import StreamrClient, {
     PermissionAssignment,
     Stream,
     StreamPermission,
-} from 'streamr-client'
+} from '@streamr/sdk'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'

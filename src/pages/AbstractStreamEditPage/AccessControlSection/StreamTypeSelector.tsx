@@ -1,5 +1,5 @@
 import React from 'react'
-import { StreamPermission } from 'streamr-client'
+import { StreamPermission } from '@streamr/sdk'
 import styled from 'styled-components'
 import { address0 } from '~/consts'
 import { Bits } from '~/parsers/StreamParser'

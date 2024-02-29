@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StreamrClientConfig } from 'streamr-client'
+import { StreamrClientConfig } from '@streamr/sdk'
 import Provider from 'streamr-client-react'
 import getClientConfig from '~/getters/getClientConfig'
 import { getWalletProvider, useWalletAccount } from '../stores/wallet'

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { StreamID } from 'streamr-client'
+import { StreamID } from '@streamr/sdk'
 import { Link } from 'react-router-dom'
 
 import LoadMore from '~/marketplace/components/LoadMore'

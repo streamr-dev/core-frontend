@@ -1,4 +1,4 @@
-import { MessageID } from 'streamr-client'
+import { MessageID } from '@streamr/sdk'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { TheGraph } from '~/shared/types'
 import { BN } from '~/utils/bn'

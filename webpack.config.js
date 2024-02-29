@@ -178,7 +178,7 @@ module.exports = {
             HUB_CONFIG_ENV: process.env.HUB_CONFIG_ENV || '',
             HUB_VERSION: pkg.version,
             STREAMR_CLIENT_VERSION:
-                pkgLock.packages['node_modules/streamr-client'].version,
+                pkgLock.packages['node_modules/@streamr/sdk'].version,
             COMMIT_HASH: commitHash,
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),

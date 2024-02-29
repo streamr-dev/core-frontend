@@ -1,5 +1,5 @@
 import React from 'react'
-import { StreamPermission } from 'streamr-client'
+import { StreamPermission } from '@streamr/sdk'
 import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import { StreamDraft } from '~/stores/streamDraft'
 import Section from '../Section'

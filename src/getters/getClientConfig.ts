@@ -1,4 +1,4 @@
-import { ChainConnectionInfo, StreamrClientConfig } from 'streamr-client'
+import { ChainConnectionInfo, StreamrClientConfig } from '@streamr/sdk'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 import { getConfigForChain } from '~/shared/web3/config'
 import { getChainConfigExtension } from './getChainConfigExtension'
