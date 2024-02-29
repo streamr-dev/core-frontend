@@ -4,7 +4,7 @@ gql`
     query getStreams(
         $streamIds: [String!]
         $first: Int
-        $orderBy: OrderBy
+        $orderBy: StreamOrderBy
         $orderDirection: OrderDirection
         $search: String
         $owner: String

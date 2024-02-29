@@ -16,14 +16,39 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export enum OrderBy {
-  Description = 'DESCRIPTION',
-  Id = 'ID',
-  MessagesPerSecond = 'MESSAGES_PER_SECOND',
-  PeerCount = 'PEER_COUNT',
-  PublisherCount = 'PUBLISHER_COUNT',
-  SubscriberCount = 'SUBSCRIBER_COUNT'
-}
+export type Location = {
+  __typename?: 'Location';
+  city: Scalars['String']['output'];
+  country: Scalars['String']['output'];
+  latitude: Scalars['Float']['output'];
+  longitude: Scalars['Float']['output'];
+};
+
+export type Neighbor = {
+  __typename?: 'Neighbor';
+  nodeId1: Scalars['String']['output'];
+  nodeId2: Scalars['String']['output'];
+  streamPartId: Scalars['String']['output'];
+};
+
+export type Neighbors = {
+  __typename?: 'Neighbors';
+  cursor?: Maybe<Scalars['String']['output']>;
+  items: Array<Neighbor>;
+};
+
+export type Node = {
+  __typename?: 'Node';
+  id: Scalars['String']['output'];
+  ipAddress?: Maybe<Scalars['String']['output']>;
+  location?: Maybe<Location>;
+};
+
+export type Nodes = {
+  __typename?: 'Nodes';
+  cursor?: Maybe<Scalars['String']['output']>;
+  items: Array<Node>;
+};
 
 export enum OrderDirection {
   Asc = 'ASC',
@@ -32,15 +57,32 @@ export enum OrderDirection {
 
 export type Query = {
   __typename?: 'Query';
+  neighbors: Neighbors;
+  nodes: Nodes;
   streams: Streams;
   summary: Summary;
+};
+
+
+export type QueryNeighborsArgs = {
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  node?: InputMaybe<Scalars['String']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  streamPart?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryNodesArgs = {
+  cursor?: InputMaybe<Scalars['String']['input']>;
+  ids?: InputMaybe<Array<Scalars['String']['input']>>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryStreamsArgs = {
   cursor?: InputMaybe<Scalars['String']['input']>;
   ids?: InputMaybe<Array<Scalars['String']['input']>>;
-  orderBy?: InputMaybe<OrderBy>;
+  orderBy?: InputMaybe<StreamOrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   owner?: InputMaybe<Scalars['String']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
@@ -57,6 +99,15 @@ export type Stream = {
   subscriberCount?: Maybe<Scalars['Int']['output']>;
 };
 
+export enum StreamOrderBy {
+  Description = 'DESCRIPTION',
+  Id = 'ID',
+  MessagesPerSecond = 'MESSAGES_PER_SECOND',
+  PeerCount = 'PEER_COUNT',
+  PublisherCount = 'PUBLISHER_COUNT',
+  SubscriberCount = 'SUBSCRIBER_COUNT'
+}
+
 export type Streams = {
   __typename?: 'Streams';
   cursor?: Maybe<Scalars['String']['output']>;
@@ -66,13 +117,14 @@ export type Streams = {
 export type Summary = {
   __typename?: 'Summary';
   messagesPerSecond: Scalars['Float']['output'];
+  nodeCount: Scalars['Int']['output'];
   streamCount: Scalars['Int']['output'];
 };
 
 export type GetStreamsQueryVariables = Exact<{
   streamIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<OrderBy>;
+  orderBy?: InputMaybe<StreamOrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   search?: InputMaybe<Scalars['String']['input']>;
   owner?: InputMaybe<Scalars['String']['input']>;
@@ -89,7 +141,7 @@ export type GetGlobalStreamsStatsQuery = { __typename?: 'Query', summary: { __ty
 
 
 export const GetStreamsDocument = gql`
-    query getStreams($streamIds: [String!], $first: Int, $orderBy: OrderBy, $orderDirection: OrderDirection, $search: String, $owner: String, $cursor: String) {
+    query getStreams($streamIds: [String!], $first: Int, $orderBy: StreamOrderBy, $orderDirection: OrderDirection, $search: String, $owner: String, $cursor: String) {
   streams(
     pageSize: $first
     ids: $streamIds

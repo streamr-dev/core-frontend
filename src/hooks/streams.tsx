@@ -17,7 +17,7 @@ import {
     GetStreamsQuery as GetIndexerStreamsQuery,
     GetStreamsQueryVariables as GetIndexerStreamsQueryVariables,
     OrderDirection as IndexerOrderDirection,
-    OrderBy as IndexerOrderBy,
+    StreamOrderBy as IndexerOrderBy,
     GetGlobalStreamsStatsQuery,
     GetGlobalStreamsStatsQueryVariables,
     GetGlobalStreamsStatsDocument,

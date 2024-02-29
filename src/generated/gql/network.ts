@@ -20,11 +20,6 @@ export type Scalars = {
   Int8: { input: any; output: any; }
 };
 
-export enum Aggregation_Interval {
-  Day = 'day',
-  Hour = 'hour'
-}
-
 export type BlockChangedFilter = {
   number_gte: Scalars['Int']['input'];
 };
@@ -2681,8 +2676,7 @@ export type Query = {
   operatorDailyBuckets: Array<OperatorDailyBucket>;
   operators: Array<Operator>;
   project?: Maybe<Project>;
-  projectPaymentDetails?: Maybe<ProjectPaymentDetails>;
-  projectPaymentDetails_collection: Array<ProjectPaymentDetails>;
+  projectPaymentDetails: Array<ProjectPaymentDetails>;
   projectPermission?: Maybe<ProjectPermission>;
   projectPermissions: Array<ProjectPermission>;
   projectPurchase?: Maybe<ProjectPurchase>;
@@ -2875,13 +2869,6 @@ export type QueryProjectArgs = {
 
 
 export type QueryProjectPaymentDetailsArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID']['input'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type QueryProjectPaymentDetails_CollectionArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<ProjectPaymentDetails_OrderBy>;
@@ -4467,8 +4454,7 @@ export type Subscription = {
   operatorDailyBuckets: Array<OperatorDailyBucket>;
   operators: Array<Operator>;
   project?: Maybe<Project>;
-  projectPaymentDetails?: Maybe<ProjectPaymentDetails>;
-  projectPaymentDetails_collection: Array<ProjectPaymentDetails>;
+  projectPaymentDetails: Array<ProjectPaymentDetails>;
   projectPermission?: Maybe<ProjectPermission>;
   projectPermissions: Array<ProjectPermission>;
   projectPurchase?: Maybe<ProjectPurchase>;
@@ -4660,13 +4646,6 @@ export type SubscriptionProjectArgs = {
 
 
 export type SubscriptionProjectPaymentDetailsArgs = {
-  block?: InputMaybe<Block_Height>;
-  id: Scalars['ID']['input'];
-  subgraphError?: _SubgraphErrorPolicy_;
-};
-
-
-export type SubscriptionProjectPaymentDetails_CollectionArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<ProjectPaymentDetails_OrderBy>;
