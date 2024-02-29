@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
-import { StreamPermission } from 'streamr-client'
+import { StreamPermission } from '@streamr/sdk'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Button } from '~/components/Button'
@@ -42,7 +42,7 @@ const Snippet = {
     lightNodeHeader(hasPermission: boolean) {
         return `
             // Run a Streamr node right inside your JS app
-            const StreamrClient = require('streamr-client')
+            const StreamrClient = require('@streamr/sdk')
             ${this.createClient(hasPermission)}
         `
     },

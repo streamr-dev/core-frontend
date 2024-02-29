@@ -1,5 +1,5 @@
 import React, { useState, useMemo, FunctionComponent, useEffect } from 'react'
-import { Stream } from 'streamr-client'
+import { Stream } from '@streamr/sdk'
 import { useClient } from 'streamr-client-react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'

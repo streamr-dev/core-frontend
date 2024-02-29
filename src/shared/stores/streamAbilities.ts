@@ -1,4 +1,4 @@
-import { StreamrClient, StreamPermission, Stream } from 'streamr-client'
+import { StreamrClient, StreamPermission, Stream } from '@streamr/sdk'
 import { useClient } from 'streamr-client-react'
 import { useEffect } from 'react'
 import { produce } from 'immer'

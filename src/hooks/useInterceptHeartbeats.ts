@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NetworkNodeType } from 'streamr-client'
+import { NetworkNodeType } from '@streamr/sdk'
 import { useSubscribe } from 'streamr-client-react'
 import { z } from 'zod'
 

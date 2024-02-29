@@ -1,4 +1,4 @@
-import { PermissionAssignment, StreamMetadata, StreamPermission } from 'streamr-client'
+import { PermissionAssignment, StreamMetadata, StreamPermission } from '@streamr/sdk'
 import { z } from 'zod'
 import { address0 } from '~/consts'
 import { parseStreamId } from '~/shared/utils/text'

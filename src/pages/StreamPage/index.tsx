@@ -13,7 +13,7 @@ import {
     useNavigate,
     useParams,
 } from 'react-router-dom'
-import { StreamPermission } from 'streamr-client'
+import { StreamPermission } from '@streamr/sdk'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
 import ColoredBox from '~/components/ColoredBox'

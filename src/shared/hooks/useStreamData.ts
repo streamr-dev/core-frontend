@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useSubscribe } from 'streamr-client-react'
-import { MessageID } from 'streamr-client'
+import { MessageID } from '@streamr/sdk'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { DataPoint } from '~/types'
 

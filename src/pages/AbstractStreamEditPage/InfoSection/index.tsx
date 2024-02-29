@@ -1,5 +1,5 @@
 import React from 'react'
-import { StreamPermission } from 'streamr-client'
+import { StreamPermission } from '@streamr/sdk'
 import styled from 'styled-components'
 import Surround from '~/shared/components/Surround'
 import Label from '~/shared/components/Ui/Label'
