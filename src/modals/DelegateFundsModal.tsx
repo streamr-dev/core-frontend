@@ -69,6 +69,11 @@ export default function DelegateFundsModal({
               'to delegate to the selected Operator',
           ]
 
+    const minimumDelegationWei = useConfigValueFromChain('minimumDelegationWei')
+    const minimumDelegationAmount = minimumDelegationWei
+        ? fromDecimals(minimumDelegationWei, 18)
+        : toBN(0)
+
     const minimumSelfDelegationFraction = useConfigValueFromChain(
         'minimumSelfDelegationFraction',
     )
@@ -134,6 +139,7 @@ export default function DelegateFundsModal({
     const canSubmit =
         finalValue.isFinite() &&
         finalValue.isGreaterThan(0) &&
+        finalValue.isGreaterThanOrEqualTo(minimumDelegationAmount) &&
         !insufficientFunds &&
         !tooLowOwnerSelfDelegation
 
@@ -271,6 +277,21 @@ export default function DelegateFundsModal({
                         )}
                     </>
                 )}
+            </>
+            <>
+                {finalValue.isGreaterThan(0) &&
+                    finalValue.isLessThan(minimumDelegationAmount) && (
+                        <Alert
+                            type="notice"
+                            title={
+                                <>
+                                    Minimum delegation is{' '}
+                                    {minimumDelegationAmount.toFixed()}{' '}
+                                    <SponsorshipPaymentTokenName />
+                                </>
+                            }
+                        ></Alert>
+                    )}
             </>
             <>
                 {operator.contractVersion > 0 &&

@@ -49,6 +49,7 @@ export type ConfigKey =
     | 'maxQueueSeconds'
     | 'slashingFraction'
     | 'minimumDelegationSeconds'
+    | 'minimumDelegationWei'
 
 export interface Chain {
     name: string
