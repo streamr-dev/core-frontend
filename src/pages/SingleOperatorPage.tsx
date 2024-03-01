@@ -214,7 +214,7 @@ export const SingleOperatorPage = () => {
                             saveOperator(currentChainId, currentOperator)
                         }}
                     />
-                    {/*operator.contractVersion < 1 && (
+                    {operator.contractVersion < 1 && isOwner && (
                         <NoticeBar>
                             <NoticeWrap>
                                 <TooltipIconWrap $color="#ff5c00">
@@ -222,14 +222,18 @@ export const SingleOperatorPage = () => {
                                 </TooltipIconWrap>
                                 <div>
                                     Your Operator smart contract is outdated.{' '}
-                                    <a href="#" rel="noopener noreferrer" target="_blank">
+                                    <a
+                                        href="https://docs.streamr.network/help/operator-faq#migrating-from-streamr-10-testnet-to-streamr-10"
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                    >
                                         Click here
                                     </a>{' '}
                                     to learn how to migrate to the latest version.
                                 </div>
                             </NoticeWrap>
                         </NoticeBar>
-                    )*/}
+                    )}
                 </>
             )}
             <LayoutColumn>
