@@ -6,7 +6,7 @@ import Layout from '~/components/Layout'
 import ActionBar, { isOwnedTabOption } from '~/components/ActionBar'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import useModal from '~/shared/hooks/useModal'
-import { getProjects, searchProjects } from '~/services/projects'
+import { getProjects2, getProjectsByText } from '~/services/projects'
 import { ProjectFilter } from '~/types'
 import { MaxSearchPhraseLength } from '~/consts'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
@@ -47,13 +47,21 @@ export default function ProjectListingPage() {
     const query = useInfiniteQuery({
         queryKey: ['projects', currentChainId, owner, filter.search, filter.type],
         queryFn({ pageParam: page }) {
-            const { search, type } = filter
+            const { search, type: projectType } = filter
 
-            if (search) {
-                return searchProjects(currentChainId, search, PageSize, page)
+            const params = {
+                chainId: currentChainId,
+                first: PageSize,
+                owner,
+                projectType,
+                skip: page,
             }
 
-            return getProjects(currentChainId, owner, PageSize, page, type)
+            if (search) {
+                return getProjectsByText(search, params)
+            }
+
+            return getProjects2(params)
         },
         getNextPageParam(lastPage, pages) {
             return lastPage.hasNextPage ? pages.flatMap((p) => p.projects).length : null
