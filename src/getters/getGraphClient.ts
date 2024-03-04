@@ -22,7 +22,12 @@ export function getGraphClient(chainId: number) {
 function getGraphUrl(chainId: number): string {
     const { theGraphUrl: url } = getConfigForChain(chainId)
 
-    const { networkSubgraphUrl: fallbackUrl } = getChainConfigExtension(chainId)
+    const { networkSubgraphUrl: fallbackUrl, enforceLocalNetworkSubgraphUrl } =
+        getChainConfigExtension(chainId)
+
+    if (enforceLocalNetworkSubgraphUrl) {
+        return fallbackUrl
+    }
 
     return url || fallbackUrl
 }

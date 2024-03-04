@@ -33,7 +33,9 @@ chainId = 80001
 name = "samt1803/dataunion-subgraphs"
 
 [polygon]
+enforceLocalNetworkSubgraphUrl = true
 marketplaceChains = ['gnosis', 'polygon']
+networkSubgraphUrl = "https://gateway-arbitrum.network.thegraph.com/api/8bcbd55cdd1369cadb0bb813d9817776/subgraphs/id/EGWFdhhiWypDuz22Uy7b3F69E9MEkyfU9iAQMttkH5Rj"
 streamIndexerUrl = "https://stream-metrics.streamr.network/api"
 
 [[polygon.storageNodes]]
