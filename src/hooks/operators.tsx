@@ -82,8 +82,9 @@ export function useOperatorByIdQuery(operatorId = '') {
 
             return null
         },
-        staleTime: 60 * 1000, // 1 minute
         keepPreviousData: true,
+        retry: false,
+        staleTime: 60 * 1000, // 1 minute
     })
 }
 

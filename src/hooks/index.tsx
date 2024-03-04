@@ -230,7 +230,7 @@ export function useRefetchQueryBehindIndexEffect<T extends UseQueryResult>(
 
             const timeoutId = setTimeout(() => {
                 query.refetch()
-            }, 5000)
+            }, 15000)
 
             return () => {
                 clearTimeout(timeoutId)

@@ -235,6 +235,7 @@ export function useSponsorshipByIdQuery(sponsorshipId: string) {
                 force: true,
                 minBlockNumber,
             }),
+        retry: false,
     })
 }
 

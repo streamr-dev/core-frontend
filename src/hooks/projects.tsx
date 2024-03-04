@@ -33,5 +33,6 @@ export function useProjectByIdQuery(projectId: string | undefined) {
         },
         staleTime: Infinity,
         cacheTime: 0,
+        retry: false,
     })
 }
