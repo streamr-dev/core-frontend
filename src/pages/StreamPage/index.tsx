@@ -136,7 +136,10 @@ export function StreamLiveDataPage() {
         <>
             <LoadingIndicator loading={isLoading} />
             {streamId != null && (
-                <StreamPreview streamsList={[streamId]} previewDisabled={!canSubscribe} />
+                <StreamPreview
+                    streamsList={[streamId]}
+                    previewDisabled={canSubscribe === false}
+                />
             )}
         </>
     )
