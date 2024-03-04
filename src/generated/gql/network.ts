@@ -20,6 +20,11 @@ export type Scalars = {
   Int8: { input: any; output: any; }
 };
 
+export enum Aggregation_Interval {
+  Day = 'day',
+  Hour = 'hour'
+}
+
 export type BlockChangedFilter = {
   number_gte: Scalars['Int']['input'];
 };
@@ -2676,7 +2681,8 @@ export type Query = {
   operatorDailyBuckets: Array<OperatorDailyBucket>;
   operators: Array<Operator>;
   project?: Maybe<Project>;
-  projectPaymentDetails: Array<ProjectPaymentDetails>;
+  projectPaymentDetails?: Maybe<ProjectPaymentDetails>;
+  projectPaymentDetails_collection: Array<ProjectPaymentDetails>;
   projectPermission?: Maybe<ProjectPermission>;
   projectPermissions: Array<ProjectPermission>;
   projectPurchase?: Maybe<ProjectPurchase>;
@@ -2869,6 +2875,13 @@ export type QueryProjectArgs = {
 
 
 export type QueryProjectPaymentDetailsArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryProjectPaymentDetails_CollectionArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<ProjectPaymentDetails_OrderBy>;
@@ -4454,7 +4467,8 @@ export type Subscription = {
   operatorDailyBuckets: Array<OperatorDailyBucket>;
   operators: Array<Operator>;
   project?: Maybe<Project>;
-  projectPaymentDetails: Array<ProjectPaymentDetails>;
+  projectPaymentDetails?: Maybe<ProjectPaymentDetails>;
+  projectPaymentDetails_collection: Array<ProjectPaymentDetails>;
   projectPermission?: Maybe<ProjectPermission>;
   projectPermissions: Array<ProjectPermission>;
   projectPurchase?: Maybe<ProjectPurchase>;
@@ -4646,6 +4660,13 @@ export type SubscriptionProjectArgs = {
 
 
 export type SubscriptionProjectPaymentDetailsArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionProjectPaymentDetails_CollectionArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<ProjectPaymentDetails_OrderBy>;
@@ -5072,6 +5093,8 @@ export type _Block_ = {
   hash?: Maybe<Scalars['Bytes']['output']>;
   /** The block number */
   number: Scalars['Int']['output'];
+  /** The hash of the parent block */
+  parentHash?: Maybe<Scalars['Bytes']['output']>;
   /** Integer representation of the timestamp stored in blocks for the chain */
   timestamp?: Maybe<Scalars['Int']['output']>;
 };
@@ -5247,6 +5270,7 @@ export type GetProjectsByTextQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   text: Scalars['String']['input'];
+  where?: InputMaybe<Project_Filter>;
 }>;
 
 
@@ -5678,8 +5702,8 @@ export const GetProjectsDocument = gql`
     ${ProjectFieldsFragmentDoc}`;
 export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
 export const GetProjectsByTextDocument = gql`
-    query getProjectsByText($first: Int, $skip: Int, $text: String!) {
-  projectSearch(first: $first, skip: $skip, text: $text) {
+    query getProjectsByText($first: Int, $skip: Int, $text: String!, $where: Project_filter) {
+  projectSearch(first: $first, skip: $skip, text: $text, where: $where) {
     ...ProjectFields
   }
 }
