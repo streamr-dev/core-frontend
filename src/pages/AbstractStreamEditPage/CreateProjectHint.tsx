@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { DESKTOP, TABLET, LAPTOP } from '~/shared/utils/styled'
 import dataUnionImage2x from '~/marketplace/assets/product_dataunion@2x.png'
-import { TheGraphProject, getProjects2 } from '~/services/projects'
+import { TheGraphProject, getProjects } from '~/services/projects'
 import { Button } from '~/components/Button'
 import useModal from '~/shared/hooks/useModal'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
@@ -93,7 +93,7 @@ export default function CreateProjectHint({ streamId }: Props) {
         let mounted = true
 
         const loadProjects = async () => {
-            const result = await getProjects2({
+            const result = await getProjects({
                 chainId,
                 first: 4,
                 streamId,

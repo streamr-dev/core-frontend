@@ -211,7 +211,7 @@ interface GetProjectsParams {
 /**
  * @todo Refactor to use `ProjectParser` and `useInfiniteQuery`.
  */
-export async function getProjects2(params: GetProjectsParams): Promise<ProjectsResult> {
+export async function getProjects(params: GetProjectsParams): Promise<ProjectsResult> {
     const { chainId, first = 20, owner, projectType, skip = 0, streamId } = params
 
     const {

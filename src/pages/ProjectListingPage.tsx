@@ -6,7 +6,7 @@ import Layout from '~/components/Layout'
 import ActionBar, { isOwnedTabOption } from '~/components/ActionBar'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import useModal from '~/shared/hooks/useModal'
-import { getProjects2, getProjectsByText } from '~/services/projects'
+import { getProjects, getProjectsByText } from '~/services/projects'
 import { ProjectFilter } from '~/types'
 import { MaxSearchPhraseLength } from '~/consts'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
@@ -61,7 +61,7 @@ export default function ProjectListingPage() {
                 return getProjectsByText(search, params)
             }
 
-            return getProjects2(params)
+            return getProjects(params)
         },
         getNextPageParam(lastPage, pages) {
             return lastPage.hasNextPage ? pages.flatMap((p) => p.projects).length : null

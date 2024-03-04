@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { MarketplaceProductTile } from '~/shared/components/Tile'
 import { TABLET, PHONE } from '~/shared/utils/styled'
-import { TheGraphProject, getProjects2 } from '~/services/projects'
+import { TheGraphProject, getProjects } from '~/services/projects'
 import { useCurrentChainId } from '~/shared/stores/chain'
 
 const Container = styled.div`
@@ -48,7 +48,7 @@ export default function RelatedProjects({ streamId }: Props) {
         let mounted = true
 
         const loadProjects = async () => {
-            const result = await getProjects2({
+            const result = await getProjects({
                 chainId,
                 first: 4,
                 streamId,
