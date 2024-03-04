@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
-import SelectField2 from '~/marketplace/components/SelectField2'
+import { SelectField2 } from '~/marketplace/components/SelectField2'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { TheGraph } from '~/shared/types'
 import { ProjectFilter } from '~/types'
@@ -116,7 +116,10 @@ const UnstyledActionBar = ({
                                 onChange={(type) => {
                                     onFilterChange?.({
                                         ...filter,
-                                        type: type as typeof filter.type,
+                                        type:
+                                            type === null
+                                                ? undefined
+                                                : (type as typeof filter.type),
                                     })
                                 }}
                             />

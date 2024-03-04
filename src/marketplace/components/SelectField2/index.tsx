@@ -27,13 +27,13 @@ import {
 
 type Option = { label: string; value: string }
 
-type SelectFieldProps = {
+type SelectFieldProps<T = unknown, R = unknown> = {
     placeholder: string
     options: Option[]
-    onChange: (value: string) => void
+    onChange: (value: R) => void
     value?: string
     disabled?: boolean
-    isClearable?: boolean
+    isClearable?: T
     whiteVariant?: boolean
     noShrink?: boolean
     fullWidth?: boolean
@@ -66,17 +66,20 @@ const ClearIndicator = (props: ClearIndicatorProps) => {
     )
 }
 
-const SelectField2: FunctionComponent<SelectFieldProps> = ({
+export function SelectField2<
+    T extends boolean = true,
+    R = T extends true ? string | null : string,
+>({
     placeholder,
     options,
     value,
     onChange,
     disabled = false,
-    isClearable = true,
+    isClearable = true as T,
     whiteVariant = false,
     noShrink = false,
     fullWidth = false,
-}) => {
+}: SelectFieldProps<T, R>) {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selected, setSelected] = useState<string>()
 
@@ -125,13 +128,22 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
     }, [value])
 
     const handleChange = (option: unknown): void => {
+        if (disabled) {
+            return
+        }
+
+        if (isClearable && option === null) {
+            setSelected(undefined)
+
+            onChange(null as R)
+        }
         if (disabled || !isOption(option)) {
             return
         }
 
         setSelected(option.value)
 
-        onChange(option.value)
+        onChange(option.value as R)
     }
 
     return (
@@ -165,8 +177,6 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
         </>
     )
 }
-
-export default SelectField2
 
 function isOption(arg: unknown): arg is Option {
     return z.object({ label: z.string(), value: z.string() }).safeParse(arg).success

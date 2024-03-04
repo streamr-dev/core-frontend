@@ -10,7 +10,7 @@ import NetworkIcon from '~/shared/components/NetworkIcon'
 import { getConfigForChain } from '~/shared/web3/config'
 import { formatChainName } from '~/utils'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import Select from '~/marketplace/components/SelectField2'
+import { SelectField2 as Select } from '~/marketplace/components/SelectField2'
 import { getDataUnion, getDataUnionsOwnedByInChain } from '~/getters/du'
 import { Root as SalePointTokenSelectorRoot } from './SalePointTokenSelector'
 
