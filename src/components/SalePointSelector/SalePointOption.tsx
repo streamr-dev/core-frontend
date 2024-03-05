@@ -10,7 +10,7 @@ import NetworkIcon from '~/shared/components/NetworkIcon'
 import { getConfigForChain } from '~/shared/web3/config'
 import { formatChainName } from '~/utils'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import Select from '~/marketplace/components/SelectField2'
+import { SelectField2 } from '~/marketplace/components/SelectField2'
 import { getDataUnion, getDataUnionsOwnedByInChain } from '~/getters/du'
 import { Root as SalePointTokenSelectorRoot } from './SalePointTokenSelector'
 
@@ -355,7 +355,7 @@ export function DataUnionOption({ salePoint, onSalePointChange }: OptionProps) {
                         <p>Connect an existing Data Union</p>
                     </button>
                     <SelectWrap>
-                        <Select
+                        <SelectField2
                             placeholder={
                                 isLoadingDataUnions
                                     ? 'Loading…'

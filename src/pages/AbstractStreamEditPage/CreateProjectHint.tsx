@@ -93,14 +93,11 @@ export default function CreateProjectHint({ streamId }: Props) {
         let mounted = true
 
         const loadProjects = async () => {
-            const result = await getProjects(
+            const result = await getProjects({
                 chainId,
-                undefined,
-                4,
-                0,
-                undefined,
+                first: 4,
                 streamId,
-            )
+            })
 
             if (mounted) {
                 setProjects(result.projects)

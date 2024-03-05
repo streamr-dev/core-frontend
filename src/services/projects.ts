@@ -4,7 +4,6 @@ import { getProjectRegistryContract } from '~/getters'
 import networkPreflight from '~/utils/networkPreflight'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
 import { BN, toBN } from '~/utils/bn'
-import { getRawGraphProjects, getRawGraphProjectsByText } from '~/getters/hub'
 import { ProjectType, TheGraph } from '~/shared/types'
 import { isMessagedObject } from '~/utils/exceptions'
 import { errorToast } from '~/utils/toast'
@@ -15,6 +14,16 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { Layer } from '~/utils/Layer'
 import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
 import { ParsedProject } from '~/parsers/ProjectParser'
+import {
+    GetProjectsByTextDocument,
+    GetProjectsByTextQuery,
+    GetProjectsByTextQueryVariables,
+    GetProjectsDocument,
+    GetProjectsQuery,
+    GetProjectsQueryVariables,
+    Project_Filter,
+} from '~/generated/gql/network'
+import { getGraphClient } from '~/getters/getGraphClient'
 import { postImage } from './images'
 
 /**
@@ -150,41 +159,104 @@ export type ProjectsResult = {
     lastId: string | null
 }
 
+function getProjectFilter(
+    params: Pick<GetProjectsParams, 'owner' | 'streamId' | 'projectType'>,
+): Project_Filter {
+    const { owner, projectType, streamId } = params
+
+    const filter: Project_Filter = {}
+
+    if (projectType === TheGraph.ProjectType.Open) {
+        filter.paymentDetails_ = {
+            pricePerSecond: 0,
+        }
+    }
+
+    if (projectType === TheGraph.ProjectType.Paid) {
+        filter.paymentDetails_ = {
+            pricePerSecond_gt: 0,
+        }
+    }
+
+    if (projectType === TheGraph.ProjectType.DataUnion) {
+        filter.isDataUnion = true
+    }
+
+    if (owner) {
+        filter.permissions_ = {
+            userAddress: owner,
+            canGrant: true,
+        }
+    }
+
+    if (streamId) {
+        filter.streams_contains = [streamId]
+    }
+
+    return filter
+}
+
+interface GetProjectsParams {
+    chainId: number
+    first?: number
+    owner?: string | undefined
+    projectType?: TheGraph.ProjectType | undefined
+    skip?: number
+    /**
+     * `streamId` use used to search projects which contain this stream.
+     */
+    streamId?: string | undefined
+}
+
 /**
  * @todo Refactor to use `ProjectParser` and `useInfiniteQuery`.
  */
-export const getProjects = async (
-    chainId: number,
-    owner?: string | undefined,
-    first = 20,
-    skip = 0,
-    projectType?: TheGraph.ProjectType | undefined,
-    streamId?: string, // used to search projects which contain this stream
-): Promise<ProjectsResult> => {
-    const projects = await getRawGraphProjects({
-        chainId,
-        owner,
-        first: first + 1,
-        skip,
-        projectType,
-        streamId,
+export async function getProjects(params: GetProjectsParams): Promise<ProjectsResult> {
+    const { chainId, first = 20, owner, projectType, skip = 0, streamId } = params
+
+    const {
+        data: { projects = [] },
+    } = await getGraphClient(chainId).query<GetProjectsQuery, GetProjectsQueryVariables>({
+        query: GetProjectsDocument,
+        variables: {
+            skip,
+            first: first + 1,
+            where: getProjectFilter({
+                owner,
+                projectType,
+                streamId,
+            }),
+        },
+        fetchPolicy: 'network-only',
     })
 
     return prepareProjectResult(projects as unknown as TheGraphProject[], first)
 }
 
 /**
- * @todo Refactor to use `ParsedProject` and `useInfiniteQuery`.
+ * @todo Refactor to use `ProjectParser`.
  */
-export const searchProjects = async (
-    chainId: number,
-    search: string,
-    first = 20,
-    skip = 0,
-): Promise<ProjectsResult> => {
-    const projects = await getRawGraphProjectsByText(chainId, search, {
-        first: first + 1,
-        skip,
+export async function getProjectsByText(text: string, params: GetProjectsParams) {
+    const { chainId, first = 20, owner, projectType, skip = 0, streamId } = params
+
+    const {
+        data: { projectSearch: projects = [] },
+    } = await getGraphClient(chainId).query<
+        GetProjectsByTextQuery,
+        GetProjectsByTextQueryVariables
+    >({
+        query: GetProjectsByTextDocument,
+        variables: {
+            first,
+            skip,
+            text,
+            where: getProjectFilter({
+                owner,
+                projectType,
+                streamId,
+            }),
+        },
+        fetchPolicy: 'network-only',
     })
 
     return prepareProjectResult(projects as unknown as TheGraphProject[], first)

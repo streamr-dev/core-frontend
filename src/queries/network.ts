@@ -341,8 +341,13 @@ gql`
         }
     }
 
-    query getProjectsByText($first: Int, $skip: Int, $text: String!) {
-        projectSearch(first: $first, skip: $skip, text: $text) {
+    query getProjectsByText(
+        $first: Int
+        $skip: Int
+        $text: String!
+        $where: Project_filter
+    ) {
+        projectSearch(first: $first, skip: $skip, text: $text, where: $where) {
             ...ProjectFields
         }
     }

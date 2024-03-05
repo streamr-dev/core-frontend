@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Meta } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import SelectField2 from './index'
+import { SelectField2 } from './index'
 
 const options = [
     {
@@ -23,7 +23,7 @@ type SetPriceControllerProps = {
 }
 
 const SelectFieldController = ({ disabled, value: val }: SetPriceControllerProps) => {
-    const [value, setValue] = useState(val)
+    const [value, setValue] = useState(val || null)
     const selectedValue = useMemo(
         () => options.find(({ value: optionValue }) => optionValue === value)?.value,
         [value],
