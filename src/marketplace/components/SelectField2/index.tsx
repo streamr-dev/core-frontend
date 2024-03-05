@@ -136,8 +136,11 @@ export function SelectField2<
             setSelected(undefined)
 
             onChange(null as R)
+
+            return
         }
-        if (disabled || !isOption(option)) {
+
+        if (!isOption(option)) {
             return
         }
 
