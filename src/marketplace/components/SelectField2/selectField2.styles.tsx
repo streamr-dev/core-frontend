@@ -19,6 +19,9 @@ export const StyledCaretIcon = styled(SvgIcon)<SvgIconProps>`
     &.disabled {
         color: ${COLORS.disabled};
     }
+    &.whiteVariant {
+        color: ${COLORS.primaryLight};
+    }
 `
 
 export const StyledDropdownIndicator = styled(components.DropdownIndicator)`

@@ -39,14 +39,19 @@ type SelectFieldProps = {
     fullWidth?: boolean
 }
 
-const DropdownIndicator = (props: DropdownIndicatorProps) => {
+type CustomDropdownIndicatorProps = DropdownIndicatorProps & {
+    whiteVariant?: boolean
+}
+
+const DropdownIndicator = (props: CustomDropdownIndicatorProps) => {
     return (
         <StyledDropdownIndicator {...props}>
             <StyledCaretIcon
                 name="caretDown"
                 className={
-                    (props.selectProps.menuIsOpen ? 'rotated' : '') +
-                    (props.selectProps.isDisabled ? 'disabled' : '')
+                    (props.selectProps.menuIsOpen ? 'rotated ' : '') +
+                    (props.selectProps.isDisabled ? 'disabled ' : '') +
+                    (props.whiteVariant ? 'whiteVariant' : '')
                 }
             />
         </StyledDropdownIndicator>
@@ -150,7 +155,9 @@ const SelectField2: FunctionComponent<SelectFieldProps> = ({
                     setIsOpen(false)
                 }}
                 components={{
-                    DropdownIndicator,
+                    DropdownIndicator: (props) => (
+                        <DropdownIndicator whiteVariant={whiteVariant} {...props} />
+                    ),
                     ClearIndicator,
                     IndicatorSeparator: () => <></>,
                     Option: whiteVariant ? StyledWhiteDropdownOption : StyledOption,
