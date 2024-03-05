@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ReactSelect, {
     ClearIndicatorProps,
     DropdownIndicatorProps,
