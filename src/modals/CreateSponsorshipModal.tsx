@@ -59,7 +59,7 @@ function getDefaultFormData(streamId = ''): CreateSponsorshipForm {
         streamId: streamId,
         initialAmount: '',
         payoutRate: '',
-        minStakeDuration: 14,
+        minStakeDuration: 0,
         minNumberOfOperators: 1,
         maxNumberOfOperators: undefined,
     }
@@ -337,7 +337,11 @@ function CreateSponsorshipModal({
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={minStakeDuration || ''}
+                            value={
+                                typeof minStakeDuration !== 'undefined'
+                                    ? minStakeDuration
+                                    : ''
+                            }
                         />
                         <TextAppendix>Days</TextAppendix>
                     </FieldWrap>
