@@ -51,7 +51,8 @@ const getAlertBackgroundColor = ({ $type }: { $type: AlertType }) => {
 }
 
 const AlertWrap = styled.div<{ $type: AlertType }>`
-    display: flex;
+    display: grid;
+    grid-template-columns: 24px auto;
     gap: 16px;
     padding: 20px 16px;
     border-radius: 8px;
