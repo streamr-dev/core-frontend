@@ -147,8 +147,10 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                 </TextMenuItem>
                                             ) : (
                                                 <TextMenuItem
-                                                    disabled={isOperatorFetching}
+                                                    disabled={true || isOperatorFetching}
                                                     onClick={() => {
+                                                        return
+
                                                         if (isOperatorFetching) {
                                                             return
                                                         }

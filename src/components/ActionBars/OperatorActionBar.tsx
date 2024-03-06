@@ -152,7 +152,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 wallet: walletAddress,
                             })
                         }}
-                        disabled={!walletAddress}
+                        disabled={true || !walletAddress}
                         waiting={isDelegatingFunds}
                     >
                         {delegateLabel}
