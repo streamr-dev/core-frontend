@@ -117,7 +117,13 @@ export function FundedUntilCell({
             {value == null ? <>N/A</> : <>{value.format('YYYY-MM-DD')}</>}
             {remainingBalance.isLessThanOrEqualTo(0) && (
                 <Tooltip content="Sponsorship expired">
-                    <TooltipIconWrap $color="#ff5c00">
+                    <TooltipIconWrap
+                        $color="#ff5c00"
+                        $svgSize={{
+                            width: '18px',
+                            height: '18px',
+                        }}
+                    >
                         <JiraFailedBuildStatusIcon label="Error" />
                     </TooltipIconWrap>
                 </Tooltip>
@@ -150,7 +156,13 @@ export function SponsorshipApyCell({
             {`${(spotAPY * 100).toFixed(0)}%`}
             {!isRunning && (
                 <Tooltip content="Sponsorship not runnning">
-                    <TooltipIconWrap $color="#ff5c00">
+                    <TooltipIconWrap
+                        $color="#ff5c00"
+                        $svgSize={{
+                            width: '18px',
+                            height: '18px',
+                        }}
+                    >
                         <JiraFailedBuildStatusIcon label="Error" />
                     </TooltipIconWrap>
                 </Tooltip>
