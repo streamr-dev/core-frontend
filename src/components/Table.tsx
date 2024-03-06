@@ -114,7 +114,11 @@ export function FundedUntilCell({
 
     return (
         <Iconized>
-            {value == null ? <>N/A</> : <>{value.format('YYYY-MM-DD')}</>}
+            {value == null || !value.isValid() ? (
+                <>N/A</>
+            ) : (
+                <>{value.format('YYYY-MM-DD')}</>
+            )}
             {remainingBalance.isLessThanOrEqualTo(0) && (
                 <Tooltip content="Sponsorship expired">
                     <TooltipIconWrap

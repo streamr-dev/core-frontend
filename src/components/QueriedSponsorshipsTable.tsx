@@ -95,6 +95,16 @@ export function QueriedSponsorshipsTable({
                         sortable: true,
                     },
                     {
+                        displayName: 'Funds',
+                        valueMapper: (element) => (
+                            <>{abbr(element.timeCorrectedRemainingBalance)}</>
+                        ),
+                        align: 'start',
+                        isSticky: false,
+                        key: 'remainingWei',
+                        sortable: true,
+                    },
+                    {
                         displayName: 'Operators',
                         valueMapper: (element) => (
                             <NumberOfOperatorsCell

@@ -198,6 +198,7 @@ gql`
         maxOperators
         totalStakedWei
         remainingWei
+        remainingWeiUpdateTimestamp
         projectedInsolvency
         cumulativeSponsoring
         minimumStakingPeriodSeconds

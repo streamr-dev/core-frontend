@@ -23,6 +23,7 @@ const SponsorshipParser = z.object({
         .union([z.string(), z.null()])
         .transform((v) => (v == null ? null : Number(v))),
     remainingWei: z.string().transform(toBN),
+    remainingWeiUpdateTimestamp: z.coerce.number(),
     spotAPY: z.coerce.number(),
     stream: z.union([
         z.object({
@@ -68,10 +69,12 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
             cumulativeSponsoring: cumulativeSponsoringWei,
             projectedInsolvency: projectedInsolvencyAt,
             remainingWei,
+            remainingWeiUpdateTimestamp,
             stakes,
             stream,
             totalPayoutWeiPerSec,
             totalStakedWei,
+            isRunning,
             ...rest
         }) => {
             const { decimals } = await getSponsorshipTokenInfo(chainId)
@@ -81,16 +84,33 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
                 'minimumStakeWei',
             )
 
+            const timeCorrectedRemainingBalance = remainingWei.isGreaterThan(0)
+                ? fromDecimals(
+                      remainingWei.minus(
+                          toBN(
+                              Date.now() / 1000 - remainingWeiUpdateTimestamp,
+                          ).multipliedBy(totalPayoutWeiPerSec),
+                      ),
+                      decimals,
+                  )
+                : toBN(0)
+
             return {
                 ...rest,
                 cumulativeSponsoring: fromDecimals(cumulativeSponsoringWei, decimals),
                 minimumStake: fromDecimals(minimumStakeWei, decimals),
+                payoutPerSec: fromDecimals(toBN(totalPayoutWeiPerSec), decimals),
                 payoutPerDay: fromDecimals(
                     toBN(totalPayoutWeiPerSec).multipliedBy(86400),
                     decimals,
                 ).dp(3, BN.ROUND_HALF_UP),
                 projectedInsolvencyAt,
                 remainingBalance: fromDecimals(remainingWei, decimals),
+                remainingWeiUpdateTimestamp,
+                timeCorrectedRemainingBalance:
+                    timeCorrectedRemainingBalance.isGreaterThan(0) && isRunning
+                        ? timeCorrectedRemainingBalance
+                        : fromDecimals(remainingWei, decimals),
                 stakes: stakes.map(({ amountWei, metadata, ...stake }) => ({
                     ...stake,
                     amount: fromDecimals(amountWei, decimals),
@@ -98,6 +118,7 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
                 })),
                 streamId: stream?.id,
                 totalStake: fromDecimals(totalStakedWei, decimals),
+                isRunning,
             }
         },
     ).parseAsync(value)
