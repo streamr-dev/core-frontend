@@ -18,7 +18,6 @@ import {
     NumberOfOperatorsCell,
     SponsorshipApyCell,
     StreamIdCell,
-    RemainingFundsCell,
 } from '~/components/Table'
 import { abbr } from '~/utils'
 import { useCurrentChainId } from '~/shared/stores/chain'
@@ -98,13 +97,7 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Funds',
                         valueMapper: (element) => (
-                            <RemainingFundsCell
-                                remainingBalance={element.remainingBalance}
-                                remainingBalanceUpdatedTimestamp={
-                                    element.remainingWeiUpdateTimestamp
-                                }
-                                payoutPerSec={element.payoutPerSec}
-                            />
+                            <>{abbr(element.timeCorrectedRemainingBalance)}</>
                         ),
                         align: 'start',
                         isSticky: false,

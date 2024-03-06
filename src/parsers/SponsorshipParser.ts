@@ -69,10 +69,12 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
             cumulativeSponsoring: cumulativeSponsoringWei,
             projectedInsolvency: projectedInsolvencyAt,
             remainingWei,
+            remainingWeiUpdateTimestamp,
             stakes,
             stream,
             totalPayoutWeiPerSec,
             totalStakedWei,
+            isRunning,
             ...rest
         }) => {
             const { decimals } = await getSponsorshipTokenInfo(chainId)
@@ -81,6 +83,17 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
                 chainId,
                 'minimumStakeWei',
             )
+
+            const timeCorrectedRemainingBalance = remainingWei.isGreaterThan(0)
+                ? fromDecimals(
+                      remainingWei.minus(
+                          toBN(
+                              Date.now() / 1000 - remainingWeiUpdateTimestamp,
+                          ).multipliedBy(totalPayoutWeiPerSec),
+                      ),
+                      decimals,
+                  )
+                : toBN(0)
 
             return {
                 ...rest,
@@ -93,6 +106,11 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
                 ).dp(3, BN.ROUND_HALF_UP),
                 projectedInsolvencyAt,
                 remainingBalance: fromDecimals(remainingWei, decimals),
+                remainingWeiUpdateTimestamp,
+                timeCorrectedRemainingBalance:
+                    timeCorrectedRemainingBalance.isGreaterThan(0) && isRunning
+                        ? timeCorrectedRemainingBalance
+                        : fromDecimals(remainingWei, decimals),
                 stakes: stakes.map(({ amountWei, metadata, ...stake }) => ({
                     ...stake,
                     amount: fromDecimals(amountWei, decimals),
@@ -100,6 +118,7 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
                 })),
                 streamId: stream?.id,
                 totalStake: fromDecimals(totalStakedWei, decimals),
+                isRunning,
             }
         },
     ).parseAsync(value)
