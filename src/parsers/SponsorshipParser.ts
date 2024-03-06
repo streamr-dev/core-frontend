@@ -23,6 +23,7 @@ const SponsorshipParser = z.object({
         .union([z.string(), z.null()])
         .transform((v) => (v == null ? null : Number(v))),
     remainingWei: z.string().transform(toBN),
+    remainingWeiUpdateTimestamp: z.coerce.number(),
     spotAPY: z.coerce.number(),
     stream: z.union([
         z.object({
@@ -85,6 +86,7 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
                 ...rest,
                 cumulativeSponsoring: fromDecimals(cumulativeSponsoringWei, decimals),
                 minimumStake: fromDecimals(minimumStakeWei, decimals),
+                payoutPerSec: fromDecimals(toBN(totalPayoutWeiPerSec), decimals),
                 payoutPerDay: fromDecimals(
                     toBN(totalPayoutWeiPerSec).multipliedBy(86400),
                     decimals,

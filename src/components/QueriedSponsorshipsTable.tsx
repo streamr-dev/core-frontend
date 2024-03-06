@@ -18,6 +18,7 @@ import {
     NumberOfOperatorsCell,
     SponsorshipApyCell,
     StreamIdCell,
+    RemainingFundsCell,
 } from '~/components/Table'
 import { abbr } from '~/utils'
 import { useCurrentChainId } from '~/shared/stores/chain'
@@ -92,6 +93,22 @@ export function QueriedSponsorshipsTable({
                         align: 'start',
                         isSticky: hideStreamId,
                         key: 'payoutPerDay',
+                        sortable: true,
+                    },
+                    {
+                        displayName: 'Funds',
+                        valueMapper: (element) => (
+                            <RemainingFundsCell
+                                remainingBalance={element.remainingBalance}
+                                remainingBalanceUpdatedTimestamp={
+                                    element.remainingWeiUpdateTimestamp
+                                }
+                                payoutPerSec={element.payoutPerSec}
+                            />
+                        ),
+                        align: 'start',
+                        isSticky: false,
+                        key: 'remainingWei',
                         sortable: true,
                     },
                     {

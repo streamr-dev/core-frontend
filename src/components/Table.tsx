@@ -10,6 +10,7 @@ import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 import { BN } from '~/utils/bn'
+import { abbr } from '~/utils'
 import { OperatorAvatar } from './avatars'
 
 /**
@@ -114,7 +115,11 @@ export function FundedUntilCell({
 
     return (
         <Iconized>
-            {value == null ? <>N/A</> : <>{value.format('YYYY-MM-DD')}</>}
+            {value == null || !value.isValid() ? (
+                <>N/A</>
+            ) : (
+                <>{value.format('YYYY-MM-DD')}</>
+            )}
             {remainingBalance.isLessThanOrEqualTo(0) && (
                 <Tooltip content="Sponsorship expired">
                     <TooltipIconWrap
@@ -130,6 +135,26 @@ export function FundedUntilCell({
             )}
         </Iconized>
     )
+}
+
+/**
+ * Remaining funds formatter. The value we get from The Graph is adjusted for time passing by.
+ */
+export function RemainingFundsCell({
+    remainingBalance,
+    remainingBalanceUpdatedTimestamp,
+    payoutPerSec,
+}: {
+    remainingBalance: BN
+    remainingBalanceUpdatedTimestamp: number
+    payoutPerSec: BN
+}) {
+    const now = Date.now()
+    const correctedValue = remainingBalance
+        .minus(now - remainingBalanceUpdatedTimestamp * 1000)
+        .multipliedBy(payoutPerSec)
+
+    return <>{abbr(correctedValue)}</>
 }
 
 const Iconized = styled.div`

@@ -683,6 +683,8 @@ const mapSponsorshipOrder = (columnKey?: string): Sponsorship_OrderBy => {
             return Sponsorship_OrderBy.ProjectedInsolvency
         case 'payoutPerDay':
             return Sponsorship_OrderBy.TotalPayoutWeiPerSec
+        case 'remainingWei':
+            return Sponsorship_OrderBy.RemainingWei
         case 'streamInfo':
         default:
             return Sponsorship_OrderBy.Id
