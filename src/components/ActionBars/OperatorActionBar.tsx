@@ -152,7 +152,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 wallet: walletAddress,
                             })
                         }}
-                        disabled={true || !walletAddress}
+                        disabled={!walletAddress || operator.contractVersion === 1} // Operator contract v1 has a bug so we need to disable delegation
                         waiting={isDelegatingFunds}
                     >
                         {delegateLabel}

@@ -129,9 +129,7 @@ export const OperatorsPage = () => {
                                     },
                                 })
                             }}
-                            disabled={
-                                true || !wallet || !!operator || operatorQuery.isFetching
-                            }
+                            disabled={!wallet || !!operator || operatorQuery.isFetching}
                         >
                             Become an Operator
                         </Button>
