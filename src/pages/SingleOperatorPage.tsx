@@ -888,6 +888,7 @@ const NoticeBar = styled.div`
     line-height: 20px;
     color: #323232;
     padding: 8px 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.025);
 `
 
 const NoticeWrap = styled.div`
