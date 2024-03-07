@@ -81,8 +81,14 @@ function JoinSponsorshipModal({
 
     const heartbeats = useInterceptHeartbeats(operatorId)
 
-    const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
+    let { count: liveNodesCount, isLoading: liveNodesCountLoading } =
         useOperatorLiveNodes(heartbeats)
+
+    // Relax live node checking for broken operators as they cannot join the recovery sponsorship otherwise
+    if (operator.contractVersion === 1) {
+        liveNodesCount = 1
+        liveNodesCountLoading = false
+    }
 
     useEffect(() => {
         setRawAmount(parseAmount(amountProp, decimals))
