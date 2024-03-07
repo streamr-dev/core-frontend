@@ -110,6 +110,7 @@ export default function UndelegateFundsModal({
 
     const isTooEarlyToUndelegate =
         operator.contractVersion > 0 &&
+        !isOwner &&
         earliestUndelegationTimestamp != null &&
         earliestUndelegationTimestamp * 1000 > Date.now()
 
