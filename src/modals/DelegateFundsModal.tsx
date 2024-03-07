@@ -84,9 +84,10 @@ export default function DelegateFundsModal({
     const minimumDelegationSecondsValue = useConfigValueFromChain(
         'minimumDelegationSeconds',
     )
-    const minimumDelegationSeconds = minimumDelegationSecondsValue
-        ? toBN(minimumDelegationSecondsValue)
-        : toBN(0)
+    const minimumDelegationSeconds =
+        !isOwner && minimumDelegationSecondsValue
+            ? toBN(minimumDelegationSecondsValue)
+            : toBN(0)
 
     const [rawAmount, setRawAmount] = useState(amountProp)
 
