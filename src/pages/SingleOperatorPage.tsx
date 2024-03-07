@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -214,25 +214,8 @@ export const SingleOperatorPage = () => {
                             saveOperator(currentChainId, currentOperator)
                         }}
                     />
-                    {operator.contractVersion < 1 && isOwner && (
-                        <NoticeBar>
-                            <NoticeWrap>
-                                <TooltipIconWrap $color="#ff5c00">
-                                    <JiraFailedBuildStatusIcon label="Error" />
-                                </TooltipIconWrap>
-                                <div>
-                                    Your Operator smart contract is outdated.{' '}
-                                    <a
-                                        href="https://docs.streamr.network/help/operator-faq#migrating-from-streamr-10-testnet-to-streamr-10"
-                                        rel="noopener noreferrer"
-                                        target="_blank"
-                                    >
-                                        Click here
-                                    </a>{' '}
-                                    to learn how to migrate to the latest version.
-                                </div>
-                            </NoticeWrap>
-                        </NoticeBar>
+                    {isOwner && (
+                        <OperatorVersionNotice version={operator.contractVersion} />
                     )}
                 </>
             )}
@@ -930,5 +913,65 @@ function UncollectedEarnings({
         </>
     ) : (
         <Spinner color="blue" />
+    )
+}
+
+interface OperatorVersionNoticeProps {
+    version: number
+}
+
+function OperatorVersionNotice(params: OperatorVersionNoticeProps) {
+    const { version } = params
+
+    let notice: ReactNode | undefined
+
+    if (version === 0) {
+        notice = (
+            <>
+                Your Operator smart contract is outdated.{' '}
+                <a
+                    href="https://docs.streamr.network/help/operator-faq#migrating-from-streamr-10-testnet-to-streamr-10"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                >
+                    Click here
+                </a>{' '}
+                to learn how to migrate to the latest version.
+            </>
+        )
+    }
+
+    if (version === 1) {
+        notice = (
+            <>
+                You have a version of the Operator smart contract where withdrawals and
+                undelegations are broken.
+                <br />
+                The tokens within the Operator can be recovered. Please see{' '}
+                <a
+                    href="https://discord.com/channels/801574432350928907/1169745015363338300/1214980272123019264"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    these instructions
+                </a>{' '}
+                or get in touch with the team.
+            </>
+        )
+    }
+
+    if (!notice) {
+        return null
+    }
+
+    return (
+        <NoticeBar>
+            <NoticeWrap>
+                <TooltipIconWrap $color="#ff5c00">
+                    <JiraFailedBuildStatusIcon label="Error" />
+                </TooltipIconWrap>
+                <div>{notice}</div>
+            </NoticeWrap>
+        </NoticeBar>
     )
 }
