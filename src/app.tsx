@@ -114,12 +114,17 @@ const App = () => (
                 <Route path="*" element={<NotFoundPage />} />,
             </Route>
         </Routes>
-        <Container id={Layer.Modal} />
+        <ModalContainer id={Layer.Modal} />
         <ToastContainer id={Layer.Toast} />
     </Root>
 )
 
 export default App
+
+const ModalContainer = styled(Container)`
+    position: relative;
+    z-index: 11;
+`
 
 const ToastContainer = styled(Container)`
     bottom: 0;
@@ -128,7 +133,7 @@ const ToastContainer = styled(Container)`
     padding-bottom: 24px;
     padding-right: 24px;
     position: fixed;
-    z-index: 10;
+    z-index: 12;
 `
 
 function Root({ children }: { children: ReactNode }) {
