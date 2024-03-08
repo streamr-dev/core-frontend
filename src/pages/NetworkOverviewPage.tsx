@@ -53,6 +53,7 @@ import { Button } from '~/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { Abbr } from '~/components/Abbr'
 
 export function NetworkOverviewPage() {
     return (
@@ -84,7 +85,7 @@ function NetworkStats() {
             <Pad>
                 <StatGrid>
                     <StatCell label="Total stake">
-                        {data?.totalStake ? abbr(fromAtto(data.totalStake)) : ''}
+                        {data?.totalStake && <Abbr>{fromAtto(data.totalStake)}</Abbr>}
                     </StatCell>
                     <StatCell label="Sponsorships">{data?.sponsorshipsCount}</StatCell>
                     <StatCell label="Operators">{data?.operatorsCount}</StatCell>
