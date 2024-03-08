@@ -35,7 +35,11 @@ import {
 } from '~/hooks/operators'
 import { ChartPeriod, XY } from '~/types'
 import { errorToast } from '~/utils/toast'
-import { getOperatorDailyBuckets, getTimestampForChartPeriod } from '~/getters'
+import {
+    getNetworkStats,
+    getOperatorDailyBuckets,
+    getTimestampForChartPeriod,
+} from '~/getters'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { OperatorDailyBucket } from '~/generated/gql/network'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
@@ -55,12 +59,38 @@ export function NetworkOverviewPage() {
         <Layout columnize>
             <NetworkHelmet title="Network Overview" />
             <SegmentGrid>
+                <NetworkStats />
                 <MyOperatorSummary />
                 <MyDelegationsSummary />
                 <MyDelegations />
                 <MySponsorships />
             </SegmentGrid>
         </Layout>
+    )
+}
+
+function NetworkStats() {
+    const currentChainId = useCurrentChainId()
+
+    const { data } = useQuery({
+        queryKey: ['networkStats', currentChainId],
+        async queryFn() {
+            return getNetworkStats(currentChainId)
+        },
+    })
+
+    return (
+        <NetworkPageSegment title="Network stats">
+            <Pad>
+                <StatGrid>
+                    <StatCell label="Total stake">
+                        {data?.totalStake ? abbr(fromAtto(data.totalStake)) : ''}
+                    </StatCell>
+                    <StatCell label="Sponsorships">{data?.sponsorshipsCount}</StatCell>
+                    <StatCell label="Operators">{data?.operatorsCount}</StatCell>
+                </StatGrid>
+            </Pad>
+        </NetworkPageSegment>
     )
 }
 

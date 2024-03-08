@@ -69,6 +69,9 @@ import {
     GetSponsorshipByStreamIdQuery,
     GetSponsorshipByStreamIdQueryVariables,
     GetSponsorshipByStreamIdDocument,
+    GetNetworkStatsQuery,
+    GetNetworkStatsQueryVariables,
+    GetNetworkStatsDocument,
 } from '~/generated/gql/network'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
@@ -877,6 +880,31 @@ export function getTimestampForChartPeriod(period: ChartPeriod, end: Moment): Mo
     })()
 
     return result
+}
+
+function parseNetworkStats(stats: GetNetworkStatsQuery) {
+    try {
+        return z
+            .object({
+                totalStake: z.string().transform(toBN),
+                sponsorshipsCount: z.number(),
+                operatorsCount: z.number(),
+            })
+            .parse(stats.networks[0])
+    } catch (e) {
+        return undefined
+    }
+}
+
+export async function getNetworkStats(chainId: number) {
+    const { data } = await getGraphClient(chainId).query<
+        GetNetworkStatsQuery,
+        GetNetworkStatsQueryVariables
+    >({
+        query: GetNetworkStatsDocument,
+    })
+
+    return parseNetworkStats(data)
 }
 
 /**

@@ -5328,6 +5328,11 @@ export type GetMetadataQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetMetadataQuery = { __typename?: 'Query', _meta?: { __typename?: '_Meta_', block: { __typename?: '_Block_', hash?: any | null, number: number, timestamp?: number | null } } | null };
 
+export type GetNetworkStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetNetworkStatsQuery = { __typename?: 'Query', networks: Array<{ __typename?: 'Network', totalStake: any, operatorsCount: number, sponsorshipsCount: number }> };
+
 export const StakeFieldsFragmentDoc = gql`
     fragment StakeFields on Stake {
   operator {
@@ -5769,3 +5774,13 @@ export const GetMetadataDocument = gql`
 }
     `;
 export type GetMetadataQueryResult = Apollo.QueryResult<GetMetadataQuery, GetMetadataQueryVariables>;
+export const GetNetworkStatsDocument = gql`
+    query getNetworkStats {
+  networks(first: 1) {
+    totalStake
+    operatorsCount
+    sponsorshipsCount
+  }
+}
+    `;
+export type GetNetworkStatsQueryResult = Apollo.QueryResult<GetNetworkStatsQuery, GetNetworkStatsQueryVariables>;

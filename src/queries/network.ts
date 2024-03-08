@@ -506,3 +506,13 @@ gql`
         }
     }
 `
+
+gql`
+    query getNetworkStats {
+        networks(first: 1) {
+            totalStake
+            operatorsCount
+            sponsorshipsCount
+        }
+    }
+`
