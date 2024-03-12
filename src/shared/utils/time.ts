@@ -1,5 +1,11 @@
 const units = [
     {
+        max: 60000,
+        value: 1000,
+        name: 'second',
+        prev: 'a second ago',
+    },
+    {
         max: 2760000,
         value: 60000,
         name: 'minute',
@@ -59,4 +65,21 @@ export function ago(date: Date): string {
     //    prev: 'last year'
     //  }
     return format(diff, 31536000000, 'year', 'last year')
+}
+
+function humanFormat(diff: number, divisor: number, unit: string) {
+    const val = Math.round(diff / divisor)
+    return `${val} ${unit}${val === 1 ? '' : 's'}`
+}
+
+export function humanize(durationSeconds: number) {
+    const durationMs = durationSeconds * 1000
+
+    for (let i = 0; i < units.length; i += 1) {
+        if (durationMs < units[i].max) {
+            return humanFormat(durationMs, units[i].value, units[i].name)
+        }
+    }
+
+    return humanFormat(durationMs, 31536000000, 'year')
 }

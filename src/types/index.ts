@@ -50,6 +50,7 @@ export type ConfigKey =
     | 'slashingFraction'
     | 'minimumDelegationSeconds'
     | 'minimumDelegationWei'
+    | 'earlyLeaverPenaltyWei'
 
 export interface Chain {
     name: string

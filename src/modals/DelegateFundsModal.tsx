@@ -30,6 +30,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { delegateToOperator } from '~/services/operators'
 import { waitForIndexedBlock } from '~/utils'
 import { Abbr } from '~/components/Abbr'
+import { humanize } from '~/shared/utils/time'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -69,6 +70,11 @@ export default function DelegateFundsModal({
               'to delegate to the selected Operator',
           ]
 
+    const earlyLeaverPenaltyWei = useConfigValueFromChain('earlyLeaverPenaltyWei')
+    const earlyLeaverPenalty = earlyLeaverPenaltyWei
+        ? fromDecimals(earlyLeaverPenaltyWei, 18)
+        : toBN(0)
+
     const minimumDelegationWei = useConfigValueFromChain('minimumDelegationWei')
     const minimumDelegationAmount = minimumDelegationWei
         ? fromDecimals(minimumDelegationWei, 18)
@@ -99,7 +105,7 @@ export default function DelegateFundsModal({
 
     const finalValue = toBN(value)
 
-    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
+    const { decimals = 18, symbol = 'DATA' } = useSponsorshipTokenInfo() || {}
 
     const delegatedTotal = fromDecimals(delegatedTotalProp, decimals)
 
@@ -298,10 +304,12 @@ export default function DelegateFundsModal({
                 {operator.contractVersion > 0 &&
                     minimumDelegationSeconds.isGreaterThan(0) && (
                         <Alert
-                            type="notice"
-                            title={`You will need to stay delegated for at least ${minimumDelegationSeconds
-                                .dividedBy(60 * 60 * 24)
-                                .toFixed()} days.`}
+                            type="error"
+                            title={`This Sponsorship has a minimum staking period of ${humanize(
+                                minimumDelegationSeconds.toNumber(),
+                            )}. 
+                            If you unstake or get voted out during this period, you will lose 
+                                ${earlyLeaverPenalty} ${symbol} in addition to the normal slashing penalty.`}
                         ></Alert>
                     )}
             </>
