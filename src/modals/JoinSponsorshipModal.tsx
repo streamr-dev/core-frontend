@@ -81,13 +81,14 @@ function JoinSponsorshipModal({
 
     const heartbeats = useInterceptHeartbeats(operatorId)
 
-    let { count: liveNodesCount, isLoading: liveNodesCountLoading } =
+    const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
         useOperatorLiveNodes(heartbeats)
+
+    let liveNodesOk = !liveNodesCountLoading && liveNodesCount > 0
 
     // Relax live node checking for broken operators as they cannot join the recovery sponsorship otherwise
     if (operator.contractVersion === 1) {
-        liveNodesCount = 1
-        liveNodesCountLoading = false
+        liveNodesOk = true
     }
 
     useEffect(() => {
@@ -134,8 +135,7 @@ function JoinSponsorshipModal({
     const canSubmit =
         finalAmount.isGreaterThan(0) &&
         !insufficientFunds &&
-        !liveNodesCountLoading &&
-        liveNodesCount > 0 &&
+        liveNodesOk &&
         isAboveMinimumStake &&
         !hasUndelegationQueue &&
         !isBelowSelfFundingLimit
