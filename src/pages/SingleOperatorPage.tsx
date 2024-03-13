@@ -72,6 +72,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
+import { AutomationKeysTable } from '~/components/AutomationKeysTable'
 
 const defaultChartData = []
 
@@ -717,6 +718,92 @@ export const SingleOperatorPage = () => {
                                 }
                             >
                                 <NodesTable
+                                    busy={isSavingNodeAddresses}
+                                    value={nodes}
+                                    onChange={setNodes}
+                                    onSaveClick={async (addresses) => {
+                                        if (!operatorId) {
+                                            return
+                                        }
+
+                                        const chainId = currentChainId
+
+                                        try {
+                                            await saveNodeAddresses(
+                                                chainId,
+                                                operatorId,
+                                                addresses,
+                                                {
+                                                    onSuccess(blockNumber) {
+                                                        setNodes((current) => {
+                                                            const newNodes: OperatorNode[] =
+                                                                []
+
+                                                            current.forEach((node) => {
+                                                                if (node.enabled) {
+                                                                    newNodes.push({
+                                                                        ...node,
+                                                                        persisted: true,
+                                                                    })
+                                                                }
+                                                            })
+
+                                                            return newNodes
+                                                        })
+
+                                                        setBlockDependency(
+                                                            chainId,
+                                                            blockNumber,
+                                                            ['operatorNodes', operatorId],
+                                                        )
+
+                                                        onIndexedBlock(
+                                                            chainId,
+                                                            blockNumber,
+                                                            () => {
+                                                                invalidateActiveOperatorByIdQueries(
+                                                                    chainId,
+                                                                    operatorId,
+                                                                )
+                                                            },
+                                                        )
+                                                    },
+                                                    onError() {
+                                                        errorToast({
+                                                            title: 'Faild to save the new node addresses',
+                                                        })
+                                                    },
+                                                },
+                                            )
+                                        } catch (e) {}
+                                    }}
+                                />
+                            </NetworkPageSegment>
+                        )}
+                        {isOwner && (
+                            <NetworkPageSegment
+                                title={
+                                    <NodeAddressHeader>
+                                        <span>Authorized automation addresses</span>{' '}
+                                        <div>
+                                            <Hint>
+                                                <p>
+                                                    You can authorize certain addresses to
+                                                    stake and unstake your Operator. These
+                                                    addresses are not allowed to withdraw
+                                                    funds out of the Operator. Such
+                                                    addresses are intended to be used with
+                                                    staking automation scripts, where you
+                                                    don&apos;t want to expose your Owner
+                                                    key for security reasons, but still
+                                                    need a key that can stake and unstake.
+                                                </p>
+                                            </Hint>
+                                        </div>
+                                    </NodeAddressHeader>
+                                }
+                            >
+                                <AutomationKeysTable
                                     busy={isSavingNodeAddresses}
                                     value={nodes}
                                     onChange={setNodes}
