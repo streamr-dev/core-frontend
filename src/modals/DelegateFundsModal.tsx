@@ -301,6 +301,16 @@ export default function DelegateFundsModal({
                     )}
             </>
             <>
+                {operator.contractVersion < 3 && !isOwner && (
+                    <Alert type="error" title="Slashing risk">
+                        This Operator is running an older version of the Operator smart
+                        contract where Delegators are subject to slashing risk if the
+                        Operator is voted out of a Sponsorship. In newer Operator
+                        versions, Delegators are more protected from slashing.
+                    </Alert>
+                )}
+            </>
+            <>
                 {operator.contractVersion > 0 &&
                     minimumDelegationSeconds.isGreaterThan(0) && (
                         <Alert
