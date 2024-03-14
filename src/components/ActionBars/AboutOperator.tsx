@@ -31,6 +31,12 @@ export function AboutOperator({ operator }: { operator: ParsedOperator }) {
                     </div>
                 </AddressContent>
             </Address>
+            <Address>
+                <AddressLabel>Operator smart contract version:</AddressLabel>
+                <AddressContent>
+                    <strong>{operator.contractVersion}</strong>
+                </AddressContent>
+            </Address>
             <Banner>
                 <IconWrap>
                     <InfoIcon label="Info" />
