@@ -44,8 +44,9 @@ import { OperatorChecklist } from '~/components/OperatorChecklist'
 import routes from '~/routes'
 import {
     AddressTable,
-    OperatorNode,
+    AddressItem,
     useSubmitNodeAddressesCallback,
+    AddressType,
 } from '~/components/AddressTable'
 import Spinner from '~/components/Spinner'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -717,6 +718,7 @@ export const SingleOperatorPage = () => {
                                 }
                             >
                                 <AddressTable
+                                    type={AddressType.Node}
                                     busy={isSavingNodeAddresses}
                                     value={nodes}
                                     onChange={setNodes}
@@ -735,7 +737,7 @@ export const SingleOperatorPage = () => {
                                                 {
                                                     onSuccess(blockNumber) {
                                                         setNodes((current) => {
-                                                            const newNodes: OperatorNode[] =
+                                                            const newNodes: AddressItem[] =
                                                                 []
 
                                                             current.forEach((node) => {
@@ -802,6 +804,7 @@ export const SingleOperatorPage = () => {
                                 }
                             >
                                 <AddressTable
+                                    type={AddressType.Automation}
                                     busy={isSavingNodeAddresses}
                                     value={nodes}
                                     onChange={setNodes}
@@ -820,7 +823,7 @@ export const SingleOperatorPage = () => {
                                                 {
                                                     onSuccess(blockNumber) {
                                                         setNodes((current) => {
-                                                            const newNodes: OperatorNode[] =
+                                                            const newNodes: AddressItem[] =
                                                                 []
 
                                                             current.forEach((node) => {

@@ -2,7 +2,7 @@ import React, { ButtonHTMLAttributes, useCallback, useEffect, useState } from 'r
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
+import AddAddressModal from '~/modals/AddAddressModal'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Layer } from '~/utils/Layer'
 import { Button } from '~/components/Button'
@@ -19,24 +19,41 @@ import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { Separator } from '~/components/Separator'
 import { useCurrentChainId } from '~/shared/stores/chain'
 
-export interface OperatorNode {
+export interface AddressItem {
     address: string
     enabled: boolean
     persisted: boolean
 }
 
+export enum AddressType {
+    Node,
+    Automation,
+}
+
+const dialogTitleMap: Record<AddressType, string> = {
+    [AddressType.Node]: 'Add node address',
+    [AddressType.Automation]: 'Authorise staking agent',
+}
+
+const dialogSubmitLabelMap: Record<AddressType, string> = {
+    [AddressType.Node]: 'Add node address',
+    [AddressType.Automation]: 'Authorise staking agent',
+}
+
 export function AddressTable({
+    type,
     busy = false,
     onChange,
     onSaveClick,
     value = [],
 }: {
+    type: AddressType
     busy?: boolean
-    onChange?: (value: OperatorNode[]) => void
+    onChange?: (value: AddressItem[]) => void
     onSaveClick?: (addresses: string[]) => void
-    value?: OperatorNode[]
+    value?: AddressItem[]
 }) {
-    function toggle(element: OperatorNode) {
+    function toggle(element: AddressItem) {
         if (element.persisted) {
             return void onChange?.(
                 value.map((node) =>
@@ -57,9 +74,9 @@ export function AddressTable({
                 {
                     displayName: 'Address',
                     valueMapper: (element) => (
-                        <NodeAddress $new={element.enabled && !element.persisted}>
+                        <Address $new={element.enabled && !element.persisted}>
                             {element.address}
-                        </NodeAddress>
+                        </Address>
                     ),
                     align: 'start',
                     isSticky: true,
@@ -102,13 +119,27 @@ export function AddressTable({
                 },
             ]}
             footerComponent={
-                <NodeAddressesFooter>
+                <Footer>
                     <Button
                         kind="secondary"
                         disabled={busy}
                         onClick={async () => {
                             try {
-                                await addNodeAddressModal.pop({
+                                await addAddressModal.pop({
+                                    title: dialogTitleMap[type],
+                                    submitLabel: dialogSubmitLabelMap[type],
+                                    warning:
+                                        type === AddressType.Automation ? (
+                                            <>
+                                                While this address cannot withdraw your
+                                                tokens, it may trigger penalties for your
+                                                Operator by engaging in unsuitable
+                                                Sponsorships or prematurely exiting
+                                                Sponsorships before the minimum stake
+                                                period expires. It&apos;s important to
+                                                exercise caution.
+                                            </>
+                                        ) : undefined,
                                     async onSubmit(newAddress) {
                                         const address = `0x${newAddress.replace(
                                             /^0x/i,
@@ -132,7 +163,7 @@ export function AddressTable({
                                         }
 
                                         errorToast({
-                                            title: 'Node address already declared',
+                                            title: 'Address already declared',
                                         })
                                     },
                                 })
@@ -141,11 +172,11 @@ export function AddressTable({
                                     return
                                 }
 
-                                console.warn('Failed to add a node address', e)
+                                console.warn('Failed to add address', e)
                             }
                         }}
                     >
-                        Add node address
+                        {dialogTitleMap[type]}
                     </Button>
                     <Button
                         kind="primary"
@@ -161,19 +192,19 @@ export function AddressTable({
                     >
                         Save
                     </Button>
-                </NodeAddressesFooter>
+                </Footer>
             }
         />
     )
 }
 
-const NodeAddress = styled.div<{ $new?: boolean }>`
+const Address = styled.div<{ $new?: boolean }>`
     color: ${({ $new = false }) => ($new ? '#a3a3a3' : '#525252')};
 `
 
-const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
+const addAddressModal = toaster(AddAddressModal, Layer.Modal)
 
-const NodeAddressesFooter = styled.div`
+const Footer = styled.div`
     display: flex;
     justify-content: right;
     padding: 32px;
