@@ -43,10 +43,10 @@ import {
 import { OperatorChecklist } from '~/components/OperatorChecklist'
 import routes from '~/routes'
 import {
-    NodesTable,
+    AddressTable,
     OperatorNode,
     useSubmitNodeAddressesCallback,
-} from '~/components/NodesTable'
+} from '~/components/AddressTable'
 import Spinner from '~/components/Spinner'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
@@ -72,7 +72,6 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
-import { AutomationKeysTable } from '~/components/AutomationKeysTable'
 
 const defaultChartData = []
 
@@ -717,7 +716,7 @@ export const SingleOperatorPage = () => {
                                     </NodeAddressHeader>
                                 }
                             >
-                                <NodesTable
+                                <AddressTable
                                     busy={isSavingNodeAddresses}
                                     value={nodes}
                                     onChange={setNodes}
@@ -784,7 +783,7 @@ export const SingleOperatorPage = () => {
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
-                                        <span>Authorized automation addresses</span>{' '}
+                                        <span>Staking agents</span>{' '}
                                         <div>
                                             <Hint>
                                                 <p>
@@ -792,18 +791,17 @@ export const SingleOperatorPage = () => {
                                                     stake and unstake your Operator. These
                                                     addresses are not allowed to withdraw
                                                     funds out of the Operator. Such
-                                                    addresses are intended to be used with
-                                                    staking automation scripts, where you
-                                                    don&apos;t want to expose your Owner
-                                                    key for security reasons, but still
-                                                    need a key that can stake and unstake.
+                                                    addresses are useful for automation or
+                                                    for using a &apos;hotter&apos; wallet
+                                                    for convenience when managing your
+                                                    day-to-day staking operations.
                                                 </p>
                                             </Hint>
                                         </div>
                                     </NodeAddressHeader>
                                 }
                             >
-                                <AutomationKeysTable
+                                <AddressTable
                                     busy={isSavingNodeAddresses}
                                     value={nodes}
                                     onChange={setNodes}

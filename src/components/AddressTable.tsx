@@ -1,16 +1,23 @@
-import React, { ButtonHTMLAttributes, useCallback, useState } from 'react'
+import React, { ButtonHTMLAttributes, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
+import AddNodeAddressModal from '~/modals/AddNodeAddressModal'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import AddAutomationAddressModal from '~/modals/AddAutomationAddressModal'
 import { Layer } from '~/utils/Layer'
 import { Button } from '~/components/Button'
+import Spinner from '~/components/Spinner'
 import { COLORS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
+import { getNativeTokenBalance } from '~/marketplace/utils/web3'
+import { fromDecimals } from '~/marketplace/utils/math'
 import { errorToast } from '~/utils/toast'
 import { setOperatorNodeAddresses } from '~/services/operators'
+import { toBN } from '~/utils/bn'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { Separator } from '~/components/Separator'
+import { useCurrentChainId } from '~/shared/stores/chain'
 
 export interface OperatorNode {
     address: string
@@ -18,7 +25,7 @@ export interface OperatorNode {
     persisted: boolean
 }
 
-export function AutomationKeysTable({
+export function AddressTable({
     busy = false,
     onChange,
     onSaveClick,
@@ -59,6 +66,15 @@ export function AutomationKeysTable({
                     key: 'id',
                 },
                 {
+                    displayName: 'MATIC balance',
+                    valueMapper: (element) => (
+                        <MaticBalance address={element.address} minAmount="0.1" />
+                    ),
+                    align: 'start',
+                    isSticky: false,
+                    key: 'balance',
+                },
+                {
                     displayName: '',
                     valueMapper: (element) => (
                         <>
@@ -92,7 +108,7 @@ export function AutomationKeysTable({
                         disabled={busy}
                         onClick={async () => {
                             try {
-                                await addAutomationAddressModal.pop({
+                                await addNodeAddressModal.pop({
                                     async onSubmit(newAddress) {
                                         const address = `0x${newAddress.replace(
                                             /^0x/i,
@@ -116,7 +132,7 @@ export function AutomationKeysTable({
                                         }
 
                                         errorToast({
-                                            title: 'Automation address already declared',
+                                            title: 'Node address already declared',
                                         })
                                     },
                                 })
@@ -125,11 +141,11 @@ export function AutomationKeysTable({
                                     return
                                 }
 
-                                console.warn('Failed to add a automation address', e)
+                                console.warn('Failed to add a node address', e)
                             }
                         }}
                     >
-                        Add automation address
+                        Add node address
                     </Button>
                     <Button
                         kind="primary"
@@ -155,13 +171,67 @@ const NodeAddress = styled.div<{ $new?: boolean }>`
     color: ${({ $new = false }) => ($new ? '#a3a3a3' : '#525252')};
 `
 
-const addAutomationAddressModal = toaster(AddAutomationAddressModal, Layer.Modal)
+const addNodeAddressModal = toaster(AddNodeAddressModal, Layer.Modal)
 
 const NodeAddressesFooter = styled.div`
     display: flex;
     justify-content: right;
     padding: 32px;
     gap: 10px;
+`
+
+function MaticBalance({ address, minAmount }: { address: string; minAmount?: string }) {
+    const [balance, setBalance] = useState<string>()
+    const currentChainId = useCurrentChainId()
+
+    useEffect(() => {
+        let mounted = true
+
+        void (async () => {
+            try {
+                const newBalance = await getNativeTokenBalance(address, currentChainId)
+
+                if (mounted) {
+                    setBalance(fromDecimals(newBalance, 18).toFixed(2))
+                }
+            } catch (e) {
+                console.warn(`Failed to get balance for "${address}"`, e)
+            }
+        })()
+
+        return () => {
+            mounted = false
+        }
+    }, [address, currentChainId])
+
+    return balance ? (
+        <MaticBalanceRoot>
+            <div>{balance}</div>
+            {balance && minAmount && toBN(balance).isLessThan(toBN(minAmount)) && (
+                <Tooltip content="Low MATIC">
+                    <TooltipIconWrap
+                        className="ml-1"
+                        $color="#ff5c00"
+                        $svgSize={{ width: '18px', height: '18px' }}
+                    >
+                        <JiraFailedBuildStatusIcon label="Error" />
+                    </TooltipIconWrap>
+                </Tooltip>
+            )}
+        </MaticBalanceRoot>
+    ) : (
+        <Spinner color="blue" />
+    )
+}
+
+const MaticBalanceRoot = styled.div`
+    align-items: center;
+    display: flex;
+    gap: 8px;
+
+    > * {
+        flex-shrink: 0;
+    }
 `
 
 function PendingIndicator({
