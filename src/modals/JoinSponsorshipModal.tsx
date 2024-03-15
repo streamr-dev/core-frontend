@@ -39,6 +39,7 @@ import { Layer } from '~/utils/Layer'
 import { getSelfDelegationFraction } from '~/getters'
 import { Abbr } from '~/components/Abbr'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { humanize } from '~/shared/utils/time'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -111,6 +112,11 @@ function JoinSponsorshipModal({
         decimals,
     ).multipliedBy(minimumSelfDelegationPercentage)
 
+    const earlyLeaverPenaltyWei = useConfigValueFromChain('earlyLeaverPenaltyWei')
+    const earlyLeaverPenalty = earlyLeaverPenaltyWei
+        ? fromDecimals(earlyLeaverPenaltyWei, 18)
+        : toBN(0)
+
     const ownerDelegationPercentage = useMemo(() => {
         return getSelfDelegationFraction(operator)
     }, [operator])
@@ -123,8 +129,6 @@ function JoinSponsorshipModal({
     const isBelowSelfFundingLimit = ownerDelegationPercentage.isLessThan(
         minimumSelfDelegationPercentage,
     )
-
-    const minimumStakingDays = sponsorship.minimumStakingPeriodSeconds / (60 * 60 * 24)
 
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
@@ -246,8 +250,7 @@ function JoinSponsorshipModal({
                     <li>
                         <Prop>Minimum stake duration</Prop>
                         <PropValue>
-                            {minimumStakingDays.toFixed(0)} day
-                            {minimumStakingDays !== 1 && 's'}
+                            {humanize(sponsorship.minimumStakingPeriodSeconds)}
                         </PropValue>
                     </li>
                     <li>
@@ -297,6 +300,15 @@ function JoinSponsorshipModal({
                     liveNodesCountLoading={liveNodesCountLoading}
                     liveNodesCount={liveNodesCount}
                 />
+            )}
+            {sponsorship.minimumStakingPeriodSeconds > 0 && (
+                <StyledAlert
+                    type="error"
+                    title={`This Sponsorship has a minimum staking period of ${humanize(
+                        sponsorship.minimumStakingPeriodSeconds,
+                    )}. If you unstake or get voted out during this period, you will lose 
+                        ${earlyLeaverPenalty.toString()} ${tokenSymbol} in addition to the normal slashing penalty.`}
+                ></StyledAlert>
             )}
         </FormModal>
     )
