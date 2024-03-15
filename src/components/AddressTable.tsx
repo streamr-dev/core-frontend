@@ -157,18 +157,20 @@ export function AddressTable({
                                         )
 
                                         if (!exists) {
-                                            onChange?.([
+                                            const newValue = [
                                                 ...value,
                                                 {
                                                     address,
                                                     persisted: false,
                                                     enabled: true,
                                                 },
-                                            ])
+                                            ]
+
+                                            onChange?.(newValue)
 
                                             // Trigger save straight away
                                             return void onSaveClick?.(
-                                                value
+                                                newValue
                                                     .filter((node) => node.enabled)
                                                     .map(({ address }) => address),
                                             )

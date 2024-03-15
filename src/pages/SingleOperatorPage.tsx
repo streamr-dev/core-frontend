@@ -770,12 +770,18 @@ export const SingleOperatorPage = () => {
                                                         )
                                                     },
                                                     onReject() {
+                                                        // Undo changes
                                                         setNodes((current) =>
-                                                            current.filter(
-                                                                (val) =>
-                                                                    val.persisted ===
-                                                                    true,
-                                                            ),
+                                                            current
+                                                                .filter(
+                                                                    (val) =>
+                                                                        val.persisted ===
+                                                                        true,
+                                                                )
+                                                                .map((n) => ({
+                                                                    ...n,
+                                                                    enabled: true,
+                                                                })),
                                                         )
                                                     },
                                                     onError() {
@@ -865,12 +871,18 @@ export const SingleOperatorPage = () => {
                                                         )
                                                     },
                                                     onReject() {
+                                                        // Undo changes
                                                         setNodes((current) =>
-                                                            current.filter(
-                                                                (val) =>
-                                                                    val.persisted ===
-                                                                    true,
-                                                            ),
+                                                            current
+                                                                .filter(
+                                                                    (val) =>
+                                                                        val.persisted ===
+                                                                        true,
+                                                                )
+                                                                .map((n) => ({
+                                                                    ...n,
+                                                                    enabled: true,
+                                                                })),
                                                         )
                                                     },
                                                     onError() {
