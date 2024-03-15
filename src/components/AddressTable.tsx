@@ -96,17 +96,21 @@ export function AddressTable({
                     valueMapper: (element) => (
                         <>
                             {element.persisted !== element.enabled ? (
-                                <PendingIndicator
-                                    disabled={busy}
-                                    onClick={() => void toggle(element)}
-                                >
+                                <PendingIndicator disabled={busy}>
                                     Pending {element.enabled ? 'addition' : 'deletion'}
                                 </PendingIndicator>
                             ) : (
                                 <Button
                                     disabled={busy}
                                     kind="secondary"
-                                    onClick={() => void toggle(element)}
+                                    onClick={() => {
+                                        toggle(element)
+                                        return void onSaveClick?.(
+                                            value
+                                                .filter((node) => node.enabled)
+                                                .map(({ address }) => address),
+                                        )
+                                    }}
                                 >
                                     Delete
                                 </Button>
@@ -123,6 +127,7 @@ export function AddressTable({
                     <Button
                         kind="secondary"
                         disabled={busy}
+                        waiting={busy}
                         onClick={async () => {
                             try {
                                 await addAddressModal.pop({
@@ -152,7 +157,7 @@ export function AddressTable({
                                         )
 
                                         if (!exists) {
-                                            return void onChange?.([
+                                            onChange?.([
                                                 ...value,
                                                 {
                                                     address,
@@ -160,6 +165,13 @@ export function AddressTable({
                                                     enabled: true,
                                                 },
                                             ])
+
+                                            // Trigger save straight away
+                                            return void onSaveClick?.(
+                                                value
+                                                    .filter((node) => node.enabled)
+                                                    .map(({ address }) => address),
+                                            )
                                         }
 
                                         errorToast({
@@ -177,20 +189,6 @@ export function AddressTable({
                         }}
                     >
                         {dialogTitleMap[type]}
-                    </Button>
-                    <Button
-                        kind="primary"
-                        onClick={() => {
-                            onSaveClick?.(
-                                value
-                                    .filter((node) => node.enabled)
-                                    .map(({ address }) => address),
-                            )
-                        }}
-                        disabled={!changed}
-                        waiting={busy}
-                    >
-                        Save
                     </Button>
                 </Footer>
             }
@@ -324,6 +322,7 @@ type SubmitNodeAddressesCallback = (
     options?: {
         onSuccess?: (blockNumber: number) => void
         onError?: (e: unknown) => void
+        onReject?: () => void
     },
 ) => Promise<void>
 
@@ -331,7 +330,7 @@ export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const cb: SubmitNodeAddressesCallback = useCallback(
-        async (chainId, operatorId, addresses, { onSuccess, onError } = {}) => {
+        async (chainId, operatorId, addresses, { onSuccess, onError, onReject } = {}) => {
             setIsSubmitting(true)
 
             try {
@@ -346,6 +345,7 @@ export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, 
                      * User rejected the transaction. Let's move on like
                      * nothing happened.
                      */
+                    onReject?.()
                     return
                 }
 

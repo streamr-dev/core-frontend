@@ -769,6 +769,15 @@ export const SingleOperatorPage = () => {
                                                             },
                                                         )
                                                     },
+                                                    onReject() {
+                                                        setNodes((current) =>
+                                                            current.filter(
+                                                                (val) =>
+                                                                    val.persisted ===
+                                                                    true,
+                                                            ),
+                                                        )
+                                                    },
                                                     onError() {
                                                         errorToast({
                                                             title: 'Faild to save the new node addresses',
@@ -853,6 +862,15 @@ export const SingleOperatorPage = () => {
                                                                     operatorId,
                                                                 )
                                                             },
+                                                        )
+                                                    },
+                                                    onReject() {
+                                                        setNodes((current) =>
+                                                            current.filter(
+                                                                (val) =>
+                                                                    val.persisted ===
+                                                                    true,
+                                                            ),
                                                         )
                                                     },
                                                     onError() {
