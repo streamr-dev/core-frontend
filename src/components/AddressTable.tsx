@@ -13,7 +13,11 @@ import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import { getNativeTokenBalance } from '~/marketplace/utils/web3'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { errorToast } from '~/utils/toast'
-import { setOperatorNodeAddresses } from '~/services/operators'
+import {
+    addOperatorControllerAddress,
+    removeOperatorControllerAddress,
+    setOperatorNodeAddresses,
+} from '~/services/operators'
 import { toBN } from '~/utils/bn'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { Separator } from '~/components/Separator'
@@ -44,13 +48,15 @@ export function AddressTable({
     type,
     busy = false,
     onChange,
-    onSaveClick,
+    onAddAddress,
+    onRemoveAddress,
     value = [],
 }: {
     type: AddressType
     busy?: boolean
     onChange?: (value: AddressItem[]) => void
-    onSaveClick?: (addresses: string[]) => void
+    onAddAddress?: (address: string) => void
+    onRemoveAddress?: (address: string) => void
     value?: AddressItem[]
 }) {
     function toggle(element: AddressItem) {
@@ -64,8 +70,6 @@ export function AddressTable({
 
         onChange?.(value.filter((node) => node !== element))
     }
-
-    const changed = value.some((node) => node.persisted !== node.enabled)
 
     return (
         <ScrollTable
@@ -105,11 +109,7 @@ export function AddressTable({
                                     kind="secondary"
                                     onClick={() => {
                                         toggle(element)
-                                        return void onSaveClick?.(
-                                            value
-                                                .filter((node) => node.enabled)
-                                                .map(({ address }) => address),
-                                        )
+                                        return void onRemoveAddress?.(element.address)
                                     }}
                                 >
                                     Delete
@@ -127,7 +127,6 @@ export function AddressTable({
                     <Button
                         kind="secondary"
                         disabled={busy}
-                        waiting={busy}
                         onClick={async () => {
                             try {
                                 await addAddressModal.pop({
@@ -157,23 +156,16 @@ export function AddressTable({
                                         )
 
                                         if (!exists) {
-                                            const newValue = [
+                                            onChange?.([
                                                 ...value,
                                                 {
                                                     address,
                                                     persisted: false,
                                                     enabled: true,
                                                 },
-                                            ]
+                                            ])
 
-                                            onChange?.(newValue)
-
-                                            // Trigger save straight away
-                                            return void onSaveClick?.(
-                                                newValue
-                                                    .filter((node) => node.enabled)
-                                                    .map(({ address }) => address),
-                                            )
+                                            return void onAddAddress?.(address)
                                         }
 
                                         errorToast({
@@ -274,7 +266,7 @@ function PendingIndicator({
             <div>{children}</div>
             <Separator />
             <div>
-                <SvgIcon name="crossMedium" />
+                <Spinner color="blue" />
             </div>
         </PendingIndicatorRoot>
     )
@@ -315,6 +307,15 @@ const PendingIndicatorRoot = styled.button`
         margin: 0 auto;
         width: 8px;
     }
+
+    ${Spinner} {
+        height: 8px;
+        width: 8px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-items: center;
+    }
 `
 
 type SubmitNodeAddressesCallback = (
@@ -351,7 +352,72 @@ export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, 
                     return
                 }
 
-                console.warn('Faild to save the new node addresses', e)
+                console.warn('Failed to save the node addresses', e)
+
+                onError?.(e)
+            } finally {
+                setIsSubmitting(false)
+            }
+        },
+        [],
+    )
+
+    return [cb, isSubmitting]
+}
+
+type SubmitControllerAddressesCallback = (
+    chainId: number,
+    operatorId: string,
+    address: string,
+    addNew: boolean,
+    options?: {
+        onSuccess?: (blockNumber: number) => void
+        onError?: (e: unknown) => void
+        onReject?: () => void
+    },
+) => Promise<void>
+
+export function useSubmitControllerAddressesCallback(): [
+    SubmitControllerAddressesCallback,
+    boolean,
+] {
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const cb: SubmitControllerAddressesCallback = useCallback(
+        async (
+            chainId,
+            operatorId,
+            address,
+            addNew,
+            { onSuccess, onError, onReject } = {},
+        ) => {
+            setIsSubmitting(true)
+
+            try {
+                if (addNew) {
+                    await addOperatorControllerAddress(chainId, operatorId, address, {
+                        onBlockNumber(blockNumber) {
+                            onSuccess?.(blockNumber)
+                        },
+                    })
+                } else {
+                    await removeOperatorControllerAddress(chainId, operatorId, address, {
+                        onBlockNumber(blockNumber) {
+                            onSuccess?.(blockNumber)
+                        },
+                    })
+                }
+            } catch (e) {
+                if (isTransactionRejection(e)) {
+                    /**
+                     * User rejected the transaction. Let's move on like
+                     * nothing happened.
+                     */
+                    onReject?.()
+                    return
+                }
+
+                console.warn('Failed to save the controller addresses', e)
 
                 onError?.(e)
             } finally {

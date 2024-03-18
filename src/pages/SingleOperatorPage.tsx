@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -47,6 +47,7 @@ import {
     AddressItem,
     useSubmitNodeAddressesCallback,
     AddressType,
+    useSubmitControllerAddressesCallback,
 } from '~/components/AddressTable'
 import Spinner from '~/components/Spinner'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -77,6 +78,8 @@ import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 const defaultChartData = []
 
 const defaultPersistedNodes = []
+
+const defaultPersistedControllers = []
 
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
@@ -186,6 +189,15 @@ export const SingleOperatorPage = () => {
 
     const [saveNodeAddresses, isSavingNodeAddresses] = useSubmitNodeAddressesCallback()
 
+    const { nodes: persistedControllers = defaultPersistedControllers } = operator || {}
+
+    const [controllers, setControllers] = useState(persistedNodes)
+
+    useEffect(() => void setControllers(persistedControllers), [persistedControllers])
+
+    const [saveControllers, isSavingControllerAddresses] =
+        useSubmitControllerAddressesCallback()
+
     const setBlockDependency = useSetBlockDependency()
 
     const heartbeats = useInterceptHeartbeats(operator?.id)
@@ -193,6 +205,120 @@ export const SingleOperatorPage = () => {
     const collectEarnings = useCollectEarnings()
 
     const forceUndelegate = useForceUndelegate()
+
+    const saveNodeAddressesCb = useCallback(
+        async (addresses: string[]) => {
+            if (!operatorId) {
+                return
+            }
+
+            const chainId = currentChainId
+
+            try {
+                await saveNodeAddresses(chainId, operatorId, addresses, {
+                    onSuccess(blockNumber) {
+                        setNodes((current) => {
+                            const newAddresses: AddressItem[] = []
+
+                            current.forEach((node) => {
+                                if (node.enabled) {
+                                    newAddresses.push({
+                                        ...node,
+                                        persisted: true,
+                                    })
+                                }
+                            })
+
+                            return newAddresses
+                        })
+
+                        setBlockDependency(chainId, blockNumber, [
+                            'operatorNodes',
+                            operatorId,
+                        ])
+
+                        onIndexedBlock(chainId, blockNumber, () => {
+                            invalidateActiveOperatorByIdQueries(chainId, operatorId)
+                        })
+                    },
+                    onReject() {
+                        // Undo changes
+                        setNodes((current) =>
+                            current
+                                .filter((val) => val.persisted === true)
+                                .map((n) => ({
+                                    ...n,
+                                    enabled: true,
+                                })),
+                        )
+                    },
+                    onError() {
+                        errorToast({
+                            title: 'Faild to save the new node addresses',
+                        })
+                    },
+                })
+            } catch (e) {}
+        },
+        [currentChainId, operatorId, saveNodeAddresses, setBlockDependency],
+    )
+
+    const saveControllerAddressesCb = useCallback(
+        async (address: string, isNew: boolean) => {
+            if (!operatorId) {
+                return
+            }
+
+            const chainId = currentChainId
+
+            try {
+                await saveControllers(chainId, operatorId, address, isNew, {
+                    onSuccess(blockNumber) {
+                        setControllers((current) => {
+                            const newAddresses: AddressItem[] = []
+
+                            current.forEach((node) => {
+                                if (node.enabled) {
+                                    newAddresses.push({
+                                        ...node,
+                                        persisted: true,
+                                    })
+                                }
+                            })
+
+                            return newAddresses
+                        })
+
+                        setBlockDependency(chainId, blockNumber, [
+                            'operatorNodes',
+                            operatorId,
+                        ])
+
+                        onIndexedBlock(chainId, blockNumber, () => {
+                            invalidateActiveOperatorByIdQueries(chainId, operatorId)
+                        })
+                    },
+                    onReject() {
+                        // Undo changes
+                        setControllers((current) =>
+                            current
+                                .filter((val) => val.persisted === true)
+                                .map((n) => ({
+                                    ...n,
+                                    enabled: true,
+                                })),
+                        )
+                    },
+                    onError() {
+                        errorToast({
+                            title: 'Faild to save the new node addresses',
+                        })
+                    },
+                })
+            } catch (e) {}
+        },
+        [currentChainId, operatorId, saveControllers, setBlockDependency],
+    )
 
     const placeholder = behindBlockError ? (
         <BehindBlockErrorDisplay
@@ -722,76 +848,18 @@ export const SingleOperatorPage = () => {
                                     busy={isSavingNodeAddresses}
                                     value={nodes}
                                     onChange={setNodes}
-                                    onSaveClick={async (addresses) => {
-                                        if (!operatorId) {
-                                            return
-                                        }
-
-                                        const chainId = currentChainId
-
-                                        try {
-                                            await saveNodeAddresses(
-                                                chainId,
-                                                operatorId,
-                                                addresses,
-                                                {
-                                                    onSuccess(blockNumber) {
-                                                        setNodes((current) => {
-                                                            const newNodes: AddressItem[] =
-                                                                []
-
-                                                            current.forEach((node) => {
-                                                                if (node.enabled) {
-                                                                    newNodes.push({
-                                                                        ...node,
-                                                                        persisted: true,
-                                                                    })
-                                                                }
-                                                            })
-
-                                                            return newNodes
-                                                        })
-
-                                                        setBlockDependency(
-                                                            chainId,
-                                                            blockNumber,
-                                                            ['operatorNodes', operatorId],
-                                                        )
-
-                                                        onIndexedBlock(
-                                                            chainId,
-                                                            blockNumber,
-                                                            () => {
-                                                                invalidateActiveOperatorByIdQueries(
-                                                                    chainId,
-                                                                    operatorId,
-                                                                )
-                                                            },
-                                                        )
-                                                    },
-                                                    onReject() {
-                                                        // Undo changes
-                                                        setNodes((current) =>
-                                                            current
-                                                                .filter(
-                                                                    (val) =>
-                                                                        val.persisted ===
-                                                                        true,
-                                                                )
-                                                                .map((n) => ({
-                                                                    ...n,
-                                                                    enabled: true,
-                                                                })),
-                                                        )
-                                                    },
-                                                    onError() {
-                                                        errorToast({
-                                                            title: 'Faild to save the new node addresses',
-                                                        })
-                                                    },
-                                                },
-                                            )
-                                        } catch (e) {}
+                                    onAddAddress={async (address) => {
+                                        const addresses = [
+                                            ...nodes.map((n) => n.address),
+                                            address,
+                                        ]
+                                        await saveNodeAddressesCb(addresses)
+                                    }}
+                                    onRemoveAddress={async (address) => {
+                                        const addresses = nodes
+                                            .filter((n) => n.address !== address)
+                                            .map((n) => n.address)
+                                        await saveNodeAddressesCb(addresses)
                                     }}
                                 />
                             </NetworkPageSegment>
@@ -820,79 +888,14 @@ export const SingleOperatorPage = () => {
                             >
                                 <AddressTable
                                     type={AddressType.Automation}
-                                    busy={isSavingNodeAddresses}
-                                    value={nodes}
-                                    onChange={setNodes}
-                                    onSaveClick={async (addresses) => {
-                                        if (!operatorId) {
-                                            return
-                                        }
-
-                                        const chainId = currentChainId
-
-                                        try {
-                                            await saveNodeAddresses(
-                                                chainId,
-                                                operatorId,
-                                                addresses,
-                                                {
-                                                    onSuccess(blockNumber) {
-                                                        setNodes((current) => {
-                                                            const newNodes: AddressItem[] =
-                                                                []
-
-                                                            current.forEach((node) => {
-                                                                if (node.enabled) {
-                                                                    newNodes.push({
-                                                                        ...node,
-                                                                        persisted: true,
-                                                                    })
-                                                                }
-                                                            })
-
-                                                            return newNodes
-                                                        })
-
-                                                        setBlockDependency(
-                                                            chainId,
-                                                            blockNumber,
-                                                            ['operatorNodes', operatorId],
-                                                        )
-
-                                                        onIndexedBlock(
-                                                            chainId,
-                                                            blockNumber,
-                                                            () => {
-                                                                invalidateActiveOperatorByIdQueries(
-                                                                    chainId,
-                                                                    operatorId,
-                                                                )
-                                                            },
-                                                        )
-                                                    },
-                                                    onReject() {
-                                                        // Undo changes
-                                                        setNodes((current) =>
-                                                            current
-                                                                .filter(
-                                                                    (val) =>
-                                                                        val.persisted ===
-                                                                        true,
-                                                                )
-                                                                .map((n) => ({
-                                                                    ...n,
-                                                                    enabled: true,
-                                                                })),
-                                                        )
-                                                    },
-                                                    onError() {
-                                                        errorToast({
-                                                            title: 'Faild to save the new node addresses',
-                                                        })
-                                                    },
-                                                },
-                                            )
-                                        } catch (e) {}
+                                    busy={isSavingControllerAddresses}
+                                    value={controllers}
+                                    onChange={setControllers}
+                                    onAddAddress={async (address) => {
+                                        saveControllerAddressesCb(address, true)
+                                    }}
+                                    onRemoveAddress={async (address) => {
+                                        saveControllerAddressesCb(address, false)
                                     }}
                                 />
                             </NetworkPageSegment>

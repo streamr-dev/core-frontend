@@ -40,6 +40,10 @@ export const getConfigForChain = (chainId: number): Chain => {
                 })
             }
 
+            if (url === 'https://rpc-mumbai.maticvigil.com') {
+                url = 'https://endpoints.omniatech.io/v1/matic/mumbai/public'
+            }
+
             return {
                 url,
             }

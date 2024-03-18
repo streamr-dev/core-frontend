@@ -306,7 +306,7 @@ export async function removeOperatorControllerAddress(
     const signer = await getSigner()
     const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
 
-    await toastedOperation('Authorise staking agent', async () => {
+    await toastedOperation('Revoke staking agent', async () => {
         const controllerRoleId = await operatorContract.CONTROLLER_ROLE()
         const tx = await operatorContract.revokeRole(controllerRoleId, address)
 
