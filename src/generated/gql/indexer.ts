@@ -18,7 +18,7 @@ export type Scalars = {
 
 export type Location = {
   __typename?: 'Location';
-  city: Scalars['String']['output'];
+  city?: Maybe<Scalars['String']['output']>;
   country: Scalars['String']['output'];
   latitude: Scalars['Float']['output'];
   longitude: Scalars['Float']['output'];

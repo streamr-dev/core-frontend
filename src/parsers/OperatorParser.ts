@@ -12,24 +12,19 @@ const OperatorParser = z.object({
     dataTokenBalanceWei: z.string().transform(toBN),
     delegatorCount: z.number(),
     delegations: z.array(
-        z
-            .object({
-                id: z.string(),
-                delegator: z
-                    .object({
-                        id: z.string(),
-                    })
-                    .transform(({ id }) => id),
-                valueDataWei: z.string().transform(toBN),
-                operatorTokenBalanceWei: z.string().transform(toBN),
-                latestDelegationTimestamp: z.coerce.number(),
-                earliestUndelegationTimestamp: z.coerce.number(),
-            })
-            .transform(({ valueDataWei: amount, ...rest }) => ({
-                ...rest,
-                amount,
-            })),
+        z.object({
+            id: z.string(),
+            delegator: z
+                .object({
+                    id: z.string(),
+                })
+                .transform(({ id }) => id),
+            operatorTokenBalanceWei: z.string().transform(toBN),
+            latestDelegationTimestamp: z.coerce.number(),
+            earliestUndelegationTimestamp: z.coerce.number(),
+        }),
     ),
+    exchangeRate: z.string().transform(toBN),
     id: z.string(),
     metadataJsonString: OperatorMetadataPreparser,
     nodes: z.array(z.string()).transform((nodes) =>
@@ -137,10 +132,21 @@ export function parseOperator(value: unknown, options: ParseOperatorOptions) {
     const { chainId } = options
 
     return OperatorParser.transform(
-        ({ operatorsCutFraction, metadataJsonString: metadata, ...rest }) => ({
+        ({
+            operatorsCutFraction,
+            metadataJsonString: metadata,
+            exchangeRate,
+            delegations,
+            ...rest
+        }) => ({
             ...rest,
+            exchangeRate,
             metadata: parseOperatorMetadata(metadata, { chainId }),
             operatorsCut: operatorsCutFraction.multipliedBy(100).toNumber(),
+            delegations: delegations.map((d) => ({
+                ...d,
+                amount: d.operatorTokenBalanceWei.multipliedBy(exchangeRate),
+            })),
         }),
     ).parse(value)
 }

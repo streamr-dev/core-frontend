@@ -20,11 +20,10 @@ gql`
                 ...SponsorshipFields
             }
         }
-        delegations(first: 1000) {
+        delegations(first: 1000, where: { operator_: { contractVersion_not: 1 } }) {
             delegator {
                 id
             }
-            valueDataWei
             operatorTokenBalanceWei
             latestDelegationTimestamp
             earliestUndelegationTimestamp
@@ -60,6 +59,7 @@ gql`
         cumulativeOperatorsCutWei
         operatorsCutFraction
         contractVersion
+        exchangeRate
     }
 
     query getAllOperators(
