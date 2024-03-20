@@ -110,6 +110,8 @@ export const SingleOperatorPage = () => {
     const isOwner =
         walletAddress && walletAddress.toLowerCase() === operator?.owner.toLowerCase()
 
+    const isController = walletAddress && true
+
     const canCollect = useCanCollectEarningsCallback()
 
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
@@ -603,7 +605,7 @@ export const SingleOperatorPage = () => {
                                 actions={[
                                     (element) => ({
                                         displayName: 'Edit',
-                                        disabled: !isOwner,
+                                        disabled: !(isOwner || isController),
                                         async callback() {
                                             if (!operator) {
                                                 return
