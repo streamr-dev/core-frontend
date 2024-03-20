@@ -305,7 +305,7 @@ export const SingleOperatorPage = () => {
                                                                                 still
                                                                                 active. It
                                                                                 will
-                                                                                expire on
+                                                                                expire on{' '}
                                                                                 {moment(
                                                                                     earliestUndelegationTimestamp *
                                                                                         1000,
