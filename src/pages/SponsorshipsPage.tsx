@@ -41,7 +41,7 @@ export const SponsorshipsPage = () => {
     const wallet = useWalletAccount()
 
     const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
-        orderBy: 'staked',
+        orderBy: 'remainingWei',
         orderDirection: 'desc',
     })
 
