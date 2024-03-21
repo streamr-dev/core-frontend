@@ -67,7 +67,7 @@ export const OperatorActionBar: FunctionComponent<{
 
     const currentChainId = useCurrentChainId()
 
-    const { data: canUndelegate = false } = useQuery({
+    const canUndelegateQuery = useQuery({
         queryKey: [
             'operatorActionBar',
             currentChainId,
@@ -97,6 +97,7 @@ export const OperatorActionBar: FunctionComponent<{
             }
         },
     })
+    const { data: canUndelegate = false } = canUndelegateQuery
 
     const { metadata } = operator
 
@@ -150,6 +151,9 @@ export const OperatorActionBar: FunctionComponent<{
                                 chainId: currentChainId,
                                 operator,
                                 wallet: walletAddress,
+                                onDone: () => {
+                                    canUndelegateQuery.refetch()
+                                },
                             })
                         }}
                         disabled={!walletAddress || operator.contractVersion === 1} // Operator contract v1 has a bug so we need to disable delegation
