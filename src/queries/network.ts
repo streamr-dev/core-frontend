@@ -20,7 +20,7 @@ gql`
                 ...SponsorshipFields
             }
         }
-        delegations(first: 1000, where: { operator_: { contractVersion_not: 1 } }) {
+        delegations(first: 1000) {
             delegator {
                 id
             }

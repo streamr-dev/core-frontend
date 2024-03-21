@@ -384,7 +384,12 @@ function MyDelegations() {
 
     const isLoading = query.isLoading || query.isFetching
 
-    const delegations = query.data?.pages.flatMap((page) => page.elements) || []
+    // We want to hide delegations to broken operator contract version 1
+    // as we cannot get rid of them otherwise
+    const delegations =
+        query.data?.pages
+            .flatMap((page) => page.elements)
+            .filter((d) => d.contractVersion !== 1) || []
 
     return (
         <NetworkPageSegment title="My delegations" foot>
