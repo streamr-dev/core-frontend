@@ -34,6 +34,13 @@ const OperatorParser = z.object({
             persisted: true,
         })),
     ),
+    controllers: z.array(z.string()).transform((controllers) =>
+        controllers.map((address) => ({
+            address: address.toLowerCase(),
+            enabled: true,
+            persisted: true,
+        })),
+    ),
     operatorsCutFraction: z.string().transform(fromAtto),
     owner: z.string(),
     contractVersion: z.coerce.number(),

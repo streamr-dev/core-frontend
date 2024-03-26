@@ -60,6 +60,7 @@ gql`
         operatorsCutFraction
         contractVersion
         exchangeRate
+        controllers
     }
 
     query getAllOperators(

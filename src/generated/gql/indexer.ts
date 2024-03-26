@@ -68,6 +68,7 @@ export type QueryNeighborsArgs = {
   cursor?: InputMaybe<Scalars['String']['input']>;
   node?: InputMaybe<Scalars['String']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
+  stream?: InputMaybe<Scalars['String']['input']>;
   streamPart?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -76,6 +77,7 @@ export type QueryNodesArgs = {
   cursor?: InputMaybe<Scalars['String']['input']>;
   ids?: InputMaybe<Array<Scalars['String']['input']>>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
+  stream?: InputMaybe<Scalars['String']['input']>;
 };
 
 

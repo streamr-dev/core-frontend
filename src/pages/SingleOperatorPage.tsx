@@ -110,7 +110,12 @@ export const SingleOperatorPage = () => {
     const isOwner =
         walletAddress && walletAddress.toLowerCase() === operator?.owner.toLowerCase()
 
-    const isController = walletAddress && true
+    const isController =
+        walletAddress &&
+        operator?.controllers.some(
+            (c) => c.address.toLowerCase() === walletAddress.toLowerCase(),
+        )
+    console.log(operator?.controllers, isController)
 
     const canCollect = useCanCollectEarningsCallback()
 
@@ -191,9 +196,10 @@ export const SingleOperatorPage = () => {
 
     const [saveNodeAddresses, isSavingNodeAddresses] = useSubmitNodeAddressesCallback()
 
-    const { nodes: persistedControllers = defaultPersistedControllers } = operator || {}
+    const { controllers: persistedControllers = defaultPersistedControllers } =
+        operator || {}
 
-    const [controllers, setControllers] = useState(persistedNodes)
+    const [controllers, setControllers] = useState(persistedControllers)
 
     useEffect(() => void setControllers(persistedControllers), [persistedControllers])
 
