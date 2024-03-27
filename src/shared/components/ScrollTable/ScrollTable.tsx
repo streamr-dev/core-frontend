@@ -5,6 +5,7 @@ import { LoadMoreButton } from '~/components/LoadMore'
 import { Meatball } from '~/components/Meatball'
 import { ActionsToggle } from '~/components/SalePointSelector/BeneficiaryAddressEditor'
 import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropdown'
+import { useMediaQuery } from '~/hooks'
 import { NoData } from '~/shared/components/NoData'
 import {
     FloatingLoadingIndicator,
@@ -16,6 +17,7 @@ import {
     ScrollTableHeaderCell,
     ScrollTableNonStickyColumnsWrap,
 } from '~/shared/components/ScrollTable/ScrollTable.styles'
+import { TABLET } from '~/shared/utils/styled'
 import { OrderDirection } from '~/types'
 
 type ScrollTableProps<Element> = {
@@ -91,8 +93,19 @@ export const ScrollTableCore = <T extends object>({
     onOrderChange,
     linkMapper,
 }: ScrollTableProps<T>) => {
-    const stickyColumns = columns.filter((column) => column.isSticky)
-    const nonStickyColumns = columns.filter((column) => !column.isSticky)
+    const isMobile = !useMediaQuery(`only screen and ${TABLET}`)
+    let actualColumns = columns
+
+    // Disable sticky columns on mobile since it makes scrolling difficult
+    if (isMobile) {
+        actualColumns = columns.map((c) => ({
+            ...c,
+            isSticky: false,
+        }))
+    }
+
+    const stickyColumns = actualColumns.filter((column) => column.isSticky)
+    const nonStickyColumns = actualColumns.filter((column) => !column.isSticky)
     const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null)
     const hasOrderingEnabled = orderBy && orderDirection && onOrderChange
     return (
