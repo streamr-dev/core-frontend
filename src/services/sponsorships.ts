@@ -1,11 +1,4 @@
-import {
-    ERC677ABI,
-    ERC677,
-    Operator,
-    operatorABI,
-    Sponsorship,
-    sponsorshipABI,
-} from '@streamr/network-contracts'
+import { ERC677ABI, ERC677, Operator, operatorABI } from '@streamr/network-contracts'
 import { BigNumber, Contract, Event } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
 import { getConfigForChain } from '~/shared/web3/config'
@@ -325,17 +318,13 @@ export async function getEarningsForSponsorships(
     for (let i = 0; i < addresses.length; i++) {
         const sponsorshipId = addresses[i].toLowerCase()
 
-        const sponsorship = new Contract(
-            sponsorshipId,
-            sponsorshipABI,
-            provider,
-        ) as Sponsorship
-
-        const myStake = toBN(await sponsorship.stakedWei(operatorAddress))
-
-        const totalStake = toBN(await sponsorship.totalStakedWei())
-
         const graphSponsorship = await getParsedSponsorshipById(chainId, sponsorshipId)
+
+        const myStake = graphSponsorship?.stakes.find(
+            (s) => s.operatorId.toLowerCase() === operatorAddress.toLowerCase(),
+        )?.amount
+
+        const totalStake = graphSponsorship?.totalStake
 
         let totalPayoutPerSec: BN | undefined = toDecimals(
             graphSponsorship?.payoutPerDay.dividedBy(24 * 60 * 60) ?? BN(0),
@@ -351,6 +340,8 @@ export async function getEarningsForSponsorships(
 
         const myEarningsChangePerSec =
             totalPayoutPerSec != null &&
+            myStake != null &&
+            totalStake != null &&
             myStake.isGreaterThan(0) &&
             totalStake.isGreaterThan(0)
                 ? myStake.dividedBy(totalStake).multipliedBy(totalPayoutPerSec)
