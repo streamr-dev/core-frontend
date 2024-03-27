@@ -136,12 +136,11 @@ module.exports = {
         new ESLintPlugin({
             extensions: ['tsx', 'ts'],
         }),
-        // TODO: Disable logging of typescript errors for now as there's so many of them.
-        // new ForkTsCheckerWebpackPlugin({
-        //     issue: {
-        //         include: [{ file: '**/src/**/*' }],
-        //     },
-        // }),
+        new ForkTsCheckerWebpackPlugin({
+            issue: {
+                include: [{ file: '**/src/**/*' }],
+            },
+        }),
         new HtmlWebpackPlugin({
             template: 'index.html',
             templateParameters: {
@@ -184,11 +183,11 @@ module.exports = {
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze
             ? [
-                  new BundleAnalyzerPlugin({
-                      analyzerMode: 'static',
-                      openAnalyzer: false,
-                  }),
-              ]
+                new BundleAnalyzerPlugin({
+                    analyzerMode: 'static',
+                    openAnalyzer: false,
+                }),
+            ]
             : []),
         // Ignore all locale files of moment.js
         new webpack.IgnorePlugin({
@@ -208,96 +207,96 @@ module.exports = {
         .concat(
             isProduction()
                 ? [
-                      new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: [dist] }),
-                      // Production plugins
-                      // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
-                      new webpack.EnvironmentPlugin({
-                          NODE_ENV: 'production',
-                      }),
-                      new OptimizeCssAssetsPlugin({
-                          cssProcessor,
-                          cssProcessorOptions: {
-                              discardComments: {
-                                  removeAll: true,
-                              },
-                          },
-                          canPrint: true,
-                      }),
-                      new ImageminPlugin({
-                          disable: !isProduction(), // Disable during development
-                          pngquant: {
-                              quality: '50-75',
-                          },
-                      }),
-                  ]
+                    new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: [dist] }),
+                    // Production plugins
+                    // new webpack.optimize.OccurrenceOrderPlugin(), // commented out as it started throwing errors after update to webpack5
+                    new webpack.EnvironmentPlugin({
+                        NODE_ENV: 'production',
+                    }),
+                    new OptimizeCssAssetsPlugin({
+                        cssProcessor,
+                        cssProcessorOptions: {
+                            discardComments: {
+                                removeAll: true,
+                            },
+                        },
+                        canPrint: true,
+                    }),
+                    new ImageminPlugin({
+                        disable: !isProduction(), // Disable during development
+                        pngquant: {
+                            quality: '50-75',
+                        },
+                    }),
+                ]
                 : [
-                      // Dev plugins
-                      new DeadCodePlugin({
-                          exclude: [
-                              '**/node_modules/**/*.*',
-                              'storybook-static/**/*.*',
-                              'dist/**/*.*',
-                              'coverage/**/*.*',
-                              // skip tests
-                              '**/tests/*.*',
-                              '**/tests/**/*.*',
-                              '**/test/*.*',
-                              '**/test/**/*.*',
-                              '**/*.test.ts',
-                              '**/*.test.tsx',
-                              // skip conditional stubs
-                              '**/stub.tsx',
-                              // skip stories
-                              '**/*.stories.*',
-                              // skip sketch files
-                              '**/*.sketch',
-                              // other files
-                              'package-lock.json',
-                              'codegen.ts',
-                              'README.md',
-                              'babel.config.js',
-                              'codegen.ts',
-                              'cypress.config.ts',
-                              'healthcheck.ts',
-                              'jest.config.js',
-                              'webpack.config.*',
-                              'nginx.conf',
-                              'src/generated/**/*.*',
-                              '*.json',
-                              'scripts/**/*.*',
-                              'travis_scripts/*.*',
-                              'cypress/**/*.*',
-                              'src/queries/*.ts',
-                              '**/*.css',
-                              'types/**/*.d.ts',
-                          ],
-                      }),
-                      new WebpackNotifierPlugin(),
-                  ],
+                    // Dev plugins
+                    new DeadCodePlugin({
+                        exclude: [
+                            '**/node_modules/**/*.*',
+                            'storybook-static/**/*.*',
+                            'dist/**/*.*',
+                            'coverage/**/*.*',
+                            // skip tests
+                            '**/tests/*.*',
+                            '**/tests/**/*.*',
+                            '**/test/*.*',
+                            '**/test/**/*.*',
+                            '**/*.test.ts',
+                            '**/*.test.tsx',
+                            // skip conditional stubs
+                            '**/stub.tsx',
+                            // skip stories
+                            '**/*.stories.*',
+                            // skip sketch files
+                            '**/*.sketch',
+                            // other files
+                            'package-lock.json',
+                            'codegen.ts',
+                            'README.md',
+                            'babel.config.js',
+                            'codegen.ts',
+                            'cypress.config.ts',
+                            'healthcheck.ts',
+                            'jest.config.js',
+                            'webpack.config.*',
+                            'nginx.conf',
+                            'src/generated/**/*.*',
+                            '*.json',
+                            'scripts/**/*.*',
+                            'travis_scripts/*.*',
+                            'cypress/**/*.*',
+                            'src/queries/*.ts',
+                            '**/*.css',
+                            'types/**/*.d.ts',
+                        ],
+                    }),
+                    new WebpackNotifierPlugin(),
+                ],
         )
         .concat(
             process.env.SENTRY_DSN
                 ? [
-                      new SentryPlugin({
-                          include: dist,
-                          validate: true,
-                          ignore: [
-                              '.cache',
-                              '.DS_STORE',
-                              '.env',
-                              '.storybook',
-                              'bin',
-                              'coverage',
-                              'node_modules',
-                              'scripts',
-                              'stories',
-                              'test',
-                              'travis_scripts',
-                              'webpack.config.js',
-                          ],
-                          release: process.env.VERSION,
-                      }),
-                  ]
+                    new SentryPlugin({
+                        include: dist,
+                        validate: true,
+                        ignore: [
+                            '.cache',
+                            '.DS_STORE',
+                            '.env',
+                            '.storybook',
+                            'bin',
+                            'coverage',
+                            'node_modules',
+                            'scripts',
+                            'stories',
+                            'test',
+                            'travis_scripts',
+                            'webpack.config.js',
+                        ],
+                        release: process.env.VERSION,
+                    }),
+                ]
                 : [],
         ),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
