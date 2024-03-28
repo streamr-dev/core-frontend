@@ -11,7 +11,7 @@ import {
     getOperatorsByDelegation,
     getOperatorsByDelegationAndId,
     getOperatorsByDelegationAndMetadata,
-    getParsedOperatorByOwnerAddress,
+    getParsedOperatorByOwnerOrControllerAddress,
     getParsedOperators,
     getSpotApy,
     searchOperatorsByMetadata,
@@ -47,7 +47,9 @@ export function useOperatorForWalletQuery(address = '') {
     return useQuery({
         queryKey: ['useOperatorForWalletQuery', currentChainId, address.toLowerCase()],
         queryFn: () =>
-            getParsedOperatorByOwnerAddress(currentChainId, address, { force: true }),
+            getParsedOperatorByOwnerOrControllerAddress(currentChainId, address, {
+                force: true,
+            }),
     })
 }
 

@@ -37,9 +37,9 @@ import {
     GetOperatorsByDelegationQuery,
     GetOperatorsByDelegationQueryVariables,
     GetOperatorsByDelegationDocument,
-    GetOperatorByOwnerAddressQuery,
-    GetOperatorByOwnerAddressQueryVariables,
-    GetOperatorByOwnerAddressDocument,
+    GetOperatorByOwnerOrControllerAddressQuery,
+    GetOperatorByOwnerOrControllerAddressQueryVariables,
+    GetOperatorByOwnerOrControllerAddressDocument,
     SearchOperatorsByMetadataQuery,
     SearchOperatorsByMetadataQueryVariables,
     SearchOperatorsByMetadataDocument,
@@ -72,6 +72,9 @@ import {
     GetNetworkStatsQuery,
     GetNetworkStatsQueryVariables,
     GetNetworkStatsDocument,
+    GetOperatorByOwnerAddressQuery,
+    GetOperatorByOwnerAddressQueryVariables,
+    GetOperatorByOwnerAddressDocument,
 } from '~/generated/gql/network'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
@@ -648,6 +651,50 @@ export async function getParsedOperatorByOwnerAddress(
             GetOperatorByOwnerAddressQueryVariables
         >({
             query: GetOperatorByOwnerAddressDocument,
+            variables: {
+                owner: address.toLowerCase(),
+                minBlockNumber,
+            },
+            fetchPolicy: force ? 'network-only' : void 0,
+        })
+
+        operator = operators?.[0] || null
+    } catch (e) {
+        prehandleBehindBlockError(e, minBlockNumber)
+
+        throw e
+    }
+
+    if (operator) {
+        try {
+            return parseOperator(operator, { chainId })
+        } catch (e) {
+            if (!(e instanceof z.ZodError)) {
+                throw e
+            }
+
+            console.warn('Failed to parse an operator', operator, e)
+        }
+    }
+
+    return null
+}
+
+export async function getParsedOperatorByOwnerOrControllerAddress(
+    chainId: number,
+    address: string,
+    { force = false, minBlockNumber = 0 } = {},
+): Promise<ParsedOperator | null> {
+    let operator: GetOperatorByOwnerOrControllerAddressQuery['operators'][0] | null = null
+
+    try {
+        const {
+            data: { operators },
+        } = await getGraphClient(chainId).query<
+            GetOperatorByOwnerOrControllerAddressQuery,
+            GetOperatorByOwnerOrControllerAddressQueryVariables
+        >({
+            query: GetOperatorByOwnerOrControllerAddressDocument,
             variables: {
                 owner: address.toLowerCase(),
                 minBlockNumber,

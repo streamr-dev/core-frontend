@@ -115,7 +115,6 @@ export const SingleOperatorPage = () => {
         operator?.controllers.some(
             (c) => c.address.toLowerCase() === walletAddress.toLowerCase(),
         )
-    console.log(operator?.controllers, isController)
 
     const canCollect = useCanCollectEarningsCallback()
 
@@ -824,7 +823,7 @@ export const SingleOperatorPage = () => {
                                 />
                             </SlashingHistoryTableContainer>
                         </NetworkPageSegment>
-                        {isOwner && (
+                        {(isOwner || isController) && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
@@ -872,7 +871,7 @@ export const SingleOperatorPage = () => {
                                 />
                             </NetworkPageSegment>
                         )}
-                        {isOwner && (
+                        {(isOwner || isController) && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
@@ -897,7 +896,11 @@ export const SingleOperatorPage = () => {
                                 <AddressTable
                                     type={AddressType.Automation}
                                     busy={isSavingControllerAddresses}
-                                    value={controllers}
+                                    value={controllers.filter(
+                                        (c) =>
+                                            c.address.toLowerCase() !=
+                                            operator.owner.toLowerCase(),
+                                    )}
                                     onChange={setControllers}
                                     onAddAddress={async (address) => {
                                         saveControllerAddressesCb(address, true)
@@ -908,7 +911,7 @@ export const SingleOperatorPage = () => {
                                 />
                             </NetworkPageSegment>
                         )}
-                        {isOwner && (
+                        {(isOwner || isController) && (
                             <NetworkPageSegment
                                 title={
                                     <TitleBar label={Object.keys(heartbeats).length}>
