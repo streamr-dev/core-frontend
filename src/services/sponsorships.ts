@@ -374,5 +374,10 @@ export async function collectEarnings(
         const { blockNumber } = await tx.wait()
 
         await options.onBlockNumber?.(blockNumber)
+
+        // Update uncollected earnings because the rate of change
+        // will change along with stake amount
+        const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
+        await updateEarnings(chainId, operatorAddress)
     })
 }
