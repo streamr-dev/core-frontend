@@ -41,7 +41,7 @@
         "@dataunions/client": "^3.0.9",
         "@ibm/plex": "^6.3.0",
         "@metamask/detect-provider": "^2.0.0",
-        "@metamask/providers": "^10.2.1",
+        "@metamask/providers": "^16.0.0",
         "@sambego/storybook-styles": "^1.0.0",
         "@sentry/browser": "^7.51.2",
         "@sentry/integrations": "^7.51.2",
