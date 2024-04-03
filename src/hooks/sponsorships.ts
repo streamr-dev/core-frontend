@@ -538,7 +538,7 @@ export function useJoinSponsorshipAsOperator() {
                                 await joinSponsorshipModal.pop({
                                     chainId,
                                     sponsorship,
-                                    operator,
+                                    preselectedOperator: operator,
                                 })
 
                                 invalidateSponsorshipQueries(
