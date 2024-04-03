@@ -823,7 +823,7 @@ export const SingleOperatorPage = () => {
                                 />
                             </SlashingHistoryTableContainer>
                         </NetworkPageSegment>
-                        {(isOwner || isController) && (
+                        {isOwner && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
@@ -871,7 +871,7 @@ export const SingleOperatorPage = () => {
                                 />
                             </NetworkPageSegment>
                         )}
-                        {(isOwner || isController) && (
+                        {isOwner && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
