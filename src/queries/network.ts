@@ -180,12 +180,11 @@ gql`
         }
     }
 
-    query getOperatorByOwnerOrControllerAddress(
+    query getOperatorsByOwnerOrControllerAddress(
         $owner: String!
         $minBlockNumber: Int = 0
     ) {
         operators(
-            first: 1
             block: { number_gte: $minBlockNumber }
             where: { or: [{ owner: $owner }, { controllers_contains_nocase: [$owner] }] }
         ) {

@@ -37,9 +37,9 @@ import {
     GetOperatorsByDelegationQuery,
     GetOperatorsByDelegationQueryVariables,
     GetOperatorsByDelegationDocument,
-    GetOperatorByOwnerOrControllerAddressQuery,
-    GetOperatorByOwnerOrControllerAddressQueryVariables,
-    GetOperatorByOwnerOrControllerAddressDocument,
+    GetOperatorsByOwnerOrControllerAddressQuery,
+    GetOperatorsByOwnerOrControllerAddressQueryVariables,
+    GetOperatorsByOwnerOrControllerAddressDocument,
     SearchOperatorsByMetadataQuery,
     SearchOperatorsByMetadataQueryVariables,
     SearchOperatorsByMetadataDocument,
@@ -680,21 +680,21 @@ export async function getParsedOperatorByOwnerAddress(
     return null
 }
 
-export async function getParsedOperatorByOwnerOrControllerAddress(
+export async function getParsedOperatorsByOwnerOrControllerAddress(
     chainId: number,
     address: string,
     { force = false, minBlockNumber = 0 } = {},
-): Promise<ParsedOperator | null> {
-    let operator: GetOperatorByOwnerOrControllerAddressQuery['operators'][0] | null = null
+): Promise<ParsedOperator[]> {
+    let queryResult: GetOperatorsByOwnerOrControllerAddressQuery['operators'] = []
 
     try {
         const {
             data: { operators },
         } = await getGraphClient(chainId).query<
-            GetOperatorByOwnerOrControllerAddressQuery,
-            GetOperatorByOwnerOrControllerAddressQueryVariables
+            GetOperatorsByOwnerOrControllerAddressQuery,
+            GetOperatorsByOwnerOrControllerAddressQueryVariables
         >({
-            query: GetOperatorByOwnerOrControllerAddressDocument,
+            query: GetOperatorsByOwnerOrControllerAddressDocument,
             variables: {
                 owner: address.toLowerCase(),
                 minBlockNumber,
@@ -702,16 +702,18 @@ export async function getParsedOperatorByOwnerOrControllerAddress(
             fetchPolicy: force ? 'network-only' : void 0,
         })
 
-        operator = operators?.[0] || null
+        queryResult = operators
     } catch (e) {
         prehandleBehindBlockError(e, minBlockNumber)
 
         throw e
     }
 
-    if (operator) {
+    const result: ParsedOperator[] = []
+    queryResult.map((operator) => {
         try {
-            return parseOperator(operator, { chainId })
+            const parsedOperator = parseOperator(operator, { chainId })
+            result.push(parsedOperator)
         } catch (e) {
             if (!(e instanceof z.ZodError)) {
                 throw e
@@ -719,9 +721,9 @@ export async function getParsedOperatorByOwnerOrControllerAddress(
 
             console.warn('Failed to parse an operator', operator, e)
         }
-    }
+    })
 
-    return null
+    return result
 }
 
 export async function getBase64ForFile<T extends File>(file: T): Promise<string> {

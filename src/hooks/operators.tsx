@@ -11,7 +11,7 @@ import {
     getOperatorsByDelegation,
     getOperatorsByDelegationAndId,
     getOperatorsByDelegationAndMetadata,
-    getParsedOperatorByOwnerOrControllerAddress,
+    getParsedOperatorsByOwnerOrControllerAddress,
     getParsedOperators,
     getSpotApy,
     searchOperatorsByMetadata,
@@ -46,8 +46,35 @@ export function useOperatorForWalletQuery(address = '') {
 
     return useQuery({
         queryKey: ['useOperatorForWalletQuery', currentChainId, address.toLowerCase()],
+        queryFn: async () => {
+            const allOperators = await getParsedOperatorsByOwnerOrControllerAddress(
+                currentChainId,
+                address,
+                {
+                    force: true,
+                },
+            )
+
+            if (allOperators.length > 0) {
+                return allOperators[0]
+            }
+
+            return null
+        },
+    })
+}
+
+export function useAllOperatorsForWalletQuery(address = '') {
+    const currentChainId = useCurrentChainId()
+
+    return useQuery({
+        queryKey: [
+            'useAllOperatorsForWalletQuery',
+            currentChainId,
+            address.toLowerCase(),
+        ],
         queryFn: () =>
-            getParsedOperatorByOwnerOrControllerAddress(currentChainId, address, {
+            getParsedOperatorsByOwnerOrControllerAddress(currentChainId, address, {
                 force: true,
             }),
     })
