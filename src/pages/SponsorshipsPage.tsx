@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import styled from 'styled-components'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NetworkHelmet } from '~/components/Helmet'
 import Tabs, { Tab } from '~/shared/components/Tabs'
@@ -17,6 +18,7 @@ import {
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { SponsorshipFilterButton } from '~/components/SponsorshipFilterButton'
 
 const PAGE_SIZE = 20
 
@@ -119,13 +121,20 @@ export const SponsorshipsPage = () => {
                     <NetworkPageSegment
                         foot
                         title={
-                            <h2>
-                                {selectedTab === TabOption.AllSponsorships ? (
-                                    <>All sponsorships</>
-                                ) : (
-                                    <>My sponsorships</>
-                                )}
-                            </h2>
+                            <Title>
+                                <h2>
+                                    {selectedTab === TabOption.AllSponsorships ? (
+                                        <>All sponsorships</>
+                                    ) : (
+                                        <>My sponsorships</>
+                                    )}
+                                </h2>
+                                <SponsorshipFilterButton
+                                    onFilterChange={(filters) => {
+                                        console.log(filters)
+                                    }}
+                                />
+                            </Title>
                         }
                     >
                         <QueriedSponsorshipsTable
@@ -149,3 +158,8 @@ export const SponsorshipsPage = () => {
         </Layout>
     )
 }
+
+const Title = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto;
+`
