@@ -40,12 +40,16 @@ import { getSelfDelegationFraction } from '~/getters'
 import { Abbr } from '~/components/Abbr'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { humanize } from '~/shared/utils/time'
+import { truncate } from '~/shared/utils/text'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { useAllOperatorsForWalletQuery } from '~/hooks/operators'
+import { SelectField2 } from '~/marketplace/components/SelectField2'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
     chainId: number
     onResolve?: () => void
-    operator: ParsedOperator
+    preselectedOperator: ParsedOperator
     sponsorship: ParsedSponsorship
 }
 
@@ -59,14 +63,20 @@ function JoinSponsorshipModal({
     amount: amountProp = '0',
     chainId,
     onResolve,
-    operator,
+    preselectedOperator,
     sponsorship,
     ...props
 }: Props) {
     const { decimals = 18, symbol: tokenSymbol = 'DATA' } =
         useSponsorshipTokenInfo() || {}
 
-    const { id: operatorId, dataTokenBalanceWei: operatorBalance } = operator
+    const wallet = useWalletAccount()
+
+    const { data: operatorChoices = null } = useAllOperatorsForWalletQuery(wallet)
+
+    const [operator, setSelectedOperator] = useState(preselectedOperator)
+
+    const { id: operatorId, dataTokenBalanceWei: operatorBalance, metadata } = operator
 
     const hasUndelegationQueue = operator.queueEntries.length > 0
 
@@ -274,7 +284,40 @@ function JoinSponsorshipModal({
                     </li>
                     <li>
                         <Prop>Operator</Prop>
-                        <PropValue>{operatorId}</PropValue>
+                        <PropValue>
+                            {operatorChoices?.length === 1 ? (
+                                <>
+                                    {metadata.name != null
+                                        ? `${metadata.name} (${truncate(operatorId)})`
+                                        : operatorId}
+                                </>
+                            ) : (
+                                <>
+                                    <SelectField2
+                                        placeholder="Operator"
+                                        options={
+                                            operatorChoices?.map((o) => ({
+                                                value: o.id,
+                                                label: `${o.metadata.name} (${truncate(
+                                                    o.id,
+                                                )})`,
+                                            })) ?? []
+                                        }
+                                        value={operator.id}
+                                        onChange={(id) => {
+                                            const selectedOp = operatorChoices?.find(
+                                                (o) => o.id === id,
+                                            )
+                                            if (selectedOp) {
+                                                setSelectedOperator(selectedOp)
+                                            }
+                                        }}
+                                        whiteVariant
+                                        isClearable={false}
+                                    />
+                                </>
+                            )}
+                        </PropValue>
                     </li>
                 </PropList>
             </Section>

@@ -18,6 +18,7 @@ export type Scalars = {
   BigInt: { input: any; output: any; }
   Bytes: { input: any; output: any; }
   Int8: { input: any; output: any; }
+  Timestamp: { input: any; output: any; }
 };
 
 export type AbiChanged = ResolverEvent & {

@@ -104,6 +104,10 @@ export function SelectField2<
                 getSingleValueStyles(styles, isOpen, disabled, noShrink),
             menu: (styles) => getMenuStyles(styles),
             menuList: (styles) => getMenuListStyles(styles),
+            menuPortal: (styles) => ({
+                ...styles,
+                zIndex: 1000,
+            }),
             option: (styles, props) => getOptionStyles(styles, props.isSelected),
             clearIndicator: (styles) => getClearIndicatorStyles(styles, isOpen),
         }),
@@ -123,6 +127,10 @@ export function SelectField2<
                 ),
             menu: (styles) => getWhiteMenuStyles(styles),
             menuList: (styles) => getWhiteMenuListStyles(styles),
+            menuPortal: (styles) => ({
+                ...styles,
+                zIndex: 1000,
+            }),
             option: (styles, props) => getWhiteOptionStyles(styles, props.isSelected),
         }),
         [disabled, fullWidth, noShrink],

@@ -37,9 +37,9 @@ import {
     GetOperatorsByDelegationQuery,
     GetOperatorsByDelegationQueryVariables,
     GetOperatorsByDelegationDocument,
-    GetOperatorByOwnerAddressQuery,
-    GetOperatorByOwnerAddressQueryVariables,
-    GetOperatorByOwnerAddressDocument,
+    GetOperatorsByOwnerOrControllerAddressQuery,
+    GetOperatorsByOwnerOrControllerAddressQueryVariables,
+    GetOperatorsByOwnerOrControllerAddressDocument,
     SearchOperatorsByMetadataQuery,
     SearchOperatorsByMetadataQueryVariables,
     SearchOperatorsByMetadataDocument,
@@ -72,6 +72,9 @@ import {
     GetNetworkStatsQuery,
     GetNetworkStatsQueryVariables,
     GetNetworkStatsDocument,
+    GetOperatorByOwnerAddressQuery,
+    GetOperatorByOwnerAddressQueryVariables,
+    GetOperatorByOwnerAddressDocument,
 } from '~/generated/gql/network'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
@@ -675,6 +678,52 @@ export async function getParsedOperatorByOwnerAddress(
     }
 
     return null
+}
+
+export async function getParsedOperatorsByOwnerOrControllerAddress(
+    chainId: number,
+    address: string,
+    { force = false, minBlockNumber = 0 } = {},
+): Promise<ParsedOperator[]> {
+    let queryResult: GetOperatorsByOwnerOrControllerAddressQuery['operators'] = []
+
+    try {
+        const {
+            data: { operators },
+        } = await getGraphClient(chainId).query<
+            GetOperatorsByOwnerOrControllerAddressQuery,
+            GetOperatorsByOwnerOrControllerAddressQueryVariables
+        >({
+            query: GetOperatorsByOwnerOrControllerAddressDocument,
+            variables: {
+                owner: address.toLowerCase(),
+                minBlockNumber,
+            },
+            fetchPolicy: force ? 'network-only' : void 0,
+        })
+
+        queryResult = operators
+    } catch (e) {
+        prehandleBehindBlockError(e, minBlockNumber)
+
+        throw e
+    }
+
+    const result: ParsedOperator[] = []
+    queryResult.map((operator) => {
+        try {
+            const parsedOperator = parseOperator(operator, { chainId })
+            result.push(parsedOperator)
+        } catch (e) {
+            if (!(e instanceof z.ZodError)) {
+                throw e
+            }
+
+            console.warn('Failed to parse an operator', operator, e)
+        }
+    })
+
+    return result
 }
 
 export async function getBase64ForFile<T extends File>(file: T): Promise<string> {

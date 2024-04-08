@@ -273,3 +273,45 @@ export async function setOperatorNodeAddresses(
         await options.onBlockNumber?.(blockNumber)
     })
 }
+
+export async function addOperatorControllerAddress(
+    chainId: number,
+    operatorId: string,
+    address: string,
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+) {
+    await networkPreflight(chainId)
+
+    const signer = await getSigner()
+    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+
+    await toastedOperation('Authorise staking agent', async () => {
+        const controllerRoleId = await operatorContract.CONTROLLER_ROLE()
+        const tx = await operatorContract.grantRole(controllerRoleId, address)
+
+        const { blockNumber } = await tx.wait()
+
+        await options.onBlockNumber?.(blockNumber)
+    })
+}
+
+export async function removeOperatorControllerAddress(
+    chainId: number,
+    operatorId: string,
+    address: string,
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+) {
+    await networkPreflight(chainId)
+
+    const signer = await getSigner()
+    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+
+    await toastedOperation('Revoke staking agent', async () => {
+        const controllerRoleId = await operatorContract.CONTROLLER_ROLE()
+        const tx = await operatorContract.revokeRole(controllerRoleId, address)
+
+        const { blockNumber } = await tx.wait()
+
+        await options.onBlockNumber?.(blockNumber)
+    })
+}

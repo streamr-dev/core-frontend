@@ -1,5 +1,7 @@
-import React, { useMemo, useState } from 'react'
+import React, { ReactNode, useMemo, useState } from 'react'
+import styled from 'styled-components'
 import { isAddress } from 'web3-validator'
+import { Alert as PrestyledAlert } from '~/components/Alert'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -11,6 +13,7 @@ import Label from '~/shared/components/Ui/Label'
 interface Props extends Omit<FormModalProps, 'onSubmit'> {
     onResolve?: (amount: string) => void
     onSubmit: (address: string) => Promise<void>
+    warning?: ReactNode
 }
 
 export default function AddNodeAddressModal({
@@ -18,6 +21,7 @@ export default function AddNodeAddressModal({
     onResolve,
     onSubmit,
     submitLabel = 'Add node address',
+    warning,
     ...props
 }: Props) {
     const [address, setAddress] = useState('')
@@ -50,6 +54,15 @@ export default function AddNodeAddressModal({
                     />
                 </FieldWrap>
             </Section>
+            {warning != null && (
+                <Alert type="error" title="">
+                    {warning}
+                </Alert>
+            )}
         </FormModal>
     )
 }
+
+const Alert = styled(PrestyledAlert)`
+    margin-top: 10px;
+`

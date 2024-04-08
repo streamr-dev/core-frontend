@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -43,10 +43,12 @@ import {
 import { OperatorChecklist } from '~/components/OperatorChecklist'
 import routes from '~/routes'
 import {
-    NodesTable,
-    OperatorNode,
+    AddressTable,
+    AddressItem,
     useSubmitNodeAddressesCallback,
-} from '~/components/NodesTable'
+    AddressType,
+    useSubmitControllerAddressesCallback,
+} from '~/components/AddressTable'
 import Spinner from '~/components/Spinner'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
@@ -77,6 +79,8 @@ const defaultChartData = []
 
 const defaultPersistedNodes = []
 
+const defaultPersistedControllers = []
+
 export const SingleOperatorPage = () => {
     const operatorId = useParams().id
 
@@ -105,6 +109,12 @@ export const SingleOperatorPage = () => {
 
     const isOwner =
         walletAddress && walletAddress.toLowerCase() === operator?.owner.toLowerCase()
+
+    const isController =
+        walletAddress &&
+        operator?.controllers.some(
+            (c) => c.address.toLowerCase() === walletAddress.toLowerCase(),
+        )
 
     const canCollect = useCanCollectEarningsCallback()
 
@@ -185,6 +195,16 @@ export const SingleOperatorPage = () => {
 
     const [saveNodeAddresses, isSavingNodeAddresses] = useSubmitNodeAddressesCallback()
 
+    const { controllers: persistedControllers = defaultPersistedControllers } =
+        operator || {}
+
+    const [controllers, setControllers] = useState(persistedControllers)
+
+    useEffect(() => void setControllers(persistedControllers), [persistedControllers])
+
+    const [saveControllers, isSavingControllerAddresses] =
+        useSubmitControllerAddressesCallback()
+
     const setBlockDependency = useSetBlockDependency()
 
     const heartbeats = useInterceptHeartbeats(operator?.id)
@@ -192,6 +212,120 @@ export const SingleOperatorPage = () => {
     const collectEarnings = useCollectEarnings()
 
     const forceUndelegate = useForceUndelegate()
+
+    const saveNodeAddressesCb = useCallback(
+        async (addresses: string[]) => {
+            if (!operatorId) {
+                return
+            }
+
+            const chainId = currentChainId
+
+            try {
+                await saveNodeAddresses(chainId, operatorId, addresses, {
+                    onSuccess(blockNumber) {
+                        setNodes((current) => {
+                            const newAddresses: AddressItem[] = []
+
+                            current.forEach((node) => {
+                                if (node.enabled) {
+                                    newAddresses.push({
+                                        ...node,
+                                        persisted: true,
+                                    })
+                                }
+                            })
+
+                            return newAddresses
+                        })
+
+                        setBlockDependency(chainId, blockNumber, [
+                            'operatorNodes',
+                            operatorId,
+                        ])
+
+                        onIndexedBlock(chainId, blockNumber, () => {
+                            invalidateActiveOperatorByIdQueries(chainId, operatorId)
+                        })
+                    },
+                    onReject() {
+                        // Undo changes
+                        setNodes((current) =>
+                            current
+                                .filter((val) => val.persisted === true)
+                                .map((n) => ({
+                                    ...n,
+                                    enabled: true,
+                                })),
+                        )
+                    },
+                    onError() {
+                        errorToast({
+                            title: 'Faild to save the new node addresses',
+                        })
+                    },
+                })
+            } catch (e) {}
+        },
+        [currentChainId, operatorId, saveNodeAddresses, setBlockDependency],
+    )
+
+    const saveControllerAddressesCb = useCallback(
+        async (address: string, isNew: boolean) => {
+            if (!operatorId) {
+                return
+            }
+
+            const chainId = currentChainId
+
+            try {
+                await saveControllers(chainId, operatorId, address, isNew, {
+                    onSuccess(blockNumber) {
+                        setControllers((current) => {
+                            const newAddresses: AddressItem[] = []
+
+                            current.forEach((node) => {
+                                if (node.enabled) {
+                                    newAddresses.push({
+                                        ...node,
+                                        persisted: true,
+                                    })
+                                }
+                            })
+
+                            return newAddresses
+                        })
+
+                        setBlockDependency(chainId, blockNumber, [
+                            'operatorNodes',
+                            operatorId,
+                        ])
+
+                        onIndexedBlock(chainId, blockNumber, () => {
+                            invalidateActiveOperatorByIdQueries(chainId, operatorId)
+                        })
+                    },
+                    onReject() {
+                        // Undo changes
+                        setControllers((current) =>
+                            current
+                                .filter((val) => val.persisted === true)
+                                .map((n) => ({
+                                    ...n,
+                                    enabled: true,
+                                })),
+                        )
+                    },
+                    onError() {
+                        errorToast({
+                            title: 'Faild to save the new node addresses',
+                        })
+                    },
+                })
+            } catch (e) {}
+        },
+        [currentChainId, operatorId, saveControllers, setBlockDependency],
+    )
 
     const placeholder = behindBlockError ? (
         <BehindBlockErrorDisplay
@@ -476,7 +610,7 @@ export const SingleOperatorPage = () => {
                                 actions={[
                                     (element) => ({
                                         displayName: 'Edit',
-                                        disabled: !isOwner,
+                                        disabled: !(isOwner || isController),
                                         async callback() {
                                             if (!operator) {
                                                 return
@@ -716,70 +850,68 @@ export const SingleOperatorPage = () => {
                                     </NodeAddressHeader>
                                 }
                             >
-                                <NodesTable
+                                <AddressTable
+                                    type={AddressType.Node}
                                     busy={isSavingNodeAddresses}
                                     value={nodes}
                                     onChange={setNodes}
-                                    onSaveClick={async (addresses) => {
-                                        if (!operatorId) {
-                                            return
-                                        }
-
-                                        const chainId = currentChainId
-
-                                        try {
-                                            await saveNodeAddresses(
-                                                chainId,
-                                                operatorId,
-                                                addresses,
-                                                {
-                                                    onSuccess(blockNumber) {
-                                                        setNodes((current) => {
-                                                            const newNodes: OperatorNode[] =
-                                                                []
-
-                                                            current.forEach((node) => {
-                                                                if (node.enabled) {
-                                                                    newNodes.push({
-                                                                        ...node,
-                                                                        persisted: true,
-                                                                    })
-                                                                }
-                                                            })
-
-                                                            return newNodes
-                                                        })
-
-                                                        setBlockDependency(
-                                                            chainId,
-                                                            blockNumber,
-                                                            ['operatorNodes', operatorId],
-                                                        )
-
-                                                        onIndexedBlock(
-                                                            chainId,
-                                                            blockNumber,
-                                                            () => {
-                                                                invalidateActiveOperatorByIdQueries(
-                                                                    chainId,
-                                                                    operatorId,
-                                                                )
-                                                            },
-                                                        )
-                                                    },
-                                                    onError() {
-                                                        errorToast({
-                                                            title: 'Faild to save the new node addresses',
-                                                        })
-                                                    },
-                                                },
-                                            )
-                                        } catch (e) {}
+                                    onAddAddress={async (address) => {
+                                        const addresses = [
+                                            ...nodes.map((n) => n.address),
+                                            address,
+                                        ]
+                                        await saveNodeAddressesCb(addresses)
+                                    }}
+                                    onRemoveAddress={async (address) => {
+                                        const addresses = nodes
+                                            .filter((n) => n.address !== address)
+                                            .map((n) => n.address)
+                                        await saveNodeAddressesCb(addresses)
                                     }}
                                 />
                             </NetworkPageSegment>
                         )}
                         {isOwner && (
+                            <NetworkPageSegment
+                                title={
+                                    <NodeAddressHeader>
+                                        <span>Staking agents</span>{' '}
+                                        <div>
+                                            <Hint>
+                                                <p>
+                                                    You can authorize certain addresses to
+                                                    stake and unstake your Operator. These
+                                                    addresses are not allowed to withdraw
+                                                    funds out of the Operator. Such
+                                                    addresses are useful for automation or
+                                                    for using a &apos;hotter&apos; wallet
+                                                    for convenience when managing your
+                                                    day-to-day staking operations.
+                                                </p>
+                                            </Hint>
+                                        </div>
+                                    </NodeAddressHeader>
+                                }
+                            >
+                                <AddressTable
+                                    type={AddressType.Automation}
+                                    busy={isSavingControllerAddresses}
+                                    value={controllers.filter(
+                                        (c) =>
+                                            c.address.toLowerCase() !=
+                                            operator.owner.toLowerCase(),
+                                    )}
+                                    onChange={setControllers}
+                                    onAddAddress={async (address) => {
+                                        saveControllerAddressesCb(address, true)
+                                    }}
+                                    onRemoveAddress={async (address) => {
+                                        saveControllerAddressesCb(address, false)
+                                    }}
+                                />
+                            </NetworkPageSegment>
+                        )}
+                        {(isOwner || isController) && (
                             <NetworkPageSegment
                                 title={
                                     <TitleBar label={Object.keys(heartbeats).length}>
