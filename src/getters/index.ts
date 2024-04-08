@@ -75,6 +75,7 @@ import {
     GetOperatorByOwnerAddressQuery,
     GetOperatorByOwnerAddressQueryVariables,
     GetOperatorByOwnerAddressDocument,
+    Sponsorship_Filter,
 } from '~/generated/gql/network'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { ChartPeriod } from '~/types'
@@ -265,6 +266,10 @@ export async function getAllSponsorships({
     orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
+    includeInactive = true,
+    includeWithoutFunding = true,
+    includeExpiredFunding = true,
+    hasOperatorId = undefined,
 }: {
     chainId: number
     first?: number
@@ -273,7 +278,26 @@ export async function getAllSponsorships({
     orderBy?: Sponsorship_OrderBy
     orderDirection?: OrderDirection
     force?: boolean
+    includeInactive?: boolean
+    includeWithoutFunding?: boolean
+    includeExpiredFunding?: boolean
+    hasOperatorId?: string
 }): Promise<GetAllSponsorshipsQuery['sponsorships']> {
+    const whereFilters: Sponsorship_Filter = {}
+
+    if (!includeInactive) {
+        whereFilters.isRunning = true
+    }
+    if (!includeWithoutFunding) {
+        whereFilters.remainingWei_gt = 0
+    }
+    if (!includeExpiredFunding) {
+        whereFilters.projectedInsolvency_gt = Math.floor(Date.now() / 1000)
+    }
+    if (hasOperatorId != null) {
+        whereFilters.stakes_ = { operator_contains_nocase: hasOperatorId }
+    }
+
     const {
         data: { sponsorships },
     } = await getGraphClient(chainId).query<
@@ -288,6 +312,7 @@ export async function getAllSponsorships({
             id: searchQuery.toLowerCase(),
             orderBy,
             orderDirection,
+            whereFilters,
         },
         fetchPolicy: force ? 'network-only' : void 0,
     })

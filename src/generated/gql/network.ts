@@ -5211,6 +5211,7 @@ export type GetAllSponsorshipsQueryVariables = Exact<{
   id: Scalars['ID']['input'];
   orderBy?: InputMaybe<Sponsorship_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
+  whereFilters?: InputMaybe<Sponsorship_Filter>;
 }>;
 
 
@@ -5649,11 +5650,11 @@ export const GetOperatorsByOwnerOrControllerAddressDocument = gql`
     ${OperatorFieldsFragmentDoc}`;
 export type GetOperatorsByOwnerOrControllerAddressQueryResult = Apollo.QueryResult<GetOperatorsByOwnerOrControllerAddressQuery, GetOperatorsByOwnerOrControllerAddressQueryVariables>;
 export const GetAllSponsorshipsDocument = gql`
-    query getAllSponsorships($first: Int, $skip: Int, $searchQuery: String!, $id: ID!, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection) {
+    query getAllSponsorships($first: Int, $skip: Int, $searchQuery: String!, $id: ID!, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection, $whereFilters: Sponsorship_filter) {
   sponsorships(
     first: $first
     skip: $skip
-    where: {or: [{stream_contains_nocase: $searchQuery}, {id: $id}, {stakes_: {operator_contains_nocase: $searchQuery}}]}
+    where: {and: [$whereFilters, {or: [{stream_contains_nocase: $searchQuery}, {id: $id}, {stakes_: {operator_contains_nocase: $searchQuery}}]}]}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {

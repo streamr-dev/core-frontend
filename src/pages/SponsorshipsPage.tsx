@@ -18,7 +18,11 @@ import {
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { SponsorshipFilterButton } from '~/components/SponsorshipFilterButton'
+import {
+    SponsorshipFilterButton,
+    SponsorshipFilters,
+    defaultFilters,
+} from '~/components/SponsorshipFilterButton'
 
 const PAGE_SIZE = 20
 
@@ -40,6 +44,8 @@ export const SponsorshipsPage = () => {
 
     const [searchQuery, setSearchQuery] = useState('')
 
+    const [filters, setFilters] = useState<SponsorshipFilters>(defaultFilters)
+
     const wallet = useWalletAccount()
 
     const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
@@ -52,6 +58,7 @@ export const SponsorshipsPage = () => {
         searchQuery,
         orderBy,
         orderDirection,
+        filters,
     })
 
     const mySponsorshipsQuery = useSponsorshipsForCreatorQuery(wallet, {
@@ -131,7 +138,7 @@ export const SponsorshipsPage = () => {
                                 </h2>
                                 <SponsorshipFilterButton
                                     onFilterChange={(filters) => {
-                                        console.log(filters)
+                                        setFilters(filters)
                                     }}
                                 />
                             </Title>

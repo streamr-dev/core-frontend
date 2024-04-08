@@ -5,15 +5,17 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { Toggle } from '~/shared/components/Toggle'
 import { COLORS } from '~/shared/utils/styled'
 
-const initialState = {
-    inactive: false,
-    noFunding: false,
-    expired: false,
+export type SponsorshipFilters = typeof defaultFilters
+
+export const defaultFilters = {
+    inactive: true,
+    noFunding: true,
+    expired: true,
     my: false,
 }
 
 interface Props {
-    onFilterChange: (filters: typeof initialState) => void
+    onFilterChange: (filters: typeof defaultFilters) => void
 }
 
 export const SponsorshipFilterButton = ({ onFilterChange }: Props) => {
@@ -43,7 +45,7 @@ const ToggleOption = ({ id, label, value, onChange }) => {
 }
 
 const Menu = ({ onFilterChange }) => {
-    const [state, setState] = useState(initialState)
+    const [state, setState] = useState(defaultFilters)
 
     const onChange = useCallback(
         (id: string, value: boolean) => {
