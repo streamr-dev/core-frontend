@@ -226,15 +226,21 @@ gql`
         $id: ID!
         $orderBy: Sponsorship_orderBy
         $orderDirection: OrderDirection
+        $whereFilters: Sponsorship_filter
     ) {
         sponsorships(
             first: $first
             skip: $skip
             where: {
-                or: [
-                    { stream_contains_nocase: $searchQuery }
-                    { id: $id }
-                    { stakes_: { operator_contains_nocase: $searchQuery } }
+                and: [
+                    $whereFilters
+                    {
+                        or: [
+                            { stream_contains_nocase: $searchQuery }
+                            { id: $id }
+                            { stakes_: { operator_contains_nocase: $searchQuery } }
+                        ]
+                    }
                 ]
             }
             orderBy: $orderBy

@@ -20,15 +20,19 @@ import { joinSponsorshipModal } from '~/modals/JoinSponsorshipModal'
 import { createSponsorshipModal } from '~/modals/CreateSponsorshipModal'
 import { getBalanceForSponsorship } from '~/utils/sponsorships'
 import { getQueryClient } from '~/utils'
-import { getSigner } from '~/shared/stores/wallet'
+import { getSigner, useWalletAccount } from '~/shared/stores/wallet'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { fundSponsorshipModal } from '~/modals/FundSponsorshipModal'
 import { getSponsorshipStats } from '~/getters/getSponsorshipStats'
 import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorshipFundingHistoryQuery'
-import { invalidateActiveOperatorByIdQueries } from '~/hooks/operators'
+import {
+    invalidateActiveOperatorByIdQueries,
+    useOperatorForWalletQuery,
+} from '~/hooks/operators'
 import { editStakeModal } from '~/modals/EditStakeModal'
 import { useCurrentChain, useCurrentChainId } from '~/shared/stores/chain'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { SponsorshipFilters } from '~/components/SponsorshipFilterButton'
 import { useRequestedBlockNumber } from '.'
 
 function getDefaultQueryParams(pageSize: number) {
@@ -169,13 +173,18 @@ export function useAllSponsorshipsQuery({
     searchQuery,
     orderBy,
     orderDirection,
+    filters,
 }: {
     pageSize?: number
     searchQuery?: string
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
+    filters: SponsorshipFilters
 }) {
     const currentChainId = useCurrentChainId()
+
+    const wallet = useWalletAccount()
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return useInfiniteQuery({
         queryKey: [
@@ -185,6 +194,11 @@ export function useAllSponsorshipsQuery({
             searchQuery,
             orderBy,
             orderDirection,
+            filters.expired,
+            filters.inactive,
+            filters.my,
+            filters.noFunding,
+            operator?.id,
         ],
         async queryFn({ pageParam: skip = 0 }) {
             const sponsorships = await getSponsorshipsAndParse(
@@ -198,6 +212,11 @@ export function useAllSponsorshipsQuery({
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
                         force: true,
+                        hasOperatorId:
+                            filters.my && operator != null ? operator.id : undefined,
+                        includeExpiredFunding: filters.expired,
+                        includeInactive: filters.inactive,
+                        includeWithoutFunding: filters.noFunding,
                     }) as Promise<Sponsorship[]>,
             )
 

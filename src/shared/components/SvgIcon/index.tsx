@@ -1315,6 +1315,23 @@ const sources = {
             </g>
         </svg>
     ),
+    faders: (
+        <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M10 9.375v7.5M10 3.125v3.75M15.625 15.625v1.25M15.625 3.125v10M17.5 13.125h-3.75M4.375 13.125v3.75M4.375 3.125v7.5M2.5 10.625h3.75M11.875 6.875h-3.75"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    ),
     github: <SocialIcons.GitHub />,
     medium: <SocialIcons.Medium />,
     peepeth: <SocialIcons.Peepeth />,
