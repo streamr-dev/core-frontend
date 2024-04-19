@@ -49,9 +49,10 @@ export function SponsorshipActionBar({
 
     const canEditStake = isSponsorshipFundedByOperator(sponsorship, operator)
 
-    const { projectedInsolvencyAt, isRunning, remainingBalance } = sponsorship
+    const { projectedInsolvencyAt, isRunning, timeCorrectedRemainingBalance } =
+        sponsorship
 
-    const isPaying = isRunning && remainingBalance.isGreaterThan(0)
+    const isPaying = isRunning && timeCorrectedRemainingBalance.isGreaterThan(0)
 
     const fundedUntil = useMemo(
         () =>
@@ -184,7 +185,8 @@ export function SponsorshipActionBar({
                                 /day
                             </StatCell>
                             <StatCell label="Remaining balance">
-                                {abbr(remainingBalance)} <SponsorshipPaymentTokenName />
+                                {abbr(timeCorrectedRemainingBalance)}{' '}
+                                <SponsorshipPaymentTokenName />
                             </StatCell>
                             <StatCell
                                 label="Total staked"
