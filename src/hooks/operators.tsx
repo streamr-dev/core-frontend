@@ -25,7 +25,10 @@ import { errorToast, successToast } from '~/utils/toast'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { Layer } from '~/utils/Layer'
 import { getBalance } from '~/getters/getBalance'
-import { getOperatorDelegationAmount } from '~/services/operators'
+import {
+    getOperatorDelegationAmount,
+    processOperatorUndelegationQueue,
+} from '~/services/operators'
 import { Break, FlagBusy } from '~/utils/errors'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
@@ -722,6 +725,34 @@ export function useForceUndelegate() {
                 }
 
                 console.error('Could not force undelegate', e)
+            }
+        })()
+    }, [])
+}
+
+/**
+ * Returns a callback that takes the user through undelegation queue processing.
+ */
+export function useProcessUndelegationQueue() {
+    return useCallback((chainId: number, operatorId: string) => {
+        void (async () => {
+            try {
+                await processOperatorUndelegationQueue(chainId, operatorId, {
+                    onBlockNumber: () => {
+                        // Refresh operator to update queue entries
+                        invalidateActiveOperatorByIdQueries(chainId, operatorId)
+                    },
+                })
+            } catch (e) {
+                if (e === Break) {
+                    return
+                }
+
+                if (isRejectionReason(e)) {
+                    return
+                }
+
+                console.error('Could not process undelegation queue', e)
             }
         })()
     }, [])
