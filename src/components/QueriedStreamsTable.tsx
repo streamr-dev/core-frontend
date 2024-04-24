@@ -83,7 +83,7 @@ export function QueriedStreamsTable({
                     },
                     {
                         key: 'peerCount',
-                        displayName: 'Live peers',
+                        displayName: 'Nodes',
                         sortable: true,
                         valueMapper: ({ id, peerCount = streamStats[id]?.peerCount }) =>
                             peerCount ?? '-',

@@ -53,7 +53,7 @@ export function StreamsPage() {
     )
 
     const {
-        orderBy = 'mps',
+        orderBy = 'peerCount',
         orderDirection = 'desc',
         setOrder,
     } = useTableOrder<StreamsOrderBy>()
