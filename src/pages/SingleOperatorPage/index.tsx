@@ -104,11 +104,14 @@ export const SingleOperatorPage = () => {
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
     const isOwner =
-        walletAddress && walletAddress.toLowerCase() === operator?.owner.toLowerCase()
+        walletAddress != null &&
+        operator != null &&
+        walletAddress.toLowerCase() === operator.owner.toLowerCase()
 
     const isController =
-        walletAddress &&
-        operator?.controllers.some(
+        walletAddress != null &&
+        operator != null &&
+        operator.controllers.some(
             (c) => c.address.toLowerCase() === walletAddress.toLowerCase(),
         )
 
@@ -713,7 +716,7 @@ export const SingleOperatorPage = () => {
                                 />
                             </SlashingHistoryTableContainer>
                         </NetworkPageSegment>
-                        {isOwner && (
+                        {(isOwner || isController) && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
@@ -761,7 +764,7 @@ export const SingleOperatorPage = () => {
                                 />
                             </NetworkPageSegment>
                         )}
-                        {isOwner && (
+                        {(isOwner || isController) && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
@@ -786,6 +789,7 @@ export const SingleOperatorPage = () => {
                                 <AddressTable
                                     type={AddressType.Automation}
                                     busy={isSavingControllerAddresses}
+                                    disableEditing={isController}
                                     value={controllers.filter(
                                         (c) =>
                                             c.address.toLowerCase() !=

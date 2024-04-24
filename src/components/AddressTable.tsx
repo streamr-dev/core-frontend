@@ -46,6 +46,7 @@ const dialogSubmitLabelMap: Record<AddressType, string> = {
 export function AddressTable({
     type,
     busy = false,
+    disableEditing = false,
     onChange,
     onAddAddress,
     onRemoveAddress,
@@ -53,6 +54,7 @@ export function AddressTable({
 }: {
     type: AddressType
     busy?: boolean
+    disableEditing?: boolean
     onChange?: (value: AddressItem[]) => void
     onAddAddress?: (address: string) => void
     onRemoveAddress?: (address: string) => void
@@ -104,7 +106,7 @@ export function AddressTable({
                                 </PendingIndicator>
                             ) : (
                                 <Button
-                                    disabled={busy}
+                                    disabled={busy || disableEditing}
                                     kind="secondary"
                                     onClick={() => {
                                         toggle(element)
@@ -125,7 +127,7 @@ export function AddressTable({
                 <Footer>
                     <Button
                         kind="secondary"
-                        disabled={busy}
+                        disabled={busy || disableEditing}
                         onClick={async () => {
                             try {
                                 await addAddressModal.pop({
