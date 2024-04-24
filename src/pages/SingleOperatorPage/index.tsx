@@ -8,13 +8,13 @@ import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { NoData } from '~/shared/components/NoData'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { COLORS, LAPTOP, MAX_BODY_WIDTH, MEDIUM, TABLET } from '~/shared/utils/styled'
+import { LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
 import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { errorToast } from '~/utils/toast'
-import { BN, BNish, toBN } from '~/utils/bn'
+import { toBN } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
@@ -37,7 +37,6 @@ import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/g
 import {
     invalidateActiveOperatorByIdQueries,
     useCollectEarnings,
-    useForceUndelegate,
     useOperatorByIdQuery,
 } from '~/hooks/operators'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
@@ -55,14 +54,12 @@ import {
     useCanCollectEarningsCallback,
     useUncollectedEarnings,
 } from '~/shared/stores/uncollectedEarnings'
-import { truncate } from '~/shared/utils/text'
 import {
     useConfigValueFromChain,
     useInitialBehindIndexError,
     useLatestBehindBlockError,
     useRefetchQueryBehindIndexEffect,
 } from '~/hooks'
-import { Button } from '~/components/Button'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
@@ -74,6 +71,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
+import { UndelegationQueue } from './UndelegationQueue'
 
 const defaultChartData = []
 
@@ -101,8 +99,6 @@ export const SingleOperatorPage = () => {
 
     const walletAddress = useWalletAccount()
 
-    const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
-
     const slashingFraction = useConfigValueFromChain('slashingFraction')
 
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
@@ -118,7 +114,7 @@ export const SingleOperatorPage = () => {
 
     const canCollect = useCanCollectEarningsCallback()
 
-    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
+    const { symbol: tokenSymbol = 'DATA' } = useSponsorshipTokenInfo() || {}
 
     const editSponsorshipFunding = useEditSponsorshipFunding()
 
@@ -210,8 +206,6 @@ export const SingleOperatorPage = () => {
     const heartbeats = useInterceptHeartbeats(operator?.id)
 
     const collectEarnings = useCollectEarnings()
-
-    const forceUndelegate = useForceUndelegate()
 
     const saveNodeAddressesCb = useCallback(
         async (addresses: string[]) => {
@@ -645,112 +639,8 @@ export const SingleOperatorPage = () => {
                                 ]}
                             />
                         </NetworkPageSegment>
-                        <NetworkPageSegment foot title="Undelegation queue">
-                            <ScrollTable
-                                elements={operator.queueEntries}
-                                columns={[
-                                    {
-                                        displayName: 'Delegator address',
-                                        valueMapper: (element) => (
-                                            <>
-                                                {truncate(element.delegator)}
-                                                {element.delegator ===
-                                                    walletAddress?.toLowerCase() && (
-                                                    <Badge>You</Badge>
-                                                )}
-                                            </>
-                                        ),
-                                        align: 'start',
-                                        isSticky: true,
-                                        key: 'id',
-                                    },
-                                    {
-                                        displayName: 'Amount',
-                                        valueMapper: (element) => (
-                                            <>
-                                                {abbr(
-                                                    fromAtto(
-                                                        BN.min(
-                                                            getDelegatedAmountForWallet(
-                                                                element.delegator,
-                                                                operator,
-                                                            ),
-                                                            element.amount,
-                                                        ),
-                                                    ),
-                                                )}{' '}
-                                                {tokenSymbol}
-                                            </>
-                                        ),
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'amount',
-                                    },
-                                    {
-                                        displayName: 'Expiration date',
-                                        valueMapper: (element) => {
-                                            const expirationDate =
-                                                getUndelegationExpirationDate(
-                                                    element.date,
-                                                    maxUndelegationQueueSeconds,
-                                                )
-                                            return (
-                                                <WarningCell>
-                                                    {expirationDate.format('YYYY-MM-DD')}
-                                                    {expirationDate.isBefore(
-                                                        Date.now(),
-                                                    ) && (
-                                                        <Tooltip
-                                                            content={
-                                                                <p>
-                                                                    Payout time exceeded.
-                                                                    You can force unstake
-                                                                    now.
-                                                                </p>
-                                                            }
-                                                        >
-                                                            <TooltipIconWrap $color="#ff5c00">
-                                                                <JiraFailedBuildStatusIcon label="Error" />
-                                                            </TooltipIconWrap>
-                                                        </Tooltip>
-                                                    )}
-                                                </WarningCell>
-                                            )
-                                        },
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'date',
-                                    },
-                                    {
-                                        displayName: '',
-                                        valueMapper: (element) => (
-                                            <>
-                                                {getUndelegationExpirationDate(
-                                                    element.date,
-                                                    maxUndelegationQueueSeconds,
-                                                ).isBefore(Date.now()) && (
-                                                    <Button
-                                                        type="button"
-                                                        kind="secondary"
-                                                        onClick={() => {
-                                                            forceUndelegate(
-                                                                currentChainId,
-                                                                operator,
-                                                                element.amount,
-                                                            )
-                                                        }}
-                                                    >
-                                                        Force unstake
-                                                    </Button>
-                                                )}
-                                            </>
-                                        ),
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'actions',
-                                    },
-                                ]}
-                            />
+                        <NetworkPageSegment title="Undelegation queue">
+                            <UndelegationQueue operatorId={operatorId} />
                         </NetworkPageSegment>
                         <NetworkPageSegment foot title="Slashing history">
                             <SlashingHistoryTableContainer>
@@ -933,13 +823,6 @@ function tooltipValueFormatter(value: number, tokenSymbol: string) {
     return `${abbr(value)} ${tokenSymbol}`
 }
 
-function getUndelegationExpirationDate(
-    date: number,
-    maxUndelegationQueueSeconds: BNish | undefined = '0',
-) {
-    return moment((date + toBN(maxUndelegationQueueSeconds).toNumber()) * 1000)
-}
-
 const ChartGrid = styled(SegmentGrid)`
     grid-template-columns: minmax(0, 1fr);
 
@@ -966,34 +849,11 @@ const DelegationCell = styled.div`
     }
 `
 
-const Badge = styled.div`
-    border-radius: 8px;
-    background: ${COLORS.secondary};
-    color: ${COLORS.primaryLight};
-    font-size: 14px;
-    font-weight: ${MEDIUM};
-    line-height: 30px;
-    letter-spacing: 0.14px;
-    padding: 0px 10px;
-    margin-left: 12px;
-`
-
 const NodeAddressHeader = styled.h2`
     display: flex;
     align-items: center;
 `
 
-const WarningCell = styled.div`
-    align-items: center;
-    display: grid;
-    gap: 8px;
-    grid-template-columns: auto auto;
-
-    ${TooltipIconWrap} svg {
-        width: 18px;
-        height: 18px;
-    }
-`
 const NoticeBar = styled.div`
     display: flex;
     align-items: center;

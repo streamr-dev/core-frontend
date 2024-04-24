@@ -315,3 +315,22 @@ export async function removeOperatorControllerAddress(
         await options.onBlockNumber?.(blockNumber)
     })
 }
+
+export async function processOperatorUndelegationQueue(
+    chainId: number,
+    operatorId: string,
+    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+) {
+    await networkPreflight(chainId)
+
+    const signer = await getSigner()
+    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+
+    await toastedOperation('Process undelegation queue', async () => {
+        const tx = await operatorContract.payOutQueue(0)
+
+        const { blockNumber } = await tx.wait()
+
+        await options.onBlockNumber?.(blockNumber)
+    })
+}

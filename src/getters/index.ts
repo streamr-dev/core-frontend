@@ -921,6 +921,35 @@ export function getDelegationFractionForWallet(
 }
 
 /**
+ * Calculates the amount of DATA needed to payout undelegation queue in full.
+ */
+export function calculateUndelegationQueueSize(operator: ParsedOperator): BN {
+    const lookup: Record<string, BN> = {}
+
+    // Sum up queue by addresses
+    for (let i = 0; i < operator.queueEntries.length; i++) {
+        const element = operator.queueEntries[i]
+
+        if (lookup[element.delegator] == null) {
+            lookup[element.delegator] = toBN(0)
+        }
+
+        lookup[element.delegator] = lookup[element.delegator].plus(element.amount)
+    }
+
+    // Go through addresses and make sure we cap to max delegation
+    for (const address of Object.keys(lookup)) {
+        lookup[address] = BN.min(
+            lookup[address],
+            getDelegatedAmountForWallet(address, operator),
+        )
+    }
+
+    // Return total sum of all addresses
+    return Object.values(lookup).reduce((a, b) => a.plus(b), toBN(0))
+}
+
+/**
  * Calculates owner's own delegation's ratio out of the total optionally
  * modded with `offset`.
  */

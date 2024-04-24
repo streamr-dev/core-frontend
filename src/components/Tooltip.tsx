@@ -262,4 +262,5 @@ export const TooltipIconWrap = styled.div<{
                 `
             }
         }}
+    }
 `
