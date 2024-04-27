@@ -23,7 +23,10 @@ function UnstyledStorageNodeList({ className, disabled = false }: Props) {
             <ul data-test-hook="Storage nodes">
                 {storageNodes.map(({ address, name }) => (
                     <li key={address}>
-                        <StorageNodeItem address={address} disabled={disabled}>
+                        <StorageNodeItem
+                            address={address.toLowerCase()}
+                            disabled={disabled}
+                        >
                             {name}
                         </StorageNodeItem>
                     </li>
