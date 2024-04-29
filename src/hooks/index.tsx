@@ -1,4 +1,4 @@
-import { StreamrConfig } from '@streamr/network-contracts'
+import { StreamrConfig } from 'network-contracts-ethers6'
 import { UseQueryResult } from '@tanstack/react-query'
 import React, { useCallback, useRef, useState, useSyncExternalStore } from 'react'
 import { useEffect } from 'react'
@@ -11,7 +11,6 @@ import { useCurrentChainId } from '~/utils/chains'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ConfigKey } from '~/types'
 import { Layer } from '~/utils/Layer'
-import { toBN } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
 
 const infoToast = toaster(Toast, Layer.Toast)
@@ -120,9 +119,9 @@ export function useConfigValueFromChain<
 export function useMaxUndelegationQueueDays() {
     const maxQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
     const maxQueueDays =
-        maxQueueSeconds != null && maxQueueSeconds.gt(0)
-            ? maxQueueSeconds.div(60).div(60).div(24)
-            : toBN(0)
+        maxQueueSeconds != null && maxQueueSeconds > 0
+            ? maxQueueSeconds / 60n / 60n / 24n
+            : 0n
     return maxQueueDays
 }
 

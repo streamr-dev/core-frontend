@@ -1,12 +1,12 @@
 import BN from 'bignumber.js'
-import { BigNumber } from 'ethers'
+import { BigNumberish } from 'ethers'
 
-export type BNish = number | string | BN | BigNumber
+export type BNish = number | string | BN | BigNumberish
 
 export { BN }
 
 export function toBN(value: BNish) {
-    if (value instanceof BigNumber) {
+    if (typeof value === 'bigint') {
         return toBN(value.toString())
     }
 

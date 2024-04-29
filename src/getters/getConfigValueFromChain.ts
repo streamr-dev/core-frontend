@@ -1,5 +1,5 @@
 import { Contract } from 'ethers'
-import { StreamrConfig, streamrConfigABI } from '@streamr/network-contracts'
+import { StreamrConfig, streamrConfigABI } from 'network-contracts-ethers6'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ConfigKey } from '~/types'
 import { getChainConfig } from '~/utils/chains'
@@ -37,7 +37,7 @@ export async function getConfigValueFromChain<
         contractAddress,
         streamrConfigABI,
         provider,
-    ) as StreamrConfig
+    ) as unknown as StreamrConfig
 
     const result = (await contract[key]()) as U
 

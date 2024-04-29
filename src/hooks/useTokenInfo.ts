@@ -47,7 +47,7 @@ export async function getTokenInfo(
                     const decimals = await contract.decimals()
 
                     resolve({
-                        decimals,
+                        decimals: Number(decimals),
                         name,
                         symbol,
                     })

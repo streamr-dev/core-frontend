@@ -1,4 +1,4 @@
-import { Sponsorship, sponsorshipABI } from '@streamr/network-contracts'
+import { Sponsorship, sponsorshipABI } from 'network-contracts-ethers6'
 import { Contract } from 'ethers'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
@@ -40,11 +40,12 @@ export async function getSponsorshipLeavePenalty(
     sponsorshipId: string,
     operatorId: string,
 ) {
+    // FIXME: Do we have to cast to unknown first?
     const contract = new Contract(
         sponsorshipId,
         sponsorshipABI,
         getPublicWeb3Provider(chainId),
-    ) as Sponsorship
+    ) as unknown as Sponsorship
 
     return toBN(await contract.getLeavePenalty(operatorId))
 }
