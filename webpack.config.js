@@ -2,7 +2,6 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development' // set a default NO
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const WebpackNotifierPlugin = require('webpack-notifier')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const ImageminPlugin = require('imagemin-webpack-plugin').default
@@ -273,7 +272,6 @@ module.exports = {
                               'types/**/*.d.ts',
                           ],
                       }),
-                      new WebpackNotifierPlugin(),
                   ],
         )
         .concat(
