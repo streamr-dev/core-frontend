@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { produce } from 'immer'
 import detectProvider from '@metamask/detect-provider'
 import { create } from 'zustand'
-import { providers } from 'ethers'
+import { BrowserProvider, FallbackProvider, JsonRpcProvider, Network } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
 import { isAddress } from 'web3-validator'
 import { getENSDomainsForWallet } from '~/getters'
@@ -54,7 +54,7 @@ export function getWalletProvider() {
 export async function getWalletWeb3Provider() {
     const provider = await getWalletProvider()
 
-    return new providers.Web3Provider(provider as any)
+    return new BrowserProvider(provider as any)
 }
 
 export async function getSigner() {
@@ -64,7 +64,7 @@ export async function getSigner() {
         try {
             const provider = await getWalletWeb3Provider()
 
-            const signer = provider.getSigner()
+            const signer = await provider.getSigner()
 
             await signer.getAddress()
 
@@ -167,13 +167,32 @@ export async function getWalletAccount({
 export function getPublicWeb3Provider(chainId: number) {
     const config = getChainConfig(chainId)
 
-    const httpEntry = config.rpcEndpoints.find(({ url }) => url.startsWith('http'))
+    const httpEntries = config.rpcEndpoints
+        .filter(({ url }) => url.startsWith('http'))
+        .map(({ url }) => url)
 
-    if (!httpEntry) {
+    if (httpEntries.length === 0) {
         throw new Error(`No rpcEndpoints configured for chainId "${chainId}"`)
     }
 
-    return new providers.JsonRpcProvider(httpEntry.url)
+    const network = Network.from(chainId)
+
+    if (httpEntries.length === 1) {
+        return new JsonRpcProvider(httpEntries[0], network, {
+            staticNetwork: network,
+        })
+    }
+
+    const providers = httpEntries.map(
+        (url) =>
+            new JsonRpcProvider(url, network, {
+                staticNetwork: network,
+            }),
+    )
+
+    return new FallbackProvider(providers, network, {
+        quorum: 2,
+    })
 }
 
 interface WalletStore {
