@@ -427,7 +427,7 @@ export async function createProject(
 
     const provider = await getSigner()
 
-    const tx = await getProjectRegistryContract({
+    await getProjectRegistryContract({
         chainId,
         provider,
     }).createProject(
@@ -439,8 +439,6 @@ export async function createProject(
         isPublicPurchasable,
         metadata,
     )
-
-    await tx.wait()
 }
 
 export async function updateProject(
@@ -468,7 +466,7 @@ export async function updateProject(
 
     const provider = await getSigner()
 
-    const tx = await getProjectRegistryContract({ chainId, provider }).updateProject(
+    await getProjectRegistryContract({ chainId, provider }).updateProject(
         projectId,
         domainIds,
         paymentDetails,
@@ -476,8 +474,6 @@ export async function updateProject(
         minimumSubscriptionSeconds,
         metadata,
     )
-
-    await tx.wait()
 }
 
 export async function deleteProject(chainId: number, projectId: string) {
@@ -486,12 +482,10 @@ export async function deleteProject(chainId: number, projectId: string) {
     const provider = await getSigner()
 
     try {
-        const tx = await getProjectRegistryContract({
+        await getProjectRegistryContract({
             chainId,
             provider,
         }).deleteProject(projectId)
-
-        await tx.wait()
     } catch (e) {
         if (isMessagedObject(e) && /error_projectDoesNotExist/.test(e.message)) {
             errorToast({

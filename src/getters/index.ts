@@ -1,4 +1,4 @@
-import { BigNumber, Contract, Signer, providers } from 'ethers'
+import { Contract, Provider, Signer } from 'ethers'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import {
@@ -99,7 +99,7 @@ export function getProjectRegistryContract({
     provider,
 }: {
     chainId: number
-    provider?: Signer | providers.Provider
+    provider?: Signer | Provider
 }) {
     const { contracts } = getChainConfig(chainId)
 
@@ -113,7 +113,7 @@ export function getProjectRegistryContract({
         contractAddress,
         projectRegistryAbi,
         provider,
-    ) as ProjectRegistryContract
+    ) as unknown as ProjectRegistryContract
 }
 
 export function getERC20TokenContract({
@@ -121,9 +121,9 @@ export function getERC20TokenContract({
     provider,
 }: {
     tokenAddress: string
-    provider?: Signer | providers.Provider
+    provider?: Signer | Provider
 }) {
-    return new Contract(tokenAddress, tokenAbi, provider) as TokenContract
+    return new Contract(tokenAddress, tokenAbi, provider) as unknown as TokenContract
 }
 
 export function getMarketplaceContract({
@@ -131,13 +131,13 @@ export function getMarketplaceContract({
     provider,
 }: {
     chainId: number
-    provider?: Signer | providers.Provider
+    provider?: Signer | Provider
 }) {
     return new Contract(
         getMarketplaceAddress(chainId),
         marketplaceAbi,
         provider,
-    ) as MarketplaceContract
+    ) as unknown as MarketplaceContract
 }
 
 export async function getAllowance(
@@ -145,7 +145,7 @@ export async function getAllowance(
     tokenAddress: string,
     account: string,
     { recover = false }: { recover?: boolean } = {},
-): Promise<BigNumber> {
+): Promise<bigint> {
     while (true) {
         try {
             return await getERC20TokenContract({

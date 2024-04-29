@@ -1,17 +1,17 @@
-import { providers } from 'ethers'
+import { TransactionReceipt } from 'ethers'
 
 export default class TransactionError extends Error {
-    receipt: providers.TransactionReceipt | null | undefined
+    receipt: TransactionReceipt | null | undefined
     __proto__: any
 
-    constructor(message: string, receipt?: providers.TransactionReceipt) {
+    constructor(message: string, receipt?: TransactionReceipt) {
         super(message)
         this.receipt = receipt
         // This is because of some bug in babel
         this.__proto__ = TransactionError.prototype // eslint-disable-line no-proto
     }
 
-    getReceipt(): providers.TransactionReceipt | null | undefined {
+    getReceipt(): TransactionReceipt | null | undefined {
         return this.receipt
     }
 }

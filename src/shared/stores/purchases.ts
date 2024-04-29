@@ -344,7 +344,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 },
                                             )
 
-                                            if (allowance.lt(total)) {
+                                            if (allowance < BigInt(total)) {
                                                 /**
                                                  * If `total` exceeds `allowance` we loop back to top
                                                  * and make the wallet pop up the allowance box again.
@@ -467,7 +467,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * network. Note that the gas limit is dynamic and depends
                                              * on the number of streams associated with the project.
                                              */
-                                            const tx = await getMarketplaceContract({
+                                            const tx = getMarketplaceContract({
                                                 chainId: selectedChainId,
                                                 provider,
                                             }).buy(projectId, seconds, {
@@ -494,7 +494,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 }
                                             })
 
-                                            await tx.wait()
+                                            await tx
 
                                             /**
                                              * `Buy` transaction is done and now we wait for the `Subscribe` event

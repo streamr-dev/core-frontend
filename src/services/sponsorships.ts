@@ -1,6 +1,5 @@
-import { ERC677ABI, ERC677, Operator, operatorABI } from '@streamr/network-contracts'
-import { BigNumber, Contract, Event } from 'ethers'
-import { defaultAbiCoder } from 'ethers/lib/utils'
+import { ERC677ABI, ERC677, Operator, operatorABI } from 'network-contracts-ethers6'
+import { AbiCoder, Contract, EventLog, Log } from 'ethers'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { BN, BNish, toBN } from '~/utils/bn'
@@ -63,7 +62,7 @@ export async function createSponsorship(
         void (async () => {
             try {
                 await toastedOperation('Sponsorship deployment', async () => {
-                    const data = defaultAbiCoder.encode(
+                    const data = AbiCoder.defaultAbiCoder().encode(
                         ['uint32', 'string', 'string', 'address[]', 'uint[]'],
                         [
                             minOperatorCount,
@@ -80,7 +79,7 @@ export async function createSponsorship(
                         chainConfig.contracts[paymentTokenSymbolFromConfig],
                         ERC677ABI,
                         signer,
-                    ) as ERC677
+                    ) as unknown as ERC677
 
                     const sponsorshipFactoryAddress =
                         chainConfig.contracts['SponsorshipFactory']
@@ -89,17 +88,15 @@ export async function createSponsorship(
                         throw new Error('Missing sponsorship factory address')
                     }
 
-                    const gasLimitEstimate = await token.estimateGas.transferAndCall(
+                    const gasLimitEstimate = await token.transferAndCall.estimateGas(
                         sponsorshipFactoryAddress,
                         initialFunding.toString(),
                         data,
                     )
-                    const increasedGasLimit = BigNumber.from(
-                        toBN(gasLimitEstimate)
-                            .multipliedBy(1.5)
-                            .precision(1, BN.ROUND_UP)
-                            .toString(),
-                    )
+                    const increasedGasLimit = toBN(gasLimitEstimate)
+                        .multipliedBy(1.5)
+                        .precision(1, BN.ROUND_UP)
+                        .toString()
 
                     const sponsorshipDeployTx = await token.transferAndCall(
                         sponsorshipFactoryAddress,
@@ -110,22 +107,33 @@ export async function createSponsorship(
                         },
                     )
 
-                    const { events = [], blockNumber } = await sponsorshipDeployTx.wait()
+                    const receipt = await sponsorshipDeployTx.wait()
 
                     /**
                      * 2nd transfer is the transfer from the sponsorship factory to the newly
                      * deployed sponsorship contract.
                      */
-                    const [, initialFundingTransfer]: (Event | undefined)[] =
-                        events.filter((e) => e.event === 'Transfer') || []
+                    let initialFundingTransfer: Log | EventLog | undefined = undefined
 
-                    const sponsorshipId = initialFundingTransfer.args?.to
+                    if (receipt?.logs) {
+                        const [, transfer]: (Log | EventLog | undefined)[] =
+                            receipt.logs.filter((e) => e.topics.includes('Transfer')) ||
+                            []
+                        initialFundingTransfer = transfer
+                    }
+
+                    const sponsorshipId =
+                        initialFundingTransfer instanceof EventLog
+                            ? initialFundingTransfer.args['to']
+                            : null
 
                     if (typeof sponsorshipId !== 'string') {
                         throw new Error('Sponsorship deployment failed')
                     }
 
-                    await options.onBlockNumber?.(blockNumber)
+                    if (receipt?.blockNumber) {
+                        await options.onBlockNumber?.(receipt.blockNumber)
+                    }
 
                     resolve(sponsorshipId)
                 })
@@ -155,7 +163,7 @@ export async function fundSponsorship(
         chainConfig.contracts[paymentTokenSymbolFromConfig],
         ERC677ABI,
         signer,
-    ) as ERC677
+    ) as unknown as ERC677
 
     await toastedOperation('Sponsorship funding', async () => {
         const tx = await contract.transferAndCall(
@@ -164,9 +172,11 @@ export async function fundSponsorship(
             '0x',
         )
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
     })
 }
 
@@ -192,9 +202,13 @@ export async function stakeOnSponsorship(
     await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
-        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+        const contract = new Contract(
+            operatorAddress,
+            operatorABI,
+            signer,
+        ) as unknown as Operator
 
-        const gasLimit = toBN(await contract.estimateGas.stake(sponsorshipId, amountWei))
+        const gasLimit = toBN(await contract.stake.estimateGas(sponsorshipId, amountWei))
             .multipliedBy(gasLimitMultiplier)
             .precision(1, BN.ROUND_UP)
             .toString()
@@ -203,9 +217,11 @@ export async function stakeOnSponsorship(
             gasLimit,
         })
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await onBlockNumber?.(receipt.blockNumber)
+        }
 
         // Update uncollected earnings because the rate of change
         // will change along with stake amount
@@ -236,10 +252,14 @@ export async function reduceStakeOnSponsorship(
     await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
-        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+        const contract = new Contract(
+            operatorAddress,
+            operatorABI,
+            signer,
+        ) as unknown as Operator
 
         const gasLimit = toBN(
-            await contract.estimateGas.reduceStakeTo(sponsorshipId, targetAmountWei),
+            await contract.reduceStakeTo.estimateGas(sponsorshipId, targetAmountWei),
         )
             .multipliedBy(gasLimitMultiplier)
             .precision(1, BN.ROUND_UP)
@@ -249,9 +269,11 @@ export async function reduceStakeOnSponsorship(
             gasLimit,
         })
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await onBlockNumber?.(receipt.blockNumber)
+        }
 
         // Update uncollected earnings because the rate of change
         // will change along with stake amount
@@ -276,10 +298,14 @@ export async function forceUnstakeFromSponsorship(
     await toastedOperation('Force unstake from sponsorship', async () => {
         const signer = await getSigner()
 
-        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+        const contract = new Contract(
+            operatorAddress,
+            operatorABI,
+            signer,
+        ) as unknown as Operator
 
         const gasLimit = toBN(
-            await contract.estimateGas.forceUnstake(sponsorshipId, 1000000),
+            await contract.forceUnstake.estimateGas(sponsorshipId, 1000000),
         )
             .multipliedBy(gasLimitMultiplier)
             .precision(1, BN.ROUND_UP)
@@ -293,9 +319,11 @@ export async function forceUnstakeFromSponsorship(
             gasLimit,
         })
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await onBlockNumber?.(receipt.blockNumber)
+        }
 
         // Update uncollected earnings because the rate of change
         // will change along with stake amount
@@ -315,7 +343,11 @@ export async function getEarningsForSponsorships(
 ): Promise<Record<string, SponsorshipEarnings>> {
     const provider = getPublicWeb3Provider(chainId)
 
-    const contract = new Contract(operatorAddress, operatorABI, provider) as Operator
+    const contract = new Contract(
+        operatorAddress,
+        operatorABI,
+        provider,
+    ) as unknown as Operator
 
     const { addresses, earnings } = await contract.getSponsorshipsAndEarnings()
 
@@ -372,14 +404,20 @@ export async function collectEarnings(
 
     const signer = await getSigner()
 
-    const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+    const contract = new Contract(
+        operatorAddress,
+        operatorABI,
+        signer,
+    ) as unknown as Operator
 
     await toastedOperation('Collect earnings', async () => {
         const tx = await contract.withdrawEarningsFromSponsorships([sponsorshipId])
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
 
         // Update uncollected earnings because the rate of change
         // will change along with stake amount
