@@ -26,8 +26,8 @@ import { SingleSponsorshipPage } from '~/pages/SingleSponsorshipPage'
 import { SponsorshipsPage } from '~/pages/SponsorshipsPage'
 import { StreamsPage } from '~/pages/StreamsPage'
 import {
-    NewStreamPage,
     StreamConnectPage,
+    StreamDraftPage,
     StreamEditPage,
     StreamIndexRedirect,
     StreamLiveDataPage,
@@ -66,11 +66,9 @@ const App = () => (
                 </Route>
                 <Route path="/hub/streams">
                     <Route index element={<StreamsPage />} />
-                    <Route path="new" element={<NewStreamPage />} />
-                    <Route path=":id">
-                        <Route index element={<StreamIndexRedirect />} />
+                    <Route element={<StreamDraftPage />}>
                         <Route
-                            path="overview"
+                            path="new"
                             element={
                                 <StreamTabbedPage stickySubmit>
                                     {(attach, ready) =>
@@ -81,9 +79,27 @@ const App = () => (
                                 </StreamTabbedPage>
                             }
                         />
-                        <Route element={<StreamTabbedPage />}>
-                            <Route path="connect" element={<StreamConnectPage />} />
-                            <Route path="live-data" element={<StreamLiveDataPage />} />
+                        <Route path=":id">
+                            <Route index element={<StreamIndexRedirect />} />
+                            <Route
+                                path="overview"
+                                element={
+                                    <StreamTabbedPage stickySubmit>
+                                        {(attach, ready) =>
+                                            ready ? (
+                                                <StreamEditPage saveButtonRef={attach} />
+                                            ) : null
+                                        }
+                                    </StreamTabbedPage>
+                                }
+                            />
+                            <Route element={<StreamTabbedPage />}>
+                                <Route path="connect" element={<StreamConnectPage />} />
+                                <Route
+                                    path="live-data"
+                                    element={<StreamLiveDataPage />}
+                                />
+                            </Route>
                         </Route>
                     </Route>
                 </Route>

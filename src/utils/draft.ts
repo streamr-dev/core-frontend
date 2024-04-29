@@ -121,6 +121,8 @@ export function createDraftStore<E extends Entity = Entity>(
             drafts: {},
 
             init(draftId) {
+                console.log('INIT', draftId)
+
                 /**
                  * Retrieve or create a draft associated with the given draft id.
                  */
@@ -139,6 +141,15 @@ export function createDraftStore<E extends Entity = Entity>(
 
             assign(draftId, entity) {
                 setDraft(draftId, (draft) => {
+                    if (draft.entity) {
+                        /**
+                         * The rule is: 1 draft = 1 entity, thus the logic does not
+                         * support overwriting existing hot/cold entities by assign.
+                         */
+
+                        return
+                    }
+
                     draft.entity = entity ? { cold: entity, hot: entity } : undefined
 
                     draft.fetching = typeof entity === 'undefined'
@@ -176,6 +187,7 @@ export function createDraftStore<E extends Entity = Entity>(
             },
 
             abandon(draftId) {
+                console.log('ABANDON', draftId)
                 setDraft(draftId, (draft) => {
                     draft.abandoned = true
                 })
@@ -283,6 +295,45 @@ export function createDraftStore<E extends Entity = Entity>(
         }
     })
 
+    function useBoundDraft(entityId: string | undefined | null) {
+        const { idMap, drafts } = useDraftStore()
+
+        const draftId = entityId ? idMap[entityId] : undefined
+
+        const draft = draftId ? drafts[draftId] : undefined
+
+        return !draft || draft.abandoned ? null : draft
+    }
+
+    function useInitDraft2(entityId: string | undefined) {
+        const { idMap, init, abandon } = useDraftStore()
+
+        const recycledDraftId = entityId ? idMap[entityId] : undefined
+
+        const draftId = useId(
+            () => recycledDraftId || DefaultIdGenerator(options.prefix),
+            [entityId, recycledDraftId],
+        )
+
+        useEffect(
+            function initDraft() {
+                init(draftId)
+            },
+            [init, draftId],
+        )
+
+        useEffect(
+            function abandonDraft() {
+                return () => {
+                    abandon(draftId)
+                }
+            },
+            [abandon, draftId],
+        )
+
+        return draftId
+    }
+
     function useInitDraft(entity: E | undefined | null): string {
         const { idMap, init, abandon, assign } = useDraftStore()
 
@@ -325,16 +376,18 @@ export function createDraftStore<E extends Entity = Entity>(
 
     const DraftContext = createContext<string | undefined>(undefined)
 
-    function useDraftId() {
-        return useContext(DraftContext)
+    function useDraftId(): string {
+        const draftId = useContext(DraftContext)
+
+        if (!draftId) {
+            throw new Error('`useDraftId` used outside of the `DraftContext`')
+        }
+
+        return draftId
     }
 
     function useDraft() {
-        const draftId = useDraftId()
-
-        const { drafts } = useDraftStore()
-
-        return draftId ? drafts[draftId] : undefined
+        return useDraftStore().drafts[useDraftId()]
     }
 
     function useEntity({ hot = false } = {}) {
@@ -352,10 +405,6 @@ export function createDraftStore<E extends Entity = Entity>(
 
         return useCallback(
             (updater: (hot: E, cold: E) => void) => {
-                if (!draftId) {
-                    return
-                }
-
                 return update(draftId, updater)
             },
             [draftId, update],
@@ -374,10 +423,6 @@ export function createDraftStore<E extends Entity = Entity>(
         }
 
         return useCallback(() => {
-            if (!draftId) {
-                return {}
-            }
-
             return validate(draftId, validatorRef.current)
         }, [draftId, validate])
     }
@@ -513,6 +558,7 @@ export function createDraftStore<E extends Entity = Entity>(
 
     return {
         DraftContext,
+        useBoundDraft,
         useDraft,
         useDraftId,
         useDraftStore,
@@ -528,6 +574,7 @@ export function createDraftStore<E extends Entity = Entity>(
         useStore,
         useUpdateEntity,
         useValidateEntity,
+        useInitDraft2,
     }
 }
 

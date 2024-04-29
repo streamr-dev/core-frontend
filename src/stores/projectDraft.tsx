@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { randomHex } from 'web3-utils'
 import { ValidationError } from '~/errors'
 import { getDataUnion } from '~/getters/du'
-import { ParsedProject, getEmptyParsedProject } from '~/parsers/ProjectParser'
+import { ParsedProject } from '~/parsers/ProjectParser'
 import routes from '~/routes'
 import {
     createProject,
@@ -179,11 +179,7 @@ export const ProjectDraft = createDraftStore<ParsedProject>({
     },
 
     getEmptyDraft() {
-        return getEmptyDraft(
-            getEmptyParsedProject({
-                type: ProjectType.OpenData,
-            }),
-        )
+        return getEmptyDraft<ParsedProject>(undefined)
     },
 
     isEqual: eq,
