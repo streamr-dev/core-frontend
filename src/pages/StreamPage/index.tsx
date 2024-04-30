@@ -189,7 +189,7 @@ interface StreamTabbedPageProps {
 export function StreamDraftPage() {
     const { id: streamId } = useParams<{ id: string }>()
 
-    const draftId = StreamDraft.useInitDraft2(streamId)
+    const draftId = StreamDraft.useInitDraft(streamId)
 
     return (
         <StreamDraft.DraftContext.Provider value={draftId}>
@@ -211,11 +211,15 @@ export function StreamTabbedPage(props: StreamTabbedPageProps) {
 
     const draftId = StreamDraft.useDraftId()
 
+    const initialized = StreamDraft.useDraft()?.initialized || false
+
     useEffect(
         function assignEntity() {
-            assign(draftId, stream)
+            if (initialized) {
+                assign(draftId, stream)
+            }
         },
-        [assign, draftId, stream],
+        [assign, draftId, initialized, stream],
     )
 
     return (

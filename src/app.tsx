@@ -16,6 +16,7 @@ import {
     ExistingProjectPageWrap,
     NewProjectPage,
     ProjectConnectPage,
+    ProjectDraftPage,
     ProjectIndexRedirect,
     ProjectLiveDataPage,
     ProjectOverviewPage,
@@ -53,14 +54,22 @@ const App = () => (
             <Route errorElement={<GenericErrorPage />}>
                 <Route path="/hub/projects">
                     <Route index element={<ProjectListingPage />} />
-                    <Route path="new" element={<NewProjectPage />} />
-                    <Route path=":id" element={<ExistingProjectPageWrap />}>
-                        <Route index element={<ProjectIndexRedirect />} />
-                        <Route path="edit" element={<ProjectEditorPage />} />
-                        <Route element={<ProjectTabbedPage />}>
-                            <Route path="overview" element={<ProjectOverviewPage />} />
-                            <Route path="connect" element={<ProjectConnectPage />} />
-                            <Route path="live-data" element={<ProjectLiveDataPage />} />
+                    <Route element={<ProjectDraftPage />}>
+                        <Route path="new" element={<NewProjectPage />} />
+                        <Route path=":id" element={<ExistingProjectPageWrap />}>
+                            <Route index element={<ProjectIndexRedirect />} />
+                            <Route path="edit" element={<ProjectEditorPage />} />
+                            <Route element={<ProjectTabbedPage />}>
+                                <Route
+                                    path="overview"
+                                    element={<ProjectOverviewPage />}
+                                />
+                                <Route path="connect" element={<ProjectConnectPage />} />
+                                <Route
+                                    path="live-data"
+                                    element={<ProjectLiveDataPage />}
+                                />
+                            </Route>
                         </Route>
                     </Route>
                 </Route>

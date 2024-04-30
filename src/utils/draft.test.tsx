@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect, useRef } from 'react'
 import { defer } from 'toasterhea'
 import { createDraftStore, getEmptyDraft } from './draft'
 
@@ -16,11 +16,7 @@ describe('createDraftStore', () => {
          * Let's work with a simple testing draft.
          */
         TestDraft = createDraftStore<E>({
-            getEmptyDraft: () =>
-                getEmptyDraft({
-                    id: undefined,
-                    chainId: 1,
-                }),
+            getEmptyDraft: () => getEmptyDraft<E>(undefined),
 
             prefix: 'TestDraft-',
         })
@@ -34,15 +30,47 @@ describe('createDraftStore', () => {
         children?: ReactNode
     }
 
+    function EntityAssigner(props: Omit<TestComponentProps, 'children'>) {
+        const { entity, onDraftId } = props
+
+        const Draft = TestDraft!
+
+        const { assign } = Draft.useDraftStore()
+
+        const draftId = Draft.useDraftId()
+
+        const initialized = Draft.useDraft()?.initialized || false
+
+        const onDraftIdRef = useRef(onDraftId)
+
+        if (onDraftIdRef.current !== onDraftId) {
+            onDraftIdRef.current = onDraftId
+        }
+
+        useEffect(
+            function assignEntityToDraft() {
+                if (!initialized) {
+                    return
+                }
+
+                assign(draftId, entity)
+
+                onDraftIdRef.current?.(draftId)
+            },
+            [assign, draftId, initialized, entity],
+        )
+
+        return null
+    }
+
     function TestComponent({ entity, onDraftId, children }: TestComponentProps) {
         const Draft = TestDraft!
 
-        const draftId = Draft.useInitDraft(entity)
-
-        onDraftId?.(draftId)
+        const draftId = Draft.useInitDraft(entity?.id)
 
         return (
             <Draft.DraftContext.Provider value={draftId}>
+                <EntityAssigner entity={entity} onDraftId={onDraftId} />
                 {children}
             </Draft.DraftContext.Provider>
         )

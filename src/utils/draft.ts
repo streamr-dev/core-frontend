@@ -23,6 +23,7 @@ export interface Draft<E extends Entity> {
         | undefined
     errors: Record<string, string | undefined>
     fetching: boolean
+    initialized: boolean
     persisting: boolean
 }
 
@@ -36,6 +37,7 @@ export function getEmptyDraft<E extends Entity>(entity: E | undefined): Draft<E>
         },
         errors: {},
         fetching: false,
+        initialized: false,
         persisting: false,
     }
 }
@@ -121,8 +123,6 @@ export function createDraftStore<E extends Entity = Entity>(
             drafts: {},
 
             init(draftId) {
-                console.log('INIT', draftId)
-
                 /**
                  * Retrieve or create a draft associated with the given draft id.
                  */
@@ -130,6 +130,8 @@ export function createDraftStore<E extends Entity = Entity>(
                     draftId,
                     (draft) => {
                         draft.abandoned = false
+
+                        draft.initialized = true
 
                         draft.fetching = true
                     },
@@ -187,7 +189,6 @@ export function createDraftStore<E extends Entity = Entity>(
             },
 
             abandon(draftId) {
-                console.log('ABANDON', draftId)
                 setDraft(draftId, (draft) => {
                     draft.abandoned = true
                 })
@@ -305,7 +306,7 @@ export function createDraftStore<E extends Entity = Entity>(
         return !draft || draft.abandoned ? null : draft
     }
 
-    function useInitDraft2(entityId: string | undefined) {
+    function useInitDraft(entityId: string | undefined) {
         const { idMap, init, abandon } = useDraftStore()
 
         const recycledDraftId = entityId ? idMap[entityId] : undefined
@@ -323,50 +324,12 @@ export function createDraftStore<E extends Entity = Entity>(
         )
 
         useEffect(
-            function abandonDraft() {
+            function abandonDraftOnUnmount() {
                 return () => {
                     abandon(draftId)
                 }
             },
             [abandon, draftId],
-        )
-
-        return draftId
-    }
-
-    function useInitDraft(entity: E | undefined | null): string {
-        const { idMap, init, abandon, assign } = useDraftStore()
-
-        const { id: entityId } = entity || {}
-
-        const recycledDraftId = entityId ? idMap[entityId] : undefined
-
-        const draftId = useId(
-            () => recycledDraftId || DefaultIdGenerator(options.prefix),
-            [entityId, recycledDraftId],
-        )
-
-        useEffect(
-            function initDraft() {
-                init(draftId)
-            },
-            [init, draftId],
-        )
-
-        useEffect(
-            function abandonDraft() {
-                return () => {
-                    abandon(draftId)
-                }
-            },
-            [abandon, draftId],
-        )
-
-        useEffect(
-            function assignEntity() {
-                assign(draftId, entity)
-            },
-            [assign, draftId, entity],
         )
 
         return draftId
@@ -563,7 +526,6 @@ export function createDraftStore<E extends Entity = Entity>(
         useDraftId,
         useDraftStore,
         useEntity,
-        useInitDraft,
         useIsAnyDraftBeingPersisted,
         useIsDraftBusy,
         useIsDraftClean,
@@ -574,7 +536,7 @@ export function createDraftStore<E extends Entity = Entity>(
         useStore,
         useUpdateEntity,
         useValidateEntity,
-        useInitDraft2,
+        useInitDraft,
     }
 }
 
