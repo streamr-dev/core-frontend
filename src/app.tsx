@@ -25,7 +25,6 @@ import {
 import { SingleOperatorPage } from '~/pages/SingleOperatorPage'
 import { SingleSponsorshipPage } from '~/pages/SingleSponsorshipPage'
 import { SponsorshipsPage } from '~/pages/SponsorshipsPage'
-import { StreamsPage } from '~/pages/StreamsPage'
 import {
     StreamConnectPage,
     StreamDraftPage,
@@ -34,6 +33,7 @@ import {
     StreamLiveDataPage,
     StreamTabbedPage,
 } from '~/pages/StreamPage'
+import { StreamsPage } from '~/pages/StreamsPage'
 import routes from '~/routes'
 import '~/shared/assets/stylesheets'
 import Globals from '~/shared/components/Globals'
