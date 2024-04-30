@@ -1,9 +1,10 @@
+import { StreamPermission } from '@streamr/sdk'
 import React, {
     MutableRefObject,
     ReactNode,
     RefCallback,
     useCallback,
-    useMemo,
+    useEffect,
 } from 'react'
 import {
     Link,
@@ -13,7 +14,6 @@ import {
     useNavigate,
     useParams,
 } from 'react-router-dom'
-import { StreamPermission } from '@streamr/sdk'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
 import ColoredBox from '~/components/ColoredBox'
@@ -42,7 +42,6 @@ import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import { truncateStreamName } from '~/shared/utils/text'
 import {
     StreamDraft,
-    getEmptyStreamEntity,
     usePersistStreamDraft,
     useStreamEntityQuery,
 } from '~/stores/streamDraft'
@@ -182,25 +181,21 @@ export function StreamIndexRedirect() {
     return <Navigate to={routes.streams.overview({ id })} replace />
 }
 
-export function NewStreamPage() {
-    const stream = useMemo(() => getEmptyStreamEntity(), [])
-
-    const draftId = StreamDraft.useInitDraft(stream)
-
-    return (
-        <StreamDraft.DraftContext.Provider value={draftId}>
-            <StreamEntityForm stickySubmit>
-                {(attach, ready) =>
-                    ready ? <StreamEditPage saveButtonRef={attach} /> : null
-                }
-            </StreamEntityForm>
-        </StreamDraft.DraftContext.Provider>
-    )
-}
-
 interface StreamTabbedPageProps {
     children?: ReactNode | ((attach: RefCallback<Element>, ready: boolean) => ReactNode)
     stickySubmit?: boolean
+}
+
+export function StreamDraftPage() {
+    const { id: streamId } = useParams<{ id: string }>()
+
+    const draftId = StreamDraft.useInitDraft(streamId)
+
+    return (
+        <StreamDraft.DraftContext.Provider value={draftId}>
+            <Outlet />
+        </StreamDraft.DraftContext.Provider>
+    )
 }
 
 export function StreamTabbedPage(props: StreamTabbedPageProps) {
@@ -212,28 +207,39 @@ export function StreamTabbedPage(props: StreamTabbedPageProps) {
 
     const isLoading = !stream && (query.isLoading || query.isFetching)
 
-    const draftId = StreamDraft.useInitDraft(isLoading ? undefined : stream)
+    const { assign } = StreamDraft.useDraftStore()
+
+    const draftId = StreamDraft.useDraftId()
+
+    const initialized = StreamDraft.useDraft()?.initialized || false
+
+    useEffect(
+        function assignEntity() {
+            if (initialized) {
+                assign(draftId, stream)
+            }
+        },
+        [assign, draftId, initialized, stream],
+    )
 
     return (
-        <StreamDraft.DraftContext.Provider value={draftId}>
-            <StreamEntityForm stickySubmit={stickySubmit}>
-                {isLoading ? (
-                    <LoadingIndicator loading />
-                ) : query.error instanceof StreamNotFoundError ? (
-                    <>
-                        <LoadingIndicator />
-                        <NotFoundPageContent />
-                    </>
-                ) : query.error ? (
-                    <>
-                        <LoadingIndicator />
-                        <GenericErrorPageContent />
-                    </>
-                ) : (
-                    children
-                )}
-            </StreamEntityForm>
-        </StreamDraft.DraftContext.Provider>
+        <StreamEntityForm stickySubmit={stickySubmit}>
+            {isLoading ? (
+                <LoadingIndicator loading />
+            ) : query.error instanceof StreamNotFoundError ? (
+                <>
+                    <LoadingIndicator />
+                    <NotFoundPageContent />
+                </>
+            ) : query.error ? (
+                <>
+                    <LoadingIndicator />
+                    <GenericErrorPageContent />
+                </>
+            ) : (
+                children
+            )}
+        </StreamEntityForm>
     )
 }
 

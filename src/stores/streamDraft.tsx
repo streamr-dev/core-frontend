@@ -1,13 +1,13 @@
-import { useQuery } from '@tanstack/react-query'
-import isEqual from 'lodash/isEqual'
-import uniqueId from 'lodash/uniqueId'
-import React, { useCallback } from 'react'
-import { Link, useMatch, useParams } from 'react-router-dom'
 import StreamrClient, {
     PermissionAssignment,
     Stream,
     StreamPermission,
 } from '@streamr/sdk'
+import { useQuery } from '@tanstack/react-query'
+import isEqual from 'lodash/isEqual'
+import uniqueId from 'lodash/uniqueId'
+import React, { useCallback } from 'react'
+import { Link, useMatch, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
@@ -36,7 +36,7 @@ import { toastedOperations } from '~/utils/toastedOperation'
 import getChainId from '~/utils/web3/getChainId'
 
 export const StreamDraft = createDraftStore<ParsedStream>({
-    getEmptyDraft: () => getEmptyDraft(getEmptyStreamEntity()),
+    getEmptyDraft: () => getEmptyDraft<ParsedStream>(undefined),
 
     prefix: 'StreamDraft-',
 })
@@ -71,11 +71,17 @@ export function useStreamEntityQuery() {
 
     const chainId = useCurrentChainId()
 
+    const draft = StreamDraft.useBoundDraft(streamId)
+
     return useQuery({
         queryKey: ['useStreamEntityQuery', chainId, streamId],
         queryFn: async () => {
+            if (draft?.entity) {
+                return draft.entity.cold
+            }
+
             if (!streamId) {
-                return null
+                return getEmptyStreamEntity()
             }
 
             try {

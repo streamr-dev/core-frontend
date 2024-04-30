@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Link, Navigate, Outlet, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
@@ -42,6 +42,18 @@ import GetAccess from './GetAccess'
 import ProjectEditorPage from './ProjectEditorPage'
 import ProjectLinkTabs from './ProjectLinkTabs'
 
+export function ProjectDraftPage() {
+    const { id: projectId } = useParams<{ id: string }>()
+
+    const draftId = ProjectDraft.useInitDraft(projectId)
+
+    return (
+        <ProjectDraft.DraftContext.Provider value={draftId}>
+            <Outlet />
+        </ProjectDraft.DraftContext.Provider>
+    )
+}
+
 export function NewProjectPage() {
     const type = useSearchParams()[0].get('type')
 
@@ -57,13 +69,22 @@ export function NewProjectPage() {
         return project
     }, [projectType])
 
-    const draftId = ProjectDraft.useInitDraft(project)
+    const draftId = ProjectDraft.useDraftId()
 
-    return (
-        <ProjectDraft.DraftContext.Provider value={draftId}>
-            <ProjectEditorPage />
-        </ProjectDraft.DraftContext.Provider>
+    const { assign } = ProjectDraft.useDraftStore()
+
+    const initialized = ProjectDraft.useDraft()?.initialized || false
+
+    useEffect(
+        function assignProjectToDraft() {
+            if (initialized) {
+                assign(draftId, project)
+            }
+        },
+        [assign, draftId, initialized, project],
     )
+
+    return <ProjectEditorPage />
 }
 
 export function ExistingProjectPageWrap() {
@@ -82,7 +103,20 @@ export function ExistingProjectPageWrap() {
     const isFetching =
         projectQuery.isLoading || projectQuery.isFetching || !!behindBlockError
 
-    const draftId = ProjectDraft.useInitDraft(isFetching ? undefined : project)
+    const draftId = ProjectDraft.useDraftId()
+
+    const { assign } = ProjectDraft.useDraftStore()
+
+    const initialized = ProjectDraft.useDraft()?.initialized || false
+
+    useEffect(
+        function assignProjectToDraft() {
+            if (initialized) {
+                assign(draftId, project)
+            }
+        },
+        [assign, draftId, initialized, project],
+    )
 
     const placeholder = behindBlockError ? (
         <Layout>
@@ -101,11 +135,11 @@ export function ExistingProjectPageWrap() {
         <NotFoundPage />
     )
 
-    return (
-        <ProjectDraft.DraftContext.Provider value={draftId}>
-            {project == null ? placeholder : <Outlet />}
-        </ProjectDraft.DraftContext.Provider>
-    )
+    if (!project) {
+        return placeholder
+    }
+
+    return <Outlet />
 }
 
 export function ProjectOverviewPage() {

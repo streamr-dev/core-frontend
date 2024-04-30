@@ -16,6 +16,7 @@ import {
     ExistingProjectPageWrap,
     NewProjectPage,
     ProjectConnectPage,
+    ProjectDraftPage,
     ProjectIndexRedirect,
     ProjectLiveDataPage,
     ProjectOverviewPage,
@@ -24,15 +25,15 @@ import {
 import { SingleOperatorPage } from '~/pages/SingleOperatorPage'
 import { SingleSponsorshipPage } from '~/pages/SingleSponsorshipPage'
 import { SponsorshipsPage } from '~/pages/SponsorshipsPage'
-import { StreamsPage } from '~/pages/StreamsPage'
 import {
-    NewStreamPage,
     StreamConnectPage,
+    StreamDraftPage,
     StreamEditPage,
     StreamIndexRedirect,
     StreamLiveDataPage,
     StreamTabbedPage,
 } from '~/pages/StreamPage'
+import { StreamsPage } from '~/pages/StreamsPage'
 import routes from '~/routes'
 import '~/shared/assets/stylesheets'
 import Globals from '~/shared/components/Globals'
@@ -53,24 +54,30 @@ const App = () => (
             <Route errorElement={<GenericErrorPage />}>
                 <Route path="/hub/projects">
                     <Route index element={<ProjectListingPage />} />
-                    <Route path="new" element={<NewProjectPage />} />
-                    <Route path=":id" element={<ExistingProjectPageWrap />}>
-                        <Route index element={<ProjectIndexRedirect />} />
-                        <Route path="edit" element={<ProjectEditorPage />} />
-                        <Route element={<ProjectTabbedPage />}>
-                            <Route path="overview" element={<ProjectOverviewPage />} />
-                            <Route path="connect" element={<ProjectConnectPage />} />
-                            <Route path="live-data" element={<ProjectLiveDataPage />} />
+                    <Route element={<ProjectDraftPage />}>
+                        <Route path="new" element={<NewProjectPage />} />
+                        <Route path=":id" element={<ExistingProjectPageWrap />}>
+                            <Route index element={<ProjectIndexRedirect />} />
+                            <Route path="edit" element={<ProjectEditorPage />} />
+                            <Route element={<ProjectTabbedPage />}>
+                                <Route
+                                    path="overview"
+                                    element={<ProjectOverviewPage />}
+                                />
+                                <Route path="connect" element={<ProjectConnectPage />} />
+                                <Route
+                                    path="live-data"
+                                    element={<ProjectLiveDataPage />}
+                                />
+                            </Route>
                         </Route>
                     </Route>
                 </Route>
                 <Route path="/hub/streams">
                     <Route index element={<StreamsPage />} />
-                    <Route path="new" element={<NewStreamPage />} />
-                    <Route path=":id">
-                        <Route index element={<StreamIndexRedirect />} />
+                    <Route element={<StreamDraftPage />}>
                         <Route
-                            path="overview"
+                            path="new"
                             element={
                                 <StreamTabbedPage stickySubmit>
                                     {(attach, ready) =>
@@ -81,9 +88,27 @@ const App = () => (
                                 </StreamTabbedPage>
                             }
                         />
-                        <Route element={<StreamTabbedPage />}>
-                            <Route path="connect" element={<StreamConnectPage />} />
-                            <Route path="live-data" element={<StreamLiveDataPage />} />
+                        <Route path=":id">
+                            <Route index element={<StreamIndexRedirect />} />
+                            <Route
+                                path="overview"
+                                element={
+                                    <StreamTabbedPage stickySubmit>
+                                        {(attach, ready) =>
+                                            ready ? (
+                                                <StreamEditPage saveButtonRef={attach} />
+                                            ) : null
+                                        }
+                                    </StreamTabbedPage>
+                                }
+                            />
+                            <Route element={<StreamTabbedPage />}>
+                                <Route path="connect" element={<StreamConnectPage />} />
+                                <Route
+                                    path="live-data"
+                                    element={<StreamLiveDataPage />}
+                                />
+                            </Route>
                         </Route>
                     </Route>
                 </Route>
