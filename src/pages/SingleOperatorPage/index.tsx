@@ -108,12 +108,13 @@ export const SingleOperatorPage = () => {
         operator != null &&
         walletAddress.toLowerCase() === operator.owner.toLowerCase()
 
+    // Techically Owner is a controller too, but for UI purposes we want only non-owner controllers
     const isController =
         walletAddress != null &&
         operator != null &&
-        operator.controllers.some(
-            (c) => c.address.toLowerCase() === walletAddress.toLowerCase(),
-        )
+        operator.controllers
+            .filter((c) => c.address.toLowerCase() !== operator.owner.toLowerCase())
+            .some((c) => c.address.toLowerCase() === walletAddress.toLowerCase())
 
     const canCollect = useCanCollectEarningsCallback()
 
