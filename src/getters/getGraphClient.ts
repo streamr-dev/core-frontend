@@ -19,17 +19,18 @@ export function getGraphClient(chainId: number) {
     return graphClient
 }
 
-function getGraphUrl(chainId: number): string {
-    const { theGraphUrl: url } = getConfigForChain(chainId)
+export function getGraphUrl(chainId: number): string {
+    const { theGraphUrl: defaultUrl } = getConfigForChain(chainId)
 
-    const { networkSubgraphUrl: fallbackUrl, enforceLocalNetworkSubgraphUrl } =
-        getChainConfigExtension(chainId)
+    const { networkSubgraphUrl: customUrl } = getChainConfigExtension(chainId)
 
-    if (enforceLocalNetworkSubgraphUrl) {
-        return fallbackUrl
+    const url = customUrl || defaultUrl
+
+    if (!url) {
+        throw new Error(`Missing network subgraph url for chain ${chainId}`)
     }
 
-    return url || fallbackUrl
+    return url
 }
 
 const dataUnionGraphClients: Partial<
@@ -45,7 +46,7 @@ export function getDataUnionGraphClient(chainId: number) {
         throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
     }
 
-    const { networkSubgraphUrl } = getChainConfigExtension(chainId)
+    const networkSubgraphUrl = getGraphUrl(chainId)
 
     const { origin } = new URL(networkSubgraphUrl)
 

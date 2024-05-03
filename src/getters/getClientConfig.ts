@@ -2,6 +2,7 @@ import { ChainConnectionInfo, StreamrClientConfig } from '@streamr/sdk'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 import { getConfigForChain } from '~/shared/web3/config'
 import { getChainConfigExtension } from './getChainConfigExtension'
+import { getGraphUrl } from './getGraphClient'
 
 export default function getClientConfig(
     chainId: number,
@@ -11,8 +12,6 @@ export default function getClientConfig(
     const config: StreamrClientConfig = {
         metrics: false,
     }
-
-    const { client } = getChainConfigExtension(chainId)
 
     // Set network entrypoints if provided
     if (chainConfig.entryPoints && chainConfig.entryPoints.length > 0) {
@@ -64,13 +63,9 @@ export default function getClientConfig(
         }
     })
 
-    if (client?.networkSubgraphUrl) {
-        contracts.theGraphUrl = client.networkSubgraphUrl
-    }
+    contracts.theGraphUrl = getGraphUrl(chainId)
 
-    if (Object.keys(contracts).length > 0) {
-        config.contracts = contracts
-    }
+    config.contracts = contracts
 
     return {
         ...config,

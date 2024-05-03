@@ -6,11 +6,7 @@ import { getSymbolicChainName } from '~/shared/web3/config'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 
 const ChainConfigExtension = z.object({
-    client: z
-        .object({
-            networkSubgraphUrl: z.string().optional(),
-        })
-        .optional(),
+    dataUnionJoinServerUrl: z.string().optional(),
     dataunionGraphNames: z
         .array(
             z.object({
@@ -20,7 +16,6 @@ const ChainConfigExtension = z.object({
         )
         .optional()
         .default([]),
-    dataUnionJoinServerUrl: z.string().optional(),
     dockerHost: z.string().optional(),
     ipfs: z
         .object({
@@ -37,11 +32,7 @@ const ChainConfigExtension = z.object({
             projectId: '2KjYUpR265h6R5M5njkSue5RGm7',
         }),
     marketplaceChains: z.array(z.string()).optional().default([]),
-    networkSubgraphUrl: z
-        .string()
-        .optional()
-        .default('https://api.thegraph.com/subgraphs/name/streamr-dev/network'),
-    enforceLocalNetworkSubgraphUrl: z.boolean().optional().default(false),
+    networkSubgraphUrl: z.string().optional(),
     sponsorshipPaymentToken: z.string().optional().default('DATA'),
     storageNodes: z
         .array(
@@ -69,25 +60,17 @@ const parsedConfig = z
                 }
 
                 const {
-                    client,
                     dataUnionJoinServerUrl,
                     dockerHost,
                     networkSubgraphUrl,
                     streamIndexerUrl,
                 } = extension
 
-                if (typeof client?.networkSubgraphUrl === 'string') {
-                    client.networkSubgraphUrl = formatConfigUrl(
-                        client.networkSubgraphUrl,
-                        {
-                            dockerHost,
-                        },
-                    )
+                if (networkSubgraphUrl) {
+                    extension.networkSubgraphUrl = formatConfigUrl(networkSubgraphUrl, {
+                        dockerHost,
+                    })
                 }
-
-                extension.networkSubgraphUrl = formatConfigUrl(networkSubgraphUrl, {
-                    dockerHost,
-                })
 
                 if (typeof dataUnionJoinServerUrl === 'string') {
                     extension.dataUnionJoinServerUrl = formatConfigUrl(
