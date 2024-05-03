@@ -1,15 +1,14 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled, { css } from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
 import { useBoundingClientRect } from './Anchor'
 
+type ToggleCallback = (value: boolean | ((prev: boolean) => boolean)) => void
+
 type ChildrenFormatter =
     | ReactNode
-    | ((
-          toggle: (value: boolean | ((prev: boolean) => boolean)) => void,
-          isOpen: boolean,
-      ) => ReactNode)
+    | ((toggle: ToggleCallback, isOpen: boolean) => ReactNode)
 
 interface SimpleDropdownProps {
     align?: 'left' | 'right'
@@ -32,6 +31,17 @@ export function SimpleDropdown({
     ...props
 }: SimpleDropdownProps) {
     const [isOpen, setIsOpen] = useState(false)
+
+    const toggle = useCallback<ToggleCallback>(
+        (value) => {
+            if (disabled) {
+                return
+            }
+
+            setIsOpen(value)
+        },
+        [disabled],
+    )
 
     const rootRef = useRef<HTMLDivElement>(null)
 
@@ -140,8 +150,8 @@ export function SimpleDropdown({
     })
 
     return (
-        <SimpleDropdownRoot ref={rootRef} {...props}>
-            {typeof children === 'function' ? children(setIsOpen, isOpen) : children}
+        <SimpleDropdownRoot ref={rootRef} $disabled={disabled} {...props}>
+            {typeof children === 'function' ? children(toggle, isOpen) : children}
             <div ref={posRef} />
             {detached ? (
                 createPortal(
@@ -175,8 +185,14 @@ export function SimpleDropdown({
     )
 }
 
-const SimpleDropdownRoot = styled.div`
+const SimpleDropdownRoot = styled.div<{ $disabled?: boolean }>`
     position: relative;
+
+    ${({ $disabled = false }) =>
+        $disabled &&
+        css`
+            opacity: 0.5;
+        `}
 `
 
 export const SimpleDropdownMenu = styled.div<{ $visible?: boolean }>`
