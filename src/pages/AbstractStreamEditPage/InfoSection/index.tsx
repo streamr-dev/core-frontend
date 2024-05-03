@@ -1,23 +1,18 @@
-import React from 'react'
 import { StreamPermission } from '@streamr/sdk'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import Surround from '~/shared/components/Surround'
 import Label from '~/shared/components/Ui/Label'
-import Select from '~/shared/components/Ui/Select'
 import Text from '~/shared/components/Ui/Text'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
-import { PHONE } from '~/shared/utils/styled'
 import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
-import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 import Section from '../Section'
 import { ENS_DOMAINS_URL, EditableStreamId, ReadonlyStreamId } from './StreamId'
 
 export function InfoSection({ disabled: disabledProp = false }) {
-    const {
-        id: streamId,
-        metadata,
-        chainId,
-    } = StreamDraft.useEntity({ hot: true }) || getEmptyStreamEntity()
+    const { id: streamId, metadata } =
+        StreamDraft.useEntity({ hot: true }) || getEmptyStreamEntity()
 
     const { description } = metadata
 
@@ -27,11 +22,24 @@ export function InfoSection({ disabled: disabledProp = false }) {
 
     const update = StreamDraft.useUpdateEntity()
 
-    const chainOptions = getEnvironmentConfig().availableChains.map(
-        ({ id: value, name: label }) => ({
-            value,
-            label,
-        }),
+    const selectedChainId = useCurrentChainId()
+
+    useEffect(
+        function applySelectedChainIdToNewStream() {
+            if (!streamId) {
+                /**
+                 * Only allow the global chain selector changes to update
+                 * chain id of *new* streams.
+                 */
+
+                update((hot, cold) => {
+                    hot.chainId = selectedChainId
+
+                    cold.chainId = selectedChainId
+                })
+            }
+        },
+        [update, streamId, selectedChainId],
     )
 
     return (
@@ -59,32 +67,6 @@ export function InfoSection({ disabled: disabledProp = false }) {
                     <EditableStreamId disabled={disabled} />
                 )}
             </Row>
-            {!streamId && (
-                <Row>
-                    <Label htmlFor="chain">Chain</Label>
-                    <ChainSelectWrap>
-                        <Select
-                            disabled={disabled}
-                            name="chain"
-                            onChange={(option) => {
-                                if (!option) {
-                                    return
-                                }
-
-                                const { value } = option
-
-                                update((hot, cold) => {
-                                    hot.chainId = value
-
-                                    cold.chainId = value
-                                })
-                            }}
-                            options={chainOptions}
-                            value={chainOptions.find(({ value }) => value === chainId)}
-                        />
-                    </ChainSelectWrap>
-                </Row>
-            )}
             <Row>
                 <Label htmlFor="streamDescription">Description</Label>
                 <Text
@@ -120,10 +102,4 @@ const Row = styled.div`
 
 const Description = styled.p`
     margin-bottom: 3rem;
-`
-
-const ChainSelectWrap = styled.div`
-    @media ${PHONE} {
-        max-width: 222px;
-    }
 `

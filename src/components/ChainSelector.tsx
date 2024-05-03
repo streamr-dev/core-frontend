@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropdown'
+import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 import UnstyledNetworkIcon from '~/shared/components/NetworkIcon'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { useChainStore, useCurrentChain } from '~/shared/stores/chain'
-import { Chain } from '~/types'
 import { COLORS, LAPTOP } from '~/shared/utils/styled'
-import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
+import { StreamDraft } from '~/stores/streamDraft'
+import { Chain } from '~/types'
 
 type MenuItemProps = {
     chain: Chain
@@ -59,9 +60,12 @@ export const ChainSelector = ({ menuAlignment = 'left', ...props }: Props) => {
 
     const selectedChain = useCurrentChain()
 
+    const isAnyDraftBeingPersisted = StreamDraft.useIsAnyDraftBeingPersisted()
+
     return (
         <SimpleDropdown
             {...props}
+            disabled={isAnyDraftBeingPersisted}
             menu={(toggle) => (
                 <Menu
                     chains={availableChains}
