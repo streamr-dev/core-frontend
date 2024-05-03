@@ -4,7 +4,7 @@ const mapping = {
     8995: 'DEV',
     8997: 'DEV',
     31337: 'DEV',
-    80001: 'MATIC',
+    80002: 'MATIC',
 }
 
 const getNativeTokenName = (chainId: string | number) => {

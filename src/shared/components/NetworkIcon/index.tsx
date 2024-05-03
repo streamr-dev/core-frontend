@@ -13,7 +13,7 @@ const icons: { [key: string]: any } = {
     '56': bscIcon,
     '8995': ethereumIcon,
     '8997': xDaiIcon,
-    '80001': polygonIcon,
+    '80002': polygonIcon,
 }
 
 type NetworkIconProps = {

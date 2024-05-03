@@ -16,20 +16,20 @@ address = "0xde1112f631486CfC759A50196853011528bC5FA0"
 chainId = 31337
 name = "streamr-dev/dataunion"
 
-[mumbai]
-marketplaceChains = ['mumbai']
+[polygonAmoy]
+marketplaceChains = ['polygonAmoy']
 networkSubgraphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
 
-[mumbai.client]
+[polygonAmoy.client]
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
 networkSubgraphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
 
-[[mumbai.storageNodes]]
+[[polygonAmoy.storageNodes]]
 name = "Streamr Germany"
 address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
 
-[[mumbai.dataunionGraphNames]]
-chainId = 80001
+[[polygonAmoy.dataunionGraphNames]]
+chainId = 80002
 name = "samt1803/dataunion-subgraphs"
 
 [polygon]

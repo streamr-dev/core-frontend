@@ -1201,7 +1201,7 @@ export async function getENSDomainsForWallet(
 const blockExplorerUrls = Object.freeze({
     100: 'https:/gnosisscan.io',
     137: 'https://polygonscan.com',
-    80001: 'https://mumbai.polygonscan.com',
+    80002: 'https://amoy.polygonscan.com',
 })
 
 /**
