@@ -1,12 +1,12 @@
 [development]
-availableChains = ['dev2', 'polygon', 'mumbai']
+availableChains = ['dev2', 'polygon', 'polygonAmoy']
 platformOriginUrl = ""
 streamrUrl = ""
 
-[mumbai]
-availableChains = ['mumbai', 'polygon']
+[polygonAmoy]
+availableChains = ['polygonAmoy', 'polygon']
 platformOriginUrl = "https://staging.streamr.network"
 streamrUrl = "https://staging.streamr.network"
 
 [production]
-availableChains = ['polygon', 'mumbai']
+availableChains = ['polygon', 'polygonAmoy']

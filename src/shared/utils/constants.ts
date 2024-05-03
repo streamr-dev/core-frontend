@@ -30,7 +30,7 @@ export const ethereumNetworks = {
     '8995': 'Dev0',
     '8997': 'Dev1',
     '31337': 'Dev2',
-    '80001': 'Polygon Mumbai',
+    '80002': 'Polygon Amoy',
 }
 
 export const maxFileSizeForImageUpload = 5242880
