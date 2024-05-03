@@ -1,12 +1,9 @@
 [dev2]
+dataUnionJoinServerUrl = ":5555"
 dockerHost = "localhost"
 marketplaceChains = ['dev2']
 networkSubgraphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
 streamIndexerUrl = ":4001/api"
-
-[dev2.client]
-dataUnionJoinServerUrl = ":5555"
-networkSubgraphUrl = ":8800/subgraphs/name/streamr-dev/network-subgraphs"
 
 [[dev2.storageNodes]]
 name = "Local (broker-node-storage-1)"
@@ -17,12 +14,9 @@ chainId = 31337
 name = "streamr-dev/dataunion"
 
 [polygonAmoy]
-marketplaceChains = ['polygonAmoy']
-networkSubgraphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
-
-[polygonAmoy.client]
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
-networkSubgraphUrl = "https://api.thegraph.com/subgraphs/name/samt1803/network-subgraphs"
+marketplaceChains = ['polygonAmoy']
+networkSubgraphUrl = "https://api.studio.thegraph.com/query/58729/streamr-amoy-testnet/version/latest"
 
 [[polygonAmoy.storageNodes]]
 name = "Streamr Germany"
@@ -33,7 +27,6 @@ chainId = 80002
 name = "samt1803/dataunion-subgraphs"
 
 [polygon]
-enforceLocalNetworkSubgraphUrl = true
 marketplaceChains = ['gnosis', 'polygon']
 networkSubgraphUrl = "https://gateway-arbitrum.network.thegraph.com/api/8bcbd55cdd1369cadb0bb813d9817776/subgraphs/id/EGWFdhhiWypDuz22Uy7b3F69E9MEkyfU9iAQMttkH5Rj"
 streamIndexerUrl = "https://stream-metrics.streamr.network/api"

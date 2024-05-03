@@ -45,7 +45,7 @@
         "@sambego/storybook-styles": "^1.0.0",
         "@sentry/browser": "^7.51.2",
         "@sentry/integrations": "^7.51.2",
-        "@streamr/config": "^5.3.5",
+        "@streamr/config": "^5.3.6",
         "@streamr/hub-contracts": "^1.0.2",
         "@streamr/network-contracts": "^7.1.1",
         "@streamr/sdk": "^100.2.3",
