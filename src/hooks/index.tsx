@@ -54,8 +54,9 @@ export function useInfoToastEffect() {
                             <ul>
                                 <li>Hub v{process.env.HUB_VERSION}</li>
                                 <li>Commit hash {process.env.COMMIT_HASH}</li>
+                                <li>@streamr/sdk v{process.env.STREAMR_SDK_VERSION}</li>
                                 <li>
-                                    @streamr/sdk v{process.env.STREAMR_CLIENT_VERSION}
+                                    @streamr/config v{process.env.STREAMR_CONFIG_VERSION}
                                 </li>
                             </ul>
                         ),
