@@ -16,7 +16,6 @@ name = "streamr-dev/dataunion"
 [polygonAmoy]
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
 marketplaceChains = ['polygonAmoy']
-networkSubgraphUrl = "https://api.studio.thegraph.com/query/58729/streamr-amoy-testnet/version/latest"
 
 [[polygonAmoy.storageNodes]]
 name = "Streamr Germany"
