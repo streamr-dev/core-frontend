@@ -1,38 +1,14 @@
 import React from 'react'
+import Markdown from 'react-markdown'
 import styled from 'styled-components'
-import Editor from 'rich-markdown-editor'
-import light from 'rich-markdown-editor/dist/styles/theme'
+import { DetailDisplay, DetailIcon, List } from '~/components/DetailDropdown'
 import {
     ProjectHeroContainer,
-    ProjectHeroDescriptionStyles,
     ProjectHeroImage,
     ProjectHeroMetadataContainer,
     ProjectHeroTitle,
 } from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2.styles'
-import { COLORS } from '~/shared/utils/styled'
-import { DetailIcon, DetailDisplay, List } from '~/components/DetailDropdown'
 import { ParsedProject } from '~/parsers/ProjectParser'
-
-const DescriptionEditor = styled(Editor)`
-    ${ProjectHeroDescriptionStyles};
-    justify-content: flex-start;
-
-    .block-menu-trigger {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-`
-
-const customTheme = {
-    ...light,
-    toolbarBackground: COLORS.primaryContrast,
-    toolbarHoverBackground: COLORS.primaryDisabled,
-    toolbarItem: COLORS.primaryLight,
-    placeholder: COLORS.primaryDisabled,
-    link: COLORS.link,
-    text: COLORS.primaryLight,
-}
 
 interface Props {
     name: string
@@ -41,7 +17,18 @@ interface Props {
     contact: ParsedProject['contact']
 }
 
-export default function ProjectHero2({ name, description, imageUrl, contact }: Props) {
+export default function ProjectHero2({
+    name,
+    description: descriptionProp,
+    imageUrl,
+    contact,
+}: Props) {
+    const description = descriptionProp
+        // Remove empty paragraphs
+        .replace(/\\n/, '')
+        // Remove spacers (extra empty lines)
+        .replace(/^\s*\\\s*$/gm, '')
+
     return (
         <ProjectHeroContainer>
             <ProjectHeroImage
@@ -51,7 +38,21 @@ export default function ProjectHero2({ name, description, imageUrl, contact }: P
                 key={imageUrl || ''}
             />
             <ProjectHeroTitle>{name}</ProjectHeroTitle>
-            <DescriptionEditor value={description} readOnly theme={customTheme} />
+            <MarkdownWrap>
+                <Markdown
+                    components={{
+                        li({ children }) {
+                            return (
+                                <li>
+                                    <p>{children}</p>
+                                </li>
+                            )
+                        },
+                    }}
+                >
+                    {description}
+                </Markdown>
+            </MarkdownWrap>
             <ProjectHeroMetadataContainer>
                 <List>
                     {contact.url && (
@@ -97,3 +98,38 @@ export default function ProjectHero2({ name, description, imageUrl, contact }: P
         </ProjectHeroContainer>
     )
 }
+
+const MarkdownWrap = styled.div`
+    line-height: 1.75;
+    padding-right: 50px;
+
+    > * + * {
+        margin-top: 1em;
+    }
+
+    ol,
+    ul {
+        padding-left: 1.1em;
+    }
+
+    code {
+        border-radius: 4px;
+        border: 1px solid rgb(232, 235, 237);
+        background: rgb(244, 247, 250);
+        padding: 3px 4px;
+        font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier,
+            monospace;
+        font-size: 80%;
+    }
+
+    blockquote {
+        border-left: 3px solid rgb(232, 235, 237);
+        padding: 0.5em;
+        padding-left: 1em;
+        font-style: italic;
+    }
+
+    blockquote > * + * {
+        margin-top: 1em;
+    }
+`
