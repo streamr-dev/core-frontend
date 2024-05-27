@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { z } from 'zod'
 import { StreamGptApiUrl } from '~/consts'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
-import { COLORS } from '~/shared/utils/styled'
+import { COLORS, TABLET } from '~/shared/utils/styled'
 import { LayoutColumn } from './Layout'
 
 interface StreamSummaryProps {
@@ -42,7 +42,7 @@ export function StreamSummary(props: StreamSummaryProps) {
             about,
             usage,
             imageUrl,
-            schema,
+            schema: Object.entries(schema),
             tags,
         }
     }, [summary])
@@ -65,7 +65,7 @@ export function StreamSummary(props: StreamSummaryProps) {
                                         )}
                                     </div>
                                 )}
-                                <div>
+                                <AboutWrapInner>
                                     {info.about ? (
                                         <div>
                                             <Markdown>{info.about}</Markdown>
@@ -80,20 +80,22 @@ export function StreamSummary(props: StreamSummaryProps) {
                                             ))}
                                         </Tags>
                                     )}
-                                </div>
+                                </AboutWrapInner>
                             </AboutWrap>
                         </StreamSummarySection>
                         <InnerWings>
-                            <StreamSummarySection title="Schema" ai>
-                                <Schema>
-                                    {Object.entries(info.schema).map(([key, desc]) => (
-                                        <SchemaPair key={key}>
-                                            <SchemaKey>{key}</SchemaKey>
-                                            {desc}
-                                        </SchemaPair>
-                                    ))}
-                                </Schema>
-                            </StreamSummarySection>
+                            {info.schema.length > 0 && (
+                                <StreamSummarySection title="Schema" ai>
+                                    <Schema>
+                                        {info.schema.map(([key, desc]) => (
+                                            <SchemaPair key={key}>
+                                                <SchemaKey>{key}</SchemaKey>
+                                                {desc}
+                                            </SchemaPair>
+                                        ))}
+                                    </Schema>
+                                </StreamSummarySection>
+                            )}
                             {info.usage && (
                                 <StreamSummarySection title="Stream usage" ai>
                                     <Markdown>{info.usage}</Markdown>
@@ -101,7 +103,13 @@ export function StreamSummary(props: StreamSummaryProps) {
                             )}
                         </InnerWings>
                     </Grid>
-                    <div>MAP</div>
+                    <IFrameWrap>
+                        <iframe
+                            src={`http://localhost:3000/streams/${encodeURIComponent(
+                                streamId,
+                            )}`}
+                        />
+                    </IFrameWrap>
                 </OuterWings>
             </LayoutColumn>
         </StreamSummaryRoot>
@@ -212,9 +220,10 @@ const AiGeneratedRoot = styled.div`
     display: flex;
     font-size: 12px;
     gap: 6px;
-    padding: 0 8px;
-    line-height: normal;
     height: 24px;
+    line-height: normal;
+    padding: 0 8px;
+    text-wrap: nowrap;
 
     strong {
         background: linear-gradient(90deg, #9747ff 0%, #0065ff 171.81%);
@@ -246,6 +255,7 @@ const SchemaPair = styled.li`
 const Tags = styled.div`
     align-items: center;
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
 
     * + & {
@@ -256,17 +266,23 @@ const Tags = styled.div`
 const Tag = styled.div`
     background: ${COLORS.separator};
     border-radius: 4px;
-    padding: 2px 8px;
     font-size: 12px;
     font-weight: 500;
     line-height: 24px;
+    min-width: 0;
+    overflow: hidden;
+    padding: 2px 8px;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    flex-shrink: 1;
 `
 
 const StreamImage = styled.img`
     border-radius: 16px;
     display: block;
-    width: 192px;
-    height: 192px;
+    max-width: 192px;
+    min-width: 88px;
+    width: 20vw;
 `
 
 const Grid = styled.div`
@@ -274,13 +290,41 @@ const Grid = styled.div`
     gap: 20px;
 `
 
+const MapToSideMedia = `(min-width: 1200px)`
+
 const OuterWings = styled(Grid)`
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr;
+
+    @media ${MapToSideMedia} {
+        grid-template-columns: 2fr 1fr;
+    }
 `
 
 const StreamSummaryRoot = styled.div`
     background-color: white;
     padding-bottom: 56px;
+`
+
+const IFrameWrap = styled.div`
+    display: none;
+
+    iframe {
+        border-radius: 16px;
+        border: 0;
+        display: block;
+        height: 320px;
+        width: 100%;
+    }
+
+    @media ${TABLET} {
+        display: block;
+    }
+
+    @media ${MapToSideMedia} {
+        iframe {
+            height: 604px;
+        }
+    }
 `
 
 const StreamSummarySectionRoot = styled.div`
@@ -294,6 +338,9 @@ const StreamSummarySectionRoot = styled.div`
         font-weight: 500;
         line-height: 26px;
         margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
     }
 
     p {
@@ -303,7 +350,15 @@ const StreamSummarySectionRoot = styled.div`
 `
 
 const InnerWings = styled(Grid)`
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+
+    &:empty {
+        display: none;
+    }
+
+    @media ${MapToSideMedia} {
+        grid-template-columns: 1fr 1fr;
+    }
 `
 
 const AboutWrap = styled(Grid)`
@@ -311,15 +366,19 @@ const AboutWrap = styled(Grid)`
     gap: 32px;
 `
 
+const AboutWrapInner = styled.div`
+    min-width: 0;
+`
+
 const StreamSummarySectionHeader = styled.div`
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(6px);
     align-items: center;
+    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.9);
     display: flex;
     gap: 12px;
+    height: 74px;
     padding: 0 24px;
     position: sticky;
-    height: 74px;
     top: 0;
 `
 
@@ -330,4 +389,5 @@ const StreamSummarySectionInner = styled.div`
 
 const StreamSummarySectionBody = styled.div`
     padding: 0 24px 24px;
+    word-wrap: break-word;
 `
