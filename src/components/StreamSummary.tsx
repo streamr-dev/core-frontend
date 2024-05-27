@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import React, { ReactNode, useMemo } from 'react'
 import Markdown from 'react-markdown'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { z } from 'zod'
 import { StreamGptApiUrl } from '~/consts'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
@@ -56,50 +56,60 @@ export function StreamSummary(props: StreamSummaryProps) {
             <LayoutColumn>
                 <OuterWings>
                     <Grid>
-                        <StreamSummarySection title="About Stream" ai>
-                            <AboutWrap>
-                                {info.imageUrl && (
-                                    <div>
-                                        {info.imageUrl && (
-                                            <StreamImage src={info.imageUrl} />
-                                        )}
-                                    </div>
-                                )}
-                                <AboutWrapInner>
-                                    {info.about ? (
+                        {!!(info.about || info.imageUrl || info.tags.length) && (
+                            <StreamSummarySection title="About Stream" ai>
+                                <AboutWrap>
+                                    {info.imageUrl && (
                                         <div>
-                                            <Markdown>{info.about}</Markdown>
+                                            {info.imageUrl && (
+                                                <StreamImage src={info.imageUrl} />
+                                            )}
                                         </div>
-                                    ) : (
-                                        <></>
                                     )}
-                                    {info.tags.length > 0 && (
-                                        <Tags>
-                                            {info.tags.map((tag) => (
-                                                <Tag key={tag}>#{tag}</Tag>
-                                            ))}
-                                        </Tags>
-                                    )}
-                                </AboutWrapInner>
-                            </AboutWrap>
-                        </StreamSummarySection>
+                                    <AboutWrapInner>
+                                        {info.about ? (
+                                            <div>
+                                                <Markdown>{info.about}</Markdown>
+                                            </div>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {info.tags.length > 0 && (
+                                            <Tags>
+                                                {info.tags.map((tag) => (
+                                                    <Tag key={tag}>#{tag}</Tag>
+                                                ))}
+                                            </Tags>
+                                        )}
+                                    </AboutWrapInner>
+                                </AboutWrap>
+                            </StreamSummarySection>
+                        )}
                         <InnerWings>
                             {info.schema.length > 0 && (
-                                <StreamSummarySection title="Schema" ai>
-                                    <Schema>
-                                        {info.schema.map(([key, desc]) => (
-                                            <SchemaPair key={key}>
-                                                <SchemaKey>{key}</SchemaKey>
-                                                {desc}
-                                            </SchemaPair>
-                                        ))}
-                                    </Schema>
-                                </StreamSummarySection>
+                                <div>
+                                    <StreamSummarySection
+                                        title="Schema"
+                                        ai
+                                        scrollMode="always"
+                                    >
+                                        <Schema>
+                                            {info.schema.map(([key, desc]) => (
+                                                <SchemaPair key={key}>
+                                                    <SchemaKey>{key}</SchemaKey>
+                                                    {desc}
+                                                </SchemaPair>
+                                            ))}
+                                        </Schema>
+                                    </StreamSummarySection>
+                                </div>
                             )}
                             {info.usage && (
-                                <StreamSummarySection title="Stream usage" ai>
-                                    <Markdown>{info.usage}</Markdown>
-                                </StreamSummarySection>
+                                <div>
+                                    <StreamSummarySection title="Stream usage" ai>
+                                        <Markdown>{info.usage}</Markdown>
+                                    </StreamSummarySection>
+                                </div>
                             )}
                         </InnerWings>
                     </Grid>
@@ -151,18 +161,21 @@ function useStreamSummaryQuery(streamId: string) {
     })
 }
 
+type ScrollMode = 'desktopOnly' | 'always'
+
 interface StreamSummarySectionProps {
-    title: string
-    children?: ReactNode
     ai?: boolean
+    children?: ReactNode
+    scrollMode?: 'desktopOnly' | 'always'
+    title: string
 }
 
 function StreamSummarySection(props: StreamSummarySectionProps) {
-    const { ai = false, children, title } = props
+    const { ai = false, children, title, scrollMode = 'desktopOnly' } = props
 
     return (
         <StreamSummarySectionRoot>
-            <StreamSummarySectionInner>
+            <StreamSummarySectionInner $scrollMode={scrollMode}>
                 <StreamSummarySectionHeader>
                     <h5>{title}</h5>
                     {ai && <AiGenerated />}
@@ -281,7 +294,7 @@ const StreamImage = styled.img`
     border-radius: 16px;
     display: block;
     max-width: 192px;
-    min-width: 88px;
+    min-width: 64px;
     width: 20vw;
 `
 
@@ -382,9 +395,19 @@ const StreamSummarySectionHeader = styled.div`
     top: 0;
 `
 
-const StreamSummarySectionInner = styled.div`
-    height: 290px;
+const StreamSummarySectionInner = styled.div<{ $scrollMode?: ScrollMode }>`
+    height: auto;
     overflow: auto;
+
+    ${({ $scrollMode }) =>
+        $scrollMode === 'always' &&
+        css`
+            max-height: 290px;
+        `}
+
+    @media ${MapToSideMedia} {
+        height: 290px;
+    }
 `
 
 const StreamSummarySectionBody = styled.div`
