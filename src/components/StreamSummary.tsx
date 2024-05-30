@@ -319,8 +319,6 @@ const StreamSummaryRoot = styled.div`
 `
 
 const IFrameWrap = styled.div`
-    display: none;
-
     iframe {
         border-radius: 16px;
         border: 0;
