@@ -117,7 +117,7 @@ export function StreamSummary(props: StreamSummaryProps) {
                         <iframe
                             src={`http://localhost:3000/streams/${encodeURIComponent(
                                 streamId,
-                            )}`}
+                            )}?hud=387`}
                         />
                     </IFrameWrap>
                 </OuterWings>
