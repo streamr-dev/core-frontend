@@ -292,12 +292,18 @@ const Tag = styled.div`
     flex-shrink: 1;
 `
 
+const PictureOnSideMedia = `(min-width: 420px)`
+
 const StreamImage = styled.img`
     border-radius: 16px;
     display: block;
-    max-width: 192px;
-    min-width: 64px;
-    width: 20vw;
+    max-width: 100%;
+
+    @media ${PictureOnSideMedia} {
+        max-width: 192px;
+        min-width: 64px;
+        width: 20vw;
+    }
 `
 
 const Grid = styled.div`
@@ -377,8 +383,12 @@ const InnerWings = styled(Grid)`
 `
 
 const AboutWrap = styled(Grid)`
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr;
     gap: 32px;
+
+    @media ${PictureOnSideMedia} {
+        grid-template-columns: auto 1fr;
+    }
 `
 
 const AboutWrapInner = styled.div`
