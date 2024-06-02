@@ -7,6 +7,7 @@ import { StreamGptApiUrl } from '~/consts'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { COLORS, TABLET } from '~/shared/utils/styled'
 import { LayoutColumn } from './Layout'
+import { StreamStats } from './Stats'
 
 interface StreamSummaryProps {
     streamId: string
@@ -115,10 +116,11 @@ export function StreamSummary(props: StreamSummaryProps) {
                     </Grid>
                     <IFrameWrap>
                         <iframe
-                            src={`http://localhost:3000/streams/${encodeURIComponent(
+                            src={`https://streamr.network/network-explorer/streams/${encodeURIComponent(
                                 streamId,
-                            )}?hud=387`}
+                            )}?hud=467`}
                         />
+                        <StreamStats streamId={streamId} />
                     </IFrameWrap>
                 </OuterWings>
             </LayoutColumn>
@@ -319,6 +321,8 @@ const StreamSummaryRoot = styled.div`
 `
 
 const IFrameWrap = styled.div`
+    position: relative;
+
     iframe {
         border-radius: 16px;
         border: 0;
