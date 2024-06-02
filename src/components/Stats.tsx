@@ -163,4 +163,5 @@ const StreamStatsRoot = styled.div`
     position: absolute;
     top: 0;
     width: 100%;
+    max-width: 480px;
 `
