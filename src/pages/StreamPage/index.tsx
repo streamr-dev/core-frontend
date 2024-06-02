@@ -22,6 +22,7 @@ import { FloatingToolbar } from '~/components/FloatingToolbar'
 import Helmet from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
+import { StreamSummary } from '~/components/StreamSummary'
 import { useInViewport } from '~/hooks/useInViewport'
 import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
 import { NotFoundPageContent } from '~/pages/NotFoundPage'
@@ -81,6 +82,7 @@ export function StreamEditPage({
 
     return (
         <>
+            {streamId ? <StreamSummary streamId={streamId} /> : <></>}
             <LoadingIndicator loading={isLoading} />
             <LayoutColumn>
                 <Footerless>
