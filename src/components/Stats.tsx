@@ -80,6 +80,7 @@ const ButtonGrid = styled.div`
     display: flex;
     flex-direction: row;
     padding: 16px 0;
+    pointer-events: auto;
 
     > ${StatRoot} {
         flex-grow: 1;
@@ -159,9 +160,10 @@ export function StreamStats({ streamId }: StreamStatsProps) {
 }
 
 const StreamStatsRoot = styled.div`
+    max-width: 480px;
     padding: 24px;
+    pointer-events: none;
     position: absolute;
     top: 0;
     width: 100%;
-    max-width: 480px;
 `
