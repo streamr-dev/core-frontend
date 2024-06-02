@@ -175,7 +175,8 @@ module.exports = {
             ENS_GRAPH_SCHEMA_PATH: process.env.ENS_GRAPH_SCHEMA_PATH || '',
             ENTRYPOINT_WS_HOST: process.env.ENTRYPOINT_WS_HOST || '',
             HUB_CONFIG_ENV: process.env.HUB_CONFIG_ENV || '',
-            STREAM_GPT_API_URL: process.env.STREAM_GPT_API_URL || '',
+            STREAM_GPT_API_URL:
+                process.env.STREAM_GPT_API_URL || 'https://streamgpt.streamr.network/',
             HUB_VERSION: pkg.version,
             STREAMR_SDK_VERSION: pkgLock.packages['node_modules/@streamr/sdk'].version,
             STREAMR_CONFIG_VERSION:
