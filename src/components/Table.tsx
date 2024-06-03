@@ -1,15 +1,21 @@
 import CheckIcon from '@atlaskit/icon/glyph/check'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
+import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
 import React from 'react'
 import styled, { css } from 'styled-components'
+import { z } from 'zod'
 import { StreamDescription } from '~/components/StreamDescription'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
+import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
-import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
+import { getStreamGptApiUrl } from '~/utils'
 import { BN } from '~/utils/bn'
+import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
+import Spinner from './Spinner'
 import { OperatorAvatar } from './avatars'
 
 /**
@@ -81,23 +87,116 @@ export function StreamIdCell({
     streamId?: string
     description?: string
 }) {
+    const imageUrlQuery = useStreamImageUrlQuery(streamId)
+
     if (!streamId) {
         return <DeletedStreamIdCell />
     }
 
     return (
         <StreamInfoCell>
-            <StreamIdWrap>{truncateStreamName(streamId)}</StreamIdWrap>
-            <StreamDescriptionWrap>
-                {description == null ? (
-                    <StreamDescription streamId={streamId} />
-                ) : (
-                    description
-                )}
-            </StreamDescriptionWrap>
+            <StreamAvatarWrap>
+                <HubImageAvatar
+                    src={imageUrlQuery.data || ''}
+                    alt=""
+                    placeholder={
+                        imageUrlQuery.isFetching ? (
+                            <SpinnerWrap>
+                                <Spinner color="blue" size={10} />
+                            </SpinnerWrap>
+                        ) : (
+                            <HubAvatar id={streamId} />
+                        )
+                    }
+                />
+            </StreamAvatarWrap>
+            <StreamInfoCellOuter>
+                <StreamIdWrap>{truncateStreamName(streamId)}</StreamIdWrap>
+                <StreamDescriptionWrap>
+                    {description == null ? (
+                        <StreamDescription streamId={streamId} />
+                    ) : (
+                        description
+                    )}
+                </StreamDescriptionWrap>
+            </StreamInfoCellOuter>
         </StreamInfoCell>
     )
 }
+
+function useStreamImageUrlQuery(streamId: string | undefined) {
+    return useQuery({
+        queryKey: ['useStreamImageUrlQuery', streamId || ''],
+        queryFn: async () => {
+            if (!streamId) {
+                return null
+            }
+
+            const resp = await fetch(
+                getStreamGptApiUrl(`streams/${encodeURIComponent(streamId)}`),
+            )
+
+            /**
+             * The GPT only processes streams on the Polygon network (137).
+             */
+            const { ipfsGatewayUrl } = getChainConfigExtension(137).ipfs
+
+            return z
+                .object({
+                    imageHash: z.string(),
+                })
+                .transform(({ imageHash }) =>
+                    imageHash ? `${ipfsGatewayUrl}${imageHash}` : null,
+                )
+                .parse(await resp.json())
+        },
+        staleTime: Infinity,
+    })
+}
+
+const SpinnerWrap = styled.div`
+    align-items: center;
+    display: flex;
+    justify-content: center;
+`
+
+const StreamAvatarWrap = styled.div`
+    background: #f0f0f0;
+    border-radius: 50%;
+
+    &,
+    ${SpinnerWrap}, ${HubImageAvatar}, ${HubAvatar} {
+        width: 40px;
+        height: 40px;
+    }
+`
+
+const StreamInfoCellOuter = styled.div``
+
+const StreamInfoCell = styled.div`
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    line-height: 26px;
+`
+
+const StreamIdWrap = styled.div`
+    display: block;
+    font-weight: ${MEDIUM};
+    color: ${COLORS.primary};
+`
+
+const StreamDescriptionWrap = styled.div`
+    font-size: 14px;
+    max-width: 208px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    :empty {
+        display: none;
+    }
+`
 
 /**
  * Sponsorship's projected insolvency timestamp formatter.
@@ -199,26 +298,3 @@ export function NumberOfOperatorsCell({
         </Iconized>
     )
 }
-
-const StreamInfoCell = styled.div`
-    display: flex;
-    flex-direction: column;
-    line-height: 26px;
-`
-
-const StreamIdWrap = styled.span`
-    font-weight: ${MEDIUM};
-    color: ${COLORS.primary};
-`
-
-const StreamDescriptionWrap = styled.span`
-    font-size: 14px;
-    max-width: 208px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    :empty {
-        display: none;
-    }
-`

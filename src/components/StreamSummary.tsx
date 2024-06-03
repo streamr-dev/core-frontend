@@ -3,9 +3,9 @@ import React, { ReactNode, useMemo } from 'react'
 import Markdown from 'react-markdown'
 import styled, { css } from 'styled-components'
 import { z } from 'zod'
-import { StreamGptApiUrl } from '~/consts'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { COLORS, TABLET } from '~/shared/utils/styled'
+import { getStreamGptApiUrl } from '~/utils'
 import { LayoutColumn } from './Layout'
 import { StreamStats } from './Stats'
 
@@ -133,7 +133,7 @@ function useStreamSummaryQuery(streamId: string) {
         queryKey: ['useStreamSummaryQuery', streamId],
         queryFn: async () => {
             const resp = await fetch(
-                streamGptApiUrl(`streams/${encodeURIComponent(streamId)}`),
+                getStreamGptApiUrl(`streams/${encodeURIComponent(streamId)}`),
             )
 
             /**
@@ -186,10 +186,6 @@ function StreamSummarySection(props: StreamSummarySectionProps) {
             </StreamSummarySectionInner>
         </StreamSummarySectionRoot>
     )
-}
-
-function streamGptApiUrl(path: string) {
-    return `${StreamGptApiUrl}${path}`
 }
 
 function AiGenerated() {
