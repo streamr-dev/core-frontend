@@ -1,25 +1,25 @@
+import { QueryClient } from '@tanstack/react-query'
 import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import { QueryClient } from '@tanstack/react-query'
-import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import getNativeTokenName from '~/shared/utils/nativeToken'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
+import { StreamGptApiUrl, history } from '~/consts'
 import { getProjectRegistryContract } from '~/getters'
-import { Layer } from '~/utils/Layer'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
-import { history } from '~/consts'
-import { BNish, toBN } from '~/utils/bn'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { operatorModal } from '~/modals/OperatorModal'
 import {
     invalidateActiveOperatorByIdQueries,
     invalidateAllOperatorsQueries,
     invalidateDelegationsForWalletQueries,
 } from '~/hooks/operators'
-import { onIndexedBlock } from '~/utils/blocks'
+import { operatorModal } from '~/modals/OperatorModal'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
+import getNativeTokenName from '~/shared/utils/nativeToken'
+import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
+import { Layer } from '~/utils/Layer'
+import { onIndexedBlock } from '~/utils/blocks'
+import { BNish, toBN } from '~/utils/bn'
 
 /**
  * Gas money checker.
@@ -308,4 +308,11 @@ export function isProjectType(arg: unknown): arg is ProjectType {
         arg === ProjectType.OpenData ||
         arg === ProjectType.PaidData
     )
+}
+
+/**
+ * Returns URL of the StreamGPT for the given path.
+ */
+export function getStreamGptApiUrl(path: string) {
+    return `${StreamGptApiUrl}${path}`
 }
