@@ -108,13 +108,32 @@ async function getStreamsFromIndexer(
             ? streamIdsOption
             : await (async () => {
                   try {
-                      return (
-                          await getStreamsFromGraph(chainId, {
-                              owner,
-                              pageSize: 1000,
-                              search,
-                          })
-                      ).streams.map(({ id }) => id)
+                      const where: Stream_Filter = {
+                          permissions_: {
+                              stream_contains_nocase: search,
+                              userAddress: owner,
+                          },
+                      }
+
+                      if (!where.permissions_?.stream_contains_nocase) {
+                          delete where.permissions_?.stream_contains_nocase
+                      }
+
+                      const {
+                          data: { streams: result },
+                      } = await getGraphClient(chainId).query<
+                          GetPagedStreamsQuery,
+                          GetPagedStreamsQueryVariables
+                      >({
+                          query: GetPagedStreamsDocument,
+                          variables: {
+                              first: 1000,
+                              where,
+                          },
+                          fetchPolicy: 'network-only',
+                      })
+
+                      return result.map(({ id }) => id)
                   } catch (e) {
                       return []
                   }
