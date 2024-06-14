@@ -19,7 +19,6 @@ import {
     isStreamsTabOption,
     useGlobalStreamStatsQuery,
     useStreamsQuery,
-    useStreamsStatsQuery,
 } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import routes from '~/routes'
@@ -58,17 +57,7 @@ export function StreamsPage() {
         setOrder,
     } = useTableOrder<StreamsOrderBy>()
 
-    const streamsStatsQuery = useStreamsStatsQuery()
-
     const streamsQuery = useStreamsQuery({
-        onBatch({ streamIds, source }) {
-            streamsStatsQuery.fetchNextPage({
-                pageParam: {
-                    streamIds,
-                    useIndexer: source !== 'indexer',
-                },
-            })
-        },
         orderBy,
         orderDirection,
         search,
@@ -151,7 +140,6 @@ export function StreamsPage() {
                             orderBy={orderBy}
                             orderDirection={orderDirection}
                             query={streamsQuery}
-                            statsQuery={streamsStatsQuery}
                         />
                     </NetworkPageSegment>
                 </SegmentGrid>
