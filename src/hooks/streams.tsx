@@ -361,7 +361,7 @@ export function useStreamsStatsQuery() {
 
             return await getter(chainId, {
                 force: true,
-                pageSize: streamIds.length,
+                pageSize: Math.min(1000, streamIds.length),
                 streamIds,
             })
         },
