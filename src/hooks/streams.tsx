@@ -90,7 +90,7 @@ async function getStreamsFromIndexer(
         pageParam: cursor,
         pageSize,
         search,
-        streamIds,
+        streamIds: streamIdsOption,
     } = options
 
     const client = getIndexerClient(chainId)
@@ -102,6 +102,21 @@ async function getStreamsFromIndexer(
             streams: [],
         }
     }
+
+    const streamIds =
+        !owner || owner === address0
+            ? streamIdsOption
+            : await (async () => {
+                  try {
+                      return (
+                          await getStreamsFromGraph(chainId, {
+                              owner,
+                          })
+                      ).streams.map(({ id }) => id)
+                  } catch (e) {
+                      return []
+                  }
+              })()
 
     const {
         data: { streams: result },
@@ -124,7 +139,7 @@ async function getStreamsFromIndexer(
                     ? IndexerOrderDirection.Desc
                     : undefined,
             search,
-            owner,
+            owner: undefined,
             cursor,
         },
     })
