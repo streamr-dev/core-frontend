@@ -111,6 +111,8 @@ async function getStreamsFromIndexer(
                       return (
                           await getStreamsFromGraph(chainId, {
                               owner,
+                              pageSize: 1000,
+                              search,
                           })
                       ).streams.map(({ id }) => id)
                   } catch (e) {
