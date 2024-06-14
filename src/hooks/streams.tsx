@@ -90,7 +90,7 @@ async function getStreamsFromIndexer(
         pageParam: cursor,
         pageSize,
         search,
-        streamIds,
+        streamIds: streamIdsOption,
     } = options
 
     const client = getIndexerClient(chainId)
@@ -102,6 +102,42 @@ async function getStreamsFromIndexer(
             streams: [],
         }
     }
+
+    const streamIds =
+        !owner || owner === address0
+            ? streamIdsOption
+            : await (async () => {
+                  try {
+                      const where: Stream_Filter = {
+                          permissions_: {
+                              stream_contains_nocase: search,
+                              userAddress: owner,
+                          },
+                      }
+
+                      if (!where.permissions_?.stream_contains_nocase) {
+                          delete where.permissions_?.stream_contains_nocase
+                      }
+
+                      const {
+                          data: { streams: result },
+                      } = await getGraphClient(chainId).query<
+                          GetPagedStreamsQuery,
+                          GetPagedStreamsQueryVariables
+                      >({
+                          query: GetPagedStreamsDocument,
+                          variables: {
+                              first: 1000,
+                              where,
+                          },
+                          fetchPolicy: 'network-only',
+                      })
+
+                      return result.map(({ id }) => id)
+                  } catch (e) {
+                      return []
+                  }
+              })()
 
     const {
         data: { streams: result },
@@ -124,7 +160,7 @@ async function getStreamsFromIndexer(
                     ? IndexerOrderDirection.Desc
                     : undefined,
             search,
-            owner,
+            owner: undefined,
             cursor,
         },
     })
