@@ -136,6 +136,10 @@ function useStreamImageUrlQuery(streamId: string | undefined) {
                 getStreamGptApiUrl(`streams/${encodeURIComponent(streamId)}`),
             )
 
+            if (resp.status !== 200) {
+                return null
+            }
+
             /**
              * The GPT only processes streams on the Polygon network (137).
              */
