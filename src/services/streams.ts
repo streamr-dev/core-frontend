@@ -1,8 +1,6 @@
-import omitBy from 'lodash/omitBy'
 import isEmpty from 'lodash/isEmpty'
+import omitBy from 'lodash/omitBy'
 import { address0 } from '~/consts'
-import { post } from '~/shared/utils/api'
-import { getGraphClient } from '~/getters/getGraphClient'
 import {
     GetPagedStreamsDocument,
     GetPagedStreamsQuery,
@@ -16,7 +14,7 @@ import {
     Stream_OrderBy,
     StreamPermission,
 } from '~/generated/gql/network'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { getGraphClient } from '~/getters/getGraphClient'
 import { OrderDirection } from '~/types'
 
 export type TheGraphStreamPermission = {
@@ -195,42 +193,6 @@ export type IndexerResult = {
     streams: Array<IndexerStream>
     cursor: string | null | undefined
     hasNextPage: boolean
-}
-
-/**
- * @deprecated
- */
-export const getStreamsFromIndexer = async (
-    chainId: number,
-    streamIds: Array<string>,
-): Promise<Array<IndexerStream>> => {
-    const { streamIndexerUrl } = getChainConfigExtension(chainId)
-
-    if (!streamIndexerUrl || streamIds == null || streamIds.length === 0) {
-        return []
-    }
-
-    const result = await post({
-        url: streamIndexerUrl,
-        data: {
-            query: `
-                {
-                    streams(ids: [${streamIds.map((s) => `"${s}"`).join(',')}]) {
-                        items {
-                          id
-                          description
-                          peerCount
-                          messagesPerSecond
-                          subscriberCount
-                          publisherCount
-                        }
-                    }
-                }
-            `,
-        },
-    })
-
-    return result.data.streams.items
 }
 
 export const getStreamsOwnedBy = async (

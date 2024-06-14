@@ -78,7 +78,7 @@ export interface GetStreamsResult {
     }[]
 }
 
-async function getStreamsFromIndexer(
+export async function getStreamsFromIndexer(
     chainId: number,
     options: GetStreamsOptions = {},
 ): Promise<GetStreamsResult> {
