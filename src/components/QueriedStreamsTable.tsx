@@ -1,12 +1,18 @@
-import { UseInfiniteQueryResult } from '@tanstack/react-query'
-import React, { ReactNode, useEffect, useRef } from 'react'
-import { GetStreamsResult, StreamsOrderBy, isIndexerColumn } from '~/hooks/streams'
-import routes from '~/routes'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { OrderDirection } from '~/types'
+import { UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { StreamIdCell } from '~/components/Table'
+import {
+    GetStreamsResult,
+    StreamStats,
+    StreamsOrderBy,
+    getStreamsFromIndexer,
+    isIndexerColumn,
+} from '~/hooks/streams'
+import routes from '~/routes'
+import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { OrderDirection } from '~/types'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -15,7 +21,6 @@ interface Props {
     orderBy?: StreamsOrderBy
     orderDirection?: OrderDirection
     query: UseInfiniteQueryResult<GetStreamsResult, unknown>
-    statsQuery: UseInfiniteQueryResult<GetStreamsResult | undefined, unknown>
 }
 
 export function QueriedStreamsTable({
@@ -25,16 +30,14 @@ export function QueriedStreamsTable({
     orderBy = 'mps',
     orderDirection,
     query,
-    statsQuery,
 }: Props) {
-    const streams = query.data?.pages.flatMap((d) => d.streams) || []
+    const pages = query.data?.pages || []
 
-    const streamStats = Object.fromEntries(
-        (statsQuery.data?.pages || [])
-            .filter((p) => p)
-            .flatMap((p) => p!.streams)
-            .map((s) => [s!.id, s]),
-    )
+    const streams = pages.flatMap((d) => d.streams) || []
+
+    const [streamStats, setStreamStats] = useState<
+        Record<string, StreamStats | undefined>
+    >({})
 
     const chainId = useCurrentChainId()
 
@@ -59,6 +62,18 @@ export function QueriedStreamsTable({
 
     return (
         <>
+            {pages.map((page) => (
+                <StreamStatsLoader
+                    key={page.pageId}
+                    page={page}
+                    onStats={(stats) => {
+                        setStreamStats((current) => ({
+                            ...current,
+                            ...stats,
+                        }))
+                    }}
+                />
+            ))}
             <ScrollTableCore
                 noDataFirstLine={noDataFirstLine}
                 noDataSecondLine={noDataSecondLine}
@@ -129,4 +144,60 @@ export function QueriedStreamsTable({
             )}
         </>
     )
+}
+
+interface StreamStatsLoaderProps {
+    page: GetStreamsResult
+    onStats?(stats: Partial<Record<string, StreamStats>>): void
+}
+
+function StreamStatsLoader({ onStats, page }: StreamStatsLoaderProps) {
+    const chainId = useCurrentChainId()
+
+    const streamIdsRef = useRef(page.streams.map(({ id }) => id))
+
+    const { data: result } = useQuery({
+        queryKey: ['StreamStatsLoader.statsQuery', chainId, page.pageId, page.source],
+        queryFn: async (): Promise<Partial<Record<string, StreamStats>>> => {
+            if (page.source === 'indexer') {
+                return {}
+            }
+
+            try {
+                const { streams } = await getStreamsFromIndexer(chainId, {
+                    force: true,
+                    pageSize: Math.min(1000, streamIdsRef.current.length),
+                    streamIds: streamIdsRef.current,
+                })
+
+                const stats: Partial<Record<string, StreamStats>> = {}
+
+                for (const { id, messagesPerSecond, peerCount } of streams) {
+                    stats[id] = {
+                        messagesPerSecond,
+                        peerCount,
+                    }
+                }
+
+                return stats
+            } catch (_) {
+                // ¯\_(ツ)_/¯
+            }
+
+            return {}
+        },
+        staleTime: 5 * 60000,
+    })
+
+    const resultRef = useRef(result)
+
+    if (resultRef.current !== result) {
+        resultRef.current = result
+
+        if (result) {
+            onStats?.(result)
+        }
+    }
+
+    return <></>
 }

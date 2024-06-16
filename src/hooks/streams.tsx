@@ -1,30 +1,31 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import uniqueId from 'lodash/uniqueId'
 import { address0 } from '~/consts'
 import {
-    Stream_Filter,
-    Stream_OrderBy,
-    OrderDirection as GraphOrderDirection,
-    GetPagedStreamsQuery,
-    GetPagedStreamsQueryVariables,
-    GetPagedStreamsDocument,
-    StreamPermission,
-} from '~/generated/gql/network'
-import { getGraphClient, getIndexerClient } from '~/getters/getGraphClient'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { OrderDirection } from '~/types'
-import {
+    GetGlobalStreamsStatsDocument,
+    GetGlobalStreamsStatsQuery,
+    GetGlobalStreamsStatsQueryVariables,
     GetStreamsDocument as GetIndexerStreamsDocument,
     GetStreamsQuery as GetIndexerStreamsQuery,
     GetStreamsQueryVariables as GetIndexerStreamsQueryVariables,
-    OrderDirection as IndexerOrderDirection,
     StreamOrderBy as IndexerOrderBy,
-    GetGlobalStreamsStatsQuery,
-    GetGlobalStreamsStatsQueryVariables,
-    GetGlobalStreamsStatsDocument,
+    OrderDirection as IndexerOrderDirection,
 } from '~/generated/gql/indexer'
+import {
+    GetPagedStreamsDocument,
+    GetPagedStreamsQuery,
+    GetPagedStreamsQueryVariables,
+    OrderDirection as GraphOrderDirection,
+    StreamPermission,
+    Stream_Filter,
+    Stream_OrderBy,
+} from '~/generated/gql/network'
 import { getDescription } from '~/getters'
-import { useCurrentChainId } from '~/shared/stores/chain'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { getGraphClient, getIndexerClient } from '~/getters/getGraphClient'
+import { useCurrentChainId } from '~/shared/stores/chain'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { OrderDirection } from '~/types'
 
 export enum StreamsTabOption {
     All = 'all',
@@ -38,13 +39,6 @@ export function isStreamsTabOption(value: unknown): value is StreamsTabOption {
 export type StreamsOrderBy = 'id' | 'mps' | 'peerCount'
 
 export interface UseStreamsQueryOptions {
-    onBatch?: ({
-        streamIds,
-        source,
-    }: {
-        streamIds: string[]
-        source: 'graph' | 'indexer'
-    }) => void
     orderBy: StreamsOrderBy
     orderDirection: OrderDirection
     pageSize?: number
@@ -64,21 +58,25 @@ interface GetStreamsOptions {
     streamIds?: string[]
 }
 
+export interface StreamStats {
+    messagesPerSecond: number | undefined
+    peerCount: number | undefined
+}
+
 export interface GetStreamsResult {
     hasNextPage: boolean
     nextPageParam: string | null
-    streams: {
+    streams: (StreamStats & {
         description: string
         id: string
-        messagesPerSecond: number | undefined
-        peerCount: number | undefined
         publisherCount: number | undefined
-        source: 'indexer' | 'graph'
         subscriberCount: number | undefined
-    }[]
+    })[]
+    pageId: string
+    source: 'indexer' | 'graph'
 }
 
-async function getStreamsFromIndexer(
+export async function getStreamsFromIndexer(
     chainId: number,
     options: GetStreamsOptions = {},
 ): Promise<GetStreamsResult> {
@@ -99,6 +97,8 @@ async function getStreamsFromIndexer(
         return {
             hasNextPage: false,
             nextPageParam: null,
+            pageId: uniqueId('StreamsPage-'),
+            source: 'indexer',
             streams: [],
         }
     }
@@ -107,6 +107,12 @@ async function getStreamsFromIndexer(
         !owner || owner === address0
             ? streamIdsOption
             : await (async () => {
+                  /**
+                   * Indexer keeps track of stream owners but have no information on secondary
+                   * permissions. Here we ask the regular graph for stream ids for the current
+                   * address and use them to query the indexer. Hacky.
+                   */
+
                   try {
                       const where: Stream_Filter = {
                           permissions_: {
@@ -171,13 +177,14 @@ async function getStreamsFromIndexer(
         messagesPerSecond,
         peerCount,
         publisherCount: s.publisherCount || undefined,
-        source: 'graph' as const,
         subscriberCount: s.subscriberCount || undefined,
     }))
 
     return {
         hasNextPage: result.cursor != null,
         nextPageParam: result.cursor || null,
+        pageId: uniqueId('StreamsPage-'),
+        source: 'indexer',
         streams,
     }
 }
@@ -262,28 +269,21 @@ async function getStreamsFromGraph(
             messagesPerSecond: undefined,
             peerCount: undefined,
             publisherCount,
-            source: 'indexer' as const,
             subscriberCount,
         }
     })
 
     return {
-        streams,
         hasNextPage: streams.length > pageSize,
         nextPageParam: streams[streams.length - 1].id,
+        pageId: uniqueId('StreamsPage-'),
+        source: 'graph',
+        streams,
     }
 }
 
 export function useStreamsQuery(options: UseStreamsQueryOptions) {
-    const {
-        onBatch,
-        orderBy,
-        orderDirection,
-        pageSize = 10,
-        search,
-        tab,
-        streamIds,
-    } = options
+    const { orderBy, orderDirection, pageSize = 10, search, tab, streamIds } = options
 
     const account = useWalletAccount()
 
@@ -308,25 +308,25 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
                 ? getStreamsFromIndexer
                 : getStreamsFromGraph
 
-            const { streams, nextPageParam, hasNextPage } = await getter(chainId, {
-                force: true,
-                orderBy,
-                orderDirection,
-                owner: owner?.toLowerCase(),
-                pageParam,
-                pageSize,
-                search: search?.toLowerCase() || undefined,
-                streamIds,
-            })
-
-            onBatch?.({
-                streamIds: streams.map((s) => s.id),
-                source: isIndexerColumn(chainId, orderBy) ? 'indexer' : 'graph',
-            })
+            const { streams, nextPageParam, hasNextPage, source, pageId } = await getter(
+                chainId,
+                {
+                    force: true,
+                    orderBy,
+                    orderDirection,
+                    owner: owner?.toLowerCase(),
+                    pageParam,
+                    pageSize,
+                    search: search?.toLowerCase() || undefined,
+                    streamIds,
+                },
+            )
 
             return {
                 hasNextPage,
                 nextPageParam,
+                pageId,
+                source,
                 streams,
             }
         },
@@ -343,31 +343,6 @@ export function isIndexerColumn(chainId: number, orderBy: StreamsOrderBy) {
     }
 
     return orderBy === 'mps' || orderBy === 'peerCount'
-}
-
-export function useStreamsStatsQuery() {
-    const chainId = useCurrentChainId()
-
-    return useInfiniteQuery({
-        queryKey: ['useStreamsStatsQuery', chainId],
-        queryFn: async ({ pageParam }) => {
-            if (pageParam == null) {
-                return
-            }
-
-            const { useIndexer, streamIds } = pageParam
-
-            const getter = useIndexer ? getStreamsFromIndexer : getStreamsFromGraph
-
-            return await getter(chainId, {
-                force: true,
-                pageSize: streamIds.length,
-                streamIds,
-            })
-        },
-        staleTime: 60 * 1000, // 1 minute
-        keepPreviousData: true,
-    })
 }
 
 interface GetStatsFromPermissionsResult {

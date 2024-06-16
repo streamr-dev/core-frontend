@@ -1,17 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import {
-    IndexerStream,
-    TheGraphStream,
-    getStreamsFromIndexer,
-    getStreamsOwnedBy,
-} from '~/services/streams'
+import { address0 } from '~/consts'
+import { getStreamsFromIndexer } from '~/hooks/streams'
+import { IndexerStream, TheGraphStream, getStreamsOwnedBy } from '~/services/streams'
 import SearchBar from '~/shared/components/SearchBar'
 import { StreamSelectTable } from '~/shared/components/StreamSelectTable'
-import { ProjectDraft } from '~/stores/projectDraft'
+import { useCurrentChainId } from '~/shared/stores/chain'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ProjectType } from '~/shared/types'
-import { address0 } from '~/consts'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { ProjectDraft } from '~/stores/projectDraft'
 
 const PageSize = 10
 
@@ -129,7 +125,10 @@ export default function EditorStreams() {
 
         setTimeout(async () => {
             try {
-                const stats = await getStreamsFromIndexer(chainId, streamIds)
+                const { streams: stats } = await getStreamsFromIndexer(chainId, {
+                    pageSize: Math.min(1000, streamIds.length),
+                    streamIds,
+                })
 
                 if (!mounted || !stats.length) {
                     return

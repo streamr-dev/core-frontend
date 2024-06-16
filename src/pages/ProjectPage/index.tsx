@@ -1,13 +1,20 @@
 import React, { useEffect, useMemo } from 'react'
 import { Link, Navigate, Outlet, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 import { Button } from '~/components/Button'
 import ColoredBox from '~/components/ColoredBox'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import NetworkPageSegment, { Pad, SegmentGrid } from '~/components/NetworkPageSegment'
 import { QueriedStreamsTable } from '~/components/QueriedStreamsTable'
 import { TermsOfUse } from '~/components/TermsOfUse'
-import { StreamsOrderBy, useStreamsQuery, useStreamsStatsQuery } from '~/hooks/streams'
+import {
+    useInitialBehindIndexError,
+    useLatestBehindBlockError,
+    useRefetchQueryBehindIndexEffect,
+} from '~/hooks'
+import { useProjectByIdQuery } from '~/hooks/projects'
+import { StreamsOrderBy, useStreamsQuery } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import ProjectHero from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2'
 import NotFoundPage from '~/pages/NotFoundPage'
@@ -30,13 +37,6 @@ import {
     useIsAccessibleByCurrentWallet,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
-import { useProjectByIdQuery } from '~/hooks/projects'
-import {
-    useInitialBehindIndexError,
-    useLatestBehindBlockError,
-    useRefetchQueryBehindIndexEffect,
-} from '~/hooks'
-import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 import { AccessManifest } from './AccessManifest'
 import GetAccess from './GetAccess'
 import ProjectEditorPage from './ProjectEditorPage'
@@ -349,17 +349,7 @@ function StreamTable({ streamIds }: { streamIds: string[] }) {
         setOrder,
     } = useTableOrder<StreamsOrderBy>()
 
-    const streamsStatsQuery = useStreamsStatsQuery()
-
     const streamsQuery = useStreamsQuery({
-        onBatch({ streamIds, source }) {
-            streamsStatsQuery.fetchNextPage({
-                pageParam: {
-                    streamIds,
-                    useIndexer: source !== 'indexer',
-                },
-            })
-        },
         orderBy,
         orderDirection,
         streamIds,
@@ -371,7 +361,6 @@ function StreamTable({ streamIds }: { streamIds: string[] }) {
             orderBy={orderBy}
             orderDirection={orderDirection}
             query={streamsQuery}
-            statsQuery={streamsStatsQuery}
         />
     )
 }
