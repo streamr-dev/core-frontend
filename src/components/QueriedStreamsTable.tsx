@@ -1,5 +1,7 @@
-import { UseInfiniteQueryResult, useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
+import { LoadMoreButton } from '~/components/LoadMore'
+import { StreamIdCell } from '~/components/Table'
 import {
     GetStreamsResult,
     StreamStats,
@@ -9,10 +11,8 @@ import {
 } from '~/hooks/streams'
 import routes from '~/routes'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { OrderDirection } from '~/types'
-import { LoadMoreButton } from '~/components/LoadMore'
-import { StreamIdCell } from '~/components/Table'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { OrderDirection } from '~/types'
 
 interface Props {
     noDataFirstLine?: ReactNode
