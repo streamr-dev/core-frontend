@@ -86,7 +86,7 @@ const Snippet = {
             ${this.websocketHeader(streamId)}
             // Connect to the Websocket plugin on your Streamr 
             // node and subscribe to a stream of messages
-            const sub = ws.connect(\`ws://my-streamr-node:7170/streams/${streamId}/subscribe\`)
+            const sub = ws.connect(\`ws://my-streamr-node:7170/streams/\${streamId}/subscribe\`)
             sub.onmessage = (msg) => {
                 // Handle incoming messages
             }
