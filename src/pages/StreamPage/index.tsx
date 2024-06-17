@@ -54,6 +54,7 @@ import { InfoSection } from '../AbstractStreamEditPage/InfoSection'
 import { PartitionsSection } from '../AbstractStreamEditPage/PartitionsSection'
 import RelatedProjects from '../AbstractStreamEditPage/RelatedProjects'
 import SponsorshipsTable from '../AbstractStreamEditPage/SponsorshipsTable'
+import { route } from '~/rs'
 
 export function StreamEditPage({
     saveButtonRef,
@@ -180,7 +181,11 @@ export function StreamConnectPage() {
 export function StreamIndexRedirect() {
     const { id } = useParams<{ id: string }>()
 
-    return <Navigate to={routes.streams.overview({ id })} replace />
+    if (!id) {
+        throw new Error('Invalid context (missing stream id)')
+    }
+
+    return <Navigate to={route('stream.overview', id)} replace />
 }
 
 interface StreamTabbedPageProps {
@@ -276,11 +281,7 @@ function StreamEntityForm(props: StreamEntityFormProps) {
                 return
             }
 
-            navigate(
-                routes.streams.overview({
-                    id: streamId,
-                }),
-            )
+            navigate(route('stream.overview', streamId))
         },
         onPermissionsChange(streamId, assignments) {
             if (!account) {
@@ -339,9 +340,9 @@ function usePreventDataLossEffect() {
             (dest?: string) => {
                 if (id) {
                     switch (dest) {
-                        case routes.streams.overview({ id }):
-                        case routes.streams.connect({ id }):
-                        case routes.streams.liveData({ id }):
+                        case route('stream.overview', id):
+                        case route('stream.connect', id):
+                        case route('stream.liveData', id):
                             return false
                     }
                 }
@@ -420,9 +421,7 @@ function Header({
                             <Tab
                                 id="overview"
                                 tag={Link}
-                                to={routes.streams.overview({
-                                    id: streamId,
-                                })}
+                                to={route('stream.overview', streamId)}
                                 selected="to"
                             >
                                 Stream overview
@@ -431,9 +430,7 @@ function Header({
                             <Tab
                                 id="connect"
                                 tag={Link}
-                                to={routes.streams.connect({
-                                    id: streamId,
-                                })}
+                                to={route('stream.connect', streamId)}
                                 selected="to"
                             >
                                 Connect
@@ -441,9 +438,7 @@ function Header({
                             <Tab
                                 id="liveData"
                                 tag={Link}
-                                to={routes.streams.liveData({
-                                    id: streamId,
-                                })}
+                                to={route('stream.liveData', streamId)}
                                 selected="to"
                             >
                                 Live data

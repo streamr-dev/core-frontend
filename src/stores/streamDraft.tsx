@@ -18,6 +18,7 @@ import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { Bits, ParsedStream, matchBits, parseStream } from '~/parsers/StreamParser'
 import routes from '~/routes'
+import { route } from '~/rs'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import { useCurrentChainId } from '~/shared/stores/chain'
@@ -591,18 +592,14 @@ const NewStreamLink = styled(Link)`
 function getOpenStreamLink(streamId: string) {
     return function OpenStreamLink() {
         const id: string = decodeURIComponent(
-            useMatch(routes.streams.overview())?.params['id'] || '',
+            useMatch(route('stream.overview', ':id'))?.params['id'] || '',
         )
 
         if (!streamId || id === streamId) {
             return <></>
         }
 
-        return (
-            <NewStreamLink to={routes.streams.overview({ id: streamId })}>
-                Open
-            </NewStreamLink>
-        )
+        return <NewStreamLink to={route('stream.overview', streamId)}>Open</NewStreamLink>
     }
 }
 
