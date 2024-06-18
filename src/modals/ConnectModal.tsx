@@ -10,7 +10,7 @@ import TimeoutError from '~/shared/errors/TimeoutError'
 import { getWalletAccount, useWalletAccount } from '~/shared/stores/wallet'
 import { isCodedError, RejectionReason } from '~/utils/exceptions'
 import { Layer } from '~/utils/Layer'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 const Root = styled.div`
     background: #f8f8f8;

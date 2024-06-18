@@ -9,7 +9,7 @@ import {
     getStreamsFromIndexer,
     isIndexerColumn,
 } from '~/hooks/streams'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { OrderDirection } from '~/types'

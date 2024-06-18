@@ -21,7 +21,7 @@ import {
 import { abbr } from '~/utils'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { OrderDirection } from '~/types'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 interface Props {
     noDataFirstLine?: ReactNode

@@ -11,7 +11,7 @@ import { truncateStreamName } from '~/shared/utils/text'
 import useCopy from '~/shared/hooks/useCopy'
 import { useStreamAbility } from '~/shared/stores/streamAbilities'
 import { address0 } from '~/consts'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 function stripIndent(code: string): string {
     let minIndent = Number.POSITIVE_INFINITY

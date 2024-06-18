@@ -9,7 +9,7 @@ import { REGULAR } from '~/shared/utils/styled'
 import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import { useInViewport } from '~/hooks/useInViewport'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 const FlexNavbar = styled(Navbar)`
     display: flex;

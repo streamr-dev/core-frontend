@@ -20,7 +20,7 @@ import {
     SelectFieldWrap,
 } from '~/components/ActionBar.styles'
 import { projectTypeFilterModal } from '~/modals/ProjectTypeFilter'
-import { RouteOptions, route } from '~/rs'
+import { RouteOptions, route } from '~/routes'
 
 enum TabOption {
     Any = 'all',

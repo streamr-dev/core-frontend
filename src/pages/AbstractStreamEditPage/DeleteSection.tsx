@@ -6,7 +6,7 @@ import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { StreamDraft } from '~/stores/streamDraft'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import Section from './Section'
 
 const Description = styled.p`

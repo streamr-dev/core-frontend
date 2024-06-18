@@ -21,7 +21,7 @@ import {
     useStreamsQuery,
 } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { RouteOptions, route } from '~/rs'
+import { RouteOptions, route } from '~/routes'
 import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'

@@ -8,7 +8,7 @@ import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '~/shared/utils/styled'
 import Checkbox from '~/shared/components/Checkbox'
 import { IndexerStream, TheGraphStream } from '~/services/streams'
 import { truncateStreamName } from '~/shared/utils/text'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 const ROW_HEIGHT = 88
 

@@ -43,8 +43,8 @@ import Analytics from '~/shared/utils/Analytics'
 import { getQueryClient } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import '~/utils/setupSnippets'
+import { route } from '~/routes'
 import ProjectEditorPage from './pages/ProjectPage/ProjectEditorPage'
-import { route } from './rs'
 
 const App = () => (
     <Root>

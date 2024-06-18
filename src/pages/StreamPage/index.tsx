@@ -45,7 +45,7 @@ import {
     usePersistStreamDraft,
     useStreamEntityQuery,
 } from '~/stores/streamDraft'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
 import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
 import DeleteSection from '../AbstractStreamEditPage/DeleteSection'

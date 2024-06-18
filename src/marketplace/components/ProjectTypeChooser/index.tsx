@@ -16,7 +16,7 @@ import { Button } from '~/components/Button'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getPagedStreams } from '~/services/streams'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { RouteOptions, route } from '~/rs'
+import { RouteOptions, route } from '~/routes'
 
 const Root = styled.div`
     color: #323232;

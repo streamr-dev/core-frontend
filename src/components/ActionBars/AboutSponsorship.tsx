@@ -14,7 +14,7 @@ import {
 import { truncateStreamName } from '~/shared/utils/text'
 import { ExternalLinkIcon } from '~/icons'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorship }) {
     const { streamId } = sponsorship

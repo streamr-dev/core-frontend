@@ -22,7 +22,7 @@ import {
     SponsorshipFilters,
     defaultFilters,
 } from '~/components/SponsorshipFilterButton'
-import { RouteOptions, route } from '~/rs'
+import { RouteOptions, route } from '~/routes'
 
 const PAGE_SIZE = 20
 

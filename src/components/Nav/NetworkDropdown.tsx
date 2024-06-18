@@ -5,7 +5,7 @@ import { NavLink, NavbarLinkDesktop } from '~/components/Nav/Nav.styles'
 import { DefaultSimpleDropdownMenu, SimpleDropdown } from '~/components/SimpleDropdown'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 export function Dropdown() {
     const [isOpen, setIsOpen] = useState(false)

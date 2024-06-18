@@ -11,7 +11,7 @@ import { Button } from '~/components/Button'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 type Props = {
     streamId: string

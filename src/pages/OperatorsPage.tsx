@@ -24,7 +24,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { RouteOptions, route } from '~/rs'
+import { RouteOptions, route } from '~/routes'
 
 const PAGE_SIZE = 20
 

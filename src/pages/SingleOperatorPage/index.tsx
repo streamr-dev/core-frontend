@@ -70,7 +70,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import { UndelegationQueue } from './UndelegationQueue'
 
 const defaultChartData = []

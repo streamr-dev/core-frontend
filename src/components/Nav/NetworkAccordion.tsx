@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM, REGULAR } from '~/shared/utils/styled'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import { NavLink, NavbarLinkMobile } from './Nav.styles'
 import { NetworkNavItems, isNetworkTabActive } from './NetworkDropdown'
 

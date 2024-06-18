@@ -6,7 +6,7 @@ import Layout from '~/components/Layout'
 import pageNotFoundPic from '~/shared/assets/images/404_blocks.png'
 import pageNotFoundPic2x from '~/shared/assets/images/404_blocks@2x.png'
 import { Button } from '~/components/Button'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 export default function NotFoundPage() {
     return (

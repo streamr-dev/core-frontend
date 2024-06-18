@@ -15,7 +15,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { PHONE } from '~/shared/utils/styled'
 import { truncate } from '~/shared/utils/text'
 import { StreamDraft } from '~/stores/streamDraft'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import useStreamOwnerOptionGroups, {
     ADD_ENS_DOMAIN_VALUE,
     OptionGroup,

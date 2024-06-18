@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Button } from '~/components/Button'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import ProjectModal, { Actions } from './ProjectModal'
 
 const Box = styled.div`

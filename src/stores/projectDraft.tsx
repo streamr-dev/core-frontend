@@ -6,7 +6,7 @@ import { randomHex } from 'web3-utils'
 import { ValidationError } from '~/errors'
 import { getDataUnion } from '~/getters/du'
 import { ParsedProject } from '~/parsers/ProjectParser'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import {
     createProject,
     deployDataUnionContract,

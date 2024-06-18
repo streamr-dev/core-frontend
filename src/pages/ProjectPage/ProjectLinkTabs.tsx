@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import isPreventable from '~/utils/isPreventable'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 export default function ProjectLinkTabs({
     projectId,

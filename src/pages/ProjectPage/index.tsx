@@ -36,7 +36,7 @@ import {
     useIsAccessibleByCurrentWallet,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import { AccessManifest } from './AccessManifest'
 import GetAccess from './GetAccess'
 import ProjectEditorPage from './ProjectEditorPage'

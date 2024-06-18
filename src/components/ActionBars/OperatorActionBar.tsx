@@ -32,7 +32,7 @@ import {
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
 import { AbstractActionBar, Pad } from './AbstractActionBar'

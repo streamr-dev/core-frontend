@@ -18,7 +18,7 @@ import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { toBN } from '~/utils/bn'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 interface Props {
     projectId: string

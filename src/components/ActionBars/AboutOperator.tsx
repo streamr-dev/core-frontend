@@ -12,7 +12,7 @@ import {
 import { truncate } from '~/shared/utils/text'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { CopyButton } from '~/components/CopyButton'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 export function AboutOperator({ operator }: { operator: ParsedOperator }) {
     const {

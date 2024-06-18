@@ -8,7 +8,7 @@ import {
     SocialChannels,
 } from '@streamr/streamr-layout'
 import { COLORS } from '~/shared/utils/styled'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;

@@ -44,7 +44,7 @@ import { truncate } from '~/shared/utils/text'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useAllOperatorsForWalletQuery } from '~/hooks/operators'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string

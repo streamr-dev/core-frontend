@@ -10,7 +10,7 @@ import { COLORS } from '~/shared/utils/styled'
 import { TheGraphProject } from '~/services/projects'
 import { getProjectImageUrl } from '~/getters'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { RouteOptions, route } from '~/rs'
+import { RouteOptions, route } from '~/routes'
 import Summary from './Summary'
 import { DataUnionBadge } from './Badge'
 

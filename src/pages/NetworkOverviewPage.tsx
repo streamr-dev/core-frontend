@@ -53,7 +53,7 @@ import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { Abbr } from '~/components/Abbr'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 export function NetworkOverviewPage() {
     return (

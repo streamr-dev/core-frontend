@@ -13,7 +13,7 @@ import { saveOperator } from '~/utils'
 import { useMediaQuery } from '~/hooks'
 import { ChainSelector as UnstyledChainSelector } from '~/components/ChainSelector'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { RouteOptions, route } from '~/rs'
+import { RouteOptions, route } from '~/routes'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,

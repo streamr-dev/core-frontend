@@ -40,7 +40,7 @@ import {
     useRefetchQueryBehindIndexEffect,
 } from '~/hooks'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''

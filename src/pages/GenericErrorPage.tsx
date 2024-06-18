@@ -6,7 +6,7 @@ import Layout from '~/components/Layout'
 import appCrashedImage from '~/shared/assets/images/app_crashed.png'
 import appCrashedImage2x from '~/shared/assets/images/app_crashed@2x.png'
 import { Button } from '~/components/Button'
-import { route } from '~/rs'
+import { route } from '~/routes'
 
 export default function GenericErrorPage() {
     return (

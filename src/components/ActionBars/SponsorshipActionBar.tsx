@@ -33,7 +33,7 @@ import {
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { route } from '~/rs'
+import { route } from '~/routes'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
 
 const DayInSeconds = 60 * 60 * 24
