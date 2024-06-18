@@ -16,9 +16,9 @@ import {
 import { errorToast } from '~/utils/toast'
 import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
-import routes from '~/routes'
 import { toBN } from '~/utils/bn'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { route } from '~/rs'
 
 interface Props {
     projectId: string
@@ -76,7 +76,7 @@ export function AccessManifest({
                 </p>
             )}
             {hasAccess === true && (
-                <Button as={Link} to={routes.projects.connect({ id: projectId })}>
+                <Button as={Link} to={route('project.connect', projectId)}>
                     Connect
                 </Button>
             )}

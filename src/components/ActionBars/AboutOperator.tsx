@@ -12,6 +12,7 @@ import {
 import { truncate } from '~/shared/utils/text'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { CopyButton } from '~/components/CopyButton'
+import { route } from '~/rs'
 
 export function AboutOperator({ operator }: { operator: ParsedOperator }) {
     const {
@@ -49,7 +50,7 @@ export function AboutOperator({ operator }: { operator: ParsedOperator }) {
                     </p>
                     <p>
                         <a
-                            href="https://docs.streamr.network/streamr-network/network-incentives"
+                            href={route('docs', '/streamr-network/network-incentives')}
                             target="_blank"
                             rel="noreferrer noopener"
                         >

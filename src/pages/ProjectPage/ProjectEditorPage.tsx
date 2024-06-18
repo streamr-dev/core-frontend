@@ -18,7 +18,6 @@ import { getProjectTypeTitle } from '~/getters'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import ProjectLinkTabs from '~/pages/ProjectPage/ProjectLinkTabs'
 import TermsOfUse from '~/pages/ProjectPage/TermsOfUse'
-import routes from '~/routes'
 import { deleteProject } from '~/services/projects'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
@@ -31,6 +30,7 @@ import { Chain } from '~/types'
 import { SalePointsPayload } from '~/types/projects'
 import { formatChainName } from '~/utils'
 import { toastedOperation } from '~/utils/toastedOperation'
+import { route } from '~/rs'
 import DataUnionFee from './DataUnionFee'
 import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
@@ -433,7 +433,7 @@ export default function ProjectEditorPage() {
                                                     return
                                                 }
 
-                                                navigate(routes.projects.index())
+                                                navigate(route('projects'))
                                             } catch (e) {
                                                 console.warn(
                                                     'Failed to delete a project',

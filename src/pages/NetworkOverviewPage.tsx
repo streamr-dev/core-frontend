@@ -18,7 +18,6 @@ import {
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import WalletPass from '~/components/WalletPass'
 import { NoData } from '~/shared/components/NoData'
-import routes from '~/routes'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
@@ -54,6 +53,7 @@ import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { Abbr } from '~/components/Abbr'
+import { route } from '~/rs'
 
 export function NetworkOverviewPage() {
     return (
@@ -176,7 +176,7 @@ function MyOperatorSummary() {
                             <Button
                                 kind="secondary"
                                 as={Link}
-                                to={routes.network.operator({ id: operator.id })}
+                                to={route('operator', operator.id)}
                             >
                                 View Operator
                             </Button>
@@ -250,9 +250,7 @@ function MyOperatorSummary() {
                                 secondLine={
                                     <>
                                         You can become an operator on the{' '}
-                                        <Link to={routes.network.operators()}>
-                                            Operators
-                                        </Link>{' '}
+                                        <Link to={route('operators')}>Operators</Link>{' '}
                                         page.
                                     </>
                                 }
@@ -463,7 +461,7 @@ function MyDelegations() {
                                     key: 'sponsorships',
                                 },
                             ]}
-                            linkMapper={({ id }) => routes.network.operator({ id })}
+                            linkMapper={({ id }) => route('operator', id)}
                         />
                         {query.hasNextPage ? (
                             <LoadMoreButton
@@ -483,8 +481,8 @@ function MyDelegations() {
                         secondLine={
                             <>
                                 You can browse{' '}
-                                <Link to={routes.network.operators()}>operators</Link> to
-                                start delegating.
+                                <Link to={route('operators')}>operators</Link> to start
+                                delegating.
                             </>
                         }
                         compact
@@ -507,9 +505,7 @@ function MySponsorships() {
                     noDataSecondLine={
                         <>
                             You can{' '}
-                            <Link to={routes.network.sponsorships()}>
-                                start a sponsorship
-                            </Link>{' '}
+                            <Link to={route('sponsorships')}>start a sponsorship</Link>{' '}
                             here
                         </>
                     }

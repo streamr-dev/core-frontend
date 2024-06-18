@@ -7,7 +7,6 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { TheGraph } from '~/shared/types'
 import { ProjectFilter } from '~/types'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import routes from '~/routes'
 import { Button } from '~/components/Button'
 import Faders from '~/assets/Faders.svg'
 import {
@@ -21,6 +20,7 @@ import {
     SelectFieldWrap,
 } from '~/components/ActionBar.styles'
 import { projectTypeFilterModal } from '~/modals/ProjectTypeFilter'
+import { RouteOptions, route } from '~/rs'
 
 enum TabOption {
     Any = 'all',
@@ -90,7 +90,14 @@ const UnstyledActionBar = ({
                     <Tabs
                         selection={scope}
                         onSelectionChange={(id) => {
-                            navigate(routes.projects.index({ tab: id }))
+                            navigate(
+                                route(
+                                    'projects',
+                                    RouteOptions.from({
+                                        tag: id,
+                                    }),
+                                ),
+                            )
                         }}
                     >
                         <Tab id={TabOption.Any}>All projects</Tab>

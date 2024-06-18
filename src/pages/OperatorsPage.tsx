@@ -8,7 +8,6 @@ import { Button } from '~/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
-import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
 import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { LoadMoreButton } from '~/components/LoadMore'
@@ -25,6 +24,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { RouteOptions, route } from '~/rs'
 
 const PAGE_SIZE = 20
 
@@ -81,7 +81,9 @@ export const OperatorsPage = () => {
 
     useEffect(() => {
         if (!wallet) {
-            navigate(routes.network.operators({ tab: TabOption.AllOperators }))
+            navigate(
+                route('operators', RouteOptions.from({ tab: TabOption.AllOperators })),
+            )
         }
     }, [wallet, navigate])
 
@@ -94,7 +96,9 @@ export const OperatorsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            navigate(routes.network.operators({ tab: value }))
+                            navigate(
+                                route('operators', RouteOptions.from({ tab: value })),
+                            )
                         }}
                         selection={selectedTab}
                         fullWidthOnMobile={true}
@@ -107,12 +111,7 @@ export const OperatorsPage = () => {
                 }
                 rightSideContent={
                     operator ? (
-                        <Button
-                            as={Link}
-                            to={routes.network.operator({
-                                id: operator.id,
-                            })}
-                        >
+                        <Button as={Link} to={route('operator', operator.id)}>
                             View my Operator
                         </Button>
                     ) : (
@@ -121,10 +120,13 @@ export const OperatorsPage = () => {
                                 saveOperator(chainId, undefined, {
                                     onDone(id, blockNumber) {
                                         navigate(
-                                            routes.network.operator({
+                                            route(
+                                                'operator',
                                                 id,
-                                                b: blockNumber,
-                                            }),
+                                                RouteOptions.from({
+                                                    b: blockNumber,
+                                                }),
+                                            ),
                                         )
                                     },
                                 })
@@ -259,7 +261,7 @@ function DelegationsTable({
                 },
             ]}
             noDataFirstLine="You have not delegated to any operator."
-            linkMapper={(element) => routes.network.operator({ id: element.id })}
+            linkMapper={(element) => route('operator', element.id)}
         />
     )
 }
@@ -350,7 +352,7 @@ function OperatorsTable({
                 },
             ]}
             noDataFirstLine="No operators found."
-            linkMapper={(element) => routes.network.operator({ id: element.id })}
+            linkMapper={(element) => route('operator', element.id)}
         />
     )
 }

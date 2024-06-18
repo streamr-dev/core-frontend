@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import LightModal from '~/modals/LightModal'
+import { route } from '~/rs'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
@@ -22,7 +23,7 @@ export const DisclaimerBar = () => {
                 Streamr risk disclaimer: The sponsorship, staking & delegation smart
                 contracts are unproven technology, participate at your own risk.{' '}
                 <a
-                    href="https://docs.streamr.network/streamr-testnets/testnets"
+                    href={route('docs', '/streamr-testnets/testnets')}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={async (e) => {
@@ -41,7 +42,10 @@ export const DisclaimerBar = () => {
                                         can result in irreversible loss of funds. Exercise
                                         caution. Never share your private key with anyone.{' '}
                                         <a
-                                            href="https://docs.streamr.network/streamr-testnets/testnets"
+                                            href={route(
+                                                'docs',
+                                                '/streamr-testnets/testnets',
+                                            )}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >

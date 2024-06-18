@@ -9,8 +9,8 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import { TheGraphProject } from '~/services/projects'
 import { getProjectImageUrl } from '~/getters'
-import routes from '~/routes'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { RouteOptions, route } from '~/rs'
 import Summary from './Summary'
 import { DataUnionBadge } from './Badge'
 
@@ -196,11 +196,7 @@ function MarketplaceProductTile({
     return (
         <Tile {...props}>
             <TileImageContainer>
-                <Link
-                    to={routes.projects.overview({
-                        id: product.id,
-                    })}
-                >
+                <Link to={route('project.overview', product.id)}>
                     <TileImageContainer autoSize>
                         <TileThumbnail
                             src={
@@ -217,25 +213,20 @@ function MarketplaceProductTile({
                     <DataUnionBadge
                         top
                         left
-                        linkTo={routes.projects.overview(
-                            {
-                                id: product.id,
-                            },
-                            'stats',
+                        linkTo={route(
+                            'project.overview',
+                            product.id,
+                            RouteOptions.from({ hash: 'stats' }),
                         )}
                     />
                 )}
                 {showEditButton && (
-                    <EditButton to={routes.projects.edit({ id: product.id })}>
+                    <EditButton to={route('project.edit', product.id)}>
                         <SvgIcon name={'pencilFull'} />
                     </EditButton>
                 )}
             </TileImageContainer>
-            <Link
-                to={routes.projects.overview({
-                    id: product.id,
-                })}
-            >
+            <Link to={route('project.overview', product.id)}>
                 <Summary
                     name={
                         (product.metadata && product.metadata.name) || 'Untitled project'

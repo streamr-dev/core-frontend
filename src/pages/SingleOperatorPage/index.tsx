@@ -40,7 +40,6 @@ import {
     useOperatorByIdQuery,
 } from '~/hooks/operators'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
-import routes from '~/routes'
 import {
     AddressTable,
     AddressItem,
@@ -71,6 +70,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
+import { route } from '~/rs'
 import { UndelegationQueue } from './UndelegationQueue'
 
 const defaultChartData = []
@@ -603,7 +603,7 @@ export const SingleOperatorPage = () => {
                                     },
                                 ]}
                                 linkMapper={({ sponsorshipId: id }) =>
-                                    routes.network.sponsorship({ id })
+                                    route('sponsorship', id)
                                 }
                                 actions={[
                                     (element) => ({
@@ -712,7 +712,7 @@ export const SingleOperatorPage = () => {
                                         },
                                     ]}
                                     linkMapper={({ sponsorshipId: id }) =>
-                                        routes.network.sponsorship({ id })
+                                        route('sponsorship', id)
                                     }
                                 />
                             </SlashingHistoryTableContainer>
@@ -927,7 +927,10 @@ function OperatorVersionNotice(params: OperatorVersionNoticeProps) {
             <>
                 Your Operator smart contract is outdated.{' '}
                 <a
-                    href="https://docs.streamr.network/help/operator-faq#migrating-from-streamr-10-testnet-to-streamr-10"
+                    href={route(
+                        'docs',
+                        '/help/operator-faq#migrating-from-streamr-10-testnet-to-streamr-10',
+                    )}
                     rel="noopener noreferrer"
                     target="_blank"
                 >

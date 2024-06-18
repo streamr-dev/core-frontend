@@ -19,7 +19,6 @@ import { useTableOrder } from '~/hooks/useTableOrder'
 import ProjectHero from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2'
 import NotFoundPage from '~/pages/NotFoundPage'
 import { getEmptyParsedProject } from '~/parsers/ProjectParser'
-import routes from '~/routes'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import Segment from '~/shared/components/Segment'
@@ -37,6 +36,7 @@ import {
     useIsAccessibleByCurrentWallet,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
+import { route } from '~/rs'
 import { AccessManifest } from './AccessManifest'
 import GetAccess from './GetAccess'
 import ProjectEditorPage from './ProjectEditorPage'
@@ -288,7 +288,7 @@ export function ProjectLiveDataPage() {
 }
 
 export function ProjectTabbedPage() {
-    const { id = undefined, name = '', creator = '' } = ProjectDraft.useEntity() || {}
+    const { id = '', name = '', creator = '' } = ProjectDraft.useEntity() || {}
 
     const busy = ProjectDraft.useIsDraftBusy()
 
@@ -297,7 +297,7 @@ export function ProjectTabbedPage() {
     return (
         <Layout pageTitle={name}>
             <DetailsPageHeader
-                backButtonLink={routes.projects.index()}
+                backButtonLink={route('projects')}
                 pageTitle={
                     <PageTitleContainer>
                         <ProjectTitle>
@@ -312,7 +312,7 @@ export function ProjectTabbedPage() {
                         {canEdit && (
                             <EditButton
                                 as={Link}
-                                to={routes.projects.edit({ id })}
+                                to={route('project.edit', id)}
                                 kind="secondary"
                                 size="mini"
                             >
@@ -332,14 +332,7 @@ export function ProjectTabbedPage() {
 export function ProjectIndexRedirect() {
     const { id = '' } = useParams<{ id: string }>()
 
-    return (
-        <Navigate
-            to={routes.projects.overview({
-                id: encodeURIComponent(id),
-            })}
-            replace
-        />
-    )
+    return <Navigate to={route('project', id)} replace />
 }
 
 function StreamTable({ streamIds }: { streamIds: string[] }) {

@@ -21,7 +21,7 @@ import {
     useStreamsQuery,
 } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import routes from '~/routes'
+import { RouteOptions, route } from '~/rs'
 import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -46,7 +46,7 @@ export function StreamsPage() {
                 return
             }
 
-            navigate(routes.streams.index({ tab: StreamsTabOption.All }))
+            navigate(route('streams', RouteOptions.from({ tab: StreamsTabOption.All })))
         },
         [account, navigate],
     )
@@ -89,7 +89,7 @@ export function StreamsPage() {
                             fullWidthOnMobile
                             selection={tab}
                             onSelectionChange={(id) => {
-                                navigate(routes.streams.index({ tab: id }))
+                                navigate(route('streams', RouteOptions.from({ tag: id })))
                             }}
                         >
                             <Tab id={StreamsTabOption.All}>All streams</Tab>
@@ -107,7 +107,7 @@ export function StreamsPage() {
                         </Tabs>
                     </FiltersWrap>
                     <CreateStreamButtonWrap>
-                        <Button as={Link} to={routes.streams.new()}>
+                        <Button as={Link} to={route('stream', 'new')}>
                             Create stream
                         </Button>
                     </CreateStreamButtonWrap>

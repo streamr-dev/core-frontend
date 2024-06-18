@@ -4,8 +4,8 @@ import styled from 'styled-components'
 import { NavLink, NavbarLinkDesktop } from '~/components/Nav/Nav.styles'
 import { DefaultSimpleDropdownMenu, SimpleDropdown } from '~/components/SimpleDropdown'
 import SvgIcon from '~/shared/components/SvgIcon'
-import routes from '~/routes'
 import { COLORS } from '~/shared/utils/styled'
+import { route } from '~/rs'
 
 export function Dropdown() {
     const [isOpen, setIsOpen] = useState(false)
@@ -64,7 +64,7 @@ export function Dropdown() {
                 {(toggle) => (
                     <NavLink
                         as={Link}
-                        to={routes.network.overview()}
+                        to={route('networkOverview')}
                         onFocus={() => void show(toggle)}
                         onBlur={() => void hide(toggle)}
                         onMouseEnter={() => void show(toggle)}
@@ -79,19 +79,10 @@ export function Dropdown() {
     )
 }
 
-const networkLinks = [
-    routes.network.overview(),
-    routes.network.sponsorships(),
-    routes.network.sponsorship(),
-    routes.network.operators(),
-]
+const networkLinks = [route('networkOverview'), route('sponsorships'), route('operators')]
 
-export const isNetworkTabActive = (path: string): boolean => {
-    return networkLinks.reduce((previousValue, currentValue) => {
-        const isNetworkLink = path.startsWith(currentValue)
-        return previousValue || isNetworkLink
-    }, false)
-}
+export const isNetworkTabActive = (path: string): boolean =>
+    networkLinks.some((addr) => path.startsWith(addr))
 
 const Menu = styled(DefaultSimpleDropdownMenu)`
     padding-left: 0;
@@ -108,17 +99,17 @@ export const NetworkNavItems: {
     {
         title: 'Overview',
         subtitle: 'Your activity on one glance',
-        link: routes.network.overview(),
+        link: route('networkOverview'),
     },
     {
         title: 'Sponsorships',
         subtitle: 'Explore, create and join Sponsorships',
-        link: routes.network.sponsorships(),
+        link: route('sponsorships'),
     },
     {
         title: 'Operators',
         subtitle: 'Explore Operators and delegate',
-        link: routes.network.operators(),
+        link: route('operators'),
     },
 ]
 

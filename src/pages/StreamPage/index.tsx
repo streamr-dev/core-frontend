@@ -26,7 +26,6 @@ import { StreamSummary } from '~/components/StreamSummary'
 import { useInViewport } from '~/hooks/useInViewport'
 import { GenericErrorPageContent } from '~/pages/GenericErrorPage'
 import { NotFoundPageContent } from '~/pages/NotFoundPage'
-import routes from '~/routes'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { StreamConnect } from '~/shared/components/StreamConnect'
@@ -46,6 +45,7 @@ import {
     usePersistStreamDraft,
     useStreamEntityQuery,
 } from '~/stores/streamDraft'
+import { route } from '~/rs'
 import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
 import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
 import DeleteSection from '../AbstractStreamEditPage/DeleteSection'
@@ -54,7 +54,6 @@ import { InfoSection } from '../AbstractStreamEditPage/InfoSection'
 import { PartitionsSection } from '../AbstractStreamEditPage/PartitionsSection'
 import RelatedProjects from '../AbstractStreamEditPage/RelatedProjects'
 import SponsorshipsTable from '../AbstractStreamEditPage/SponsorshipsTable'
-import { route } from '~/rs'
 
 export function StreamEditPage({
     saveButtonRef,
@@ -398,7 +397,7 @@ function Header({
                 }
             />
             <DetailsPageHeader
-                backButtonLink={routes.streams.index()}
+                backButtonLink={route('streams')}
                 pageTitle={
                     <TitleContainer>
                         <span title={streamId}>

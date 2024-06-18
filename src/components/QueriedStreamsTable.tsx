@@ -9,7 +9,7 @@ import {
     getStreamsFromIndexer,
     isIndexerColumn,
 } from '~/hooks/streams'
-import routes from '~/routes'
+import { route } from '~/rs'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { OrderDirection } from '~/types'
@@ -129,7 +129,7 @@ export function QueriedStreamsTable({
                         valueMapper: ({ subscriberCount = '∞' }) => subscriberCount,
                     },
                 ]}
-                linkMapper={(element) => routes.streams.show({ id: element.id })}
+                linkMapper={(element) => route('stream', element.id)}
             />
             {query.hasNextPage && (
                 <LoadMoreButton

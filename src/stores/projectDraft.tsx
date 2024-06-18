@@ -6,7 +6,7 @@ import { randomHex } from 'web3-utils'
 import { ValidationError } from '~/errors'
 import { getDataUnion } from '~/getters/du'
 import { ParsedProject } from '~/parsers/ProjectParser'
-import routes from '~/routes'
+import { route } from '~/rs'
 import {
     createProject,
     deployDataUnionContract,
@@ -284,7 +284,7 @@ export function usePersistProjectCallback() {
                     return
                 }
 
-                navigate(routes.projects.index())
+                navigate(route('projects'))
             },
 
             onError(e) {

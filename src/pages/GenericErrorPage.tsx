@@ -6,7 +6,7 @@ import Layout from '~/components/Layout'
 import appCrashedImage from '~/shared/assets/images/app_crashed.png'
 import appCrashedImage2x from '~/shared/assets/images/app_crashed@2x.png'
 import { Button } from '~/components/Button'
-import routes from '~/routes'
+import { route } from '~/rs'
 
 export default function GenericErrorPage() {
     return (
@@ -31,7 +31,7 @@ export function GenericErrorPageContent() {
                     <Button
                         kind="special"
                         as={Link}
-                        to={routes.projects.index()}
+                        to={route('projects')}
                         className="d-none d-md-flex"
                     >
                         Projects

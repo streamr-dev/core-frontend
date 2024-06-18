@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import isPreventable from '~/utils/isPreventable'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import routes from '~/routes'
+import { route } from '~/rs'
 
 export default function ProjectLinkTabs({
     projectId,
@@ -44,7 +44,7 @@ export default function ProjectLinkTabs({
             <Tab
                 id="overview"
                 tag={Link}
-                to={routes.projects.overview({ id: projectId })}
+                to={route('project.overview', projectId)}
                 selected="to"
             >
                 Project overview
@@ -52,7 +52,7 @@ export default function ProjectLinkTabs({
             <Tab
                 id="connect"
                 tag={Link}
-                to={routes.projects.connect({ id: projectId })}
+                to={route('project.connect', projectId)}
                 selected="to"
             >
                 Connect
@@ -60,7 +60,7 @@ export default function ProjectLinkTabs({
             <Tab
                 id="liveData"
                 tag={Link}
-                to={routes.projects.liveData({ id: projectId })}
+                to={route('project.liveData', projectId)}
                 selected="to"
             >
                 Live data

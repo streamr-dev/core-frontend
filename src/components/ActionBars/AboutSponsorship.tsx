@@ -13,8 +13,8 @@ import {
 } from '~/components/ActionBars/AboutEntity'
 import { truncateStreamName } from '~/shared/utils/text'
 import { ExternalLinkIcon } from '~/icons'
-import routes from '~/routes'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { route } from '~/rs'
 
 export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorship }) {
     const { streamId } = sponsorship
@@ -27,10 +27,7 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
                     <AddressContent>
                         <strong>{truncateStreamName(streamId)}</strong>
                         <div>
-                            <Link
-                                to={routes.streams.show({ id: streamId })}
-                                target="_blank"
-                            >
+                            <Link to={route('stream', streamId)} target="_blank">
                                 <ExternalLinkIcon />
                             </Link>
                         </div>
@@ -49,7 +46,7 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
                     </p>
                     <p>
                         <a
-                            href="https://docs.streamr.network/streamr-network/network-incentives"
+                            href={route('docs', '/streamr-network/network-incentives')}
                             target="_blank"
                             rel="noreferrer noopener"
                         >

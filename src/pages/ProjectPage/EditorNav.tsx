@@ -7,9 +7,9 @@ import Logo from '~/shared/components/Logo'
 import { Button } from '~/components/Button'
 import { REGULAR } from '~/shared/utils/styled'
 import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
-import routes from '~/routes'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import { useInViewport } from '~/hooks/useInViewport'
+import { route } from '~/rs'
 
 const FlexNavbar = styled(Navbar)`
     display: flex;
@@ -48,7 +48,7 @@ export default function EditorNav() {
         <NavContainer>
             <FloatingToolbar $active={!isSaveButtonVisible}>
                 <FlexNavbarItem>
-                    <Button as={Link} to={routes.projects.index()} kind="transparent">
+                    <Button as={Link} to={route('projects')} kind="transparent">
                         Exit
                     </Button>
                     <Button
@@ -62,13 +62,13 @@ export default function EditorNav() {
             </FloatingToolbar>
             <FlexNavbar>
                 <FlexNavbarItem>
-                    <LogoLink href={routes.root()}>
+                    <LogoLink href={route('root')}>
                         <Logo />
                     </LogoLink>
                     <h1>{projectId ? <>Edit a project</> : <>Create a project</>}</h1>
                 </FlexNavbarItem>
                 <FlexNavbarItem>
-                    <Button as={Link} to={routes.projects.index()} kind="transparent">
+                    <Button as={Link} to={route('projects')} kind="transparent">
                         Exit
                     </Button>
                     <Button

@@ -1,9 +1,9 @@
 import React, { ComponentProps, useReducer } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
-import routes from '~/routes'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM, REGULAR } from '~/shared/utils/styled'
+import { route } from '~/rs'
 import { NavLink, NavbarLinkMobile } from './Nav.styles'
 import { NetworkNavItems, isNetworkTabActive } from './NetworkDropdown'
 
@@ -20,7 +20,7 @@ export function NetworkAccordion() {
             >
                 <NavLink
                     as={Link}
-                    to={routes.network.overview()}
+                    to={route('networkOverview')}
                     onClick={(e) => {
                         e.preventDefault()
 

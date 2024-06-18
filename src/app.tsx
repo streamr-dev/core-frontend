@@ -34,7 +34,6 @@ import {
     StreamTabbedPage,
 } from '~/pages/StreamPage'
 import { StreamsPage } from '~/pages/StreamsPage'
-import routes from '~/routes'
 import '~/shared/assets/stylesheets'
 import Globals from '~/shared/components/Globals'
 import StreamrClientProvider from '~/shared/components/StreamrClientProvider'
@@ -45,6 +44,7 @@ import { getQueryClient } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import '~/utils/setupSnippets'
 import ProjectEditorPage from './pages/ProjectPage/ProjectEditorPage'
+import { route } from './rs'
 
 const App = () => (
     <Root>
@@ -52,7 +52,7 @@ const App = () => (
         <Globals />
         <Routes>
             <Route errorElement={<GenericErrorPage />}>
-                <Route path="/hub/projects">
+                <Route path={route('projects')}>
                     <Route index element={<ProjectListingPage />} />
                     <Route element={<ProjectDraftPage />}>
                         <Route path="new" element={<NewProjectPage />} />
@@ -73,7 +73,7 @@ const App = () => (
                         </Route>
                     </Route>
                 </Route>
-                <Route path="/hub/streams">
+                <Route path={route('streams')}>
                     <Route index element={<StreamsPage />} />
                     <Route element={<StreamDraftPage />}>
                         <Route
@@ -112,10 +112,10 @@ const App = () => (
                         </Route>
                     </Route>
                 </Route>
-                <Route path="/hub/network">
+                <Route path={route('network')}>
                     <Route
                         index
-                        element={<Navigate to={routes.network.sponsorships()} replace />}
+                        element={<Navigate to={route('sponsorships')} replace />}
                     />
                     <Route path="operators">
                         <Route index element={<OperatorsPage />} />
@@ -128,14 +128,14 @@ const App = () => (
                     <Route path="overview" element={<NetworkOverviewPage />} />
                 </Route>
                 <Route
-                    path={routes.root()}
-                    element={<Navigate to={routes.projects.index()} replace />}
+                    path={route('root')}
+                    element={<Navigate to={route('projects')} replace />}
                 />
                 <Route
-                    path={routes.hub()}
-                    element={<Navigate to={routes.projects.index()} replace />}
+                    path={route('hub')}
+                    element={<Navigate to={route('projects')} replace />}
                 />
-                <Route path="/error" element={<GenericErrorPage />} />
+                <Route path={route('error')} element={<GenericErrorPage />} />
                 <Route path="*" element={<NotFoundPage />} />,
             </Route>
         </Routes>

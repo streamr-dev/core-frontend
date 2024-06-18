@@ -31,7 +31,6 @@ import {
     useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
 import { OperatorIdCell } from '~/components/Table'
-import routes from '~/routes'
 import { abbr } from '~/utils'
 import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
 import Spinner from '~/components/Spinner'
@@ -41,6 +40,7 @@ import {
     useRefetchQueryBehindIndexEffect,
 } from '~/hooks'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
+import { route } from '~/rs'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -243,9 +243,10 @@ export const SingleSponsorshipPage = () => {
                                         {sponsorship.stakes.map((stake) => (
                                             <OperatorListItem key={stake.operatorId}>
                                                 <Link
-                                                    to={routes.network.operator({
-                                                        id: stake.operatorId,
-                                                    })}
+                                                    to={route(
+                                                        'operator',
+                                                        stake.operatorId,
+                                                    )}
                                                 >
                                                     <div>
                                                         <OperatorIdCell

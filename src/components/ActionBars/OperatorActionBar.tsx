@@ -4,7 +4,6 @@ import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-st
 import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import routes from '~/routes'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
@@ -33,6 +32,7 @@ import {
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { route } from '~/rs'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
@@ -108,7 +108,7 @@ export const OperatorActionBar: FunctionComponent<{
 
     return (
         <AbstractActionBar
-            fallbackBackButtonUrl={routes.network.operators()}
+            fallbackBackButtonUrl={route('operators')}
             title={
                 <>
                     <OperatorAvatar

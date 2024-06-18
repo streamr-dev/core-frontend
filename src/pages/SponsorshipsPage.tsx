@@ -16,13 +16,13 @@ import {
     useSponsorshipsForCreatorQuery,
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import routes from '~/routes'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import {
     SponsorshipFilterButton,
     SponsorshipFilters,
     defaultFilters,
 } from '~/components/SponsorshipFilterButton'
+import { RouteOptions, route } from '~/rs'
 
 const PAGE_SIZE = 20
 
@@ -72,7 +72,12 @@ export const SponsorshipsPage = () => {
 
     useEffect(() => {
         if (!wallet) {
-            navigate(routes.network.sponsorships({ tab: TabOption.AllSponsorships }))
+            navigate(
+                route(
+                    'sponsorships',
+                    RouteOptions.from({ tab: TabOption.AllSponsorships }),
+                ),
+            )
         }
     }, [wallet, navigate])
 
@@ -91,7 +96,14 @@ export const SponsorshipsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            navigate(routes.network.sponsorships({ tab: value }))
+                            navigate(
+                                route(
+                                    'sponsorships',
+                                    RouteOptions.from({
+                                        tab: value,
+                                    }),
+                                ),
+                            )
                         }}
                         selection={selectedTab}
                         fullWidthOnMobile
@@ -109,10 +121,13 @@ export const SponsorshipsPage = () => {
                             createSponsorship(chainId, wallet, {
                                 onDone(id, blockNumber) {
                                     navigate(
-                                        routes.network.sponsorship({
+                                        route(
+                                            'sponsorship',
                                             id,
-                                            b: blockNumber,
-                                        }),
+                                            RouteOptions.from({
+                                                b: blockNumber,
+                                            }),
+                                        ),
                                     )
                                 },
                             })

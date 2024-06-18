@@ -7,9 +7,8 @@ import {
     MadeBy as UnstyledMadeBy,
     SocialChannels,
 } from '@streamr/streamr-layout'
-
 import { COLORS } from '~/shared/utils/styled'
-import routes from '~/routes'
+import { route } from '~/rs'
 
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;
@@ -33,37 +32,37 @@ const Footer = ({ topBorder = false }) => (
     <LayoutFooter>
         <FooterColumns separate={topBorder}>
             <FooterColumn title="Discover">
-                <a href={routes.root()}>Top</a>
-                <a href={routes.site.discover.dataToken()}>DATA Token</a>
-                <a href={routes.site.discover.dataUnions()}>Data Unions</a>
-                <a href={routes.site.discover.marketplace()}>Marketplace</a>
-                <a href={routes.site.discover.network()}>Network</a>
+                <a href={route('root')}>Top</a>
+                <a href={route('side.dataToken')}>DATA Token</a>
+                <a href={route('site.dataUnions')}>Data Unions</a>
+                <a href={route('site.marketplace')}>Marketplace</a>
+                <a href={route('site.network')}>Network</a>
             </FooterColumn>
             <FooterColumn title="Project">
-                <a href={routes.site.about()}>About</a>
-                <a href={routes.site.roadmap()}>Roadmap</a>
-                <a href={routes.site.ecosystem()}>Ecosystem</a>
-                <a href={routes.site.papers()}>Papers</a>
-                <a href={routes.community.medium()}>Blog</a>
+                <a href={route('site.about')}>About</a>
+                <a href={route('site.roadmap')}>Roadmap</a>
+                <a href={route('site.ecosystem')}>Ecosystem</a>
+                <a href={route('site.papers')}>Papers</a>
+                <a href={route('blog')}>Blog</a>
             </FooterColumn>
             <FooterColumn title="Developers">
-                <a href="https://docs.streamr.network/">Docs</a>
-                <a href={routes.site.fund()}>Data Fund</a>
-                <a href={routes.site.design()}>Design Assets</a>
+                <a href={route('docs')}>Docs</a>
+                <a href={route('site.fund')}>Data Fund</a>
+                <a href={route('site.design')}>Design Assets</a>
             </FooterColumn>
             <FooterColumn title="Apps">
-                <a href={routes.networkExplorer()}>Network Explorer</a>
-                <a href={routes.hub()}>Hub</a>
+                <a href={route('networkExplorer')}>Network Explorer</a>
+                <a href={route('hub')}>Hub</a>
             </FooterColumn>
             <FooterColumn title="Contact">
-                <a href={routes.contact.general()}>General</a>
-                <a href={routes.contact.media()}>Media</a>
-                <a href={routes.contact.jobs()}>Jobs</a>
-                <a href={routes.contact.labs()}>Business</a>
+                <a href={route('contact.general')}>General</a>
+                <a href={route('contact.media')}>Media</a>
+                <a href={route('contact.jobs')}>Jobs</a>
+                <a href={route('contact.labs')}>Business</a>
             </FooterColumn>
             <FooterColumn title="Legal">
-                <a href={routes.tos()}>Terms &amp; Conditions</a>
-                <a href={routes.privacyPolicy()}>Privacy</a>
+                <a href={route('tos')}>Terms &amp; Conditions</a>
+                <a href={route('privacyPolicy')}>Privacy</a>
             </FooterColumn>
         </FooterColumns>
         <SocialChannels />

@@ -13,10 +13,10 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, DESKTOP, REGULAR } from '~/shared/utils/styled'
 import { Radio } from '~/shared/components/Radio'
 import { Button } from '~/components/Button'
-import routes from '~/routes'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getPagedStreams } from '~/services/streams'
 import { useCurrentChainId } from '~/shared/stores/chain'
+import { RouteOptions, route } from '~/rs'
 
 const Root = styled.div`
     color: #323232;
@@ -171,11 +171,18 @@ export const ProjectTypeChooser: FunctionComponent<{
 }> = ({ className, onClose }) => {
     const [selectedProductType, setSelectedProductType] = useState<ProjectType>()
 
-    const link = useMemo<string>(() => {
+    const link = useMemo<string | null>(() => {
         if (!selectedProductType) {
             return null
         }
-        return routes.projects.new({ type: selectedProductType })
+
+        return route(
+            'project',
+            'new',
+            RouteOptions.from({
+                type: selectedProductType,
+            }),
+        )
     }, [selectedProductType])
 
     const gotAnyStreams = useGotAnyStreams()
@@ -259,11 +266,11 @@ export const ProjectTypeChooser: FunctionComponent<{
             {gotAnyStreams === false && (
                 <NoStreamsWarningBox>
                     You have not created any streams yet. Please{' '}
-                    <Link onClick={onClose} to={routes.streams.new()}>
+                    <Link onClick={onClose} to={route('stream', 'new')}>
                         create a stream
                     </Link>{' '}
                     to get started. For help creating streams, see the{' '}
-                    <a href="https://docs.streamr.network/">docs</a>.
+                    <a href={route('docs')}>docs</a>.
                 </NoStreamsWarningBox>
             )}
             <ButtonContainer>
