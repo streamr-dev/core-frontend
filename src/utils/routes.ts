@@ -21,10 +21,22 @@ export function routeOptions(
 }
 
 function withSuffix<P extends string>(pathname: P, options: RouteOptions = {}) {
-    return ((qs = '', hash = '') => `${pathname}${qs && `?${qs}`}${hash && `#${hash}`}`)(
-        options.search && queryString.stringify(options.search),
-        options.hash,
-    ) as `${P}[?search][#hash]`
+    const { hash = '' } = options
+
+    const { chain, ...search } = options.search || {}
+
+    const qs = options.search
+        ? queryString.stringify(
+              chain === 'polygon'
+                  ? search
+                  : {
+                        ...search,
+                        chain,
+                    },
+          )
+        : ''
+
+    return `${pathname}${qs && `?${qs}`}${hash && `#${hash}`}` as `${P}[?search][#hash]`
 }
 
 export const Route = {

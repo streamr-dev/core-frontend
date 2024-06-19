@@ -45,10 +45,15 @@ const Menu = ({ chains, selectedChain, toggle }: MenuProps) => {
                         onClick={() => {
                             toggle(false)
 
-                            setSearchParams((prev) => ({
-                                ...Object.fromEntries(prev),
-                                chain: getSymbolicChainName(c.id),
-                            }))
+                            const chainName = getSymbolicChainName(c.id)
+
+                            setSearchParams((prev) => {
+                                const { chain: _, ...rest } = Object.fromEntries(prev)
+
+                                return chainName === 'polygon'
+                                    ? rest
+                                    : { ...rest, chain: chainName }
+                            })
                         }}
                     />
                 ))}
