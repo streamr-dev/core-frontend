@@ -17,6 +17,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { getPagedStreams } from '~/services/streams'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { RouteOptions, route } from '~/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const Root = styled.div`
     color: #323232;
@@ -171,6 +172,8 @@ export const ProjectTypeChooser: FunctionComponent<{
 }> = ({ className, onClose }) => {
     const [selectedProductType, setSelectedProductType] = useState<ProjectType>()
 
+    const chainName = useCurrentChainSymbolicName()
+
     const link = useMemo<string | null>(() => {
         if (!selectedProductType) {
             return null
@@ -180,10 +183,11 @@ export const ProjectTypeChooser: FunctionComponent<{
             'project',
             'new',
             RouteOptions.from({
+                chain: chainName,
                 type: selectedProductType,
             }),
         )
-    }, [selectedProductType])
+    }, [selectedProductType, chainName])
 
     const gotAnyStreams = useGotAnyStreams()
 

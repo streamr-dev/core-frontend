@@ -23,6 +23,8 @@ import {
     defaultFilters,
 } from '~/components/SponsorshipFilterButton'
 import { RouteOptions, route } from '~/routes'
+import { getSymbolicChainName } from '~/shared/web3/config'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const PAGE_SIZE = 20
 
@@ -70,16 +72,21 @@ export const SponsorshipsPage = () => {
 
     const navigate = useNavigate()
 
+    const chainName = useCurrentChainSymbolicName()
+
     useEffect(() => {
         if (!wallet) {
             navigate(
                 route(
                     'sponsorships',
-                    RouteOptions.from({ tab: TabOption.AllSponsorships }),
+                    RouteOptions.from({
+                        chain: chainName,
+                        tab: TabOption.AllSponsorships,
+                    }),
                 ),
             )
         }
-    }, [wallet, navigate])
+    }, [wallet, navigate, chainName])
 
     const createSponsorship = useCreateSponsorship()
 
@@ -100,6 +107,7 @@ export const SponsorshipsPage = () => {
                                 route(
                                     'sponsorships',
                                     RouteOptions.from({
+                                        chain: chainName,
                                         tab: value,
                                     }),
                                 ),
@@ -125,6 +133,7 @@ export const SponsorshipsPage = () => {
                                             'sponsorship',
                                             id,
                                             RouteOptions.from({
+                                                chain: getSymbolicChainName(chainId),
                                                 b: blockNumber,
                                             }),
                                         ),

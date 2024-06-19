@@ -25,6 +25,11 @@ import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { RouteOptions, route } from '~/routes'
+import { getSymbolicChainName } from '~/shared/web3/config'
+import {
+    useCurrentChainSymbolicName,
+    useRouteOptionsWithCurrentChainName,
+} from '~/utils/chains'
 
 const PAGE_SIZE = 20
 
@@ -79,13 +84,18 @@ export const OperatorsPage = () => {
 
     const navigate = useNavigate()
 
+    const chainName = useCurrentChainSymbolicName()
+
     useEffect(() => {
         if (!wallet) {
             navigate(
-                route('operators', RouteOptions.from({ tab: TabOption.AllOperators })),
+                route(
+                    'operators',
+                    RouteOptions.from({ chain: chainName, tab: TabOption.AllOperators }),
+                ),
             )
         }
-    }, [wallet, navigate])
+    }, [wallet, navigate, chainName])
 
     return (
         <Layout>
@@ -97,7 +107,10 @@ export const OperatorsPage = () => {
                     <Tabs
                         onSelectionChange={(value) => {
                             navigate(
-                                route('operators', RouteOptions.from({ tab: value })),
+                                route(
+                                    'operators',
+                                    RouteOptions.from({ chain: chainName, tab: value }),
+                                ),
                             )
                         }}
                         selection={selectedTab}
@@ -125,6 +138,7 @@ export const OperatorsPage = () => {
                                                 id,
                                                 RouteOptions.from({
                                                     b: blockNumber,
+                                                    chain: getSymbolicChainName(chainId),
                                                 }),
                                             ),
                                         )
@@ -198,6 +212,8 @@ function DelegationsTable({
             .flatMap((page) => page.elements)
             .filter((d) => d.contractVersion !== 1) || []
 
+    const routeOptions = useRouteOptionsWithCurrentChainName()
+
     return (
         <ScrollTableCore
             elements={elements}
@@ -261,7 +277,7 @@ function DelegationsTable({
                 },
             ]}
             noDataFirstLine="You have not delegated to any operator."
-            linkMapper={(element) => route('operator', element.id)}
+            linkMapper={(element) => route('operator', element.id, routeOptions)}
         />
     )
 }
@@ -280,6 +296,8 @@ function OperatorsTable({
     onOrderChange: (columnKey: string) => void
 }) {
     const elements = query.data?.pages.flatMap((page) => page.elements) || []
+
+    const routeOptions = useRouteOptionsWithCurrentChainName()
 
     return (
         <ScrollTableCore
@@ -352,7 +370,7 @@ function OperatorsTable({
                 },
             ]}
             noDataFirstLine="No operators found."
-            linkMapper={(element) => route('operator', element.id)}
+            linkMapper={(element) => route('operator', element.id, routeOptions)}
         />
     )
 }

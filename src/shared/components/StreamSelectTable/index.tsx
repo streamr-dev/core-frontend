@@ -9,6 +9,7 @@ import Checkbox from '~/shared/components/Checkbox'
 import { IndexerStream, TheGraphStream } from '~/services/streams'
 import { truncateStreamName } from '~/shared/utils/text'
 import { route } from '~/routes'
+import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
 
 const ROW_HEIGHT = 88
 
@@ -241,6 +242,8 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
         }
     }, [selected])
 
+    const routeOptions = useRouteOptionsWithCurrentChainName()
+
     return (
         <div>
             <Table>
@@ -265,7 +268,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                         const stats = streamStats ? streamStats[s.id] : null
                         return (
                             <TableRow key={s.id}>
-                                <StreamDetails to={route('stream', s.id)}>
+                                <StreamDetails to={route('stream', s.id, routeOptions)}>
                                     <StreamId title={s.id}>
                                         {truncateStreamName(s.id, 40)}
                                     </StreamId>

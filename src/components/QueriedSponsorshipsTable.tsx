@@ -22,6 +22,7 @@ import { abbr } from '~/utils'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { OrderDirection } from '~/types'
 import { route } from '~/routes'
+import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -49,6 +50,8 @@ export function QueriedSponsorshipsTable({
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     const chainId = useCurrentChainId()
+
+    const routeOptions = useRouteOptionsWithCurrentChainName()
 
     const fundSponsorship = useFundSponsorshipCallback()
 
@@ -205,7 +208,7 @@ export function QueriedSponsorshipsTable({
                 ]}
                 noDataFirstLine={noDataFirstLine}
                 noDataSecondLine={noDataSecondLine}
-                linkMapper={(element) => route('sponsorship', element.id)}
+                linkMapper={(element) => route('sponsorship', element.id, routeOptions)}
             />
             {query.hasNextPage && (
                 <LoadMoreButton

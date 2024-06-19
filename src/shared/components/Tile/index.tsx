@@ -11,6 +11,10 @@ import { TheGraphProject } from '~/services/projects'
 import { getProjectImageUrl } from '~/getters'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { RouteOptions, route } from '~/routes'
+import {
+    useCurrentChainSymbolicName,
+    useRouteOptionsWithCurrentChainName,
+} from '~/utils/chains'
 import Summary from './Summary'
 import { DataUnionBadge } from './Badge'
 
@@ -193,10 +197,14 @@ function MarketplaceProductTile({
 }: MarketplaceProductTileProps) {
     const chainId = useCurrentChainId()
 
+    const routeOptions = useRouteOptionsWithCurrentChainName()
+
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <Tile {...props}>
             <TileImageContainer>
-                <Link to={route('project.overview', product.id)}>
+                <Link to={route('project.overview', product.id, routeOptions)}>
                     <TileImageContainer autoSize>
                         <TileThumbnail
                             src={
@@ -216,17 +224,17 @@ function MarketplaceProductTile({
                         linkTo={route(
                             'project.overview',
                             product.id,
-                            RouteOptions.from({ hash: 'stats' }),
+                            RouteOptions.from({ chain: chainName }, 'stats'),
                         )}
                     />
                 )}
                 {showEditButton && (
-                    <EditButton to={route('project.edit', product.id)}>
+                    <EditButton to={route('project.edit', product.id, routeOptions)}>
                         <SvgIcon name={'pencilFull'} />
                     </EditButton>
                 )}
             </TileImageContainer>
-            <Link to={route('project.overview', product.id)}>
+            <Link to={route('project.overview', product.id, routeOptions)}>
                 <Summary
                     name={
                         (product.metadata && product.metadata.name) || 'Untitled project'

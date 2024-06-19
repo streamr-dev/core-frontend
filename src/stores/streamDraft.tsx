@@ -25,6 +25,7 @@ import { Operation } from '~/shared/toasts/TransactionListToast'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
 import { Layer } from '~/utils/Layer'
+import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import {
     isMessagedObject,
@@ -131,7 +132,11 @@ export function useStreamEntityQuery() {
 }
 
 interface UsePersistStreamDraftOptions {
-    onCreate?: (streamId: string, options: { abortSignal?: AbortSignal }) => void
+    onCreate?: (
+        chainId: number,
+        streamId: string,
+        options: { abortSignal?: AbortSignal },
+    ) => void
     onPermissionsChange?: (
         streamId: string,
         assignments: PermissionAssignment[],
@@ -456,7 +461,7 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                         cold.pathname = hot.pathname
                     })
 
-                    options.onCreate?.(currentStreamId, { abortSignal })
+                    options.onCreate?.(chainId, currentStreamId, { abortSignal })
                 }
 
                 if (shouldUpdateMetadata) {
@@ -590,6 +595,8 @@ const NewStreamLink = styled(Link)`
 
 function getOpenStreamLink(streamId: string) {
     return function OpenStreamLink() {
+        const routeOptions = useRouteOptionsWithCurrentChainName()
+
         const id: string = decodeURIComponent(
             useMatch(route('stream.overview', ':id'))?.params['id'] || '',
         )
@@ -598,7 +605,11 @@ function getOpenStreamLink(streamId: string) {
             return <></>
         }
 
-        return <NewStreamLink to={route('stream.overview', streamId)}>Open</NewStreamLink>
+        return (
+            <NewStreamLink to={route('stream.overview', streamId, routeOptions)}>
+                Open
+            </NewStreamLink>
+        )
     }
 }
 

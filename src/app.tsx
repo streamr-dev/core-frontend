@@ -115,7 +115,15 @@ const App = () => (
                 <Route path={route('network')}>
                     <Route
                         index
-                        element={<Navigate to={route('sponsorships')} replace />}
+                        element={
+                            <Navigate
+                                to={{
+                                    pathname: route('sponsorships'),
+                                    search: window.location.search,
+                                }}
+                                replace
+                            />
+                        }
                     />
                     <Route path="operators">
                         <Route index element={<OperatorsPage />} />
@@ -129,11 +137,27 @@ const App = () => (
                 </Route>
                 <Route
                     path={route('root')}
-                    element={<Navigate to={route('projects')} replace />}
+                    element={
+                        <Navigate
+                            to={{
+                                pathname: route('projects'),
+                                search: window.location.search,
+                            }}
+                            replace
+                        />
+                    }
                 />
                 <Route
                     path={route('hub')}
-                    element={<Navigate to={route('projects')} replace />}
+                    element={
+                        <Navigate
+                            to={{
+                                pathname: route('projects'),
+                                search: window.location.search,
+                            }}
+                            replace
+                        />
+                    }
                 />
                 <Route path={route('error')} element={<GenericErrorPage />} />
                 <Route path="*" element={<NotFoundPage />} />,

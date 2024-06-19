@@ -19,6 +19,7 @@ import { Operation } from '~/shared/toasts/TransactionListToast'
 import { ProjectType } from '~/shared/types'
 import { isProjectOwnedBy } from '~/utils'
 import { toBN } from '~/utils/bn'
+import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import networkPreflight from '~/utils/networkPreflight'
 import { validationErrorToast } from '~/utils/toast'
@@ -277,6 +278,8 @@ export function usePersistProjectCallback() {
 
     const navigate = useNavigate()
 
+    const routeOptions = useRouteOptionsWithCurrentChainName()
+
     return useCallback(() => {
         persist({
             onDone(mounted) {
@@ -284,7 +287,7 @@ export function usePersistProjectCallback() {
                     return
                 }
 
-                navigate(route('projects'))
+                navigate(route('projects', routeOptions))
             },
 
             onError(e) {
@@ -295,5 +298,5 @@ export function usePersistProjectCallback() {
                 console.warn('Failed to publish', e)
             },
         })
-    }, [persist, navigate])
+    }, [persist, navigate, routeOptions])
 }

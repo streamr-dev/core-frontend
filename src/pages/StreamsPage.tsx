@@ -26,6 +26,7 @@ import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, TABLET } from '~/shared/utils/styled'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export function StreamsPage() {
     const [search, setSearch] = useState('')
@@ -40,15 +41,22 @@ export function StreamsPage() {
 
     const account = useWalletAccount()
 
+    const chainName = useCurrentChainSymbolicName()
+
     useEffect(
         function changeToAllTabOnWalletLock() {
             if (account) {
                 return
             }
 
-            navigate(route('streams', RouteOptions.from({ tab: StreamsTabOption.All })))
+            navigate(
+                route(
+                    'streams',
+                    RouteOptions.from({ chain: chainName, tab: StreamsTabOption.All }),
+                ),
+            )
         },
-        [account, navigate],
+        [account, navigate, chainName],
     )
 
     const {
@@ -89,7 +97,12 @@ export function StreamsPage() {
                             fullWidthOnMobile
                             selection={tab}
                             onSelectionChange={(id) => {
-                                navigate(route('streams', RouteOptions.from({ tag: id })))
+                                navigate(
+                                    route(
+                                        'streams',
+                                        RouteOptions.from({ chain: chainName, tag: id }),
+                                    ),
+                                )
                             }}
                         >
                             <Tab id={StreamsTabOption.All}>All streams</Tab>

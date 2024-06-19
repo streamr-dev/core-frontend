@@ -1,21 +1,28 @@
 import queryString from 'query-string'
 
-interface RouteOptionsParams {
-    hash?: string
-    searchParams?: Record<string, any>
-}
-
 export class RouteOptions {
-    constructor(readonly params: RouteOptionsParams = {}) {}
+    constructor(readonly searchParams: Record<string, any>, readonly hash: string) {}
 
-    static from(searchParams?: Record<string, any>, hash?: string) {
-        return new RouteOptions({ searchParams, hash })
+    static from(
+        searchParams:
+            | Record<string, any>
+            | ((searchParams: Record<string, any>) => Record<string, any>) = {},
+        hash = '',
+    ) {
+        if (typeof searchParams === 'function') {
+            return new RouteOptions(
+                searchParams(queryString.parse(window.location.search)),
+                hash,
+            )
+        }
+
+        return new RouteOptions(searchParams, hash)
     }
 
     toString() {
         return ((qs, hash = '') => `${qs && `?${qs}`}${hash && `#${hash}`}`)(
-            queryString.stringify(this.params.searchParams || {}),
-            this.params.hash,
+            queryString.stringify(this.searchParams),
+            this.hash,
         )
     }
 }
@@ -28,17 +35,17 @@ type Def<T> = T extends string
 
 function def<T>(fn: T) {
     return ((...args: any) => {
-        const options = args[args.length - 1]
+        const lastArg = args[args.length - 1]
 
-        const [qs, subargs] =
-            options instanceof RouteOptions
-                ? [options.toString(), args.slice(0, -1)]
-                : ['', args]
+        const [options, subargs] =
+            lastArg instanceof RouteOptions
+                ? [lastArg, args.slice(0, -1)]
+                : [RouteOptions.from(), args]
 
         const path =
             typeof fn === 'string' ? fn : (fn as (...args: any) => string)(...subargs)
 
-        return `${path}${qs}`
+        return `${path}${options.toString()}`
     }) as Def<T>
 }
 
@@ -98,7 +105,7 @@ const definitions = {
     'contact.media': () => 'mailto:media@streamr.com',
     'site.about': def('/about'),
     'site.design': def('/design'),
-    'side.dataToken': def('/discover/data-token'),
+    'site.dataToken': def('/discover/data-token'),
     'site.marketplace': def('/discover/marketplace'),
     'site.network': def('/discover/network'),
     'site.dataUnions': def('/discover/data-unions'),

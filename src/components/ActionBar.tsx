@@ -21,6 +21,7 @@ import {
 } from '~/components/ActionBar.styles'
 import { projectTypeFilterModal } from '~/modals/ProjectTypeFilter'
 import { RouteOptions, route } from '~/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 enum TabOption {
     Any = 'all',
@@ -72,6 +73,8 @@ const UnstyledActionBar = ({
 
     const navigate = useNavigate()
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <ActionBarContainer {...props}>
             <SearchBarWrap>
@@ -94,6 +97,7 @@ const UnstyledActionBar = ({
                                 route(
                                     'projects',
                                     RouteOptions.from({
+                                        chain: chainName,
                                         tag: id,
                                     }),
                                 ),

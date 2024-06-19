@@ -14,6 +14,7 @@ import { useMediaQuery } from '~/hooks'
 import { ChainSelector as UnstyledChainSelector } from '~/components/ChainSelector'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { RouteOptions, route } from '~/routes'
+import { getSymbolicChainName } from '~/shared/web3/config'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,
@@ -162,6 +163,9 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                                         id,
                                                                         RouteOptions.from(
                                                                             {
+                                                                                chain: getSymbolicChainName(
+                                                                                    chainId,
+                                                                                ),
                                                                                 b: blockNumber,
                                                                             },
                                                                         ),

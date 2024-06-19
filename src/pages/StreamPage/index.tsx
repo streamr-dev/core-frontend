@@ -45,7 +45,7 @@ import {
     usePersistStreamDraft,
     useStreamEntityQuery,
 } from '~/stores/streamDraft'
-import { route } from '~/routes'
+import { RouteOptions, route } from '~/routes'
 import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
 import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
 import DeleteSection from '../AbstractStreamEditPage/DeleteSection'
@@ -54,6 +54,8 @@ import { InfoSection } from '../AbstractStreamEditPage/InfoSection'
 import { PartitionsSection } from '../AbstractStreamEditPage/PartitionsSection'
 import RelatedProjects from '../AbstractStreamEditPage/RelatedProjects'
 import SponsorshipsTable from '../AbstractStreamEditPage/SponsorshipsTable'
+import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
+import { getSymbolicChainName } from '~/shared/web3/config'
 
 export function StreamEditPage({
     saveButtonRef,
@@ -184,7 +186,15 @@ export function StreamIndexRedirect() {
         throw new Error('Invalid context (missing stream id)')
     }
 
-    return <Navigate to={route('stream.overview', id)} replace />
+    return (
+        <Navigate
+            to={{
+                pathname: route('stream.overview', id),
+                search: window.location.search,
+            }}
+            replace
+        />
+    )
 }
 
 interface StreamTabbedPageProps {
@@ -270,7 +280,7 @@ function StreamEntityForm(props: StreamEntityFormProps) {
     const invalidateAbilities = useInvalidateStreamAbilities()
 
     const persist = usePersistStreamDraft({
-        onCreate(streamId, { abortSignal }) {
+        onCreate(chainId, streamId, { abortSignal }) {
             if (abortSignal?.aborted) {
                 /**
                  * Avoid redirecting to the new stream's edit page after the stream
@@ -280,7 +290,15 @@ function StreamEntityForm(props: StreamEntityFormProps) {
                 return
             }
 
-            navigate(route('stream.overview', streamId))
+            navigate(
+                route(
+                    'stream.overview',
+                    streamId,
+                    RouteOptions.from({
+                        chain: getSymbolicChainName(chainId),
+                    }),
+                ),
+            )
         },
         onPermissionsChange(streamId, assignments) {
             if (!account) {
@@ -334,14 +352,16 @@ function usePreventDataLossEffect() {
 
     const { id } = StreamDraft.useEntity() || {}
 
+    const routeOptions = useRouteOptionsWithCurrentChainName()
+
     usePreventNavigatingAway({
         isDirty: useCallback(
             (dest?: string) => {
                 if (id) {
                     switch (dest) {
-                        case route('stream.overview', id):
-                        case route('stream.connect', id):
-                        case route('stream.liveData', id):
+                        case route('stream.overview', id, routeOptions):
+                        case route('stream.connect', id, routeOptions):
+                        case route('stream.liveData', id, routeOptions):
                             return false
                     }
                 }
@@ -389,6 +409,8 @@ function Header({
 
     const ready = !!entity
 
+    const routeOptions = useRouteOptionsWithCurrentChainName()
+
     return (
         <>
             <Helmet
@@ -397,7 +419,7 @@ function Header({
                 }
             />
             <DetailsPageHeader
-                backButtonLink={route('streams')}
+                backButtonLink={route('streams', routeOptions)}
                 pageTitle={
                     <TitleContainer>
                         <span title={streamId}>
@@ -420,7 +442,7 @@ function Header({
                             <Tab
                                 id="overview"
                                 tag={Link}
-                                to={route('stream.overview', streamId)}
+                                to={route('stream.overview', streamId, routeOptions)}
                                 selected="to"
                             >
                                 Stream overview
@@ -429,7 +451,7 @@ function Header({
                             <Tab
                                 id="connect"
                                 tag={Link}
-                                to={route('stream.connect', streamId)}
+                                to={route('stream.connect', streamId, routeOptions)}
                                 selected="to"
                             >
                                 Connect
@@ -437,7 +459,7 @@ function Header({
                             <Tab
                                 id="liveData"
                                 tag={Link}
-                                to={route('stream.liveData', streamId)}
+                                to={route('stream.liveData', streamId, routeOptions)}
                                 selected="to"
                             >
                                 Live data
