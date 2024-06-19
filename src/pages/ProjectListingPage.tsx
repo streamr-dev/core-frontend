@@ -12,7 +12,7 @@ import { MaxSearchPhraseLength } from '~/consts'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
 import { Projects, ProjectsContainer } from '~/marketplace/components/Projects'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 const DefaultFilter: ProjectFilter = {
     search: '',

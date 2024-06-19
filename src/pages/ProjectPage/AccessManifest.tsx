@@ -17,7 +17,7 @@ import { errorToast } from '~/utils/toast'
 import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { toBN } from '~/utils/bn'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { Route as R } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 

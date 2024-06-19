@@ -31,7 +31,7 @@ import {
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import { Hint } from '~/components/Hint'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { Route as R } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'

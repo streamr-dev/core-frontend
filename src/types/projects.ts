@@ -6,7 +6,7 @@ import { toBN } from '~/utils/bn'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { address0 } from '~/consts'
 import { timeUnits } from '~/shared/utils/timeUnit'
-import { getCurrentChain } from '~/getters/getCurrentChain'
+import { getCurrentChain } from '~/utils/chains'
 
 function getFormattedChainNameFromContext({ path: [, chainName] }: z.RefinementCtx) {
     if (typeof chainName !== 'string' || !chainName) {

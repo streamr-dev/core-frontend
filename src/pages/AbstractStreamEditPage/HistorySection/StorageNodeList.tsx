@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import Label from '~/shared/components/Ui/Label'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import StorageNodeItem from './StorageNodeItem'
 
 type Props = {

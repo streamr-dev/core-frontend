@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react'
 import { create } from 'zustand'
 import { SponsorshipEarnings, getEarningsForSponsorships } from '~/services/sponsorships'
 import { toBN } from '~/utils/bn'
-import { useCurrentChainId } from './chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 interface Earnings {
     fetching: boolean

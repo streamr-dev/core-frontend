@@ -16,7 +16,7 @@ import {
 import { errorToast } from '~/utils/toast'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { toBN } from '~/utils/bn'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 const GetAccessContainer = styled.div`
     display: flex;

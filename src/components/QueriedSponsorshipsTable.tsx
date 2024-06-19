@@ -19,7 +19,7 @@ import {
     StreamIdCell,
 } from '~/components/Table'
 import { abbr } from '~/utils'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { OrderDirection } from '~/types'
 import { Route as R } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'

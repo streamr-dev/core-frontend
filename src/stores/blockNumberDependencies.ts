@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import { create } from 'zustand'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { onIndexedBlock } from '~/utils/blocks'
 
 interface Store {

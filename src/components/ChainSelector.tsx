@@ -1,11 +1,13 @@
 import React from 'react'
+import { useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropdown'
 import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 import UnstyledNetworkIcon from '~/shared/components/NetworkIcon'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { useChainStore, useCurrentChain } from '~/shared/stores/chain'
+import { useCurrentChain } from '~/utils/chains'
 import { COLORS, LAPTOP } from '~/shared/utils/styled'
+import { getSymbolicChainName } from '~/shared/web3/config'
 import { StreamDraft } from '~/stores/streamDraft'
 import { Chain } from '~/types'
 
@@ -30,7 +32,7 @@ type MenuProps = {
 }
 
 const Menu = ({ chains, selectedChain, toggle }: MenuProps) => {
-    const setSelectedChain = useChainStore((state) => state.setSelectedChain)
+    const [, setSearchParams] = useSearchParams()
 
     return (
         <MenuContainer>
@@ -41,8 +43,12 @@ const Menu = ({ chains, selectedChain, toggle }: MenuProps) => {
                         chain={c}
                         isSelected={c.id === selectedChain.id}
                         onClick={() => {
-                            setSelectedChain(c.id)
                             toggle(false)
+
+                            setSearchParams((prev) => ({
+                                ...Object.fromEntries(prev),
+                                chain: getSymbolicChainName(c.id),
+                            }))
                         }}
                     />
                 ))}

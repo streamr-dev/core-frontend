@@ -22,7 +22,7 @@ import { deleteProject } from '~/services/projects'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { ProjectType, SalePoint } from '~/shared/types'
 import {
     getConfigForChain,

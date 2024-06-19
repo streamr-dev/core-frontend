@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getParsedProjectById } from '~/getters/hub'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { useRequestedBlockNumber } from '.'
 
 export function useProjectByIdQuery(projectId: string | undefined) {

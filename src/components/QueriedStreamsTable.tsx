@@ -11,7 +11,7 @@ import {
 } from '~/hooks/streams'
 import { Route as R } from '~/utils/routes'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { OrderDirection } from '~/types'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 

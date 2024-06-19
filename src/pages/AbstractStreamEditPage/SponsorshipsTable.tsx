@@ -10,7 +10,7 @@ import { useTableOrder } from '~/hooks/useTableOrder'
 import { Button } from '~/components/Button'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { Route as R } from '~/utils/routes'
 
 type Props = {

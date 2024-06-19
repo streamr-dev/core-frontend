@@ -20,7 +20,7 @@ import {
 import { toBN } from '~/utils/bn'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { Separator } from '~/components/Separator'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 export interface AddressItem {
     address: string

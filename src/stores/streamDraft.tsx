@@ -13,19 +13,22 @@ import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { address0 } from '~/consts'
 import { DraftValidationError, ValidationError } from '~/errors'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
+import {
+    getCurrentChainId,
+    useCurrentChainId,
+    useCurrentChainSymbolicName,
+} from '~/utils/chains'
 import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { Bits, ParsedStream, matchBits, parseStream } from '~/parsers/StreamParser'
 import { Route as R } from '~/utils/routes'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import { useCurrentChainId } from '~/shared/stores/chain'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
 import { Layer } from '~/utils/Layer'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import {} from '~/utils/chains'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import {
     isMessagedObject,

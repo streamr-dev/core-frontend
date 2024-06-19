@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { StreamrClientConfig } from '@streamr/sdk'
 import Provider from 'streamr-client-react'
 import getClientConfig from '~/getters/getClientConfig'
+import { useCurrentChainId } from '~/utils/chains'
 import { getWalletProvider, useWalletAccount } from '../stores/wallet'
-import { useCurrentChainId } from '../stores/chain'
 
 export default function StreamrClientProvider({ children }) {
     const account = useWalletAccount()

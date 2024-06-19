@@ -17,7 +17,7 @@ import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { abbr } from '~/utils'
 import { fromAtto } from '~/marketplace/utils/math'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 
