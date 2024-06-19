@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { COLORS } from '~/shared/utils/styled'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Button } from '~/components/Button'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 import ProjectModal, { Actions } from './ProjectModal'
 
 const Box = styled.div`
@@ -61,7 +61,7 @@ export default function AllowanceModal({ tokenSymbol = 'DATA', onReject }: Props
                         increase security and efficiency. For more about allowances, see
                         this{' '}
                         <a
-                            href={route('allowanceInfo')}
+                            href={R.allowanceInfo()}
                             target="_blank"
                             rel="noopener noreferrer"
                         >

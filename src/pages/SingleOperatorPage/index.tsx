@@ -70,7 +70,8 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { UndelegationQueue } from './UndelegationQueue'
 
 const defaultChartData = []
@@ -127,6 +128,8 @@ export const SingleOperatorPage = () => {
     >('cumulativeEarnings')
 
     const currentChainId = useCurrentChainId()
+
+    const chainName = useCurrentChainSymbolicName()
 
     const earliestUndelegationTimestamp = operator?.delegations.find(
         (d) => d.delegator.toLowerCase() === walletAddress?.toLowerCase(),
@@ -603,7 +606,11 @@ export const SingleOperatorPage = () => {
                                     },
                                 ]}
                                 linkMapper={({ sponsorshipId: id }) =>
-                                    route('sponsorship', id)
+                                    R.sponsorship(id, {
+                                        search: {
+                                            chain: chainName,
+                                        },
+                                    })
                                 }
                                 actions={[
                                     (element) => ({
@@ -712,7 +719,11 @@ export const SingleOperatorPage = () => {
                                         },
                                     ]}
                                     linkMapper={({ sponsorshipId: id }) =>
-                                        route('sponsorship', id)
+                                        R.sponsorship(id, {
+                                            search: {
+                                                chain: chainName,
+                                            },
+                                        })
                                     }
                                 />
                             </SlashingHistoryTableContainer>
@@ -927,8 +938,7 @@ function OperatorVersionNotice(params: OperatorVersionNoticeProps) {
             <>
                 Your Operator smart contract is outdated.{' '}
                 <a
-                    href={route(
-                        'docs',
+                    href={R.docs(
                         '/help/operator-faq#migrating-from-streamr-10-testnet-to-streamr-10',
                     )}
                     rel="noopener noreferrer"

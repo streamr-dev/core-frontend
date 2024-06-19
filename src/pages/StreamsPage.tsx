@@ -21,7 +21,7 @@ import {
     useStreamsQuery,
 } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { RouteOptions, route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -50,10 +50,7 @@ export function StreamsPage() {
             }
 
             navigate(
-                route(
-                    'streams',
-                    RouteOptions.from({ chain: chainName, tab: StreamsTabOption.All }),
-                ),
+                R.streams({ search: { chain: chainName, tab: StreamsTabOption.All } }),
             )
         },
         [account, navigate, chainName],
@@ -98,10 +95,7 @@ export function StreamsPage() {
                             selection={tab}
                             onSelectionChange={(id) => {
                                 navigate(
-                                    route(
-                                        'streams',
-                                        RouteOptions.from({ chain: chainName, tag: id }),
-                                    ),
+                                    R.streams({ search: { chain: chainName, tab: id } }),
                                 )
                             }}
                         >
@@ -120,7 +114,10 @@ export function StreamsPage() {
                         </Tabs>
                     </FiltersWrap>
                     <CreateStreamButtonWrap>
-                        <Button as={Link} to={route('stream', 'new')}>
+                        <Button
+                            as={Link}
+                            to={R.stream('new', { search: { chain: chainName } })}
+                        >
                             Create stream
                         </Button>
                     </CreateStreamButtonWrap>

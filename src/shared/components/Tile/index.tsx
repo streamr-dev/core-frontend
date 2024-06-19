@@ -10,11 +10,8 @@ import { COLORS } from '~/shared/utils/styled'
 import { TheGraphProject } from '~/services/projects'
 import { getProjectImageUrl } from '~/getters'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { RouteOptions, route } from '~/routes'
-import {
-    useCurrentChainSymbolicName,
-    useRouteOptionsWithCurrentChainName,
-} from '~/utils/chains'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import Summary from './Summary'
 import { DataUnionBadge } from './Badge'
 
@@ -197,14 +194,14 @@ function MarketplaceProductTile({
 }: MarketplaceProductTileProps) {
     const chainId = useCurrentChainId()
 
-    const routeOptions = useRouteOptionsWithCurrentChainName()
-
     const chainName = useCurrentChainSymbolicName()
 
     return (
         <Tile {...props}>
             <TileImageContainer>
-                <Link to={route('project.overview', product.id, routeOptions)}>
+                <Link
+                    to={R.projectOverview(product.id, { search: { chain: chainName } })}
+                >
                     <TileImageContainer autoSize>
                         <TileThumbnail
                             src={
@@ -221,20 +218,21 @@ function MarketplaceProductTile({
                     <DataUnionBadge
                         top
                         left
-                        linkTo={route(
-                            'project.overview',
-                            product.id,
-                            RouteOptions.from({ chain: chainName }, 'stats'),
-                        )}
+                        linkTo={R.projectOverview(product.id, {
+                            search: { chain: chainName },
+                            hash: 'stats',
+                        })}
                     />
                 )}
                 {showEditButton && (
-                    <EditButton to={route('project.edit', product.id, routeOptions)}>
+                    <EditButton
+                        to={R.projectEdit(product.id, { search: { chain: chainName } })}
+                    >
                         <SvgIcon name={'pencilFull'} />
                     </EditButton>
                 )}
             </TileImageContainer>
-            <Link to={route('project.overview', product.id, routeOptions)}>
+            <Link to={R.projectOverview(product.id, { search: { chain: chainName } })}>
                 <Summary
                     name={
                         (product.metadata && product.metadata.name) || 'Untitled project'

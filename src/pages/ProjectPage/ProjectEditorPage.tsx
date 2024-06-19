@@ -24,13 +24,17 @@ import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { ProjectType, SalePoint } from '~/shared/types'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
+import {
+    getConfigForChain,
+    getConfigForChainByName,
+    getSymbolicChainName,
+} from '~/shared/web3/config'
 import { ProjectDraft } from '~/stores/projectDraft'
 import { Chain } from '~/types'
 import { SalePointsPayload } from '~/types/projects'
 import { formatChainName } from '~/utils'
 import { toastedOperation } from '~/utils/toastedOperation'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 import DataUnionFee from './DataUnionFee'
 import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
@@ -433,7 +437,15 @@ export default function ProjectEditorPage() {
                                                     return
                                                 }
 
-                                                navigate(route('projects'))
+                                                navigate(
+                                                    R.projects({
+                                                        search: {
+                                                            chain: getSymbolicChainName(
+                                                                chainId,
+                                                            ),
+                                                        },
+                                                    }),
+                                                )
                                             } catch (e) {
                                                 console.warn(
                                                     'Failed to delete a project',

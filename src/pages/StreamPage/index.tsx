@@ -45,7 +45,9 @@ import {
     usePersistStreamDraft,
     useStreamEntityQuery,
 } from '~/stores/streamDraft'
-import { RouteOptions, route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { getSymbolicChainName } from '~/shared/web3/config'
 import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
 import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
 import DeleteSection from '../AbstractStreamEditPage/DeleteSection'
@@ -54,8 +56,6 @@ import { InfoSection } from '../AbstractStreamEditPage/InfoSection'
 import { PartitionsSection } from '../AbstractStreamEditPage/PartitionsSection'
 import RelatedProjects from '../AbstractStreamEditPage/RelatedProjects'
 import SponsorshipsTable from '../AbstractStreamEditPage/SponsorshipsTable'
-import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
-import { getSymbolicChainName } from '~/shared/web3/config'
 
 export function StreamEditPage({
     saveButtonRef,
@@ -179,6 +179,9 @@ export function StreamConnectPage() {
     )
 }
 
+/**
+ * @todo Taken care of in `app`, no? Double-check & remove.
+ */
 export function StreamIndexRedirect() {
     const { id } = useParams<{ id: string }>()
 
@@ -189,7 +192,7 @@ export function StreamIndexRedirect() {
     return (
         <Navigate
             to={{
-                pathname: route('stream.overview', id),
+                pathname: R.streamOverview(id),
                 search: window.location.search,
             }}
             replace
@@ -291,13 +294,11 @@ function StreamEntityForm(props: StreamEntityFormProps) {
             }
 
             navigate(
-                route(
-                    'stream.overview',
-                    streamId,
-                    RouteOptions.from({
+                R.streamOverview(streamId, {
+                    search: {
                         chain: getSymbolicChainName(chainId),
-                    }),
-                ),
+                    },
+                }),
             )
         },
         onPermissionsChange(streamId, assignments) {
@@ -352,16 +353,28 @@ function usePreventDataLossEffect() {
 
     const { id } = StreamDraft.useEntity() || {}
 
-    const routeOptions = useRouteOptionsWithCurrentChainName()
+    const chainName = useCurrentChainSymbolicName()
 
     usePreventNavigatingAway({
         isDirty: useCallback(
             (dest?: string) => {
                 if (id) {
                     switch (dest) {
-                        case route('stream.overview', id, routeOptions):
-                        case route('stream.connect', id, routeOptions):
-                        case route('stream.liveData', id, routeOptions):
+                        case R.streamOverview(id, {
+                            search: {
+                                chain: chainName,
+                            },
+                        }):
+                        case R.streamConnect(id, {
+                            search: {
+                                chain: chainName,
+                            },
+                        }):
+                        case R.streamLiveData(id, {
+                            search: {
+                                chain: chainName,
+                            },
+                        }):
                             return false
                     }
                 }
@@ -375,7 +388,7 @@ function usePreventDataLossEffect() {
                  */
                 return !clean && (typeof dest === 'undefined' || !busy)
             },
-            [clean, busy, id],
+            [clean, busy, id, chainName],
         ),
     })
 }
@@ -409,7 +422,7 @@ function Header({
 
     const ready = !!entity
 
-    const routeOptions = useRouteOptionsWithCurrentChainName()
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <>
@@ -419,7 +432,11 @@ function Header({
                 }
             />
             <DetailsPageHeader
-                backButtonLink={route('streams', routeOptions)}
+                backButtonLink={R.streams({
+                    search: {
+                        chain: chainName,
+                    },
+                })}
                 pageTitle={
                     <TitleContainer>
                         <span title={streamId}>
@@ -442,7 +459,7 @@ function Header({
                             <Tab
                                 id="overview"
                                 tag={Link}
-                                to={route('stream.overview', streamId, routeOptions)}
+                                to={R.streamOverview(streamId)}
                                 selected="to"
                             >
                                 Stream overview
@@ -451,7 +468,7 @@ function Header({
                             <Tab
                                 id="connect"
                                 tag={Link}
-                                to={route('stream.connect', streamId, routeOptions)}
+                                to={R.streamConnect(streamId)}
                                 selected="to"
                             >
                                 Connect
@@ -459,7 +476,7 @@ function Header({
                             <Tab
                                 id="liveData"
                                 tag={Link}
-                                to={route('stream.liveData', streamId, routeOptions)}
+                                to={R.streamLiveData(streamId)}
                                 selected="to"
                             >
                                 Live data

@@ -15,7 +15,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { PHONE } from '~/shared/utils/styled'
 import { truncate } from '~/shared/utils/text'
 import { StreamDraft } from '~/stores/streamDraft'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 import useStreamOwnerOptionGroups, {
     ADD_ENS_DOMAIN_VALUE,
     OptionGroup,
@@ -182,8 +182,7 @@ export function EditableStreamId({ disabled = false }: EditableStreamIdProps) {
                             <p>Multi</p>
                             <pre>streamr.eth/oracles/price</pre>
                             <p>
-                                For more information, see the{' '}
-                                <a href={route('docs')}>docs</a>.
+                                For more information, see the <a href={R.docs()}>docs</a>.
                             </p>
                         </Hint>
                     </LabelInner>

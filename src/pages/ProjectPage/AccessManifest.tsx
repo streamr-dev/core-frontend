@@ -18,7 +18,8 @@ import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { toBN } from '~/utils/bn'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 interface Props {
     projectId: string
@@ -46,6 +47,8 @@ export function AccessManifest({
     const isBeingPurchased = useIsProjectBeingPurchased(projectId)
 
     const { pricePerSecond, chainId, pricingTokenAddress } = firstSalePoint
+
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <Root>
@@ -76,7 +79,10 @@ export function AccessManifest({
                 </p>
             )}
             {hasAccess === true && (
-                <Button as={Link} to={route('project.connect', projectId)}>
+                <Button
+                    as={Link}
+                    to={R.projectConnect(projectId, { search: { chain: chainName } })}
+                >
                     Connect
                 </Button>
             )}

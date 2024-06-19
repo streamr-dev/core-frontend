@@ -21,8 +21,8 @@ import {
 import { abbr } from '~/utils'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { OrderDirection } from '~/types'
-import { route } from '~/routes'
-import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -51,7 +51,7 @@ export function QueriedSponsorshipsTable({
 
     const chainId = useCurrentChainId()
 
-    const routeOptions = useRouteOptionsWithCurrentChainName()
+    const chainName = useCurrentChainSymbolicName()
 
     const fundSponsorship = useFundSponsorshipCallback()
 
@@ -208,7 +208,13 @@ export function QueriedSponsorshipsTable({
                 ]}
                 noDataFirstLine={noDataFirstLine}
                 noDataSecondLine={noDataSecondLine}
-                linkMapper={(element) => route('sponsorship', element.id, routeOptions)}
+                linkMapper={(element) =>
+                    R.sponsorship(element.id, {
+                        search: {
+                            chain: chainName,
+                        },
+                    })
+                }
             />
             {query.hasNextPage && (
                 <LoadMoreButton

@@ -32,7 +32,8 @@ import {
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
@@ -66,6 +67,8 @@ export const OperatorActionBar: FunctionComponent<{
     const undelegateFunds = useUndelegateFunds()
 
     const currentChainId = useCurrentChainId()
+
+    const chainName = useCurrentChainSymbolicName()
 
     const canUndelegateQuery = useQuery({
         queryKey: [
@@ -108,7 +111,7 @@ export const OperatorActionBar: FunctionComponent<{
 
     return (
         <AbstractActionBar
-            fallbackBackButtonUrl={route('operators')}
+            fallbackBackButtonUrl={R.operators({ search: { chain: chainName } })}
             title={
                 <>
                     <OperatorAvatar

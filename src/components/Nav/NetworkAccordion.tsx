@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, MEDIUM, REGULAR } from '~/shared/utils/styled'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { NavLink, NavbarLinkMobile } from './Nav.styles'
 import { NetworkNavItems, isNetworkTabActive } from './NetworkDropdown'
 
@@ -11,6 +12,8 @@ export function NetworkAccordion() {
     const { pathname } = useLocation()
 
     const [isOpen, toggle] = useReducer((x) => !x, false)
+
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <>
@@ -20,7 +23,7 @@ export function NetworkAccordion() {
             >
                 <NavLink
                     as={Link}
-                    to={route('networkOverview')}
+                    to={R.networkOverview({ search: { chain: chainName } })}
                     onClick={(e) => {
                         e.preventDefault()
 
@@ -39,10 +42,14 @@ export function NetworkAccordion() {
             </NavbarLinkMobile>
             {isOpen && (
                 <Menu>
-                    {NetworkNavItems.map((networkNavElement, index) => {
-                        const { title, subtitle, link, ...rest } = networkNavElement
+                    {NetworkNavItems.map((networkNavElement) => {
+                        const { title, subtitle, linkFn, ...rest } = networkNavElement
                         return (
-                            <NetworkMobileLink to={link} {...rest} key={index}>
+                            <NetworkMobileLink
+                                {...rest}
+                                to={linkFn({ search: { chain: chainName } })}
+                                key={title}
+                            >
                                 <NetworkNavElement>
                                     <Title>{title}</Title>
                                     <Subtitle>{subtitle}</Subtitle>

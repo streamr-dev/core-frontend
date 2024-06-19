@@ -9,7 +9,8 @@ import { REGULAR } from '~/shared/utils/styled'
 import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import { useInViewport } from '~/hooks/useInViewport'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const FlexNavbar = styled(Navbar)`
     display: flex;
@@ -44,11 +45,17 @@ export default function EditorNav() {
 
     const [attach, isSaveButtonVisible] = useInViewport()
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NavContainer>
             <FloatingToolbar $active={!isSaveButtonVisible}>
                 <FlexNavbarItem>
-                    <Button as={Link} to={route('projects')} kind="transparent">
+                    <Button
+                        as={Link}
+                        to={R.projects({ search: { chain: chainName } })}
+                        kind="transparent"
+                    >
                         Exit
                     </Button>
                     <Button
@@ -62,13 +69,17 @@ export default function EditorNav() {
             </FloatingToolbar>
             <FlexNavbar>
                 <FlexNavbarItem>
-                    <LogoLink href={route('root')}>
+                    <LogoLink href={R.root()}>
                         <Logo />
                     </LogoLink>
                     <h1>{projectId ? <>Edit a project</> : <>Create a project</>}</h1>
                 </FlexNavbarItem>
                 <FlexNavbarItem>
-                    <Button as={Link} to={route('projects')} kind="transparent">
+                    <Button
+                        as={Link}
+                        to={R.projects({ search: { chain: chainName } })}
+                        kind="transparent"
+                    >
                         Exit
                     </Button>
                     <Button

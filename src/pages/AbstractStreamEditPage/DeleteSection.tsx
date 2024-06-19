@@ -6,7 +6,8 @@ import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { StreamDraft } from '~/stores/streamDraft'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { getSymbolicChainName } from '~/shared/web3/config'
 import Section from './Section'
 
 const Description = styled.p`
@@ -46,7 +47,11 @@ export default function DeleteSection() {
                          * done the app is gonna navigate to streams/index.
                          */
 
-                        navigate(route('streams'))
+                        navigate(
+                            R.streams({
+                                search: { chain: getSymbolicChainName(chainId) },
+                            }),
+                        )
                     } catch (e) {
                         if (isRejectionReason(e)) {
                             return

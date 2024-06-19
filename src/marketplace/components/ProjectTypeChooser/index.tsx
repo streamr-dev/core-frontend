@@ -16,7 +16,7 @@ import { Button } from '~/components/Button'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getPagedStreams } from '~/services/streams'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { RouteOptions, route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const Root = styled.div`
@@ -179,14 +179,12 @@ export const ProjectTypeChooser: FunctionComponent<{
             return null
         }
 
-        return route(
-            'project',
-            'new',
-            RouteOptions.from({
+        return R.project('new', {
+            search: {
                 chain: chainName,
                 type: selectedProductType,
-            }),
-        )
+            },
+        })
     }, [selectedProductType, chainName])
 
     const gotAnyStreams = useGotAnyStreams()
@@ -270,11 +268,18 @@ export const ProjectTypeChooser: FunctionComponent<{
             {gotAnyStreams === false && (
                 <NoStreamsWarningBox>
                     You have not created any streams yet. Please{' '}
-                    <Link onClick={onClose} to={route('stream', 'new')}>
+                    <Link
+                        onClick={onClose}
+                        to={R.stream('new', {
+                            search: {
+                                chain: chainName,
+                            },
+                        })}
+                    >
                         create a stream
                     </Link>{' '}
                     to get started. For help creating streams, see the{' '}
-                    <a href={route('docs')}>docs</a>.
+                    <a href={R.docs()}>docs</a>.
                 </NoStreamsWarningBox>
             )}
             <ButtonContainer>

@@ -24,12 +24,9 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { RouteOptions, route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 import { getSymbolicChainName } from '~/shared/web3/config'
-import {
-    useCurrentChainSymbolicName,
-    useRouteOptionsWithCurrentChainName,
-} from '~/utils/chains'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const PAGE_SIZE = 20
 
@@ -73,6 +70,8 @@ export const OperatorsPage = () => {
 
     const chainId = useCurrentChainId()
 
+    const chainName = useCurrentChainSymbolicName()
+
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const operatorQuery = useOperatorForWalletQuery(wallet)
@@ -84,15 +83,15 @@ export const OperatorsPage = () => {
 
     const navigate = useNavigate()
 
-    const chainName = useCurrentChainSymbolicName()
-
     useEffect(() => {
         if (!wallet) {
             navigate(
-                route(
-                    'operators',
-                    RouteOptions.from({ chain: chainName, tab: TabOption.AllOperators }),
-                ),
+                R.operators({
+                    search: {
+                        chain: chainName,
+                        tab: TabOption.AllOperators,
+                    },
+                }),
             )
         }
     }, [wallet, navigate, chainName])
@@ -107,10 +106,7 @@ export const OperatorsPage = () => {
                     <Tabs
                         onSelectionChange={(value) => {
                             navigate(
-                                route(
-                                    'operators',
-                                    RouteOptions.from({ chain: chainName, tab: value }),
-                                ),
+                                R.operators({ search: { chain: chainName, tab: value } }),
                             )
                         }}
                         selection={selectedTab}
@@ -124,7 +120,14 @@ export const OperatorsPage = () => {
                 }
                 rightSideContent={
                     operator ? (
-                        <Button as={Link} to={route('operator', operator.id)}>
+                        <Button
+                            as={Link}
+                            to={R.operator(operator.id, {
+                                search: {
+                                    chain: chainName,
+                                },
+                            })}
+                        >
                             View my Operator
                         </Button>
                     ) : (
@@ -133,14 +136,12 @@ export const OperatorsPage = () => {
                                 saveOperator(chainId, undefined, {
                                     onDone(id, blockNumber) {
                                         navigate(
-                                            route(
-                                                'operator',
-                                                id,
-                                                RouteOptions.from({
+                                            R.operator(id, {
+                                                search: {
                                                     b: blockNumber,
                                                     chain: getSymbolicChainName(chainId),
-                                                }),
-                                            ),
+                                                },
+                                            }),
                                         )
                                     },
                                 })
@@ -212,7 +213,7 @@ function DelegationsTable({
             .flatMap((page) => page.elements)
             .filter((d) => d.contractVersion !== 1) || []
 
-    const routeOptions = useRouteOptionsWithCurrentChainName()
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <ScrollTableCore
@@ -277,7 +278,13 @@ function DelegationsTable({
                 },
             ]}
             noDataFirstLine="You have not delegated to any operator."
-            linkMapper={(element) => route('operator', element.id, routeOptions)}
+            linkMapper={(element) =>
+                R.operator(element.id, {
+                    search: {
+                        chain: chainName,
+                    },
+                })
+            }
         />
     )
 }
@@ -297,7 +304,7 @@ function OperatorsTable({
 }) {
     const elements = query.data?.pages.flatMap((page) => page.elements) || []
 
-    const routeOptions = useRouteOptionsWithCurrentChainName()
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <ScrollTableCore
@@ -370,7 +377,13 @@ function OperatorsTable({
                 },
             ]}
             noDataFirstLine="No operators found."
-            linkMapper={(element) => route('operator', element.id, routeOptions)}
+            linkMapper={(element) =>
+                R.operator(element.id, {
+                    search: {
+                        chain: chainName,
+                    },
+                })
+            }
         />
     )
 }

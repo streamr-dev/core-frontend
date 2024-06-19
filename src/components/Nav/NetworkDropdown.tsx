@@ -5,7 +5,8 @@ import { NavLink, NavbarLinkDesktop } from '~/components/Nav/Nav.styles'
 import { DefaultSimpleDropdownMenu, SimpleDropdown } from '~/components/SimpleDropdown'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
-import { route } from '~/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R } from '~/utils/routes'
 
 export function Dropdown() {
     const [isOpen, setIsOpen] = useState(false)
@@ -38,6 +39,8 @@ export function Dropdown() {
         }, 250)
     }
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NavbarLinkDesktop highlight={isOpen || isNetworkTabActive(pathname)}>
             <SimpleDropdown
@@ -49,8 +52,8 @@ export function Dropdown() {
                     >
                         {NetworkNavItems.map((i) => (
                             <DropdownItem
-                                key={i.link}
-                                to={i.link}
+                                key={i.title}
+                                to={i.linkFn({ search: { chain: chainName } })}
                                 onFocus={() => void show(toggle)}
                                 onClick={() => void hide(toggle, { immediately: true })}
                             >
@@ -64,7 +67,7 @@ export function Dropdown() {
                 {(toggle) => (
                     <NavLink
                         as={Link}
-                        to={route('networkOverview')}
+                        to={R.networkOverview({ search: { chain: chainName } })}
                         onFocus={() => void show(toggle)}
                         onBlur={() => void hide(toggle)}
                         onMouseEnter={() => void show(toggle)}
@@ -79,7 +82,7 @@ export function Dropdown() {
     )
 }
 
-const networkLinks = [route('networkOverview'), route('sponsorships'), route('operators')]
+const networkLinks = [R.networkOverview(), R.sponsorships(), R.operators()]
 
 export const isNetworkTabActive = (path: string): boolean =>
     networkLinks.some((addr) => path.startsWith(addr))
@@ -92,24 +95,24 @@ const Menu = styled(DefaultSimpleDropdownMenu)`
 export const NetworkNavItems: {
     title: string
     subtitle: string
-    link: string
+    linkFn: typeof R.networkOverview | typeof R.sponsorships | typeof R.operators
     rel?: string
     target?: string
 }[] = [
     {
         title: 'Overview',
         subtitle: 'Your activity on one glance',
-        link: route('networkOverview'),
+        linkFn: R.networkOverview,
     },
     {
         title: 'Sponsorships',
         subtitle: 'Explore, create and join Sponsorships',
-        link: route('sponsorships'),
+        linkFn: R.sponsorships,
     },
     {
         title: 'Operators',
         subtitle: 'Explore Operators and delegate',
-        link: route('operators'),
+        linkFn: R.operators,
     },
 ]
 

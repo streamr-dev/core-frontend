@@ -12,7 +12,7 @@ import {
 import { truncate } from '~/shared/utils/text'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { CopyButton } from '~/components/CopyButton'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 
 export function AboutOperator({ operator }: { operator: ParsedOperator }) {
     const {
@@ -50,7 +50,7 @@ export function AboutOperator({ operator }: { operator: ParsedOperator }) {
                     </p>
                     <p>
                         <a
-                            href={route('docs', '/streamr-network/network-incentives')}
+                            href={R.docs('/streamr-network/network-incentives')}
                             target="_blank"
                             rel="noreferrer noopener"
                         >

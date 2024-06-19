@@ -11,7 +11,7 @@ import { truncateStreamName } from '~/shared/utils/text'
 import useCopy from '~/shared/hooks/useCopy'
 import { useStreamAbility } from '~/shared/stores/streamAbilities'
 import { address0 } from '~/consts'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 
 function stripIndent(code: string): string {
     let minIndent = Number.POSITIVE_INFINITY
@@ -316,7 +316,7 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
             </div>
             <RightColumn>
                 <StreamConnectLink
-                    href={route('docs', '/guides/nodejs')}
+                    href={R.docs('/guides/nodejs')}
                     target="_blank"
                     rel="noreferrer noopener"
                 >
@@ -324,7 +324,7 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
                     <SvgIcon name="linkOut" />
                 </StreamConnectLink>
                 <StreamConnectLink
-                    href={route('docs', '/guides/web-app-frameworks')}
+                    href={R.docs('/guides/web-app-frameworks')}
                     target="_blank"
                     rel="noreferrer noopener"
                 >
@@ -332,7 +332,7 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
                     <SvgIcon name="linkOut" />
                 </StreamConnectLink>
                 <StreamConnectLink
-                    href={route('docs', '/usage/cli-tool')}
+                    href={R.docs('/usage/cli-tool')}
                     target="_blank"
                     rel="noreferrer noopener"
                 >
@@ -340,10 +340,7 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
                     <SvgIcon name="linkOut" />
                 </StreamConnectLink>
                 <StreamConnectLink
-                    href={route(
-                        'docs',
-                        '/usage/connect-apps-and-iot/streamr-node-interface',
-                    )}
+                    href={R.docs('/usage/connect-apps-and-iot/streamr-node-interface')}
                     target="_blank"
                     rel="noreferrer noopener"
                 >

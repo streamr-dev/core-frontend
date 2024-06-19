@@ -11,7 +11,7 @@ import { Button } from '~/components/Button'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useCurrentChainId } from '~/shared/stores/chain'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 
 type Props = {
     streamId: string
@@ -75,8 +75,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
                         secondLine={
                             <span>
                                 <a
-                                    href={route(
-                                        'docs',
+                                    href={R.docs(
                                         '/streamr-network/incentives/stream-sponsorships',
                                     )}
                                     rel="noopener noreferrer"

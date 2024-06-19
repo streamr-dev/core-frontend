@@ -8,8 +8,8 @@ import {
     SocialChannels,
 } from '@streamr/streamr-layout'
 import { COLORS } from '~/shared/utils/styled'
-import { route } from '~/routes'
-import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;
@@ -30,43 +30,51 @@ const FooterColumns = styled(UnstyledFooterColumns)`
 `
 
 const Footer = ({ topBorder = false }) => {
-    const routeOptions = useRouteOptionsWithCurrentChainName()
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <LayoutFooter>
             <FooterColumns separate={topBorder}>
                 <FooterColumn title="Discover">
-                    <a href={route('root')}>Top</a>
-                    <a href={route('site.dataToken')}>DATA Token</a>
-                    <a href={route('site.dataUnions')}>Data Unions</a>
-                    <a href={route('site.marketplace')}>Marketplace</a>
-                    <a href={route('site.network')}>Network</a>
+                    <a href={R.root()}>Top</a>
+                    <a href={R.siteDataToken()}>DATA Token</a>
+                    <a href={R.siteDataUnions()}>Data Unions</a>
+                    <a href={R.siteMarketplace()}>Marketplace</a>
+                    <a href={R.siteNetwork()}>Network</a>
                 </FooterColumn>
                 <FooterColumn title="Project">
-                    <a href={route('site.about')}>About</a>
-                    <a href={route('site.roadmap')}>Roadmap</a>
-                    <a href={route('site.ecosystem')}>Ecosystem</a>
-                    <a href={route('site.papers')}>Papers</a>
-                    <a href={route('blog')}>Blog</a>
+                    <a href={R.siteAbout()}>About</a>
+                    <a href={R.siteRoadmap()}>Roadmap</a>
+                    <a href={R.siteEcosystem()}>Ecosystem</a>
+                    <a href={R.sitePapers()}>Papers</a>
+                    <a href={R.blog()}>Blog</a>
                 </FooterColumn>
                 <FooterColumn title="Developers">
-                    <a href={route('docs')}>Docs</a>
-                    <a href={route('site.fund')}>Data Fund</a>
-                    <a href={route('site.design')}>Design Assets</a>
+                    <a href={R.docs()}>Docs</a>
+                    <a href={R.siteFund()}>Data Fund</a>
+                    <a href={R.siteDesign()}>Design Assets</a>
                 </FooterColumn>
                 <FooterColumn title="Apps">
-                    <a href={route('networkExplorer')}>Network Explorer</a>
-                    <a href={route('hub', routeOptions)}>Hub</a>
+                    <a href={R.networkExplorer()}>Network Explorer</a>
+                    <a
+                        href={R.hub({
+                            search: {
+                                chain: chainName,
+                            },
+                        })}
+                    >
+                        Hub
+                    </a>
                 </FooterColumn>
                 <FooterColumn title="Contact">
-                    <a href={route('contact.general')}>General</a>
-                    <a href={route('contact.media')}>Media</a>
-                    <a href={route('contact.jobs')}>Jobs</a>
-                    <a href={route('contact.labs')}>Business</a>
+                    <a href={R.contactGeneral()}>General</a>
+                    <a href={R.contactMedia()}>Media</a>
+                    <a href={R.contactJobs()}>Jobs</a>
+                    <a href={R.contactLabs()}>Business</a>
                 </FooterColumn>
                 <FooterColumn title="Legal">
-                    <a href={route('tos')}>Terms &amp; Conditions</a>
-                    <a href={route('privacyPolicy')}>Privacy</a>
+                    <a href={R.tos()}>Terms &amp; Conditions</a>
+                    <a href={R.privacyPolicy()}>Privacy</a>
                 </FooterColumn>
             </FooterColumns>
             <SocialChannels />

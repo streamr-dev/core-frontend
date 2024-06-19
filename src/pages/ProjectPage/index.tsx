@@ -36,7 +36,8 @@ import {
     useIsAccessibleByCurrentWallet,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { AccessManifest } from './AccessManifest'
 import GetAccess from './GetAccess'
 import ProjectEditorPage from './ProjectEditorPage'
@@ -294,10 +295,12 @@ export function ProjectTabbedPage() {
 
     const canEdit = useCurrentProjectAbility(ProjectPermission.Edit)
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <Layout pageTitle={name}>
             <DetailsPageHeader
-                backButtonLink={route('projects')}
+                backButtonLink={R.projects({ search: { chain: chainName } })}
                 pageTitle={
                     <PageTitleContainer>
                         <ProjectTitle>
@@ -312,7 +315,7 @@ export function ProjectTabbedPage() {
                         {canEdit && (
                             <EditButton
                                 as={Link}
-                                to={route('project.edit', id)}
+                                to={R.projectEdit(id, { search: { chain: chainName } })}
                                 kind="secondary"
                                 size="mini"
                             >
@@ -329,10 +332,21 @@ export function ProjectTabbedPage() {
     )
 }
 
+/**
+ * @todo Taken care of in `app`, no? Double-check & remove.
+ */
 export function ProjectIndexRedirect() {
     const { id = '' } = useParams<{ id: string }>()
 
-    return <Navigate to={route('project', id)} replace />
+    return (
+        <Navigate
+            to={{
+                pathname: R.project(id),
+                search: window.location.search,
+            }}
+            replace
+        />
+    )
 }
 
 function StreamTable({ streamIds }: { streamIds: string[] }) {

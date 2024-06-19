@@ -40,7 +40,8 @@ import {
     useRefetchQueryBehindIndexEffect,
 } from '~/hooks'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -137,6 +138,8 @@ export const SingleSponsorshipPage = () => {
     ) : !isFetching ? (
         <NoData firstLine="Sponsorship not found." />
     ) : null
+
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <Layout>
@@ -243,10 +246,9 @@ export const SingleSponsorshipPage = () => {
                                         {sponsorship.stakes.map((stake) => (
                                             <OperatorListItem key={stake.operatorId}>
                                                 <Link
-                                                    to={route(
-                                                        'operator',
-                                                        stake.operatorId,
-                                                    )}
+                                                    to={R.operator(stake.operatorId, {
+                                                        search: { chain: chainName },
+                                                    })}
                                                 >
                                                     <div>
                                                         <OperatorIdCell

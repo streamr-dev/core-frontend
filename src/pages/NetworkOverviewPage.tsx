@@ -53,7 +53,8 @@ import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useCurrentChainId } from '~/shared/stores/chain'
 import { Abbr } from '~/components/Abbr'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export function NetworkOverviewPage() {
     return (
@@ -167,6 +168,8 @@ function MyOperatorSummary() {
 
     const chartLabel = chartId === 'stake' ? 'Total stake' : 'Cumulative earnings'
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NetworkPageSegment
             title={
@@ -176,7 +179,11 @@ function MyOperatorSummary() {
                             <Button
                                 kind="secondary"
                                 as={Link}
-                                to={route('operator', operator.id)}
+                                to={R.operator(operator.id, {
+                                    search: {
+                                        chain: chainName,
+                                    },
+                                })}
                             >
                                 View Operator
                             </Button>
@@ -250,7 +257,13 @@ function MyOperatorSummary() {
                                 secondLine={
                                     <>
                                         You can become an operator on the{' '}
-                                        <Link to={route('operators')}>Operators</Link>{' '}
+                                        <Link
+                                            to={R.operators({
+                                                search: { chain: chainName },
+                                            })}
+                                        >
+                                            Operators
+                                        </Link>{' '}
                                         page.
                                     </>
                                 }
@@ -389,6 +402,8 @@ function MyDelegations() {
             .flatMap((page) => page.elements)
             .filter((d) => d.contractVersion !== 1) || []
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NetworkPageSegment title="My delegations" foot>
             <WalletPass resourceName="delegations">
@@ -461,7 +476,9 @@ function MyDelegations() {
                                     key: 'sponsorships',
                                 },
                             ]}
-                            linkMapper={({ id }) => route('operator', id)}
+                            linkMapper={({ id }) =>
+                                R.operator(id, { search: { chain: chainName } })
+                            }
                         />
                         {query.hasNextPage ? (
                             <LoadMoreButton
@@ -481,8 +498,10 @@ function MyDelegations() {
                         secondLine={
                             <>
                                 You can browse{' '}
-                                <Link to={route('operators')}>operators</Link> to start
-                                delegating.
+                                <Link to={R.operators({ search: { chain: chainName } })}>
+                                    operators
+                                </Link>{' '}
+                                to start delegating.
                             </>
                         }
                         compact
@@ -496,6 +515,8 @@ function MyDelegations() {
 function MySponsorships() {
     const query = useSponsorshipsForCreatorQuery(useWalletAccount())
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NetworkPageSegment title="My sponsorships" foot>
             <WalletPass resourceName="sponsorships">
@@ -505,7 +526,9 @@ function MySponsorships() {
                     noDataSecondLine={
                         <>
                             You can{' '}
-                            <Link to={route('sponsorships')}>start a sponsorship</Link>{' '}
+                            <Link to={R.sponsorships({ search: { chain: chainName } })}>
+                                start a sponsorship
+                            </Link>{' '}
                             here
                         </>
                     }

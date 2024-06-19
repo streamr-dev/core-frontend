@@ -43,7 +43,7 @@ import Analytics from '~/shared/utils/Analytics'
 import { getQueryClient } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import '~/utils/setupSnippets'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 import ProjectEditorPage from './pages/ProjectPage/ProjectEditorPage'
 
 const App = () => (
@@ -52,7 +52,7 @@ const App = () => (
         <Globals />
         <Routes>
             <Route errorElement={<GenericErrorPage />}>
-                <Route path={route('projects')}>
+                <Route path="/hub/projects">
                     <Route index element={<ProjectListingPage />} />
                     <Route element={<ProjectDraftPage />}>
                         <Route path="new" element={<NewProjectPage />} />
@@ -73,7 +73,7 @@ const App = () => (
                         </Route>
                     </Route>
                 </Route>
-                <Route path={route('streams')}>
+                <Route path="/hub/streams">
                     <Route index element={<StreamsPage />} />
                     <Route element={<StreamDraftPage />}>
                         <Route
@@ -112,13 +112,13 @@ const App = () => (
                         </Route>
                     </Route>
                 </Route>
-                <Route path={route('network')}>
+                <Route path="/hub/network">
                     <Route
                         index
                         element={
                             <Navigate
                                 to={{
-                                    pathname: route('sponsorships'),
+                                    pathname: R.sponsorships(),
                                     search: window.location.search,
                                 }}
                                 replace
@@ -135,31 +135,20 @@ const App = () => (
                     </Route>
                     <Route path="overview" element={<NetworkOverviewPage />} />
                 </Route>
+                <Route path="/" element={<Navigate to={R.projects()} replace />} />
                 <Route
-                    path={route('root')}
+                    path="/hub"
                     element={
                         <Navigate
                             to={{
-                                pathname: route('projects'),
+                                pathname: R.projects(),
                                 search: window.location.search,
                             }}
                             replace
                         />
                     }
                 />
-                <Route
-                    path={route('hub')}
-                    element={
-                        <Navigate
-                            to={{
-                                pathname: route('projects'),
-                                search: window.location.search,
-                            }}
-                            replace
-                        />
-                    }
-                />
-                <Route path={route('error')} element={<GenericErrorPage />} />
+                <Route path="/error" element={<GenericErrorPage />} />
                 <Route path="*" element={<NotFoundPage />} />,
             </Route>
         </Routes>

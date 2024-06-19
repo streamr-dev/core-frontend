@@ -17,7 +17,7 @@ import { getCurrentChainId } from '~/getters/getCurrentChain'
 import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { Bits, ParsedStream, matchBits, parseStream } from '~/parsers/StreamParser'
-import { route } from '~/routes'
+import { Route as R } from '~/utils/routes'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import { useCurrentChainId } from '~/shared/stores/chain'
@@ -25,7 +25,7 @@ import { Operation } from '~/shared/toasts/TransactionListToast'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
 import { Layer } from '~/utils/Layer'
-import { useRouteOptionsWithCurrentChainName } from '~/utils/chains'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import {
     isMessagedObject,
@@ -595,10 +595,10 @@ const NewStreamLink = styled(Link)`
 
 function getOpenStreamLink(streamId: string) {
     return function OpenStreamLink() {
-        const routeOptions = useRouteOptionsWithCurrentChainName()
+        const chainName = useCurrentChainSymbolicName()
 
         const id: string = decodeURIComponent(
-            useMatch(route('stream.overview', ':id'))?.params['id'] || '',
+            useMatch(R.streamOverview(':id'))?.params['id'] || '',
         )
 
         if (!streamId || id === streamId) {
@@ -606,7 +606,13 @@ function getOpenStreamLink(streamId: string) {
         }
 
         return (
-            <NewStreamLink to={route('stream.overview', streamId, routeOptions)}>
+            <NewStreamLink
+                to={R.streamOverview(streamId, {
+                    search: {
+                        chain: chainName,
+                    },
+                })}
+            >
                 Open
             </NewStreamLink>
         )
