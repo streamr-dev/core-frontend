@@ -18,7 +18,7 @@ import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { toBN } from '~/utils/bn'
 import { useCurrentChainId } from '~/utils/chains'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 interface Props {
@@ -81,7 +81,7 @@ export function AccessManifest({
             {hasAccess === true && (
                 <Button
                     as={Link}
-                    to={R.projectConnect(projectId, { search: { chain: chainName } })}
+                    to={R.projectConnect(projectId, routeOptions(chainName))}
                 >
                     Connect
                 </Button>

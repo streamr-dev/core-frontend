@@ -1,8 +1,23 @@
 import queryString from 'query-string'
+import { getSymbolicChainName } from '~/shared/web3/config'
 
 interface RouteOptions {
     search?: Record<'chain', string> & Record<string, any>
     hash?: string
+}
+
+export function routeOptions(
+    chain: string | number,
+    search: Record<string, any> = {},
+    hash = '',
+): RouteOptions {
+    return {
+        search: {
+            ...search,
+            chain: typeof chain === 'string' ? chain : getSymbolicChainName(chain),
+        },
+        hash,
+    }
 }
 
 function withSuffix<P extends string>(pathname: P, options: RouteOptions = {}) {

@@ -32,7 +32,7 @@ import {
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/utils/chains'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
@@ -111,7 +111,7 @@ export const OperatorActionBar: FunctionComponent<{
 
     return (
         <AbstractActionBar
-            fallbackBackButtonUrl={R.operators({ search: { chain: chainName } })}
+            fallbackBackButtonUrl={R.operators(routeOptions(chainName))}
             title={
                 <>
                     <OperatorAvatar

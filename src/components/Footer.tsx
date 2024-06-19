@@ -8,7 +8,7 @@ import {
     SocialChannels,
 } from '@streamr/streamr-layout'
 import { COLORS } from '~/shared/utils/styled'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const MadeBy = styled(UnstyledMadeBy)`
@@ -56,15 +56,7 @@ const Footer = ({ topBorder = false }) => {
                 </FooterColumn>
                 <FooterColumn title="Apps">
                     <a href={R.networkExplorer()}>Network Explorer</a>
-                    <a
-                        href={R.hub({
-                            search: {
-                                chain: chainName,
-                            },
-                        })}
-                    >
-                        Hub
-                    </a>
+                    <a href={R.hub(routeOptions(chainName))}>Hub</a>
                 </FooterColumn>
                 <FooterColumn title="Contact">
                     <a href={R.contactGeneral()}>General</a>

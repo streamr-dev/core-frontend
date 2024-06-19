@@ -21,7 +21,7 @@ import {
 import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { Bits, ParsedStream, matchBits, parseStream } from '~/parsers/StreamParser'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
 import { Operation } from '~/shared/toasts/TransactionListToast'
@@ -609,13 +609,7 @@ function getOpenStreamLink(streamId: string) {
         }
 
         return (
-            <NewStreamLink
-                to={R.streamOverview(streamId, {
-                    search: {
-                        chain: chainName,
-                    },
-                })}
-            >
+            <NewStreamLink to={R.streamOverview(streamId, routeOptions(chainName))}>
                 Open
             </NewStreamLink>
         )

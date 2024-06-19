@@ -45,9 +45,8 @@ import {
     usePersistStreamDraft,
     useStreamEntityQuery,
 } from '~/stores/streamDraft'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
-import { getSymbolicChainName } from '~/shared/web3/config'
 import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
 import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
 import DeleteSection from '../AbstractStreamEditPage/DeleteSection'
@@ -293,13 +292,7 @@ function StreamEntityForm(props: StreamEntityFormProps) {
                 return
             }
 
-            navigate(
-                R.streamOverview(streamId, {
-                    search: {
-                        chain: getSymbolicChainName(chainId),
-                    },
-                }),
-            )
+            navigate(R.streamOverview(streamId, routeOptions(chainId)))
         },
         onPermissionsChange(streamId, assignments) {
             if (!account) {
@@ -360,21 +353,9 @@ function usePreventDataLossEffect() {
             (dest?: string) => {
                 if (id) {
                     switch (dest) {
-                        case R.streamOverview(id, {
-                            search: {
-                                chain: chainName,
-                            },
-                        }):
-                        case R.streamConnect(id, {
-                            search: {
-                                chain: chainName,
-                            },
-                        }):
-                        case R.streamLiveData(id, {
-                            search: {
-                                chain: chainName,
-                            },
-                        }):
+                        case R.streamOverview(id, routeOptions(chainName)):
+                        case R.streamConnect(id, routeOptions(chainName)):
+                        case R.streamLiveData(id, routeOptions(chainName)):
                             return false
                     }
                 }
@@ -432,11 +413,7 @@ function Header({
                 }
             />
             <DetailsPageHeader
-                backButtonLink={R.streams({
-                    search: {
-                        chain: chainName,
-                    },
-                })}
+                backButtonLink={R.streams(routeOptions(chainName))}
                 pageTitle={
                     <TitleContainer>
                         <span title={streamId}>

@@ -22,8 +22,7 @@ import {
     SponsorshipFilters,
     defaultFilters,
 } from '~/components/SponsorshipFilterButton'
-import { Route as R } from '~/utils/routes'
-import { getSymbolicChainName } from '~/shared/web3/config'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const PAGE_SIZE = 20
@@ -77,12 +76,11 @@ export const SponsorshipsPage = () => {
     useEffect(() => {
         if (!wallet) {
             navigate(
-                R.sponsorships({
-                    search: {
-                        chain: chainName,
+                R.sponsorships(
+                    routeOptions(chainName, {
                         tab: TabOption.AllSponsorships,
-                    },
-                }),
+                    }),
+                ),
             )
         }
     }, [wallet, navigate, chainName])
@@ -103,12 +101,7 @@ export const SponsorshipsPage = () => {
                     <Tabs
                         onSelectionChange={(value) => {
                             navigate(
-                                R.sponsorships({
-                                    search: {
-                                        chain: chainName,
-                                        tab: value,
-                                    },
-                                }),
+                                R.sponsorships(routeOptions(chainName, { tab: value })),
                             )
                         }}
                         selection={selectedTab}
@@ -127,12 +120,12 @@ export const SponsorshipsPage = () => {
                             createSponsorship(chainId, wallet, {
                                 onDone(id, blockNumber) {
                                     navigate(
-                                        R.sponsorship(id, {
-                                            search: {
-                                                chain: getSymbolicChainName(chainId),
+                                        R.sponsorship(
+                                            id,
+                                            routeOptions(chainId, {
                                                 b: blockNumber,
-                                            },
-                                        }),
+                                            }),
+                                        ),
                                     )
                                 },
                             })

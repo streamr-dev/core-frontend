@@ -6,7 +6,7 @@ import Layout from '~/components/Layout'
 import appCrashedImage from '~/shared/assets/images/app_crashed.png'
 import appCrashedImage2x from '~/shared/assets/images/app_crashed@2x.png'
 import { Button } from '~/components/Button'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export default function GenericErrorPage() {
@@ -34,7 +34,7 @@ export function GenericErrorPageContent() {
                     <Button
                         kind="special"
                         as={Link}
-                        to={R.projects({ search: { chain: chainName } })}
+                        to={R.projects(routeOptions(chainName))}
                         className="d-none d-md-flex"
                     >
                         Projects

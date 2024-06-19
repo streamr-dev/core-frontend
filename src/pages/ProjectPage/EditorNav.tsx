@@ -9,7 +9,7 @@ import { REGULAR } from '~/shared/utils/styled'
 import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import { useInViewport } from '~/hooks/useInViewport'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const FlexNavbar = styled(Navbar)`
@@ -53,7 +53,7 @@ export default function EditorNav() {
                 <FlexNavbarItem>
                     <Button
                         as={Link}
-                        to={R.projects({ search: { chain: chainName } })}
+                        to={R.projects(routeOptions(chainName))}
                         kind="transparent"
                     >
                         Exit
@@ -77,7 +77,7 @@ export default function EditorNav() {
                 <FlexNavbarItem>
                     <Button
                         as={Link}
-                        to={R.projects({ search: { chain: chainName } })}
+                        to={R.projects(routeOptions(chainName))}
                         kind="transparent"
                     >
                         Exit

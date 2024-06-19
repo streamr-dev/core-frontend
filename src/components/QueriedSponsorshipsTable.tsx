@@ -21,7 +21,7 @@ import {
 import { abbr } from '~/utils'
 import { useCurrentChainId } from '~/utils/chains'
 import { OrderDirection } from '~/types'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 interface Props {
@@ -209,11 +209,7 @@ export function QueriedSponsorshipsTable({
                 noDataFirstLine={noDataFirstLine}
                 noDataSecondLine={noDataSecondLine}
                 linkMapper={(element) =>
-                    R.sponsorship(element.id, {
-                        search: {
-                            chain: chainName,
-                        },
-                    })
+                    R.sponsorship(element.id, routeOptions(chainName))
                 }
             />
             {query.hasNextPage && (

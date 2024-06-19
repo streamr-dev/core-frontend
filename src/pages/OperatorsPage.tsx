@@ -24,8 +24,7 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
 import { useCurrentChainId } from '~/utils/chains'
-import { Route as R } from '~/utils/routes'
-import { getSymbolicChainName } from '~/shared/web3/config'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const PAGE_SIZE = 20
@@ -86,12 +85,11 @@ export const OperatorsPage = () => {
     useEffect(() => {
         if (!wallet) {
             navigate(
-                R.operators({
-                    search: {
-                        chain: chainName,
+                R.operators(
+                    routeOptions(chainName, {
                         tab: TabOption.AllOperators,
-                    },
-                }),
+                    }),
+                ),
             )
         }
     }, [wallet, navigate, chainName])
@@ -105,9 +103,7 @@ export const OperatorsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            navigate(
-                                R.operators({ search: { chain: chainName, tab: value } }),
-                            )
+                            navigate(R.operators(routeOptions(chainName, { tab: value })))
                         }}
                         selection={selectedTab}
                         fullWidthOnMobile={true}
@@ -122,11 +118,7 @@ export const OperatorsPage = () => {
                     operator ? (
                         <Button
                             as={Link}
-                            to={R.operator(operator.id, {
-                                search: {
-                                    chain: chainName,
-                                },
-                            })}
+                            to={R.operator(operator.id, routeOptions(chainName))}
                         >
                             View my Operator
                         </Button>
@@ -136,12 +128,12 @@ export const OperatorsPage = () => {
                                 saveOperator(chainId, undefined, {
                                     onDone(id, blockNumber) {
                                         navigate(
-                                            R.operator(id, {
-                                                search: {
+                                            R.operator(
+                                                id,
+                                                routeOptions(chainId, {
                                                     b: blockNumber,
-                                                    chain: getSymbolicChainName(chainId),
-                                                },
-                                            }),
+                                                }),
+                                            ),
                                         )
                                     },
                                 })
@@ -278,13 +270,7 @@ function DelegationsTable({
                 },
             ]}
             noDataFirstLine="You have not delegated to any operator."
-            linkMapper={(element) =>
-                R.operator(element.id, {
-                    search: {
-                        chain: chainName,
-                    },
-                })
-            }
+            linkMapper={(element) => R.operator(element.id, routeOptions(chainName))}
         />
     )
 }
@@ -377,13 +363,7 @@ function OperatorsTable({
                 },
             ]}
             noDataFirstLine="No operators found."
-            linkMapper={(element) =>
-                R.operator(element.id, {
-                    search: {
-                        chain: chainName,
-                    },
-                })
-            }
+            linkMapper={(element) => R.operator(element.id, routeOptions(chainName))}
         />
     )
 }

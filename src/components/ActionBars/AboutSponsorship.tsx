@@ -14,7 +14,7 @@ import {
 import { truncateStreamName } from '~/shared/utils/text'
 import { ExternalLinkIcon } from '~/icons'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorship }) {
@@ -31,7 +31,7 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
                         <strong>{truncateStreamName(streamId)}</strong>
                         <div>
                             <Link
-                                to={R.stream(streamId, { search: { chain: chainName } })}
+                                to={R.stream(streamId, routeOptions(chainName))}
                                 target="_blank"
                             >
                                 <ExternalLinkIcon />

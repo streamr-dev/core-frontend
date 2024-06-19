@@ -33,7 +33,7 @@ import {
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/utils/chains'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
 
@@ -84,7 +84,7 @@ export function SponsorshipActionBar({
 
     return (
         <AbstractActionBar
-            fallbackBackButtonUrl={R.sponsorships({ search: { chain: chainName } })}
+            fallbackBackButtonUrl={R.sponsorships(routeOptions(chainName))}
             title={
                 streamId ? (
                     truncateStreamName(streamId, 30)

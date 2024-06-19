@@ -70,7 +70,7 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/utils/chains'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { UndelegationQueue } from './UndelegationQueue'
 
@@ -606,11 +606,7 @@ export const SingleOperatorPage = () => {
                                     },
                                 ]}
                                 linkMapper={({ sponsorshipId: id }) =>
-                                    R.sponsorship(id, {
-                                        search: {
-                                            chain: chainName,
-                                        },
-                                    })
+                                    R.sponsorship(id, routeOptions(chainName))
                                 }
                                 actions={[
                                     (element) => ({
@@ -719,11 +715,7 @@ export const SingleOperatorPage = () => {
                                         },
                                     ]}
                                     linkMapper={({ sponsorshipId: id }) =>
-                                        R.sponsorship(id, {
-                                            search: {
-                                                chain: chainName,
-                                            },
-                                        })
+                                        R.sponsorship(id, routeOptions(chainName))
                                     }
                                 />
                             </SlashingHistoryTableContainer>

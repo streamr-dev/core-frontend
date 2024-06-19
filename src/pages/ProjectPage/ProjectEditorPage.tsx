@@ -24,17 +24,13 @@ import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { useCurrentChainId } from '~/utils/chains'
 import { ProjectType, SalePoint } from '~/shared/types'
-import {
-    getConfigForChain,
-    getConfigForChainByName,
-    getSymbolicChainName,
-} from '~/shared/web3/config'
+import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { ProjectDraft } from '~/stores/projectDraft'
 import { Chain } from '~/types'
 import { SalePointsPayload } from '~/types/projects'
 import { formatChainName } from '~/utils'
 import { toastedOperation } from '~/utils/toastedOperation'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import DataUnionFee from './DataUnionFee'
 import DataUnionPayment from './DataUnionPayment'
 import EditorHero from './EditorHero'
@@ -438,13 +434,7 @@ export default function ProjectEditorPage() {
                                                 }
 
                                                 navigate(
-                                                    R.projects({
-                                                        search: {
-                                                            chain: getSymbolicChainName(
-                                                                chainId,
-                                                            ),
-                                                        },
-                                                    }),
+                                                    R.projects(routeOptions(chainId)),
                                                 )
                                             } catch (e) {
                                                 console.warn(

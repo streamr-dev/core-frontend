@@ -9,7 +9,7 @@ import {
     getStreamsFromIndexer,
     isIndexerColumn,
 } from '~/hooks/streams'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useCurrentChainId } from '~/utils/chains'
 import { OrderDirection } from '~/types'
@@ -132,11 +132,7 @@ export function QueriedStreamsTable({
                         valueMapper: ({ subscriberCount = '∞' }) => subscriberCount,
                     },
                 ]}
-                linkMapper={(element) =>
-                    R.stream(element.id, {
-                        search: { chain: chainName },
-                    })
-                }
+                linkMapper={(element) => R.stream(element.id, routeOptions(chainName))}
             />
             {query.hasNextPage && (
                 <LoadMoreButton

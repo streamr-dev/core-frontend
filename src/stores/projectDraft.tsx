@@ -6,7 +6,7 @@ import { randomHex } from 'web3-utils'
 import { ValidationError } from '~/errors'
 import { getDataUnion } from '~/getters/du'
 import { ParsedProject } from '~/parsers/ProjectParser'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import {
     createProject,
     deployDataUnionContract,
@@ -287,7 +287,7 @@ export function usePersistProjectCallback() {
                     return
                 }
 
-                navigate(R.projects({ search: { chain: chainName } }))
+                navigate(R.projects(routeOptions(chainName)))
             },
 
             onError(e) {

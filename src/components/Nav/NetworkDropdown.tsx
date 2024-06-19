@@ -6,7 +6,7 @@ import { DefaultSimpleDropdownMenu, SimpleDropdown } from '~/components/SimpleDr
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 
 export function Dropdown() {
     const [isOpen, setIsOpen] = useState(false)
@@ -53,7 +53,7 @@ export function Dropdown() {
                         {NetworkNavItems.map((i) => (
                             <DropdownItem
                                 key={i.title}
-                                to={i.linkFn({ search: { chain: chainName } })}
+                                to={i.linkFn(routeOptions(chainName))}
                                 onFocus={() => void show(toggle)}
                                 onClick={() => void hide(toggle, { immediately: true })}
                             >
@@ -67,7 +67,7 @@ export function Dropdown() {
                 {(toggle) => (
                     <NavLink
                         as={Link}
-                        to={R.networkOverview({ search: { chain: chainName } })}
+                        to={R.networkOverview(routeOptions(chainName))}
                         onFocus={() => void show(toggle)}
                         onBlur={() => void hide(toggle)}
                         onMouseEnter={() => void show(toggle)}

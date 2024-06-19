@@ -20,7 +20,7 @@ import {
     SelectFieldWrap,
 } from '~/components/ActionBar.styles'
 import { projectTypeFilterModal } from '~/modals/ProjectTypeFilter'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 enum TabOption {
@@ -93,14 +93,7 @@ const UnstyledActionBar = ({
                     <Tabs
                         selection={scope}
                         onSelectionChange={(id) => {
-                            navigate(
-                                R.projects({
-                                    search: {
-                                        chain: chainName,
-                                        tab: id,
-                                    },
-                                }),
-                            )
+                            navigate(R.projects(routeOptions(chainName, { tab: id })))
                         }}
                     >
                         <Tab id={TabOption.Any}>All projects</Tab>

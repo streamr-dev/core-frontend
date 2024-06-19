@@ -8,7 +8,7 @@ import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '~/shared/utils/styled'
 import Checkbox from '~/shared/components/Checkbox'
 import { IndexerStream, TheGraphStream } from '~/services/streams'
 import { truncateStreamName } from '~/shared/utils/text'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const ROW_HEIGHT = 88
@@ -269,7 +269,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
                         return (
                             <TableRow key={s.id}>
                                 <StreamDetails
-                                    to={R.stream(s.id, { search: { chain: chainName } })}
+                                    to={R.stream(s.id, routeOptions(chainName))}
                                 >
                                     <StreamId title={s.id}>
                                         {truncateStreamName(s.id, 40)}

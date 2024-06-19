@@ -53,7 +53,7 @@ import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useCurrentChainId } from '~/utils/chains'
 import { Abbr } from '~/components/Abbr'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export function NetworkOverviewPage() {
@@ -179,11 +179,7 @@ function MyOperatorSummary() {
                             <Button
                                 kind="secondary"
                                 as={Link}
-                                to={R.operator(operator.id, {
-                                    search: {
-                                        chain: chainName,
-                                    },
-                                })}
+                                to={R.operator(operator.id, routeOptions(chainName))}
                             >
                                 View Operator
                             </Button>
@@ -257,11 +253,7 @@ function MyOperatorSummary() {
                                 secondLine={
                                     <>
                                         You can become an operator on the{' '}
-                                        <Link
-                                            to={R.operators({
-                                                search: { chain: chainName },
-                                            })}
-                                        >
+                                        <Link to={R.operators(routeOptions(chainName))}>
                                             Operators
                                         </Link>{' '}
                                         page.
@@ -477,7 +469,7 @@ function MyDelegations() {
                                 },
                             ]}
                             linkMapper={({ id }) =>
-                                R.operator(id, { search: { chain: chainName } })
+                                R.operator(id, routeOptions(chainName))
                             }
                         />
                         {query.hasNextPage ? (
@@ -498,7 +490,7 @@ function MyDelegations() {
                         secondLine={
                             <>
                                 You can browse{' '}
-                                <Link to={R.operators({ search: { chain: chainName } })}>
+                                <Link to={R.operators(routeOptions(chainName))}>
                                     operators
                                 </Link>{' '}
                                 to start delegating.
@@ -526,7 +518,7 @@ function MySponsorships() {
                     noDataSecondLine={
                         <>
                             You can{' '}
-                            <Link to={R.sponsorships({ search: { chain: chainName } })}>
+                            <Link to={R.sponsorships(routeOptions(chainName))}>
                                 start a sponsorship
                             </Link>{' '}
                             here

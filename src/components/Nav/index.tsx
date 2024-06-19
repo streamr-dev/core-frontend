@@ -13,8 +13,7 @@ import { saveOperator } from '~/utils'
 import { useMediaQuery } from '~/hooks'
 import { ChainSelector as UnstyledChainSelector } from '~/components/ChainSelector'
 import { useCurrentChainId } from '~/utils/chains'
-import { Route as R } from '~/utils/routes'
-import { getSymbolicChainName } from '~/shared/web3/config'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { Avatarless, Name, Username } from './User'
 import {
@@ -72,20 +71,14 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                     <div />
                     <NavbarItem>
                         <NavbarLinkDesktop highlight={pathname.startsWith(R.projects())}>
-                            <NavLink
-                                as={Link}
-                                to={R.projects({ search: { chain: chainName } })}
-                            >
+                            <NavLink as={Link} to={R.projects(routeOptions(chainName))}>
                                 Projects
                             </NavLink>
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
                         <NavbarLinkDesktop highlight={pathname.startsWith(R.streams())}>
-                            <NavLink
-                                as={Link}
-                                to={R.streams({ search: { chain: chainName } })}
-                            >
+                            <NavLink as={Link} to={R.streams(routeOptions(chainName))}>
                                 Streams
                             </NavLink>
                         </NavbarLinkDesktop>
@@ -143,11 +136,10 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                 <TextMenuItem
                                                     onClick={() => {
                                                         navigate(
-                                                            R.operator(operator.id, {
-                                                                search: {
-                                                                    chain: chainName,
-                                                                },
-                                                            }),
+                                                            R.operator(
+                                                                operator.id,
+                                                                routeOptions(chainName),
+                                                            ),
                                                         )
                                                     }}
                                                 >
@@ -164,14 +156,15 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                         saveOperator(chainId, undefined, {
                                                             onDone(id, blockNumber) {
                                                                 navigate(
-                                                                    R.operator(id, {
-                                                                        search: {
-                                                                            b: blockNumber,
-                                                                            chain: getSymbolicChainName(
-                                                                                chainId,
-                                                                            ),
-                                                                        },
-                                                                    }),
+                                                                    R.operator(
+                                                                        id,
+                                                                        routeOptions(
+                                                                            chainId,
+                                                                            {
+                                                                                b: blockNumber,
+                                                                            },
+                                                                        ),
+                                                                    ),
                                                                 )
                                                             },
                                                         })
@@ -233,12 +226,12 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                     </UserInfoMobile>
                 )}
                 <NavbarLinkMobile highlight={pathname.startsWith(R.projects())}>
-                    <NavLink as={Link} to={R.projects({ search: { chain: chainName } })}>
+                    <NavLink as={Link} to={R.projects(routeOptions(chainName))}>
                         Projects
                     </NavLink>
                 </NavbarLinkMobile>
                 <NavbarLinkMobile highlight={pathname.startsWith(R.streams())}>
-                    <NavLink as={Link} to={R.streams({ search: { chain: chainName } })}>
+                    <NavLink as={Link} to={R.streams(routeOptions(chainName))}>
                         Streams
                     </NavLink>
                 </NavbarLinkMobile>

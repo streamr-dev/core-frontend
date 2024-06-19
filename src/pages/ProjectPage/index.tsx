@@ -36,7 +36,7 @@ import {
     useIsAccessibleByCurrentWallet,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { AccessManifest } from './AccessManifest'
 import GetAccess from './GetAccess'
@@ -300,7 +300,7 @@ export function ProjectTabbedPage() {
     return (
         <Layout pageTitle={name}>
             <DetailsPageHeader
-                backButtonLink={R.projects({ search: { chain: chainName } })}
+                backButtonLink={R.projects(routeOptions(chainName))}
                 pageTitle={
                     <PageTitleContainer>
                         <ProjectTitle>
@@ -315,7 +315,7 @@ export function ProjectTabbedPage() {
                         {canEdit && (
                             <EditButton
                                 as={Link}
-                                to={R.projectEdit(id, { search: { chain: chainName } })}
+                                to={R.projectEdit(id, routeOptions(chainName))}
                                 kind="secondary"
                                 size="mini"
                             >

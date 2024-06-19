@@ -6,7 +6,7 @@ import Layout from '~/components/Layout'
 import pageNotFoundPic from '~/shared/assets/images/404_blocks.png'
 import pageNotFoundPic2x from '~/shared/assets/images/404_blocks@2x.png'
 import { Button } from '~/components/Button'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export default function NotFoundPage() {
@@ -35,14 +35,14 @@ export function NotFoundPageContent() {
                         <Button
                             kind="special"
                             as={Link}
-                            to={R.streams({ search: { chain: chainName } })}
+                            to={R.streams(routeOptions(chainName))}
                         >
                             Go to streams
                         </Button>
                         <Button
                             kind="special"
                             as={Link}
-                            to={R.projects({ search: { chain: chainName } })}
+                            to={R.projects(routeOptions(chainName))}
                         >
                             Go to projects
                         </Button>

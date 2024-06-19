@@ -40,7 +40,7 @@ import {
     useRefetchQueryBehindIndexEffect,
 } from '~/hooks'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
-import { Route as R } from '~/utils/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export const SingleSponsorshipPage = () => {
@@ -246,9 +246,10 @@ export const SingleSponsorshipPage = () => {
                                         {sponsorship.stakes.map((stake) => (
                                             <OperatorListItem key={stake.operatorId}>
                                                 <Link
-                                                    to={R.operator(stake.operatorId, {
-                                                        search: { chain: chainName },
-                                                    })}
+                                                    to={R.operator(
+                                                        stake.operatorId,
+                                                        routeOptions(chainName),
+                                                    )}
                                                 >
                                                     <div>
                                                         <OperatorIdCell
