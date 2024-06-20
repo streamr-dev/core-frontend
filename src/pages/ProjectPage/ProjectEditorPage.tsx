@@ -22,9 +22,9 @@ import { deleteProject } from '~/services/projects'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import { useCurrentChainId } from '~/utils/chains'
+import { getChainConfig, useCurrentChainId } from '~/utils/chains'
 import { ProjectType, SalePoint } from '~/shared/types'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
+import { getConfigForChain } from '~/shared/web3/config'
 import { ProjectDraft } from '~/stores/projectDraft'
 import { Chain } from '~/types'
 import { SalePointsPayload } from '~/types/projects'
@@ -58,10 +58,7 @@ export default function ProjectEditorPage() {
     const chainId = useCurrentChainId()
 
     const availableChains = useMemo<Chain[]>(
-        () =>
-            getChainConfigExtension(chainId).marketplaceChains.map(
-                getConfigForChainByName,
-            ),
+        () => getChainConfigExtension(chainId).marketplaceChains.map(getChainConfig),
         [chainId],
     )
 

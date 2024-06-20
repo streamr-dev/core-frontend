@@ -5,9 +5,8 @@ import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropd
 import { getEnvironmentConfig } from '~/getters/getEnvironmentConfig'
 import UnstyledNetworkIcon from '~/shared/components/NetworkIcon'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { useCurrentChain } from '~/utils/chains'
+import { getSymbolicChainName, useCurrentChain } from '~/utils/chains'
 import { COLORS, LAPTOP } from '~/shared/utils/styled'
-import { getSymbolicChainName } from '~/shared/web3/config'
 import { StreamDraft } from '~/stores/streamDraft'
 import { Chain } from '~/types'
 

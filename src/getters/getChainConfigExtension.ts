@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import { isAddress } from 'web3-validator'
 import { z } from 'zod'
 import config from '~/config/chains.toml'
-import { getSymbolicChainName } from '~/shared/web3/config'
+import { getSymbolicChainName } from '~/utils/chains'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 
 const ChainConfigExtension = z.object({

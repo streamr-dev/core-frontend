@@ -1,5 +1,5 @@
 import queryString from 'query-string'
-import { getSymbolicChainName } from '~/shared/web3/config'
+import { getSymbolicChainName } from './chains'
 
 interface RouteOptions {
     search?: Record<'chain', string> & Record<string, any>

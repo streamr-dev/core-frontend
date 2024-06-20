@@ -3,7 +3,7 @@ import { address0 } from '~/consts'
 import { getProjectImageUrl } from '~/getters'
 import { getDataUnionAdminFeeForSalePoint } from '~/getters/du'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
-import { getCurrentChainId } from '~/utils/chains'
+import { getChainConfig, getCurrentChainId } from '~/utils/chains'
 import { getTokenInfo } from '~/hooks/useTokenInfo'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
@@ -14,7 +14,7 @@ import {
     timeUnitSecondsMultiplierMap,
     timeUnits,
 } from '~/shared/utils/timeUnit'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
+import { getConfigForChain } from '~/shared/web3/config'
 import { Chain } from '~/types'
 import { toBN } from '~/utils/bn'
 
@@ -147,9 +147,8 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
                 }
             }
 
-            const chains: Chain[] = getChainConfigExtension(
-                chainId,
-            ).marketplaceChains.map(getConfigForChainByName)
+            const chains: Chain[] =
+                getChainConfigExtension(chainId).marketplaceChains.map(getChainConfig)
 
             const salePoints: Record<string, SalePoint | undefined> = {}
 
@@ -247,9 +246,8 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
 export type ParsedProject = Awaited<ReturnType<typeof parseProject>>
 
 function getEmptySalePoints(chainId: number) {
-    const chains: Chain[] = getChainConfigExtension(chainId).marketplaceChains.map(
-        getConfigForChainByName,
-    )
+    const chains: Chain[] =
+        getChainConfigExtension(chainId).marketplaceChains.map(getChainConfig)
 
     const salePoints: Record<string, SalePoint | undefined> = {}
 
