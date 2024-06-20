@@ -39,6 +39,14 @@ function withSuffix<P extends string>(pathname: P, options: RouteOptions = {}) {
     return `${pathname}${qs && `?${qs}`}${hash && `#${hash}`}` as `${P}[?search][#hash]`
 }
 
+function encode(uriComponent: string) {
+    if (/:\w+/.test(uriComponent)) {
+        return uriComponent
+    }
+
+    return encodeURIComponent(uriComponent)
+}
+
 export const Route = {
     allowanceInfo() {
         return 'https://tokenallowance.io' as const
@@ -83,10 +91,7 @@ export const Route = {
         return withSuffix('/hub/network/overview', options)
     },
     operator(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/network/operators/${encodeURIComponent(id) as ':id'}`,
-            options,
-        )
+        return withSuffix(`/hub/network/operators/${encode(id) as ':id'}`, options)
     },
     operators(options?: RouteOptions) {
         return withSuffix('/hub/network/operators', options)
@@ -95,31 +100,19 @@ export const Route = {
         return 'https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf' as const
     },
     project(id: string, options?: RouteOptions) {
-        return withSuffix(`/hub/projects/${encodeURIComponent(id) as ':id'}`, options)
+        return withSuffix(`/hub/projects/${encode(id) as ':id'}`, options)
     },
     projectConnect(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/projects/${encodeURIComponent(id) as ':id'}/connect`,
-            options,
-        )
+        return withSuffix(`/hub/projects/${encode(id) as ':id'}/connect`, options)
     },
     projectEdit(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/projects/${encodeURIComponent(id) as ':id'}/edit`,
-            options,
-        )
+        return withSuffix(`/hub/projects/${encode(id) as ':id'}/edit`, options)
     },
     projectLiveData(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/projects/${encodeURIComponent(id) as ':id'}/live-data`,
-            options,
-        )
+        return withSuffix(`/hub/projects/${encode(id) as ':id'}/live-data`, options)
     },
     projectOverview(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/projects/${encodeURIComponent(id) as ':id'}/overview`,
-            options,
-        )
+        return withSuffix(`/hub/projects/${encode(id) as ':id'}/overview`, options)
     },
     projects(options?: RouteOptions) {
         return withSuffix('/hub/projects', options)
@@ -167,34 +160,22 @@ export const Route = {
         return '/token-migration' as const
     },
     stream(id: string, options?: RouteOptions) {
-        return withSuffix(`/hub/streams/${encodeURIComponent(id) as ':id'}`, options)
+        return withSuffix(`/hub/streams/${encode(id) as ':id'}`, options)
     },
     streamConnect(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/streams/${encodeURIComponent(id) as ':id'}/connect`,
-            options,
-        )
+        return withSuffix(`/hub/streams/${encode(id) as ':id'}/connect`, options)
     },
     streamLiveData(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/streams/${encodeURIComponent(id) as ':id'}/live-data`,
-            options,
-        )
+        return withSuffix(`/hub/streams/${encode(id) as ':id'}/live-data`, options)
     },
     streamOverview(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/streams/${encodeURIComponent(id) as ':id'}/overview`,
-            options,
-        )
+        return withSuffix(`/hub/streams/${encode(id) as ':id'}/overview`, options)
     },
     streams(options?: RouteOptions) {
         return withSuffix(`/hub/streams`, options)
     },
     sponsorship(id: string, options?: RouteOptions) {
-        return withSuffix(
-            `/hub/network/sponsorships/${encodeURIComponent(id) as ':id'}`,
-            options,
-        )
+        return withSuffix(`/hub/network/sponsorships/${encode(id) as ':id'}`, options)
     },
     sponsorships(options?: RouteOptions) {
         return withSuffix('/hub/network/sponsorships', options)
