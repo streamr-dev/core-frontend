@@ -9,10 +9,11 @@ import {
     getStreamsFromIndexer,
     isIndexerColumn,
 } from '~/hooks/streams'
-import routes from '~/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { OrderDirection } from '~/types'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -40,6 +41,8 @@ export function QueriedStreamsTable({
     >({})
 
     const chainId = useCurrentChainId()
+
+    const chainName = useCurrentChainSymbolicName()
 
     const indexerQueryErrored = query.isError && isIndexerColumn(chainId, orderBy)
 
@@ -129,7 +132,7 @@ export function QueriedStreamsTable({
                         valueMapper: ({ subscriberCount = '∞' }) => subscriberCount,
                     },
                 ]}
-                linkMapper={(element) => routes.streams.show({ id: element.id })}
+                linkMapper={(element) => R.stream(element.id, routeOptions(chainName))}
             />
             {query.hasNextPage && (
                 <LoadMoreButton

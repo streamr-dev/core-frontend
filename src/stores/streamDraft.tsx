@@ -13,18 +13,22 @@ import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { address0 } from '~/consts'
 import { DraftValidationError, ValidationError } from '~/errors'
-import { getCurrentChainId } from '~/getters/getCurrentChain'
+import {
+    getCurrentChainId,
+    useCurrentChainId,
+    useCurrentChainSymbolicName,
+} from '~/utils/chains'
 import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import GetCryptoModal from '~/modals/GetCryptoModal'
 import { Bits, ParsedStream, matchBits, parseStream } from '~/parsers/StreamParser'
-import routes from '~/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import { useCurrentChainId } from '~/shared/stores/chain'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import getNativeTokenName from '~/shared/utils/nativeToken'
 import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
 import { Layer } from '~/utils/Layer'
+import {} from '~/utils/chains'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import {
     isMessagedObject,
@@ -131,7 +135,11 @@ export function useStreamEntityQuery() {
 }
 
 interface UsePersistStreamDraftOptions {
-    onCreate?: (streamId: string, options: { abortSignal?: AbortSignal }) => void
+    onCreate?: (
+        chainId: number,
+        streamId: string,
+        options: { abortSignal?: AbortSignal },
+    ) => void
     onPermissionsChange?: (
         streamId: string,
         assignments: PermissionAssignment[],
@@ -456,7 +464,7 @@ export function usePersistStreamDraft(options: UsePersistStreamDraftOptions = {}
                         cold.pathname = hot.pathname
                     })
 
-                    options.onCreate?.(currentStreamId, { abortSignal })
+                    options.onCreate?.(chainId, currentStreamId, { abortSignal })
                 }
 
                 if (shouldUpdateMetadata) {
@@ -590,8 +598,10 @@ const NewStreamLink = styled(Link)`
 
 function getOpenStreamLink(streamId: string) {
     return function OpenStreamLink() {
+        const chainName = useCurrentChainSymbolicName()
+
         const id: string = decodeURIComponent(
-            useMatch(routes.streams.overview())?.params['id'] || '',
+            useMatch(R.streamOverview(':id'))?.params['id'] || '',
         )
 
         if (!streamId || id === streamId) {
@@ -599,7 +609,7 @@ function getOpenStreamLink(streamId: string) {
         }
 
         return (
-            <NewStreamLink to={routes.streams.overview({ id: streamId })}>
+            <NewStreamLink to={R.streamOverview(streamId, routeOptions(chainName))}>
                 Open
             </NewStreamLink>
         )

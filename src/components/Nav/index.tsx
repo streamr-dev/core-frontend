@@ -8,12 +8,13 @@ import { truncate } from '~/shared/utils/text'
 import { connectModal } from '~/modals/ConnectModal'
 import { useEns, useWalletAccount } from '~/shared/stores/wallet'
 import toast from '~/utils/toast'
-import routes from '~/routes'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { saveOperator } from '~/utils'
 import { useMediaQuery } from '~/hooks'
 import { ChainSelector as UnstyledChainSelector } from '~/components/ChainSelector'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { Avatarless, Name, Username } from './User'
 import {
     Avatar,
@@ -55,11 +56,13 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
 
     const chainId = useCurrentChainId()
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <div {...props} data-testid={'desktop-nav'}>
             <Navbar>
                 <NavbarItem>
-                    <LogoLink href={routes.root()}>
+                    <LogoLink href={R.root()}>
                         <Logo data-testid={'logo'} />
                     </LogoLink>
                 </NavbarItem>
@@ -67,19 +70,15 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                 <MenuGrid data-desktop-only>
                     <div />
                     <NavbarItem>
-                        <NavbarLinkDesktop
-                            highlight={pathname.startsWith(routes.projects.index())}
-                        >
-                            <NavLink as={Link} to={routes.projects.index()}>
+                        <NavbarLinkDesktop highlight={pathname.startsWith(R.projects())}>
+                            <NavLink as={Link} to={R.projects(routeOptions(chainName))}>
                                 Projects
                             </NavLink>
                         </NavbarLinkDesktop>
                     </NavbarItem>
                     <NavbarItem>
-                        <NavbarLinkDesktop
-                            highlight={pathname.startsWith(routes.streams.index())}
-                        >
-                            <NavLink as={Link} to={routes.streams.index()}>
+                        <NavbarLinkDesktop highlight={pathname.startsWith(R.streams())}>
+                            <NavLink as={Link} to={R.streams(routeOptions(chainName))}>
                                 Streams
                             </NavLink>
                         </NavbarLinkDesktop>
@@ -137,9 +136,10 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                 <TextMenuItem
                                                     onClick={() => {
                                                         navigate(
-                                                            routes.network.operator({
-                                                                id: operator.id,
-                                                            }),
+                                                            R.operator(
+                                                                operator.id,
+                                                                routeOptions(chainName),
+                                                            ),
                                                         )
                                                     }}
                                                 >
@@ -156,11 +156,14 @@ const UnstyledDesktopNav: FunctionComponent = (props) => {
                                                         saveOperator(chainId, undefined, {
                                                             onDone(id, blockNumber) {
                                                                 navigate(
-                                                                    routes.network.operator(
-                                                                        {
-                                                                            id,
-                                                                            b: blockNumber,
-                                                                        },
+                                                                    R.operator(
+                                                                        id,
+                                                                        routeOptions(
+                                                                            chainId,
+                                                                            {
+                                                                                b: blockNumber,
+                                                                            },
+                                                                        ),
                                                                     ),
                                                                 )
                                                             },
@@ -199,12 +202,14 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
 
     const { pathname } = useLocation()
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NavOverlay className={className}>
             <NavOverlay.Head>
                 <Navbar>
                     <NavbarItem>
-                        <LogoLink href={routes.root()}>
+                        <LogoLink href={R.root()}>
                             <Logo />
                         </LogoLink>
                     </NavbarItem>
@@ -220,15 +225,13 @@ const UnstyledMobileNav: FunctionComponent<{ className?: string }> = ({ classNam
                         <Avatarless data-testid={'avatarless'} source={account} />
                     </UserInfoMobile>
                 )}
-                <NavbarLinkMobile
-                    highlight={pathname.startsWith(routes.projects.index())}
-                >
-                    <NavLink as={Link} to={routes.projects.index()}>
+                <NavbarLinkMobile highlight={pathname.startsWith(R.projects())}>
+                    <NavLink as={Link} to={R.projects(routeOptions(chainName))}>
                         Projects
                     </NavLink>
                 </NavbarLinkMobile>
-                <NavbarLinkMobile highlight={pathname.startsWith(routes.streams.index())}>
-                    <NavLink as={Link} to={routes.streams.index()}>
+                <NavbarLinkMobile highlight={pathname.startsWith(R.streams())}>
+                    <NavLink as={Link} to={R.streams(routeOptions(chainName))}>
                         Streams
                     </NavLink>
                 </NavbarLinkMobile>

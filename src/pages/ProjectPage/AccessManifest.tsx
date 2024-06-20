@@ -16,9 +16,10 @@ import {
 import { errorToast } from '~/utils/toast'
 import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
-import routes from '~/routes'
 import { toBN } from '~/utils/bn'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 interface Props {
     projectId: string
@@ -46,6 +47,8 @@ export function AccessManifest({
     const isBeingPurchased = useIsProjectBeingPurchased(projectId)
 
     const { pricePerSecond, chainId, pricingTokenAddress } = firstSalePoint
+
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <Root>
@@ -76,7 +79,10 @@ export function AccessManifest({
                 </p>
             )}
             {hasAccess === true && (
-                <Button as={Link} to={routes.projects.connect({ id: projectId })}>
+                <Button
+                    as={Link}
+                    to={R.projectConnect(projectId, routeOptions(chainName))}
+                >
                     Connect
                 </Button>
             )}

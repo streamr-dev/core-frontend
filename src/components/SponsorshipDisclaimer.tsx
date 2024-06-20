@@ -6,7 +6,7 @@ import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { useJoinSponsorshipAsOperator } from '~/hooks/sponsorships'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import Checkbox from '~/shared/components/Checkbox'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'
 

@@ -13,10 +13,11 @@ import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS, DESKTOP, REGULAR } from '~/shared/utils/styled'
 import { Radio } from '~/shared/components/Radio'
 import { Button } from '~/components/Button'
-import routes from '~/routes'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getPagedStreams } from '~/services/streams'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const Root = styled.div`
     color: #323232;
@@ -171,12 +172,15 @@ export const ProjectTypeChooser: FunctionComponent<{
 }> = ({ className, onClose }) => {
     const [selectedProductType, setSelectedProductType] = useState<ProjectType>()
 
-    const link = useMemo<string>(() => {
+    const chainName = useCurrentChainSymbolicName()
+
+    const link = useMemo<string | null>(() => {
         if (!selectedProductType) {
             return null
         }
-        return routes.projects.new({ type: selectedProductType })
-    }, [selectedProductType])
+
+        return R.project('new', routeOptions(chainName, { type: selectedProductType }))
+    }, [selectedProductType, chainName])
 
     const gotAnyStreams = useGotAnyStreams()
 
@@ -259,11 +263,11 @@ export const ProjectTypeChooser: FunctionComponent<{
             {gotAnyStreams === false && (
                 <NoStreamsWarningBox>
                     You have not created any streams yet. Please{' '}
-                    <Link onClick={onClose} to={routes.streams.new()}>
+                    <Link onClick={onClose} to={R.stream('new', routeOptions(chainName))}>
                         create a stream
                     </Link>{' '}
                     to get started. For help creating streams, see the{' '}
-                    <a href="https://docs.streamr.network/">docs</a>.
+                    <a href={R.docs()}>docs</a>.
                 </NoStreamsWarningBox>
             )}
             <ButtonContainer>

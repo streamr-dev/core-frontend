@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { MarketplaceProductTile } from '~/shared/components/Tile'
 import { TABLET, PHONE } from '~/shared/utils/styled'
 import { TheGraphProject, getProjects } from '~/services/projects'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 const Container = styled.div`
     margin-top: 80px;

@@ -4,8 +4,8 @@ import { create } from 'zustand'
 import { getProjectPermissions } from '~/getters'
 import { ProjectDraft } from '~/stores/projectDraft'
 import { address0 } from '~/consts'
+import { useCurrentChainId } from '~/utils/chains'
 import { useWalletAccount } from './wallet'
-import { useCurrentChainId } from './chain'
 
 export enum ProjectPermission {
     Buy,

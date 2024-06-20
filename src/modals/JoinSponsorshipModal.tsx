@@ -44,6 +44,7 @@ import { truncate } from '~/shared/utils/text'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useAllOperatorsForWalletQuery } from '~/hooks/operators'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
+import { Route as R } from '~/utils/routes'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -390,7 +391,7 @@ const LiveNodesCheck: FunctionComponent<{
                             stream.
                         </p>
                         <a
-                            href="https://docs.streamr.network/node-runners/run-a-node"
+                            href={R.docs('/node-runners/run-a-node')}
                             target="_blank"
                             rel="noreferrer noopener"
                         >

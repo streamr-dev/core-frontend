@@ -19,7 +19,6 @@ import { useTableOrder } from '~/hooks/useTableOrder'
 import ProjectHero from '~/marketplace/containers/ProjectPage/Hero/ProjectHero2'
 import NotFoundPage from '~/pages/NotFoundPage'
 import { getEmptyParsedProject } from '~/parsers/ProjectParser'
-import routes from '~/routes'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import Segment from '~/shared/components/Segment'
@@ -37,6 +36,8 @@ import {
     useIsAccessibleByCurrentWallet,
 } from '~/stores/projectDraft'
 import { isProjectType } from '~/utils'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { AccessManifest } from './AccessManifest'
 import GetAccess from './GetAccess'
 import ProjectEditorPage from './ProjectEditorPage'
@@ -288,16 +289,18 @@ export function ProjectLiveDataPage() {
 }
 
 export function ProjectTabbedPage() {
-    const { id = undefined, name = '', creator = '' } = ProjectDraft.useEntity() || {}
+    const { id = '', name = '', creator = '' } = ProjectDraft.useEntity() || {}
 
     const busy = ProjectDraft.useIsDraftBusy()
 
     const canEdit = useCurrentProjectAbility(ProjectPermission.Edit)
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <Layout pageTitle={name}>
             <DetailsPageHeader
-                backButtonLink={routes.projects.index()}
+                backButtonLink={R.projects(routeOptions(chainName))}
                 pageTitle={
                     <PageTitleContainer>
                         <ProjectTitle>
@@ -312,7 +315,7 @@ export function ProjectTabbedPage() {
                         {canEdit && (
                             <EditButton
                                 as={Link}
-                                to={routes.projects.edit({ id })}
+                                to={R.projectEdit(id, routeOptions(chainName))}
                                 kind="secondary"
                                 size="mini"
                             >
@@ -329,14 +332,18 @@ export function ProjectTabbedPage() {
     )
 }
 
+/**
+ * @todo Taken care of in `app`, no? Double-check & remove.
+ */
 export function ProjectIndexRedirect() {
     const { id = '' } = useParams<{ id: string }>()
 
     return (
         <Navigate
-            to={routes.projects.overview({
-                id: encodeURIComponent(id),
-            })}
+            to={{
+                pathname: R.project(id),
+                search: window.location.search,
+            }}
             replace
         />
     )

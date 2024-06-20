@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSponsoringEvents } from '~/getters/getSponsoringEvents'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { getQueryClient } from '~/utils'
 import { errorToast } from '~/utils/toast'
 

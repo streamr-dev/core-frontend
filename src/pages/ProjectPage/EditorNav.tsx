@@ -7,9 +7,10 @@ import Logo from '~/shared/components/Logo'
 import { Button } from '~/components/Button'
 import { REGULAR } from '~/shared/utils/styled'
 import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
-import routes from '~/routes'
 import { FloatingToolbar } from '~/components/FloatingToolbar'
 import { useInViewport } from '~/hooks/useInViewport'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const FlexNavbar = styled(Navbar)`
     display: flex;
@@ -44,11 +45,17 @@ export default function EditorNav() {
 
     const [attach, isSaveButtonVisible] = useInViewport()
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NavContainer>
             <FloatingToolbar $active={!isSaveButtonVisible}>
                 <FlexNavbarItem>
-                    <Button as={Link} to={routes.projects.index()} kind="transparent">
+                    <Button
+                        as={Link}
+                        to={R.projects(routeOptions(chainName))}
+                        kind="transparent"
+                    >
                         Exit
                     </Button>
                     <Button
@@ -62,13 +69,17 @@ export default function EditorNav() {
             </FloatingToolbar>
             <FlexNavbar>
                 <FlexNavbarItem>
-                    <LogoLink href={routes.root()}>
+                    <LogoLink href={R.root()}>
                         <Logo />
                     </LogoLink>
                     <h1>{projectId ? <>Edit a project</> : <>Create a project</>}</h1>
                 </FlexNavbarItem>
                 <FlexNavbarItem>
-                    <Button as={Link} to={routes.projects.index()} kind="transparent">
+                    <Button
+                        as={Link}
+                        to={R.projects(routeOptions(chainName))}
+                        kind="transparent"
+                    >
                         Exit
                     </Button>
                     <Button

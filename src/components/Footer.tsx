@@ -7,9 +7,9 @@ import {
     MadeBy as UnstyledMadeBy,
     SocialChannels,
 } from '@streamr/streamr-layout'
-
 import { COLORS } from '~/shared/utils/styled'
-import routes from '~/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;
@@ -29,46 +29,50 @@ const FooterColumns = styled(UnstyledFooterColumns)`
     border-top: ${({ separate = false }) => (separate ? '1px' : '0')} solid #d8d8d8;
 `
 
-const Footer = ({ topBorder = false }) => (
-    <LayoutFooter>
-        <FooterColumns separate={topBorder}>
-            <FooterColumn title="Discover">
-                <a href={routes.root()}>Top</a>
-                <a href={routes.site.discover.dataToken()}>DATA Token</a>
-                <a href={routes.site.discover.dataUnions()}>Data Unions</a>
-                <a href={routes.site.discover.marketplace()}>Marketplace</a>
-                <a href={routes.site.discover.network()}>Network</a>
-            </FooterColumn>
-            <FooterColumn title="Project">
-                <a href={routes.site.about()}>About</a>
-                <a href={routes.site.roadmap()}>Roadmap</a>
-                <a href={routes.site.ecosystem()}>Ecosystem</a>
-                <a href={routes.site.papers()}>Papers</a>
-                <a href={routes.community.medium()}>Blog</a>
-            </FooterColumn>
-            <FooterColumn title="Developers">
-                <a href="https://docs.streamr.network/">Docs</a>
-                <a href={routes.site.fund()}>Data Fund</a>
-                <a href={routes.site.design()}>Design Assets</a>
-            </FooterColumn>
-            <FooterColumn title="Apps">
-                <a href={routes.networkExplorer()}>Network Explorer</a>
-                <a href={routes.hub()}>Hub</a>
-            </FooterColumn>
-            <FooterColumn title="Contact">
-                <a href={routes.contact.general()}>General</a>
-                <a href={routes.contact.media()}>Media</a>
-                <a href={routes.contact.jobs()}>Jobs</a>
-                <a href={routes.contact.labs()}>Business</a>
-            </FooterColumn>
-            <FooterColumn title="Legal">
-                <a href={routes.tos()}>Terms &amp; Conditions</a>
-                <a href={routes.privacyPolicy()}>Privacy</a>
-            </FooterColumn>
-        </FooterColumns>
-        <SocialChannels />
-        <MadeBy />
-    </LayoutFooter>
-)
+const Footer = ({ topBorder = false }) => {
+    const chainName = useCurrentChainSymbolicName()
+
+    return (
+        <LayoutFooter>
+            <FooterColumns separate={topBorder}>
+                <FooterColumn title="Discover">
+                    <a href={R.root()}>Top</a>
+                    <a href={R.siteDataToken()}>DATA Token</a>
+                    <a href={R.siteDataUnions()}>Data Unions</a>
+                    <a href={R.siteMarketplace()}>Marketplace</a>
+                    <a href={R.siteNetwork()}>Network</a>
+                </FooterColumn>
+                <FooterColumn title="Project">
+                    <a href={R.siteAbout()}>About</a>
+                    <a href={R.siteRoadmap()}>Roadmap</a>
+                    <a href={R.siteEcosystem()}>Ecosystem</a>
+                    <a href={R.sitePapers()}>Papers</a>
+                    <a href={R.blog()}>Blog</a>
+                </FooterColumn>
+                <FooterColumn title="Developers">
+                    <a href={R.docs()}>Docs</a>
+                    <a href={R.siteFund()}>Data Fund</a>
+                    <a href={R.siteDesign()}>Design Assets</a>
+                </FooterColumn>
+                <FooterColumn title="Apps">
+                    <a href={R.networkExplorer()}>Network Explorer</a>
+                    <a href={R.hub(routeOptions(chainName))}>Hub</a>
+                </FooterColumn>
+                <FooterColumn title="Contact">
+                    <a href={R.contactGeneral()}>General</a>
+                    <a href={R.contactMedia()}>Media</a>
+                    <a href={R.contactJobs()}>Jobs</a>
+                    <a href={R.contactLabs()}>Business</a>
+                </FooterColumn>
+                <FooterColumn title="Legal">
+                    <a href={R.tos()}>Terms &amp; Conditions</a>
+                    <a href={R.privacyPolicy()}>Privacy</a>
+                </FooterColumn>
+            </FooterColumns>
+            <SocialChannels />
+            <MadeBy />
+        </LayoutFooter>
+    )
+}
 
 export default Footer

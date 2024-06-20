@@ -3,7 +3,6 @@ import moment from 'moment'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
-import routes from '~/routes'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
@@ -33,7 +32,9 @@ import {
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
 import { Hint } from '~/components/Hint'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
 
 const DayInSeconds = 60 * 60 * 24
@@ -79,9 +80,11 @@ export function SponsorshipActionBar({
 
     const chainId = useCurrentChainId()
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <AbstractActionBar
-            fallbackBackButtonUrl={routes.network.sponsorships()}
+            fallbackBackButtonUrl={R.sponsorships(routeOptions(chainName))}
             title={
                 streamId ? (
                     truncateStreamName(streamId, 30)

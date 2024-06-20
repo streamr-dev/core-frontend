@@ -12,7 +12,6 @@ Although the frontend consists of a single app, the code is structured into diff
 -   `marketplace` contains the data marketplace
 -   `shared` has shared code and utilities
 -   `userpages` contains the views for managing a user's Streamr resources
--   `routes` contains the list of App routes.
 -   `utils` contains commonly used utilities, used throughout the App.
 -   `stories` storybook stories.
 -   `test` App unit tests.

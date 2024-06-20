@@ -6,7 +6,7 @@ import { randomHex } from 'web3-utils'
 import { ValidationError } from '~/errors'
 import { getDataUnion } from '~/getters/du'
 import { ParsedProject } from '~/parsers/ProjectParser'
-import routes from '~/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import {
     createProject,
     deployDataUnionContract,
@@ -19,6 +19,7 @@ import { Operation } from '~/shared/toasts/TransactionListToast'
 import { ProjectType } from '~/shared/types'
 import { isProjectOwnedBy } from '~/utils'
 import { toBN } from '~/utils/bn'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import networkPreflight from '~/utils/networkPreflight'
 import { validationErrorToast } from '~/utils/toast'
@@ -277,6 +278,8 @@ export function usePersistProjectCallback() {
 
     const navigate = useNavigate()
 
+    const chainName = useCurrentChainSymbolicName()
+
     return useCallback(() => {
         persist({
             onDone(mounted) {
@@ -284,7 +287,7 @@ export function usePersistProjectCallback() {
                     return
                 }
 
-                navigate(routes.projects.index())
+                navigate(R.projects(routeOptions(chainName)))
             },
 
             onError(e) {
@@ -295,5 +298,5 @@ export function usePersistProjectCallback() {
                 console.warn('Failed to publish', e)
             },
         })
-    }, [persist, navigate])
+    }, [persist, navigate, chainName])
 }

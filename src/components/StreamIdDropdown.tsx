@@ -14,7 +14,7 @@ import { getPagedStreams } from '~/services/streams'
 import Spinner from '~/components/Spinner'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { parseStreamId, truncate } from '~/shared/utils/text'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { DropdownMenuItem } from './DropdownMenuItem'
 
 interface Props

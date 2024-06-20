@@ -6,7 +6,6 @@ import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentToke
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { LoadMoreButton } from '~/components/LoadMore'
-import routes from '~/routes'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import {
     useEditSponsorshipFunding,
@@ -20,8 +19,10 @@ import {
     StreamIdCell,
 } from '~/components/Table'
 import { abbr } from '~/utils'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { OrderDirection } from '~/types'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -49,6 +50,8 @@ export function QueriedSponsorshipsTable({
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     const chainId = useCurrentChainId()
+
+    const chainName = useCurrentChainSymbolicName()
 
     const fundSponsorship = useFundSponsorshipCallback()
 
@@ -205,7 +208,9 @@ export function QueriedSponsorshipsTable({
                 ]}
                 noDataFirstLine={noDataFirstLine}
                 noDataSecondLine={noDataSecondLine}
-                linkMapper={(element) => routes.network.sponsorship({ id: element.id })}
+                linkMapper={(element) =>
+                    R.sponsorship(element.id, routeOptions(chainName))
+                }
             />
             {query.hasNextPage && (
                 <LoadMoreButton

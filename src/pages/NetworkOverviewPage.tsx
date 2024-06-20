@@ -18,7 +18,6 @@ import {
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import WalletPass from '~/components/WalletPass'
 import { NoData } from '~/shared/components/NoData'
-import routes from '~/routes'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
@@ -52,8 +51,10 @@ import { OperatorIdCell } from '~/components/Table'
 import { Button } from '~/components/Button'
 import { getDelegationStats } from '~/getters/getDelegationStats'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { Abbr } from '~/components/Abbr'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export function NetworkOverviewPage() {
     return (
@@ -167,6 +168,8 @@ function MyOperatorSummary() {
 
     const chartLabel = chartId === 'stake' ? 'Total stake' : 'Cumulative earnings'
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NetworkPageSegment
             title={
@@ -176,7 +179,7 @@ function MyOperatorSummary() {
                             <Button
                                 kind="secondary"
                                 as={Link}
-                                to={routes.network.operator({ id: operator.id })}
+                                to={R.operator(operator.id, routeOptions(chainName))}
                             >
                                 View Operator
                             </Button>
@@ -250,7 +253,7 @@ function MyOperatorSummary() {
                                 secondLine={
                                     <>
                                         You can become an operator on the{' '}
-                                        <Link to={routes.network.operators()}>
+                                        <Link to={R.operators(routeOptions(chainName))}>
                                             Operators
                                         </Link>{' '}
                                         page.
@@ -391,6 +394,8 @@ function MyDelegations() {
             .flatMap((page) => page.elements)
             .filter((d) => d.contractVersion !== 1) || []
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NetworkPageSegment title="My delegations" foot>
             <WalletPass resourceName="delegations">
@@ -463,7 +468,9 @@ function MyDelegations() {
                                     key: 'sponsorships',
                                 },
                             ]}
-                            linkMapper={({ id }) => routes.network.operator({ id })}
+                            linkMapper={({ id }) =>
+                                R.operator(id, routeOptions(chainName))
+                            }
                         />
                         {query.hasNextPage ? (
                             <LoadMoreButton
@@ -483,8 +490,10 @@ function MyDelegations() {
                         secondLine={
                             <>
                                 You can browse{' '}
-                                <Link to={routes.network.operators()}>operators</Link> to
-                                start delegating.
+                                <Link to={R.operators(routeOptions(chainName))}>
+                                    operators
+                                </Link>{' '}
+                                to start delegating.
                             </>
                         }
                         compact
@@ -498,6 +507,8 @@ function MyDelegations() {
 function MySponsorships() {
     const query = useSponsorshipsForCreatorQuery(useWalletAccount())
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <NetworkPageSegment title="My sponsorships" foot>
             <WalletPass resourceName="sponsorships">
@@ -507,7 +518,7 @@ function MySponsorships() {
                     noDataSecondLine={
                         <>
                             You can{' '}
-                            <Link to={routes.network.sponsorships()}>
+                            <Link to={R.sponsorships(routeOptions(chainName))}>
                                 start a sponsorship
                             </Link>{' '}
                             here

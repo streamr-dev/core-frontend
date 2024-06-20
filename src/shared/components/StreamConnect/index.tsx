@@ -11,6 +11,7 @@ import { truncateStreamName } from '~/shared/utils/text'
 import useCopy from '~/shared/hooks/useCopy'
 import { useStreamAbility } from '~/shared/stores/streamAbilities'
 import { address0 } from '~/consts'
+import { Route as R } from '~/utils/routes'
 
 function stripIndent(code: string): string {
     let minIndent = Number.POSITIVE_INFINITY
@@ -315,38 +316,36 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
             </div>
             <RightColumn>
                 <StreamConnectLink
-                    href={'https://docs.streamr.network/guides/nodejs'}
-                    target={'_blank'}
-                    rel={'noreferrer noopener'}
+                    href={R.docs('/guides/nodejs')}
+                    target="_blank"
+                    rel="noreferrer noopener"
                 >
                     <span>Pub/Sub in NodeJS</span>
-                    <SvgIcon name={'linkOut'} />
+                    <SvgIcon name="linkOut" />
                 </StreamConnectLink>
                 <StreamConnectLink
-                    href={'https://docs.streamr.network/guides/web-app-frameworks'}
-                    target={'_blank'}
-                    rel={'noreferrer noopener'}
+                    href={R.docs('/guides/web-app-frameworks')}
+                    target="_blank"
+                    rel="noreferrer noopener"
                 >
                     <span>Use Streamr in your web app</span>
-                    <SvgIcon name={'linkOut'} />
+                    <SvgIcon name="linkOut" />
                 </StreamConnectLink>
                 <StreamConnectLink
-                    href={'https://docs.streamr.network/usage/cli-tool'}
-                    target={'_blank'}
-                    rel={'noreferrer noopener'}
+                    href={R.docs('/usage/cli-tool')}
+                    target="_blank"
+                    rel="noreferrer noopener"
                 >
                     <span>The Streamr CLI tool</span>
-                    <SvgIcon name={'linkOut'} />
+                    <SvgIcon name="linkOut" />
                 </StreamConnectLink>
                 <StreamConnectLink
-                    href={
-                        'https://docs.streamr.network/usage/connect-apps-and-iot/streamr-node-interface'
-                    }
-                    target={'_blank'}
-                    rel={'noreferrer noopener'}
+                    href={R.docs('/usage/connect-apps-and-iot/streamr-node-interface')}
+                    target="_blank"
+                    rel="noreferrer noopener"
                 >
                     <span>Interfacing with a Streamr node</span>
-                    <SvgIcon name={'linkOut'} />
+                    <SvgIcon name="linkOut" />
                 </StreamConnectLink>
             </RightColumn>
         </Grid>

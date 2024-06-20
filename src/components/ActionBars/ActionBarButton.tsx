@@ -7,7 +7,7 @@ import { Tooltip } from '~/components/Tooltip'
 import { getBlockExplorerUrl } from '~/getters'
 import { truncate } from '~/shared/utils/text'
 import { CopyButton } from '~/components/CopyButton'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 export const ActionBarButtonBody = styled.div<{ $background?: string; $color?: string }>`
     align-items: center;

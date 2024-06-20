@@ -25,9 +25,9 @@ import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
 import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
+import { useCurrentChainId } from '~/utils/chains'
 import { TheGraph } from '../types'
 import { getSigner } from './wallet'
-import { useCurrentChainId } from './chain'
 
 interface Store {
     inProgress: Record<string, true | undefined>

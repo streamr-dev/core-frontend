@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import { Button } from '~/components/Button'
 import { getStreamrClientInstance } from '~/getters/getStreamrClient'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
-import routes from '~/routes'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { StreamDraft } from '~/stores/streamDraft'
+import { Route as R, routeOptions } from '~/utils/routes'
 import Section from './Section'
 
 const Description = styled.p`
@@ -46,7 +46,7 @@ export default function DeleteSection() {
                          * done the app is gonna navigate to streams/index.
                          */
 
-                        navigate(routes.streams.index())
+                        navigate(R.streams(routeOptions(chainId)))
                     } catch (e) {
                         if (isRejectionReason(e)) {
                             return

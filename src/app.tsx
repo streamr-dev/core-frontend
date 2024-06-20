@@ -34,7 +34,6 @@ import {
     StreamTabbedPage,
 } from '~/pages/StreamPage'
 import { StreamsPage } from '~/pages/StreamsPage'
-import routes from '~/routes'
 import '~/shared/assets/stylesheets'
 import Globals from '~/shared/components/Globals'
 import StreamrClientProvider from '~/shared/components/StreamrClientProvider'
@@ -44,6 +43,7 @@ import Analytics from '~/shared/utils/Analytics'
 import { getQueryClient } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import '~/utils/setupSnippets'
+import { Route as R } from '~/utils/routes'
 import ProjectEditorPage from './pages/ProjectPage/ProjectEditorPage'
 
 const App = () => (
@@ -115,7 +115,15 @@ const App = () => (
                 <Route path="/hub/network">
                     <Route
                         index
-                        element={<Navigate to={routes.network.sponsorships()} replace />}
+                        element={
+                            <Navigate
+                                to={{
+                                    pathname: R.sponsorships(),
+                                    search: window.location.search,
+                                }}
+                                replace
+                            />
+                        }
                     />
                     <Route path="operators">
                         <Route index element={<OperatorsPage />} />
@@ -127,13 +135,18 @@ const App = () => (
                     </Route>
                     <Route path="overview" element={<NetworkOverviewPage />} />
                 </Route>
+                <Route path="/" element={<Navigate to={R.projects()} replace />} />
                 <Route
-                    path={routes.root()}
-                    element={<Navigate to={routes.projects.index()} replace />}
-                />
-                <Route
-                    path={routes.hub()}
-                    element={<Navigate to={routes.projects.index()} replace />}
+                    path="/hub"
+                    element={
+                        <Navigate
+                            to={{
+                                pathname: R.projects(),
+                                search: window.location.search,
+                            }}
+                            replace
+                        />
+                    }
                 />
                 <Route path="/error" element={<GenericErrorPage />} />
                 <Route path="*" element={<NotFoundPage />} />,

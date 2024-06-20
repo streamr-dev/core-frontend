@@ -15,7 +15,7 @@ import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentToke
 import { useOperatorReachability } from '~/shared/stores/operatorReachability'
 import { useIsWaitingForBlockNumber } from '~/stores/blockNumberDependencies'
 import { Hint, IconWrap } from '~/components/Hint'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
     const { funded, nodesDeclared, nodesFunded, nodesReachability, nodesRunning } =

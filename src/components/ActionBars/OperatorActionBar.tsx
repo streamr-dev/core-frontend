@@ -4,7 +4,6 @@ import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-st
 import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import routes from '~/routes'
 import { fromAtto } from '~/marketplace/utils/math'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
@@ -32,7 +31,9 @@ import {
 } from '~/components/ActionBars/ActionBarButton'
 import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import { Hint } from '~/components/Hint'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
@@ -66,6 +67,8 @@ export const OperatorActionBar: FunctionComponent<{
     const undelegateFunds = useUndelegateFunds()
 
     const currentChainId = useCurrentChainId()
+
+    const chainName = useCurrentChainSymbolicName()
 
     const canUndelegateQuery = useQuery({
         queryKey: [
@@ -108,7 +111,7 @@ export const OperatorActionBar: FunctionComponent<{
 
     return (
         <AbstractActionBar
-            fallbackBackButtonUrl={routes.network.operators()}
+            fallbackBackButtonUrl={R.operators(routeOptions(chainName))}
             title={
                 <>
                     <OperatorAvatar

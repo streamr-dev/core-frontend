@@ -9,8 +9,8 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import TimeoutError from '~/shared/errors/TimeoutError'
 import { getWalletAccount, useWalletAccount } from '~/shared/stores/wallet'
 import { isCodedError, RejectionReason } from '~/utils/exceptions'
-import routes from '~/routes'
 import { Layer } from '~/utils/Layer'
+import { Route as R } from '~/utils/routes'
 
 const Root = styled.div`
     background: #f8f8f8;
@@ -150,7 +150,7 @@ function ConnectModal({ onReject, onResolve }: Props) {
         <Root>
             <Inner>
                 <div>
-                    <Link to={routes.root()}>
+                    <Link to={R.root()}>
                         <Logo />
                     </Link>
                 </div>
@@ -267,7 +267,7 @@ function ConnectModal({ onReject, onResolve }: Props) {
                         By connecting your wallet and using Streamr <br />
                         you agree to our{' '}
                         <a
-                            href={routes.tos()}
+                            href={R.tos()}
                             target="_blank"
                             rel="nofollow noopener noreferrer"
                         >

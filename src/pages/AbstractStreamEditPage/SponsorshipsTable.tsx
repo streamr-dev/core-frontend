@@ -10,7 +10,8 @@ import { useTableOrder } from '~/hooks/useTableOrder'
 import { Button } from '~/components/Button'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
+import { Route as R } from '~/utils/routes'
 
 type Props = {
     streamId: string
@@ -74,7 +75,9 @@ export default function SponsorshipsTable({ streamId }: Props) {
                         secondLine={
                             <span>
                                 <a
-                                    href="https://docs.streamr.network/streamr-network/incentives/stream-sponsorships"
+                                    href={R.docs(
+                                        '/streamr-network/incentives/stream-sponsorships',
+                                    )}
                                     rel="noopener noreferrer"
                                     target="_blank"
                                 >

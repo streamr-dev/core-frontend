@@ -40,7 +40,7 @@ import { forceUndelegateModal } from '~/modals/ForceUndelegateModal'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import { getSigner } from '~/shared/stores/wallet'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { useRequestedBlockNumber } from '~/hooks'
 

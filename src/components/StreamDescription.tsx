@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getStreamDescription } from '~/getters'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 export function StreamDescription({ streamId }: { streamId: string }) {
     const [desc, setDesc] = useState<string>()

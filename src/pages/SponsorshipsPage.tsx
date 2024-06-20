@@ -16,13 +16,14 @@ import {
     useSponsorshipsForCreatorQuery,
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import routes from '~/routes'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 import {
     SponsorshipFilterButton,
     SponsorshipFilters,
     defaultFilters,
 } from '~/components/SponsorshipFilterButton'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const PAGE_SIZE = 20
 
@@ -70,11 +71,19 @@ export const SponsorshipsPage = () => {
 
     const navigate = useNavigate()
 
+    const chainName = useCurrentChainSymbolicName()
+
     useEffect(() => {
         if (!wallet) {
-            navigate(routes.network.sponsorships({ tab: TabOption.AllSponsorships }))
+            navigate(
+                R.sponsorships(
+                    routeOptions(chainName, {
+                        tab: TabOption.AllSponsorships,
+                    }),
+                ),
+            )
         }
-    }, [wallet, navigate])
+    }, [wallet, navigate, chainName])
 
     const createSponsorship = useCreateSponsorship()
 
@@ -91,7 +100,9 @@ export const SponsorshipsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            navigate(routes.network.sponsorships({ tab: value }))
+                            navigate(
+                                R.sponsorships(routeOptions(chainName, { tab: value })),
+                            )
                         }}
                         selection={selectedTab}
                         fullWidthOnMobile
@@ -109,10 +120,12 @@ export const SponsorshipsPage = () => {
                             createSponsorship(chainId, wallet, {
                                 onDone(id, blockNumber) {
                                     navigate(
-                                        routes.network.sponsorship({
+                                        R.sponsorship(
                                             id,
-                                            b: blockNumber,
-                                        }),
+                                            routeOptions(chainId, {
+                                                b: blockNumber,
+                                            }),
+                                        ),
                                     )
                                 },
                             })

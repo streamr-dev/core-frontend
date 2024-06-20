@@ -8,7 +8,6 @@ import { Button } from '~/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { fromAtto } from '~/marketplace/utils/math'
-import routes from '~/routes'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
 import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { LoadMoreButton } from '~/components/LoadMore'
@@ -24,7 +23,9 @@ import { abbr, saveOperator } from '~/utils'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const PAGE_SIZE = 20
 
@@ -68,6 +69,8 @@ export const OperatorsPage = () => {
 
     const chainId = useCurrentChainId()
 
+    const chainName = useCurrentChainSymbolicName()
+
     const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const operatorQuery = useOperatorForWalletQuery(wallet)
@@ -81,9 +84,15 @@ export const OperatorsPage = () => {
 
     useEffect(() => {
         if (!wallet) {
-            navigate(routes.network.operators({ tab: TabOption.AllOperators }))
+            navigate(
+                R.operators(
+                    routeOptions(chainName, {
+                        tab: TabOption.AllOperators,
+                    }),
+                ),
+            )
         }
-    }, [wallet, navigate])
+    }, [wallet, navigate, chainName])
 
     return (
         <Layout>
@@ -94,7 +103,7 @@ export const OperatorsPage = () => {
                 leftSideContent={
                     <Tabs
                         onSelectionChange={(value) => {
-                            navigate(routes.network.operators({ tab: value }))
+                            navigate(R.operators(routeOptions(chainName, { tab: value })))
                         }}
                         selection={selectedTab}
                         fullWidthOnMobile={true}
@@ -109,9 +118,7 @@ export const OperatorsPage = () => {
                     operator ? (
                         <Button
                             as={Link}
-                            to={routes.network.operator({
-                                id: operator.id,
-                            })}
+                            to={R.operator(operator.id, routeOptions(chainName))}
                         >
                             View my Operator
                         </Button>
@@ -121,10 +128,12 @@ export const OperatorsPage = () => {
                                 saveOperator(chainId, undefined, {
                                     onDone(id, blockNumber) {
                                         navigate(
-                                            routes.network.operator({
+                                            R.operator(
                                                 id,
-                                                b: blockNumber,
-                                            }),
+                                                routeOptions(chainId, {
+                                                    b: blockNumber,
+                                                }),
+                                            ),
                                         )
                                     },
                                 })
@@ -196,6 +205,8 @@ function DelegationsTable({
             .flatMap((page) => page.elements)
             .filter((d) => d.contractVersion !== 1) || []
 
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <ScrollTableCore
             elements={elements}
@@ -259,7 +270,7 @@ function DelegationsTable({
                 },
             ]}
             noDataFirstLine="You have not delegated to any operator."
-            linkMapper={(element) => routes.network.operator({ id: element.id })}
+            linkMapper={(element) => R.operator(element.id, routeOptions(chainName))}
         />
     )
 }
@@ -278,6 +289,8 @@ function OperatorsTable({
     onOrderChange: (columnKey: string) => void
 }) {
     const elements = query.data?.pages.flatMap((page) => page.elements) || []
+
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <ScrollTableCore
@@ -350,7 +363,7 @@ function OperatorsTable({
                 },
             ]}
             noDataFirstLine="No operators found."
-            linkMapper={(element) => routes.network.operator({ id: element.id })}
+            linkMapper={(element) => R.operator(element.id, routeOptions(chainName))}
         />
     )
 }

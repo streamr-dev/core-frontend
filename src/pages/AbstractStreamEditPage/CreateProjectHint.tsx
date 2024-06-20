@@ -6,7 +6,7 @@ import { TheGraphProject, getProjects } from '~/services/projects'
 import { Button } from '~/components/Button'
 import useModal from '~/shared/hooks/useModal'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
-import { useCurrentChainId } from '~/shared/stores/chain'
+import { useCurrentChainId } from '~/utils/chains'
 
 const Container = styled.div`
     padding: 76px 32px;

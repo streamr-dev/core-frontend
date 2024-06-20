@@ -6,7 +6,8 @@ import Layout from '~/components/Layout'
 import pageNotFoundPic from '~/shared/assets/images/404_blocks.png'
 import pageNotFoundPic2x from '~/shared/assets/images/404_blocks@2x.png'
 import { Button } from '~/components/Button'
-import routes from '~/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export default function NotFoundPage() {
     return (
@@ -17,6 +18,8 @@ export default function NotFoundPage() {
 }
 
 export function NotFoundPageContent() {
+    const chainName = useCurrentChainSymbolicName()
+
     return (
         <Root>
             <EmptyState
@@ -29,13 +32,21 @@ export function NotFoundPageContent() {
                 }
                 link={
                     <>
-                        <Button kind="special" as={Link} to={routes.streams.index()}>
+                        <Button
+                            kind="special"
+                            as={Link}
+                            to={R.streams(routeOptions(chainName))}
+                        >
                             Go to streams
                         </Button>
-                        <Button kind="special" as={Link} to={routes.projects.index()}>
+                        <Button
+                            kind="special"
+                            as={Link}
+                            to={R.projects(routeOptions(chainName))}
+                        >
                             Go to projects
                         </Button>
-                        <Button kind="special" as={Link} to={routes.root()}>
+                        <Button kind="special" as={Link} to={R.root()}>
                             Go to public site
                         </Button>
                     </>

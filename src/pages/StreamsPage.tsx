@@ -21,11 +21,12 @@ import {
     useStreamsQuery,
 } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import routes from '~/routes'
+import { Route as R, routeOptions } from '~/utils/routes'
 import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, TABLET } from '~/shared/utils/styled'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export function StreamsPage() {
     const [search, setSearch] = useState('')
@@ -40,15 +41,17 @@ export function StreamsPage() {
 
     const account = useWalletAccount()
 
+    const chainName = useCurrentChainSymbolicName()
+
     useEffect(
         function changeToAllTabOnWalletLock() {
             if (account) {
                 return
             }
 
-            navigate(routes.streams.index({ tab: StreamsTabOption.All }))
+            navigate(R.streams(routeOptions(chainName, { tab: StreamsTabOption.All })))
         },
-        [account, navigate],
+        [account, navigate, chainName],
     )
 
     const {
@@ -89,7 +92,7 @@ export function StreamsPage() {
                             fullWidthOnMobile
                             selection={tab}
                             onSelectionChange={(id) => {
-                                navigate(routes.streams.index({ tab: id }))
+                                navigate(R.streams(routeOptions(chainName, { tab: id })))
                             }}
                         >
                             <Tab id={StreamsTabOption.All}>All streams</Tab>
@@ -107,7 +110,7 @@ export function StreamsPage() {
                         </Tabs>
                     </FiltersWrap>
                     <CreateStreamButtonWrap>
-                        <Button as={Link} to={routes.streams.new()}>
+                        <Button as={Link} to={R.stream('new', routeOptions(chainName))}>
                             Create stream
                         </Button>
                     </CreateStreamButtonWrap>

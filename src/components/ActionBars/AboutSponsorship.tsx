@@ -13,11 +13,14 @@ import {
 } from '~/components/ActionBars/AboutEntity'
 import { truncateStreamName } from '~/shared/utils/text'
 import { ExternalLinkIcon } from '~/icons'
-import routes from '~/routes'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorship }) {
     const { streamId } = sponsorship
+
+    const chainName = useCurrentChainSymbolicName()
 
     return (
         <DefaultSimpleDropdownMenu>
@@ -28,7 +31,7 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
                         <strong>{truncateStreamName(streamId)}</strong>
                         <div>
                             <Link
-                                to={routes.streams.show({ id: streamId })}
+                                to={R.stream(streamId, routeOptions(chainName))}
                                 target="_blank"
                             >
                                 <ExternalLinkIcon />
@@ -49,7 +52,7 @@ export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorsh
                     </p>
                     <p>
                         <a
-                            href="https://docs.streamr.network/streamr-network/network-incentives"
+                            href={R.docs('/streamr-network/network-incentives')}
                             target="_blank"
                             rel="noreferrer noopener"
                         >
