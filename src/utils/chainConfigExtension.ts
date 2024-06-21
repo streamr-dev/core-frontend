@@ -45,7 +45,7 @@ const ChainConfigExtension = z.object({
     streamIndexerUrl: z.string().optional(),
 })
 
-type ChainConfigExtension = z.infer<typeof ChainConfigExtension>
+export type ChainConfigExtension = z.infer<typeof ChainConfigExtension>
 
 export const fallbackChainConfigExtension: ChainConfigExtension =
     ChainConfigExtension.parse({})

@@ -3,6 +3,7 @@ import { produce } from 'immer'
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
+    ChainConfigExtension,
     fallbackChainConfigExtension,
     parsedChainConfigExtension,
 } from '~/utils/chainConfigExtension'
@@ -53,17 +54,29 @@ export function useCurrentChainSymbolicName() {
 
 let chainEntriesByIdOrName:
     | undefined
-    | Partial<Record<string | number, { symbolicName: string; config: Chain }>> =
-    undefined
+    | Partial<
+          Record<
+              string | number,
+              {
+                  symbolicName: string
+                  config: Chain
+                  configExtension: ChainConfigExtension
+              }
+          >
+      > = undefined
 
 function getChainEntry(chainIdOrName: string | number) {
     if (!chainEntriesByIdOrName) {
         chainEntriesByIdOrName = {}
 
-        for (const [rawSymbolicName, config] of Object.entries(configs)) {
+        for (const [rawSymbolicName, config] of Object.entries<Chain>(configs)) {
             const symbolicName = getPreferredChainName(rawSymbolicName)
 
-            const { dockerHost } = getChainConfigExtension(config.id)
+            const configExtension =
+                parsedChainConfigExtension[rawSymbolicName] ||
+                fallbackChainConfigExtension
+
+            const { dockerHost } = configExtension
 
             const sanitizedConfig = produce(config, (draft) => {
                 for (const rpc of draft.rpcEndpoints) {
@@ -71,16 +84,33 @@ function getChainEntry(chainIdOrName: string | number) {
                         dockerHost,
                     })
                 }
+
+                if (draft.entryPoints) {
+                    for (const entrypoint of draft.entryPoints) {
+                        entrypoint.websocket.host = formatConfigUrl(
+                            entrypoint.websocket.host,
+                            {
+                                dockerHost,
+                            },
+                        )
+                    }
+                }
+
+                if (draft.theGraphUrl) {
+                    draft.theGraphUrl = formatConfigUrl(draft.theGraphUrl, { dockerHost })
+                }
             })
 
             chainEntriesByIdOrName[config.id] = {
                 symbolicName,
                 config: sanitizedConfig,
+                configExtension,
             }
 
             chainEntriesByIdOrName[symbolicName] = {
                 symbolicName,
                 config: sanitizedConfig,
+                configExtension,
             }
         }
 
@@ -114,13 +144,5 @@ export function getSymbolicChainName(chainId: number) {
 }
 
 export function getChainConfigExtension(chainId: number) {
-    const chainName = getSymbolicChainName(chainId)
-
-    const chainConfigExtension = parsedChainConfigExtension[chainName]
-
-    if (!chainConfigExtension) {
-        return fallbackChainConfigExtension
-    }
-
-    return chainConfigExtension
+    return getChainEntry(chainId).configExtension
 }
