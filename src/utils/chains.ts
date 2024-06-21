@@ -52,24 +52,37 @@ export function useCurrentChainSymbolicName() {
     return useMemo(() => getSymbolicChainName(chainId), [chainId])
 }
 
-let chainEntriesByIdOrName:
-    | undefined
-    | Partial<
-          Record<
-              string | number,
-              {
-                  symbolicName: string
-                  config: Chain
-                  configExtension: ChainConfigExtension
-              }
-          >
-      > = undefined
+interface ChainEntry {
+    config: Chain
+    configExtension: ChainConfigExtension
+    symbolicName: string
+}
+
+const chainEntriesByIdOrName: Partial<Record<string | number, ChainEntry | null>> = {}
 
 function getChainEntry(chainIdOrName: string | number) {
-    if (!chainEntriesByIdOrName) {
-        chainEntriesByIdOrName = {}
+    const key =
+        typeof chainIdOrName === 'string'
+            ? getPreferredChainName(chainIdOrName)
+            : chainIdOrName
 
-        for (const [rawSymbolicName, config] of Object.entries<Chain>(configs)) {
+    let entry = chainEntriesByIdOrName[key]
+
+    if (typeof entry === 'undefined') {
+        entry = (() => {
+            const source = Object.entries<Chain>(configs).find(([symbolicName, config]) =>
+                typeof chainIdOrName === 'string'
+                    ? getPreferredChainName(chainIdOrName) ===
+                      getPreferredChainName(symbolicName)
+                    : chainIdOrName === config.id,
+            )
+
+            if (!source) {
+                return null
+            }
+
+            const [rawSymbolicName, config] = source
+
             const symbolicName = getPreferredChainName(rawSymbolicName)
 
             const configExtension =
@@ -101,28 +114,15 @@ function getChainEntry(chainIdOrName: string | number) {
                 }
             })
 
-            chainEntriesByIdOrName[config.id] = {
+            return {
                 symbolicName,
                 config: sanitizedConfig,
                 configExtension,
             }
+        })()
 
-            chainEntriesByIdOrName[symbolicName] = {
-                symbolicName,
-                config: sanitizedConfig,
-                configExtension,
-            }
-        }
-
-        console.log(chainEntriesByIdOrName)
+        chainEntriesByIdOrName[key] = entry
     }
-
-    const entry =
-        chainEntriesByIdOrName[
-            typeof chainIdOrName === 'string'
-                ? getPreferredChainName(chainIdOrName)
-                : chainIdOrName
-        ]
 
     if (!entry) {
         throw new Error(
