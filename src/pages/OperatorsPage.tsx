@@ -23,7 +23,7 @@ import { abbr, saveOperator } from '~/utils'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import { OperatorIdCell } from '~/components/Table'
-import { useCurrentChainId } from '~/utils/chains'
+import { useCurrentChainFullName, useCurrentChainId } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
@@ -207,6 +207,8 @@ function DelegationsTable({
 
     const chainName = useCurrentChainSymbolicName()
 
+    const chainFullName = useCurrentChainFullName()
+
     return (
         <ScrollTableCore
             elements={elements}
@@ -269,7 +271,7 @@ function DelegationsTable({
                     key: 'sponsorships',
                 },
             ]}
-            noDataFirstLine="You have not delegated to any operator."
+            noDataFirstLine={`You have not delegated to any operator on the ${chainFullName} chain.`}
             linkMapper={(element) => R.operator(element.id, routeOptions(chainName))}
         />
     )
@@ -291,6 +293,8 @@ function OperatorsTable({
     const elements = query.data?.pages.flatMap((page) => page.elements) || []
 
     const chainName = useCurrentChainSymbolicName()
+
+    const chainFullName = useCurrentChainFullName()
 
     return (
         <ScrollTableCore
@@ -362,7 +366,7 @@ function OperatorsTable({
                     key: 'sponsorshipCount',
                 },
             ]}
-            noDataFirstLine="No operators found."
+            noDataFirstLine={`No operators found on the ${chainFullName} chain.`}
             linkMapper={(element) => R.operator(element.id, routeOptions(chainName))}
         />
     )

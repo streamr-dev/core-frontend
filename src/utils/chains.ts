@@ -8,6 +8,7 @@ import {
     parsedChainConfigExtension,
 } from '~/utils/chainConfigExtension'
 import { Chain } from '~/types'
+import { ethereumNetworks } from '~/shared/utils/constants'
 import formatConfigUrl from './formatConfigUrl'
 
 function getPreferredChainName(chainName: string) {
@@ -46,8 +47,18 @@ export function useCurrentChainId() {
     return useCurrentChain().id
 }
 
+/**
+ * @todo rename to `useCurrentSymbolicChainName`
+ */
 export function useCurrentChainSymbolicName() {
     return getSymbolicChainName(useCurrentChainId())
+}
+
+/**
+ * @todo rename to `useCurrentFullChainName`.
+ */
+export function useCurrentChainFullName() {
+    return getChainConfig(useCurrentChainId()).name
 }
 
 interface ChainEntry {
@@ -89,6 +100,8 @@ function getChainEntry(chainIdOrName: string | number) {
             const { dockerHost } = configExtension
 
             const sanitizedConfig = produce(config, (draft) => {
+                draft.name = ethereumNetworks[config.id] || config.name
+
                 for (const rpc of draft.rpcEndpoints) {
                     rpc.url = formatConfigUrl(rpc.url, {
                         dockerHost,

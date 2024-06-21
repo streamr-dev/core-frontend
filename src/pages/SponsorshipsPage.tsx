@@ -16,7 +16,7 @@ import {
     useSponsorshipsForCreatorQuery,
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { useCurrentChainId } from '~/utils/chains'
+import { useCurrentChainFullName, useCurrentChainId } from '~/utils/chains'
 import {
     SponsorshipFilterButton,
     SponsorshipFilters,
@@ -90,6 +90,8 @@ export const SponsorshipsPage = () => {
     const isCreatingSponsorship = useIsCreatingSponsorshipForWallet(wallet)
 
     const chainId = useCurrentChainId()
+
+    const chainFullName = useCurrentChainFullName()
 
     return (
         <Layout>
@@ -165,8 +167,8 @@ export const SponsorshipsPage = () => {
                             }
                             noDataFirstLine={
                                 selectedTab === TabOption.AllSponsorships
-                                    ? 'No sponsorships found.'
-                                    : 'You do not have any sponsorships yet.'
+                                    ? `No sponsorships found on the ${chainFullName} chain.`
+                                    : `You do not have any sponsorships on the ${chainFullName} chain yet.`
                             }
                             orderBy={orderBy}
                             orderDirection={orderDirection}
