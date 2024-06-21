@@ -47,9 +47,7 @@ export function useCurrentChainId() {
 }
 
 export function useCurrentChainSymbolicName() {
-    const chainId = useCurrentChainId()
-
-    return useMemo(() => getSymbolicChainName(chainId), [chainId])
+    return getSymbolicChainName(useCurrentChainId())
 }
 
 interface ChainEntry {
@@ -86,8 +84,7 @@ function getChainEntry(chainIdOrName: string | number) {
             const symbolicName = getPreferredChainName(rawSymbolicName)
 
             const configExtension =
-                parsedChainConfigExtension[rawSymbolicName] ||
-                fallbackChainConfigExtension
+                parsedChainConfigExtension[symbolicName] || fallbackChainConfigExtension
 
             const { dockerHost } = configExtension
 
