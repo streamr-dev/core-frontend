@@ -52,6 +52,7 @@ export function Dropdown() {
                     >
                         {NetworkNavItems.map((i) => (
                             <DropdownItem
+                                $active={pathname.startsWith(i.linkFn())}
                                 key={i.title}
                                 to={i.linkFn(routeOptions(chainName))}
                                 onFocus={() => void show(toggle)}
@@ -131,7 +132,7 @@ const TickIcon = styled(SvgIcon).attrs(getTickIconAttrs)`
     position: absolute;
     transform: translateY(-50%);
     top: 50%;
-    right: 10px;
+    right: 24px;
 `
 
 function getDropdownItemAttrs(props: any): ComponentProps<typeof Link> {
@@ -140,13 +141,13 @@ function getDropdownItemAttrs(props: any): ComponentProps<typeof Link> {
         children: (
             <>
                 <div>{props.children}</div>
-                {props.active && <TickIcon />}
+                {props.$active && <TickIcon />}
             </>
         ),
     }
 }
 
-const DropdownItem = styled(Link).attrs(getDropdownItemAttrs)<{ active?: boolean }>`
+const DropdownItem = styled(Link).attrs(getDropdownItemAttrs)<{ $active?: boolean }>`
     align-items: center;
     cursor: pointer;
     display: flex;
