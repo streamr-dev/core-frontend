@@ -41,7 +41,7 @@ import {
 } from '~/hooks'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { useCurrentChainFullName, useCurrentChainSymbolicName } from '~/utils/chains'
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -130,13 +130,15 @@ export const SingleSponsorshipPage = () => {
 
     const operational = minOperators == null || operatorCount >= minOperators
 
+    const fullChainName = useCurrentChainFullName()
+
     const placeholder = behindBlockError ? (
         <BehindBlockErrorDisplay
             latest={behindBlockError}
             initial={initialBehindBlockError || undefined}
         />
     ) : !isFetching ? (
-        <NoData firstLine="Sponsorship not found." />
+        <NoData firstLine={`Sponsorship not found on the ${fullChainName} chain.`} />
     ) : null
 
     const chainName = useCurrentChainSymbolicName()

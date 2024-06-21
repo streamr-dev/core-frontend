@@ -68,7 +68,7 @@ import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { abbr, saveOperator } from '~/utils'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { Hint } from '~/components/Hint'
-import { useCurrentChainId } from '~/utils/chains'
+import { useCurrentChainFullName, useCurrentChainId } from '~/utils/chains'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
@@ -328,13 +328,15 @@ export const SingleOperatorPage = () => {
         [currentChainId, operatorId, saveControllers, setBlockDependency],
     )
 
+    const fullChainName = useCurrentChainFullName()
+
     const placeholder = behindBlockError ? (
         <BehindBlockErrorDisplay
             latest={behindBlockError}
             initial={initialBehindBlockError || undefined}
         />
     ) : !isFetching ? (
-        <NoData firstLine="Operator not found." />
+        <NoData firstLine={`Operator not found on the ${fullChainName} chain.`} />
     ) : null
 
     return (
