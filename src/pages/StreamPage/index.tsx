@@ -432,12 +432,14 @@ function Header({
                 }
                 rightComponent={
                     streamId ? (
-                        <Tabs selection={location.pathname}>
+                        <Tabs>
                             <Tab
                                 id="overview"
                                 tag={Link}
-                                to={R.streamOverview(streamId)}
-                                selected="to"
+                                to={R.streamOverview(streamId, routeOptions(chainName))}
+                                selected={location.pathname.startsWith(
+                                    R.streamOverview(streamId),
+                                )}
                             >
                                 Stream overview
                                 {!clean && <Asterisk />}
@@ -445,16 +447,20 @@ function Header({
                             <Tab
                                 id="connect"
                                 tag={Link}
-                                to={R.streamConnect(streamId)}
-                                selected="to"
+                                to={R.streamConnect(streamId, routeOptions(chainName))}
+                                selected={location.pathname.startsWith(
+                                    R.streamConnect(streamId),
+                                )}
                             >
                                 Connect
                             </Tab>
                             <Tab
                                 id="liveData"
                                 tag={Link}
-                                to={R.streamLiveData(streamId)}
-                                selected="to"
+                                to={R.streamLiveData(streamId, routeOptions(chainName))}
+                                selected={location.pathname.startsWith(
+                                    R.streamLiveData(streamId),
+                                )}
                             >
                                 Live data
                             </Tab>
