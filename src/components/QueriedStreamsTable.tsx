@@ -192,15 +192,20 @@ function StreamStatsLoader({ onStats, page }: StreamStatsLoaderProps) {
         staleTime: 5 * 60000,
     })
 
-    const resultRef = useRef(result)
+    const onStatsRef = useRef(onStats)
 
-    if (resultRef.current !== result) {
-        resultRef.current = result
-
-        if (result) {
-            onStats?.(result)
-        }
+    if (onStatsRef.current !== onStats) {
+        onStatsRef.current = onStats
     }
+
+    useEffect(
+        function triggerOnStatsOnNonFalsyResult() {
+            if (result) {
+                onStatsRef.current?.(result)
+            }
+        },
+        [result],
+    )
 
     return <></>
 }
