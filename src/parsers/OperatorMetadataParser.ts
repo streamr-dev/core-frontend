@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { getChainConfigExtension } from '~/utils/chains'
 
 export const OperatorMetadataPreparser = z
     .string()

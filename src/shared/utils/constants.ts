@@ -30,7 +30,7 @@ export const ethereumNetworks = {
     '8995': 'Dev0',
     '8997': 'Dev1',
     '31337': 'Dev2',
-    '80002': 'Polygon Amoy',
+    '80002': 'Amoy',
 }
 
 export const maxFileSizeForImageUpload = 5242880

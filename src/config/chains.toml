@@ -1,3 +1,9 @@
+[dev0]
+dockerHost = "localhost"
+
+[dev1]
+dockerHost = "localhost"
+
 [dev2]
 dataUnionJoinServerUrl = ":5555"
 dockerHost = "localhost"
@@ -13,15 +19,15 @@ address = "0xde1112f631486CfC759A50196853011528bC5FA0"
 chainId = 31337
 name = "streamr-dev/dataunion"
 
-[polygonAmoy]
+[amoy]
 dataUnionJoinServerUrl = "https://join.dataunions.org/"
-marketplaceChains = ['polygonAmoy']
+marketplaceChains = ['amoy']
 
-[[polygonAmoy.storageNodes]]
+[[amoy.storageNodes]]
 name = "Streamr Germany"
 address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
 
-[[polygonAmoy.dataunionGraphNames]]
+[[amoy.dataunionGraphNames]]
 chainId = 80002
 name = "samt1803/dataunion-subgraphs"
 

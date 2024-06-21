@@ -15,16 +15,18 @@ import SalePointOption, {
 } from '~/components/SalePointSelector/SalePointOption'
 import SalePointTokenSelector from '~/components/SalePointSelector/SalePointTokenSelector'
 import { getProjectTypeTitle } from '~/getters'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import ProjectLinkTabs from '~/pages/ProjectPage/ProjectLinkTabs'
 import TermsOfUse from '~/pages/ProjectPage/TermsOfUse'
 import { deleteProject } from '~/services/projects'
 import { DetailsPageHeader } from '~/shared/components/DetailsPageHeader'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import { useCurrentChainId } from '~/utils/chains'
+import {
+    getChainConfig,
+    getChainConfigExtension,
+    useCurrentChainId,
+} from '~/utils/chains'
 import { ProjectType, SalePoint } from '~/shared/types'
-import { getConfigForChain, getConfigForChainByName } from '~/shared/web3/config'
 import { ProjectDraft } from '~/stores/projectDraft'
 import { Chain } from '~/types'
 import { SalePointsPayload } from '~/types/projects'
@@ -58,10 +60,7 @@ export default function ProjectEditorPage() {
     const chainId = useCurrentChainId()
 
     const availableChains = useMemo<Chain[]>(
-        () =>
-            getChainConfigExtension(chainId).marketplaceChains.map(
-                getConfigForChainByName,
-            ),
+        () => getChainConfigExtension(chainId).marketplaceChains.map(getChainConfig),
         [chainId],
     )
 
@@ -77,7 +76,7 @@ export default function ProjectEditorPage() {
         }
 
         update((draft) => {
-            const { name: chainName } = getConfigForChain(value.chainId)
+            const { name: chainName } = getChainConfig(value.chainId)
 
             if (draft.salePoints[chainName]?.readOnly) {
                 /**
@@ -152,7 +151,7 @@ export default function ProjectEditorPage() {
                                     </Content>
                                     <Content $desktopMaxWidth={728}>
                                         {salePoints.map((salePoint) => {
-                                            const chainName = getConfigForChain(
+                                            const chainName = getChainConfig(
                                                 salePoint.chainId,
                                             ).name
 
@@ -327,7 +326,7 @@ export default function ProjectEditorPage() {
                                                                 Set the payment token and
                                                                 price on&nbsp;the&nbsp;
                                                                 {formatChainName(
-                                                                    getConfigForChain(
+                                                                    getChainConfig(
                                                                         salePoint.chainId,
                                                                     ).name,
                                                                 )}{' '}

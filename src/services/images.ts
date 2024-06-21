@@ -1,4 +1,4 @@
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { getChainConfigExtension } from '~/utils/chains'
 import { post } from '~/shared/utils/api'
 
 export async function postImage(chainId: number, image: File): Promise<string> {

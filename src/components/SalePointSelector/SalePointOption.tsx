@@ -7,11 +7,11 @@ import { SalePoint } from '~/shared/types'
 import { COLORS } from '~/shared/utils/styled'
 import { Tick as PrestyledTick } from '~/shared/components/Checkbox'
 import NetworkIcon from '~/shared/components/NetworkIcon'
-import { getConfigForChain } from '~/shared/web3/config'
 import { formatChainName } from '~/utils'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
 import { getDataUnion, getDataUnionsOwnedByInChain } from '~/getters/du'
+import { getChainConfig } from '~/utils/chains'
 import { Root as SalePointTokenSelectorRoot } from './SalePointTokenSelector'
 
 export interface OptionProps {
@@ -32,7 +32,7 @@ export default function SalePointOption({
 }: SalePointOptionProps) {
     const { chainId, enabled, readOnly } = salePoint
 
-    const chain = getConfigForChain(chainId)
+    const chain = getChainConfig(chainId)
 
     const formattedChainName = formatChainName(chain.name)
 

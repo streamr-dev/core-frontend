@@ -1,14 +1,14 @@
 import { ChainConnectionInfo, StreamrClientConfig } from '@streamr/sdk'
 import formatConfigUrl from '~/utils/formatConfigUrl'
-import { getConfigForChain } from '~/shared/web3/config'
-import { getChainConfigExtension } from './getChainConfigExtension'
+import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
 import { getGraphUrl } from './getGraphClient'
 
 export default function getClientConfig(
     chainId: number,
     mods: any = {},
 ): StreamrClientConfig {
-    const chainConfig = getConfigForChain(chainId)
+    const chainConfig = getChainConfig(chainId)
+
     const config: StreamrClientConfig = {
         metrics: false,
     }
@@ -22,50 +22,18 @@ export default function getClientConfig(
         }
     }
 
-    const websocketHost = process.env.ENTRYPOINT_WS_HOST
-
-    if (websocketHost && config.network?.controlLayer?.entryPoints) {
-        /**
-         * Edge case for local dev envs which don't use entry point hosts
-         * other than the default 10.200.10.1.
-         */
-        config.network.controlLayer.entryPoints.forEach((entryPoint) => {
-            if (entryPoint.websocket?.host === '10.200.10.1') {
-                entryPoint.websocket.host = websocketHost
-            }
-        })
+    config.contracts = {
+        theGraphUrl: getGraphUrl(chainId),
+        streamRegistryChainAddress: chainConfig.contracts.StreamRegistry,
+        streamStorageRegistryChainAddress: chainConfig.contracts.StreamStorageRegistry,
     }
 
-    const contracts: StreamrClientConfig['contracts'] = {}
-
-    ;[
-        {
-            condition: !!chainConfig.contracts.StreamRegistry,
-            key: 'streamRegistryChainAddress',
-            value: chainConfig.contracts.StreamRegistry,
-        },
-        {
-            condition: !!chainConfig.rpcEndpoints,
-            key: 'streamRegistryChainRPCs',
-            value: formatRpc({
-                chainId: chainConfig.id,
-                rpcs: chainConfig.rpcEndpoints,
-            }),
-        },
-        {
-            condition: !!chainConfig.contracts.StreamStorageRegistry,
-            key: 'streamStorageRegistryChainAddress',
-            value: chainConfig.contracts.StreamStorageRegistry,
-        },
-    ].forEach((configCase) => {
-        if (configCase.condition) {
-            contracts[configCase.key] = configCase.value
-        }
-    })
-
-    contracts.theGraphUrl = getGraphUrl(chainId)
-
-    config.contracts = contracts
+    if (chainConfig.rpcEndpoints) {
+        config.contracts.streamRegistryChainRPCs = formatRpc({
+            chainId: chainConfig.id,
+            rpcs: chainConfig.rpcEndpoints,
+        })
+    }
 
     return {
         ...config,

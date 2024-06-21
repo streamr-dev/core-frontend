@@ -1,6 +1,5 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import { getConfigForChain } from '~/shared/web3/config'
-import { getChainConfigExtension } from './getChainConfigExtension'
+import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
 
 const graphClients: Partial<Record<number, ApolloClient<NormalizedCacheObject>>> = {}
 
@@ -20,7 +19,7 @@ export function getGraphClient(chainId: number) {
 }
 
 export function getGraphUrl(chainId: number): string {
-    const { theGraphUrl: defaultUrl } = getConfigForChain(chainId)
+    const { theGraphUrl: defaultUrl } = getChainConfig(chainId)
 
     const { networkSubgraphUrl: customUrl } = getChainConfigExtension(chainId)
 

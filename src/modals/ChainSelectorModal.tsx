@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components'
 import { Button } from '~/components/Button'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import { MEDIUM } from '~/shared/utils/styled'
-import { getConfigForChain } from '~/shared/web3/config'
 import { formatChainName } from '~/utils'
 import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
@@ -12,6 +11,7 @@ import { getUsdRate } from '~/shared/utils/coingecko'
 import networkPreflight from '~/utils/networkPreflight'
 import { ParsedPaymentDetail } from '~/parsers/ProjectParser'
 import { RejectionReason } from '~/utils/exceptions'
+import { getChainConfig } from '~/utils/chains'
 import ProjectModal, { Actions } from './ProjectModal'
 import { connectModal } from './ConnectModal'
 
@@ -238,7 +238,7 @@ export default function ChainSelectorModal({
                                 >
                                     <ChainIcon chainId={chainId} />
                                     <ChainName>
-                                        {formatChainName(getConfigForChain(chainId).name)}
+                                        {formatChainName(getChainConfig(chainId).name)}
                                     </ChainName>
                                     <Radio $selected={selectedChainId === chainId} />
                                 </Item>

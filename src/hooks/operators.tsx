@@ -40,8 +40,7 @@ import { forceUndelegateModal } from '~/modals/ForceUndelegateModal'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import { getSigner } from '~/shared/stores/wallet'
-import { useCurrentChainId } from '~/utils/chains'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { getChainConfigExtension, useCurrentChainId } from '~/utils/chains'
 import { useRequestedBlockNumber } from '~/hooks'
 
 export function useOperatorForWalletQuery(address = '') {

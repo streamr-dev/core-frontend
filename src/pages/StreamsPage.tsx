@@ -26,7 +26,7 @@ import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, TABLET } from '~/shared/utils/styled'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { useCurrentChainFullName, useCurrentChainSymbolicName } from '~/utils/chains'
 
 export function StreamsPage() {
     const [search, setSearch] = useState('')
@@ -76,6 +76,8 @@ export function StreamsPage() {
         tab === StreamsTabOption.All && globalStats
             ? globalStats.messagesPerSecond
             : undefined
+
+    const chainFullName = useCurrentChainFullName()
 
     return (
         <Layout pageTitle="Streams">
@@ -143,6 +145,7 @@ export function StreamsPage() {
                             orderBy={orderBy}
                             orderDirection={orderDirection}
                             query={streamsQuery}
+                            noDataFirstLine={`No streams found on the ${chainFullName} chain.`}
                         />
                     </NetworkPageSegment>
                 </SegmentGrid>

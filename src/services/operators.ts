@@ -8,7 +8,6 @@ import {
     ERC677,
 } from '@streamr/network-contracts'
 import { parseEther } from 'ethers/lib/utils'
-import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { BNish, toBN } from '~/utils/bn'
@@ -16,6 +15,7 @@ import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 import { postImage } from '~/services/images'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import { ParsedOperator } from '~/parsers/OperatorParser'
+import { getChainConfig } from '~/utils/chains'
 
 export async function createOperator(
     chainId: number,
@@ -30,7 +30,7 @@ export async function createOperator(
 ): Promise<void> {
     const { cut, name, redundancyFactor, description, imageToUpload } = params
 
-    const chainConfig = getConfigForChain(chainId)
+    const chainConfig = getChainConfig(chainId)
 
     await networkPreflight(chainId)
 
@@ -42,8 +42,16 @@ export async function createOperator(
         ? await postImage(chainId, imageToUpload)
         : undefined
 
+    const { OperatorFactory: factoryContractAddress } = chainConfig.contracts
+
+    if (!factoryContractAddress) {
+        throw new Error(
+            `No factory contract address provided for chain ${chainConfig.id}`,
+        )
+    }
+
     const factory = new Contract(
-        chainConfig.contracts['OperatorFactory'],
+        factoryContractAddress,
         operatorFactoryABI,
         signer,
     ) as OperatorFactory
@@ -58,10 +66,39 @@ export async function createOperator(
     const poolTokenName = `StreamrOperator-${walletAddress.slice(-5)}`
     const operatorMetadata = JSON.stringify(metadata)
 
+    const { OperatorDefaultDelegationPolicy: operatorDefaultDelegationPolicyAddress } =
+        chainConfig.contracts
+
+    if (!operatorDefaultDelegationPolicyAddress) {
+        throw new Error(
+            `No OperatorDefaultDelegationPolicy address provided for chain ${chainConfig.id}`,
+        )
+    }
+
+    const {
+        OperatorDefaultExchangeRatePolicy: operatorDefaultExchangeRatePolicyAddress,
+    } = chainConfig.contracts
+
+    if (!operatorDefaultExchangeRatePolicyAddress) {
+        throw new Error(
+            `No OperatorDefaultExchangeRatePolicy address provided for chain ${chainConfig.id}`,
+        )
+    }
+
+    const {
+        OperatorDefaultUndelegationPolicy: operatorDefaultUndelegationPolicyAddress,
+    } = chainConfig.contracts
+
+    if (!operatorDefaultUndelegationPolicyAddress) {
+        throw new Error(
+            `No OperatorDefaultUndelegationPolicy address provided for chain ${chainConfig.id}`,
+        )
+    }
+
     const policies: [string, string, string] = [
-        chainConfig.contracts.OperatorDefaultDelegationPolicy,
-        chainConfig.contracts.OperatorDefaultExchangeRatePolicy,
-        chainConfig.contracts.OperatorDefaultUndelegationPolicy,
+        operatorDefaultDelegationPolicyAddress,
+        operatorDefaultExchangeRatePolicyAddress,
+        operatorDefaultUndelegationPolicyAddress,
     ]
 
     const operatorsCutFraction = parseEther(cut.toString()).div(100)
@@ -190,13 +227,21 @@ export async function delegateToOperator(
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainConfig = getConfigForChain(chainId)
+    const chainConfig = getChainConfig(chainId)
 
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
-    const contract = new Contract(chainConfig.contracts.DATA, ERC677ABI, signer) as ERC677
+    const { DATA: dataTokenContractAddress } = chainConfig.contracts
+
+    if (!dataTokenContractAddress) {
+        throw new Error(
+            `No DATA token contract address provided for chain ${chainConfig.id}`,
+        )
+    }
+
+    const contract = new Contract(dataTokenContractAddress, ERC677ABI, signer) as ERC677
 
     await toastedOperation('Delegate to operator', async () => {
         const tx = await contract.transferAndCall(

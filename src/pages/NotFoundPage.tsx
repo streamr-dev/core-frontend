@@ -7,7 +7,7 @@ import pageNotFoundPic from '~/shared/assets/images/404_blocks.png'
 import pageNotFoundPic2x from '~/shared/assets/images/404_blocks@2x.png'
 import { Button } from '~/components/Button'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { useCurrentChainFullName, useCurrentChainSymbolicName } from '~/utils/chains'
 
 export default function NotFoundPage() {
     return (
@@ -19,6 +19,8 @@ export default function NotFoundPage() {
 
 export function NotFoundPageContent() {
     const chainName = useCurrentChainSymbolicName()
+
+    const fullChainName = useCurrentChainFullName()
 
     return (
         <Root>
@@ -56,7 +58,9 @@ export function NotFoundPageContent() {
                 <p>
                     Whoops! We don&apos;t seem to be able to find your data.
                     <br />
-                    <small>Something might have been moved around or changed.</small>
+                    <small>
+                        You are on the {fullChainName} chain. Are you on the right chain?
+                    </small>
                 </p>
             </EmptyState>
         </Root>

@@ -1,4 +1,4 @@
-import { getConfigForChain } from '~/shared/web3/config'
+import { getChainConfig } from '~/utils/chains'
 
 const BASE_URL = 'https://streamr-public.s3.amazonaws.com/truswallet-assets/blockchains'
 
@@ -14,7 +14,7 @@ export const getTokenLogoUrl = (
             case 8996:
                 return 'ethereum'
             default:
-                return getConfigForChain(chainId).name
+                return getChainConfig(chainId).name
         }
     })()
 

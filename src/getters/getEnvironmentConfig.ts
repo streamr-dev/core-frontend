@@ -1,7 +1,6 @@
-import { config as chains } from '@streamr/config'
 import { z } from 'zod'
 import config from '~/config/environments.toml'
-import { Chain } from '~/types'
+import { getChainConfig } from '~/utils/chains'
 
 const EnvironmentConfig = z
     .object({
@@ -16,13 +15,15 @@ const EnvironmentConfig = z
         'Default chain is not listed in the collection of available chains',
     )
     .transform(
-        ({ availableChains: chainNames, defaultChain: defaultChainName, ...rest }) => {
-            const availableChains = chainNames.map(
-                (chainName) => chains[chainName] as Chain,
-            )
+        ({
+            availableChains: symbolicChainNames,
+            defaultChain: defaultSymbolicChainName,
+            ...rest
+        }) => {
+            const availableChains = symbolicChainNames.map(getChainConfig)
 
-            const defaultChain = defaultChainName
-                ? availableChains.find(({ name }) => name === defaultChainName)!
+            const defaultChain = defaultSymbolicChainName
+                ? getChainConfig(defaultSymbolicChainName)
                 : availableChains[0]
 
             return {

@@ -5,7 +5,6 @@ import Text from '~/shared/components/Ui/Text'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { COLORS, LIGHT, MEDIUM } from '~/shared/utils/styled'
-import { getConfigForChain } from '~/shared/web3/config'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import TokenLogo from '~/shared/components/TokenLogo'
 import { formatChainName } from '~/utils'
@@ -16,6 +15,7 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getAllowance } from '~/getters'
 import { toBN } from '~/utils/bn'
 import { RejectionReason } from '~/utils/exceptions'
+import { getChainConfig } from '~/utils/chains'
 import ProjectModal, { Actions } from './ProjectModal'
 
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map(
@@ -193,7 +193,7 @@ export default function AccessPeriodModal({
         setSelectedUnit(unit)
     }, [unit])
 
-    const chainName = formatChainName(getConfigForChain(chainId).name)
+    const chainName = formatChainName(getChainConfig(chainId).name)
 
     let price = fromDecimals(
         priceForTimeUnits(pricePerSecond, toBN(length).toNumber(), selectedUnit),

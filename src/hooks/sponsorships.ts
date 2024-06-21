@@ -30,8 +30,11 @@ import {
     useOperatorForWalletQuery,
 } from '~/hooks/operators'
 import { editStakeModal } from '~/modals/EditStakeModal'
-import { useCurrentChain, useCurrentChainId } from '~/utils/chains'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import {
+    getChainConfigExtension,
+    useCurrentChain,
+    useCurrentChainId,
+} from '~/utils/chains'
 import { SponsorshipFilters } from '~/components/SponsorshipFilterButton'
 import { useRequestedBlockNumber } from '.'
 

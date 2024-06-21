@@ -6,10 +6,10 @@ import { providers } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
 import { isAddress } from 'web3-validator'
 import { getENSDomainsForWallet } from '~/getters'
-import { getConfigForChain } from '~/shared/web3/config'
 import { connectModal } from '~/modals/ConnectModal'
 import { isRejectionReason, isMessagedObject } from '~/utils/exceptions'
 import { Break } from '~/utils/errors'
+import { getChainConfig } from '~/utils/chains'
 
 interface MetaMaskProvider extends MetaMaskInpageProvider {
     providers?: MetaMaskProvider[]
@@ -165,7 +165,7 @@ export async function getWalletAccount({
  * @todo Move to getters/index.
  */
 export function getPublicWeb3Provider(chainId: number) {
-    const config = getConfigForChain(chainId)
+    const config = getChainConfig(chainId)
 
     const httpEntry = config.rpcEndpoints.find(({ url }) => url.startsWith('http'))
 
