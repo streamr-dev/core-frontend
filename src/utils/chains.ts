@@ -1,7 +1,13 @@
 import { config as configs } from '@streamr/config'
+import { produce } from 'immer'
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import {
+    fallbackChainConfigExtension,
+    parsedChainConfigExtension,
+} from '~/utils/chainConfigExtension'
 import { Chain } from '~/types'
+import formatConfigUrl from './formatConfigUrl'
 
 function getPreferredChainName(chainName: string) {
     if (/amoy/i.test(chainName)) {
@@ -57,14 +63,24 @@ function getChainEntry(chainIdOrName: string | number) {
         for (const [rawSymbolicName, config] of Object.entries(configs)) {
             const symbolicName = getPreferredChainName(rawSymbolicName)
 
+            const { dockerHost } = getChainConfigExtension(config.id)
+
+            const sanitizedConfig = produce(config, (draft) => {
+                for (const rpc of draft.rpcEndpoints) {
+                    rpc.url = formatConfigUrl(rpc.url, {
+                        dockerHost,
+                    })
+                }
+            })
+
             chainEntriesByIdOrName[config.id] = {
                 symbolicName,
-                config,
+                config: sanitizedConfig,
             }
 
             chainEntriesByIdOrName[symbolicName] = {
                 symbolicName,
-                config,
+                config: sanitizedConfig,
             }
         }
 
@@ -95,4 +111,16 @@ export function getChainConfig(chainIdOrSymbolicName: string | number): Chain {
 
 export function getSymbolicChainName(chainId: number) {
     return getChainEntry(chainId).symbolicName
+}
+
+export function getChainConfigExtension(chainId: number) {
+    const chainName = getSymbolicChainName(chainId)
+
+    const chainConfigExtension = parsedChainConfigExtension[chainName]
+
+    if (!chainConfigExtension) {
+        return fallbackChainConfigExtension
+    }
+
+    return chainConfigExtension
 }

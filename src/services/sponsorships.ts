@@ -1,17 +1,16 @@
 import { ERC677ABI, ERC677, Operator, operatorABI } from '@streamr/network-contracts'
 import { BigNumber, Contract, Event } from 'ethers'
 import { defaultAbiCoder } from 'ethers/lib/utils'
-import { getConfigForChain } from '~/shared/web3/config'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { BN, BNish, toBN } from '~/utils/bn'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { toastedOperation } from '~/utils/toastedOperation'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { getParsedSponsorshipById } from '~/getters'
 import { toDecimals } from '~/marketplace/utils/math'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
+import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
 
 export async function createSponsorship(
     chainId: number,
@@ -39,7 +38,7 @@ export async function createSponsorship(
         .toString()
     const streamId = formData.streamId
 
-    const chainConfig = getConfigForChain(chainId)
+    const chainConfig = getChainConfig(chainId)
 
     const { sponsorshipPaymentToken: paymentTokenSymbolFromConfig } =
         getChainConfigExtension(chainId)
@@ -83,8 +82,15 @@ export async function createSponsorship(
                         signer,
                     ) as ERC677
 
+                    const sponsorshipFactoryAddress =
+                        chainConfig.contracts['SponsorshipFactory']
+
+                    if (!sponsorshipFactoryAddress) {
+                        throw new Error('Missing sponsorship factory address')
+                    }
+
                     const gasLimitEstimate = await token.estimateGas.transferAndCall(
-                        chainConfig.contracts['SponsorshipFactory'],
+                        sponsorshipFactoryAddress,
                         initialFunding.toString(),
                         data,
                     )
@@ -96,7 +102,7 @@ export async function createSponsorship(
                     )
 
                     const sponsorshipDeployTx = await token.transferAndCall(
-                        chainConfig.contracts['SponsorshipFactory'],
+                        sponsorshipFactoryAddress,
                         initialFunding.toString(),
                         data,
                         {
@@ -136,7 +142,7 @@ export async function fundSponsorship(
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainConfig = getConfigForChain(chainId)
+    const chainConfig = getChainConfig(chainId)
 
     const { sponsorshipPaymentToken: paymentTokenSymbolFromConfig } =
         getChainConfigExtension(chainId)

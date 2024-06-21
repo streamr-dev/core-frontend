@@ -1,9 +1,9 @@
 import { toaster } from 'toasterhea'
 import SwitchNetworkModal from '~/modals/SwitchNetworkModal'
-import getChainId from '~/utils/web3/getChainId'
-import { Layer } from '~/utils/Layer'
 import { getWalletProvider } from '~/shared/stores/wallet'
-import { getConfigForChain } from '~/shared/web3/config'
+import { Layer } from '~/utils/Layer'
+import { getChainConfig } from '~/utils/chains'
+import getChainId from '~/utils/web3/getChainId'
 
 /**
  *
@@ -38,7 +38,7 @@ export default async function networkPreflight(expectedChainId: number) {
             throw e
         }
 
-        const chainConfig = getConfigForChain(expectedChainId)
+        const chainConfig = getChainConfig(expectedChainId)
 
         await provider.request({
             method: 'wallet_addEthereumChain',
@@ -46,14 +46,8 @@ export default async function networkPreflight(expectedChainId: number) {
                 {
                     chainId: `0x${chainConfig.id.toString(16)}`,
                     chainName: chainConfig.name,
-                    rpcUrls: chainConfig.rpcEndpoints.map(
-                        (rpcEndpoint) => rpcEndpoint.url,
-                    ),
-                    nativeCurrency: {
-                        name: chainConfig.nativeCurrency?.name ?? 'Unknown',
-                        symbol: chainConfig.nativeCurrency?.symbol ?? 'UNKNOWN',
-                        decimals: chainConfig.nativeCurrency?.decimals ?? 18,
-                    },
+                    rpcUrls: chainConfig.rpcEndpoints.map(({ url }) => url),
+                    nativeCurrency: chainConfig.nativeCurrency,
                 },
             ],
         })

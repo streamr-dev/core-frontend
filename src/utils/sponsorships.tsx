@@ -5,8 +5,7 @@ import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { toBN } from '~/utils/bn'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import { getConfigForChain } from '~/shared/web3/config'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
+import { getChainConfig, getChainConfigExtension } from './chains'
 
 /**
  * Scouts for Operator's funding share.
@@ -55,7 +54,7 @@ export async function getSponsorshipLeavePenalty(
  * on the default chain.
  */
 export async function getBalanceForSponsorship(chainId: number, wallet: string) {
-    const chain = getConfigForChain(chainId)
+    const chain = getChainConfig(chainId)
 
     const { sponsorshipPaymentToken } = getChainConfigExtension(chainId)
 

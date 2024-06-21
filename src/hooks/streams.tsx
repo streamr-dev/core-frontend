@@ -21,9 +21,8 @@ import {
     Stream_OrderBy,
 } from '~/generated/gql/network'
 import { getDescription } from '~/getters'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { getGraphClient, getIndexerClient } from '~/getters/getGraphClient'
-import { useCurrentChainId } from '~/utils/chains'
+import { getChainConfigExtension, useCurrentChainId } from '~/utils/chains'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection } from '~/types'
 

@@ -2,7 +2,7 @@ import { Contract } from 'ethers'
 import { StreamrConfig, streamrConfigABI } from '@streamr/network-contracts'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ConfigKey } from '~/types'
-import { getConfigForChain } from '~/shared/web3/config'
+import { getChainConfig } from '~/utils/chains'
 
 const cache: Record<
     number,
@@ -21,12 +21,20 @@ export async function getConfigValueFromChain<
         return value as U
     }
 
-    const chain = getConfigForChain(chainId)
+    const chain = getChainConfig(chainId)
 
     const provider = getPublicWeb3Provider(chainId)
 
+    const { StreamrConfig: contractAddress } = chain.contracts
+
+    if (!contractAddress) {
+        throw new Error(
+            `StreamrConfig contract address is required for chain ${chain.id}`,
+        )
+    }
+
     const contract = new Contract(
-        chain.contracts.StreamrConfig,
+        contractAddress,
         streamrConfigABI,
         provider,
     ) as StreamrConfig

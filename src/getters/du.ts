@@ -5,12 +5,11 @@ import {
     GetDataUnionsOwnedByQuery,
     GetDataUnionsOwnedByQueryVariables,
 } from '~/generated/gql/du'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import getClientConfig from '~/getters/getClientConfig'
 import { getDataUnionGraphClient } from '~/getters/getGraphClient'
 import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
 import { TheGraph } from '~/shared/types'
-import { getConfigForChain } from '~/shared/web3/config'
+import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
 
 export async function getDataUnionsOwnedByInChain(
     account: string,
@@ -38,7 +37,7 @@ export async function getDataUnionsOwnedByInChain(
 export async function getDataUnionClient(chainId: number): Promise<DataUnionClient> {
     const provider: any = await getWalletProvider()
 
-    const config = getConfigForChain(chainId)
+    const config = getChainConfig(chainId)
 
     const { dataUnionJoinServerUrl: joinServerUrl } = getChainConfigExtension(chainId)
 

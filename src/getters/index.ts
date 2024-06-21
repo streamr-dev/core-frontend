@@ -9,7 +9,6 @@ import {
 } from '@streamr/hub-contracts'
 import moment, { Moment } from 'moment'
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import { getConfigForChain } from '~/shared/web3/config'
 import { Token as TokenContract } from '~/generated/types'
 import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
@@ -88,8 +87,8 @@ import {
     GetEnsDomainsForAccountQuery,
     GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
-import { getChainConfigExtension } from '~/getters/getChainConfigExtension'
 import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
+import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -102,9 +101,9 @@ export function getProjectRegistryContract({
     chainId: number
     provider?: Signer | providers.Provider
 }) {
-    const { contracts } = getConfigForChain(chainId)
+    const { contracts } = getChainConfig(chainId)
 
-    const contractAddress = contracts.ProjectRegistryV1 || contracts.ProjectRegistry
+    const { ProjectRegistryV1: contractAddress } = contracts
 
     if (!contractAddress) {
         throw new Error(`No ProjectRegistry contract address found for chain ${chainId}`)

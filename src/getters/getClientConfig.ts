@@ -1,14 +1,17 @@
 import { ChainConnectionInfo, StreamrClientConfig } from '@streamr/sdk'
 import formatConfigUrl from '~/utils/formatConfigUrl'
-import { getConfigForChain } from '~/shared/web3/config'
-import { getChainConfigExtension } from './getChainConfigExtension'
+import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
 import { getGraphUrl } from './getGraphClient'
 
+/**
+ * @here
+ */
 export default function getClientConfig(
     chainId: number,
     mods: any = {},
 ): StreamrClientConfig {
-    const chainConfig = getConfigForChain(chainId)
+    const chainConfig = getChainConfig(chainId)
+
     const config: StreamrClientConfig = {
         metrics: false,
     }

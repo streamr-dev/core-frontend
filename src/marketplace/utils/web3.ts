@@ -1,10 +1,10 @@
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { getConfigForChain } from '~/shared/web3/config'
 import { getERC20TokenContract } from '~/getters'
+import { getChainConfig } from '~/utils/chains'
 import { fromDecimals } from './math'
 
 export const getDataAddress = (chainId: number): string => {
-    const { contracts } = getConfigForChain(chainId)
+    const { contracts } = getChainConfig(chainId)
     const dataTokenAddress = contracts.DATA
 
     if (dataTokenAddress == null) {
@@ -15,7 +15,7 @@ export const getDataAddress = (chainId: number): string => {
 }
 
 export const getMarketplaceAddress = (chainId: number): string => {
-    const { contracts } = getConfigForChain(chainId)
+    const { contracts } = getChainConfig(chainId)
     // Use Marketplace or RemoteMarketplace depending on chain. MarketplaceV3 is just a fallback for tests (they run on "dev0" chain)
     const marketplaceAddress =
         contracts.MarketplaceV4 ||

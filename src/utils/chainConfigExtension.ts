@@ -2,7 +2,6 @@ import { produce } from 'immer'
 import { isAddress } from 'web3-validator'
 import { z } from 'zod'
 import config from '~/config/chains.toml'
-import { getSymbolicChainName } from '~/utils/chains'
 import formatConfigUrl from '~/utils/formatConfigUrl'
 
 const ChainConfigExtension = z.object({
@@ -48,9 +47,10 @@ const ChainConfigExtension = z.object({
 
 type ChainConfigExtension = z.infer<typeof ChainConfigExtension>
 
-const fallbackChainConfigExtension: ChainConfigExtension = ChainConfigExtension.parse({})
+export const fallbackChainConfigExtension: ChainConfigExtension =
+    ChainConfigExtension.parse({})
 
-const parsedConfig = z
+export const parsedChainConfigExtension = z
     .record(z.string(), z.union([ChainConfigExtension, z.undefined()]))
     .transform((value) =>
         produce(value, (draft) => {
@@ -90,15 +90,3 @@ const parsedConfig = z
         }),
     )
     .parse(config)
-
-export function getChainConfigExtension(chainId: number) {
-    const chainName = getSymbolicChainName(chainId)
-
-    const chainConfigExtension = parsedConfig[chainName]
-
-    if (!chainConfigExtension) {
-        return fallbackChainConfigExtension
-    }
-
-    return chainConfigExtension
-}

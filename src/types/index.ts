@@ -1,4 +1,5 @@
 import { MessageID } from '@streamr/sdk'
+import { config as configs } from '@streamr/config'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { TheGraph } from '~/shared/types'
 import { BN } from '~/utils/bn'
@@ -52,14 +53,19 @@ export type ConfigKey =
     | 'minimumDelegationWei'
     | 'earlyLeaverPenaltyWei'
 
+type ContractAddressKey = typeof configs extends Record<
+    any,
+    Record<'contracts', Partial<Record<infer K, string>>>
+>
+    ? K
+    : never
+
 export interface Chain {
     name: string
     id: number
     theGraphUrl?: string
-    rpcEndpoints: { readonly url: string }[]
-    contracts: {
-        [name: string]: string
-    }
+    rpcEndpoints: { url: string }[]
+    contracts: Partial<Record<ContractAddressKey, string>>
     entryPoints?: {
         nodeId: string
         websocket: {
@@ -68,11 +74,9 @@ export interface Chain {
             tls: boolean
         }
     }[]
-    nativeCurrency?: {
-        name: string
-        symbol: string
-        decimals: number
-    }
+    nativeCurrency: { symbol: string; name: string; decimals: number }
+    blockExplorerUrl?: string
+    adminPrivateKey?: string
 }
 
 export type OrderDirection = 'asc' | 'desc'

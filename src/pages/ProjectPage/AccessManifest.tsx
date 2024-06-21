@@ -6,7 +6,6 @@ import { Button } from '~/components/Button'
 import { ProjectType, SalePoint } from '~/shared/types'
 import FormattedPaymentRate from '~/components/FormattedPaymentRate'
 import { formatChainName } from '~/utils'
-import { getConfigForChain } from '~/shared/web3/config'
 import { timeUnits } from '~/shared/utils/timeUnit'
 import { getProjectTypeName } from '~/getters'
 import {
@@ -17,7 +16,7 @@ import { errorToast } from '~/utils/toast'
 import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { toBN } from '~/utils/bn'
-import { useCurrentChainId } from '~/utils/chains'
+import { getChainConfig, useCurrentChainId } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 
@@ -68,7 +67,7 @@ export function AccessManifest({
                             timeUnit={timeUnits.hour}
                         />
                     </strong>{' '}
-                    on <strong>{formatChainName(getConfigForChain(chainId).name)}</strong>
+                    on <strong>{formatChainName(getChainConfig(chainId).name)}</strong>
                     {count > 0 && (
                         <>
                             {' '}

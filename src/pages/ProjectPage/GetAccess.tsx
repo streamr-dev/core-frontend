@@ -5,7 +5,6 @@ import { formatChainName } from '~/utils'
 import { Button } from '~/components/Button'
 import ProjectPng from '~/shared/assets/images/project.png'
 import { MEDIUM } from '~/shared/utils/styled'
-import { getConfigForChain } from '~/shared/web3/config'
 import { timeUnits } from '~/shared/utils/timeUnit'
 import { ProjectType, SalePoint } from '~/shared/types'
 import { getProjectTypeName } from '~/getters'
@@ -16,7 +15,7 @@ import {
 import { errorToast } from '~/utils/toast'
 import { isAbandonment } from '~/modals/ProjectModal'
 import { toBN } from '~/utils/bn'
-import { useCurrentChainId } from '~/utils/chains'
+import { getChainConfig, useCurrentChainId } from '~/utils/chains'
 
 const GetAccessContainer = styled.div`
     display: flex;
@@ -92,7 +91,7 @@ export default function GetAccess({
                             timeUnit={timeUnits.hour}
                         />
                     </strong>{' '}
-                    on <strong>{formatChainName(getConfigForChain(chainId).name)}</strong>
+                    on <strong>{formatChainName(getChainConfig(chainId).name)}</strong>
                     {count > 0 && (
                         <>
                             and on {count} other chain{count > 1 && 's'}
