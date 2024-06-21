@@ -37,7 +37,13 @@ export default function useStreamOwnerOptionGroups(
                 return void setGroups([])
             }
 
-            const domains = await getENSDomainsForWallet(account)
+            const domains = await (async () => {
+                try {
+                    return await getENSDomainsForWallet(account)
+                } catch (e) {
+                    return []
+                }
+            })()
 
             if (!mounted) {
                 return
