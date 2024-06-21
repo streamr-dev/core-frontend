@@ -17,5 +17,5 @@ export default function formatConfigUrl(
         url = url.replace('10.200.10.1', dockerHost)
     }
 
-    return !/^[:/]/.test(url) ? url : `${protocol}://${dockerHost}${url}`
+    return url && !/^[:/]/.test(url) ? url : `${protocol}://${dockerHost}${url}`
 }
