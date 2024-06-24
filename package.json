@@ -231,6 +231,7 @@
         "webpack-bundle-analyzer": "^4.8.0",
         "webpack-cli": "^5.1.4",
         "webpack-deadcode-plugin": "^0.1.17",
-        "webpack-dev-server": "^4.15.0"
+        "webpack-dev-server": "^4.15.0",
+        "webpack-notifier": "^1.15.0"
     }
 }
