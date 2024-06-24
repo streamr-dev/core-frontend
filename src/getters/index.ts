@@ -1197,19 +1197,6 @@ export async function getENSDomainsForWallet(
         .filter(Boolean) as string[]
 }
 
-const blockExplorerUrls = Object.freeze({
-    100: 'https:/gnosisscan.io',
-    137: 'https://polygonscan.com',
-    80002: 'https://amoy.polygonscan.com',
-})
-
-/**
- * Returns a block explorer URL for a given chain id.
- */
-export function getBlockExplorerUrl(chainId: number): string | undefined {
-    return blockExplorerUrls[chainId] || undefined
-}
-
 /**
  * Extracts description from a metadata-having Stream-alike
  */
