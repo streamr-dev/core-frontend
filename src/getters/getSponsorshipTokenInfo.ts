@@ -1,4 +1,4 @@
-import { TokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
+import { TokenInfo, getTokenInfo } from '~/utils/tokens'
 import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
 
 export async function getSponsorshipTokenInfo(chainId: number): Promise<TokenInfo> {
