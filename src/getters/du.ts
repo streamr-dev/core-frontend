@@ -1,4 +1,3 @@
-import DataUnionClient, { DataUnion } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
 import {
     GetDataUnionsOwnedByDocument,
@@ -33,6 +32,10 @@ export async function getDataUnionsOwnedByInChain(
         chainId,
     }))
 }
+
+type DataUnionClient = any
+
+type DataUnion = any
 
 export async function getDataUnionClient(chainId: number): Promise<DataUnionClient> {
     const provider: any = await getWalletProvider()
@@ -91,7 +94,7 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
             : {}),
     })
 
-    return new (await require('@dataunions/client')).DataUnionClient(clientConfig)
+    throw new Error('Not implemented')
 }
 
 export async function getDataUnion(
