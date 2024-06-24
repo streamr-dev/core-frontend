@@ -43,7 +43,7 @@ export interface XY {
     y: number
 }
 
-export type ConfigKey =
+export type ChainConfigKey =
     | 'maxPenaltyPeriodSeconds'
     | 'minimumStakeWei'
     | 'minimumSelfDelegationFraction'

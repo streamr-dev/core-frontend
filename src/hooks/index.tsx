@@ -9,7 +9,7 @@ import { BehindIndexError } from '~/errors/BehindIndexError'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import { useCurrentChainId } from '~/utils/chains'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { ConfigKey } from '~/types'
+import { ChainConfigKey } from '~/types'
 import { Layer } from '~/utils/Layer'
 import { errorToast } from '~/utils/toast'
 
@@ -82,7 +82,7 @@ export function useInfoToastEffect() {
 }
 
 export function useConfigValueFromChain<
-    T extends ConfigKey,
+    T extends ChainConfigKey,
     U extends Awaited<ReturnType<StreamrConfig[T]>>,
 >(key: T): U | undefined {
     const [value, setValue] = useState<U>()
