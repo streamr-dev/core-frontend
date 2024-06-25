@@ -1,5 +1,6 @@
-import { toBN } from '~/utils/bn'
-import * as all from '~/marketplace/utils/price'
+import { toBN } from '../../../src/utils/bn'
+import * as all from '../../../src/marketplace/utils/price'
+
 describe('price utils', () => {
     describe('isPriceValid', () => {
         it('works with positive number', () => {

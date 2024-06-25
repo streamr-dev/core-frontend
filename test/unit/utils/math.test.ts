@@ -1,5 +1,5 @@
-import * as all from '~/marketplace/utils/math'
-import { toBN } from '~/utils/bn'
+import * as all from '../../../src/marketplace/utils/math'
+import { toBN } from '../../../src/utils/bn'
 
 describe('math utils', () => {
     describe('fromAtto', () => {

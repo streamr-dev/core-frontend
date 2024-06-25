@@ -1,4 +1,5 @@
-import TransactionError from '~/shared/errors/TransactionError'
+import TransactionError from '../../../src/shared/errors/TransactionError'
+
 describe('TransactionFailedError', () => {
     it('must extend Error', () => {
         // This is tested because of a bug in babel
