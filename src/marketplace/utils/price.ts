@@ -116,7 +116,7 @@ export function getMostRelevantTimeUnit(pricePerSecond: BN): TimeUnit {
 export function formatPrice(
     pricePerSecond: BN,
     currency: PaymentCurrency | ContractCurrency,
-    decimals: BN,
+    decimals: bigint,
     timeUnit?: TimeUnit,
     symbol?: string,
 ): string {

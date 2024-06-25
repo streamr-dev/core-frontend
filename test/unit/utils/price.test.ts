@@ -113,59 +113,51 @@ describe('price utils', () => {
     })
     describe('formatPrice', () => {
         it('works with all parameters given', () => {
-            expect(all.formatPrice(toBN(1), 'DATA', toBN(18), 'second')).toBe(
-                '1 DATA / s',
-            )
-            expect(all.formatPrice(toBN(1), 'DATA', toBN(18), 'minute')).toBe(
-                '60 DATA / min',
-            )
-            expect(all.formatPrice(toBN(0.016666), 'DATA', toBN(18), 'minute')).toBe(
+            expect(all.formatPrice(toBN(1), 'DATA', 18n, 'second')).toBe('1 DATA / s')
+            expect(all.formatPrice(toBN(1), 'DATA', 18n, 'minute')).toBe('60 DATA / min')
+            expect(all.formatPrice(toBN(0.016666), 'DATA', 18n, 'minute')).toBe(
                 '1 DATA / min',
             )
-            expect(all.formatPrice(toBN(0.016666), 'DATA', toBN(18), 'hour')).toBe(
+            expect(all.formatPrice(toBN(0.016666), 'DATA', 18n, 'hour')).toBe(
                 '60 DATA / hr',
             )
-            expect(all.formatPrice(toBN(1.004512), 'DATA', toBN(18), 'second')).toBe(
+            expect(all.formatPrice(toBN(1.004512), 'DATA', 18n, 'second')).toBe(
                 '1.005 DATA / s',
             )
-            expect(all.formatPrice(toBN(123.456789), 'DATA', toBN(18), 'second')).toBe(
+            expect(all.formatPrice(toBN(123.456789), 'DATA', 18n, 'second')).toBe(
                 '123.5 DATA / s',
             )
-            expect(all.formatPrice(toBN(123.512345), 'DATA', toBN(18), 'second')).toBe(
+            expect(all.formatPrice(toBN(123.512345), 'DATA', 18n, 'second')).toBe(
                 '123.5 DATA / s',
             )
-            expect(all.formatPrice(toBN(0.00000000008), 'DATA', toBN(18), 'second')).toBe(
+            expect(all.formatPrice(toBN(0.00000000008), 'DATA', 18n, 'second')).toBe(
                 '0 DATA / s',
             )
-            expect(all.formatPrice(toBN(0.0002777777), 'USD', toBN(18), 'hour')).toBe(
+            expect(all.formatPrice(toBN(0.0002777777), 'USD', 18n, 'hour')).toBe(
                 '1.00 USD / hr',
             )
-            expect(all.formatPrice(toBN(0.0002777777), 'USD', toBN(18), 'day')).toBe(
+            expect(all.formatPrice(toBN(0.0002777777), 'USD', 18n, 'day')).toBe(
                 '24.00 USD / d',
             )
-            expect(all.formatPrice(toBN(0.0000115), 'USD', toBN(18), 'day')).toBe(
+            expect(all.formatPrice(toBN(0.0000115), 'USD', 18n, 'day')).toBe(
                 '0.99 USD / d',
             )
-            expect(all.formatPrice(toBN(0.0000115), 'USD', toBN(18), 'week')).toBe(
+            expect(all.formatPrice(toBN(0.0000115), 'USD', 18n, 'week')).toBe(
                 '6.96 USD / wk',
             )
         })
         it('works without timeunit given', () => {
-            expect(all.formatPrice(toBN(1), 'DATA', toBN(18))).toBe('1 DATA / s')
-            expect(all.formatPrice(toBN(0.0166666666667), 'DATA', toBN(18))).toBe(
+            expect(all.formatPrice(toBN(1), 'DATA', 18n)).toBe('1 DATA / s')
+            expect(all.formatPrice(toBN(0.0166666666667), 'DATA', 18n)).toBe(
                 '1 DATA / min',
             )
-            expect(all.formatPrice(toBN(0.04), 'DATA', toBN(18))).toBe('2.4 DATA / min')
-            expect(all.formatPrice(toBN(0.0002777777778), 'USD', toBN(18))).toBe(
+            expect(all.formatPrice(toBN(0.04), 'DATA', 18n)).toBe('2.4 DATA / min')
+            expect(all.formatPrice(toBN(0.0002777777778), 'USD', 18n)).toBe(
                 '1.00 USD / hr',
             )
-            expect(all.formatPrice(toBN(0.000011574075), 'USD', toBN(18))).toBe(
-                '1.00 USD / d',
-            )
-            expect(all.formatPrice(toBN(0.00005), 'USD', toBN(18))).toBe('4.32 USD / d')
-            expect(all.formatPrice(toBN(0.00000165344), 'USD', toBN(18))).toBe(
-                '1.00 USD / wk',
-            )
+            expect(all.formatPrice(toBN(0.000011574075), 'USD', 18n)).toBe('1.00 USD / d')
+            expect(all.formatPrice(toBN(0.00005), 'USD', 18n)).toBe('4.32 USD / d')
+            expect(all.formatPrice(toBN(0.00000165344), 'USD', 18n)).toBe('1.00 USD / wk')
         })
     })
 })

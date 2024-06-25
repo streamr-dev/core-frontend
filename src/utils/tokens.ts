@@ -4,7 +4,7 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { getQueryClient } from '.'
 
 export interface TokenInfo {
-    decimals: number
+    decimals: bigint
     name: string
     symbol: string
 }
@@ -45,7 +45,7 @@ function tokenInfoQueryParams(
             })
 
             return {
-                decimals: Number(await contact.decimals()),
+                decimals: await contact.decimals(),
                 name: await contact.name(),
                 symbol: await contact.symbol(),
             }

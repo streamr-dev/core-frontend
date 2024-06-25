@@ -54,7 +54,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     sponsorship: ParsedSponsorship
 }
 
-function parseAmount(amount: string | undefined, decimals: number) {
+function parseAmount(amount: string | undefined, decimals: bigint) {
     return !amount || amount === '0' ? '' : fromDecimals(amount, decimals).toString()
 }
 
@@ -68,7 +68,7 @@ function JoinSponsorshipModal({
     sponsorship,
     ...props
 }: Props) {
-    const { decimals = 18, symbol: tokenSymbol = 'DATA' } =
+    const { decimals = 18n, symbol: tokenSymbol = 'DATA' } =
         useSponsorshipTokenInfo() || {}
 
     const wallet = useWalletAccount()
@@ -171,7 +171,7 @@ function JoinSponsorshipModal({
             onBeforeAbort={(reason) =>
                 !busy &&
                 (toBN(rawAmount || '0')
-                    .multipliedBy(Math.pow(10, decimals))
+                    .multipliedBy(toBN(10n ** decimals))
                     .eq(amountProp || '0') ||
                     reason !== RejectionReason.Backdrop)
             }

@@ -18,7 +18,7 @@ export default function FormattedPaymentRate({
     chainId,
     timeUnit,
 }: Options) {
-    const { symbol = currencies.DATA, decimals = 18 } =
+    const { symbol = currencies.DATA, decimals = 18n } =
         useTokenInfo(pricingTokenAddress, chainId) || {}
 
     return (
@@ -26,7 +26,7 @@ export default function FormattedPaymentRate({
             {formatPrice(
                 toBN(amount),
                 currencies.PRODUCT_DEFINED,
-                toBN(decimals),
+                decimals,
                 timeUnit,
                 symbol,
             )}
