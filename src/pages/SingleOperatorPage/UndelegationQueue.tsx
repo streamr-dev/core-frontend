@@ -10,12 +10,11 @@ import {
     useOperatorByIdQuery,
     useProcessUndelegationQueue,
 } from '~/hooks/operators'
-import { BN, BNish, toBN } from '~/utils/bn'
+import { toBN, toFloat } from '~/utils/bn'
 import { useConfigValueFromChain } from '~/hooks'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { abbr } from '~/utils'
-import { fromAtto } from '~/marketplace/utils/math'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useCurrentChainId } from '~/utils/chains'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -23,9 +22,9 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 
 function getUndelegationExpirationDate(
     date: number,
-    maxUndelegationQueueSeconds: BNish | undefined = '0',
+    maxUndelegationQueueSeconds: number | undefined = 0,
 ) {
-    return moment((date + toBN(maxUndelegationQueueSeconds).toNumber()) * 1000)
+    return moment((date + maxUndelegationQueueSeconds) * 1000)
 }
 
 interface Props {
@@ -38,20 +37,24 @@ export function UndelegationQueue({ operatorId }: Props) {
     const operator = operatorQuery.data || null
 
     const walletAddress = useWalletAccount()
-    const { symbol: tokenSymbol = 'DATA' } = useSponsorshipTokenInfo() || {}
 
-    const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
+    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
+        useSponsorshipTokenInfo() || {}
+
+    const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds', Number)
+
     const forceUndelegate = useForceUndelegate()
     const processUndelegationQueue = useProcessUndelegationQueue()
 
     const freeFunds = operator?.dataTokenBalanceWei
+
     const undelegationQueueSize =
         operator != null ? calculateUndelegationQueueSize(operator) : undefined
 
     const isProcessButtonDisabled =
         freeFunds != null &&
         undelegationQueueSize != null &&
-        freeFunds.isLessThan(undelegationQueueSize)
+        freeFunds < undelegationQueueSize
 
     const ProcessQueueButton = () => (
         <Button
@@ -61,6 +64,7 @@ export function UndelegationQueue({ operatorId }: Props) {
                 if (operatorId == null) {
                     return
                 }
+
                 processUndelegationQueue(currentChainId, operatorId)
             }}
         >
@@ -95,14 +99,15 @@ export function UndelegationQueue({ operatorId }: Props) {
                     valueMapper: (element) => (
                         <>
                             {abbr(
-                                fromAtto(
-                                    BN.min(
+                                toFloat(
+                                    ((a: bigint, b: bigint) => (a < b ? a : b))(
                                         getDelegatedAmountForWallet(
                                             element.delegator,
                                             operator,
                                         ),
                                         element.amount,
                                     ),
+                                    decimals,
                                 ),
                             )}{' '}
                             {tokenSymbol}
@@ -158,7 +163,8 @@ export function UndelegationQueue({ operatorId }: Props) {
                                         forceUndelegate(
                                             currentChainId,
                                             operator,
-                                            element.amount,
+                                            // @todo Make `forceUndelegate` take a #bigint.
+                                            toBN(element.amount),
                                         )
                                     }}
                                 >

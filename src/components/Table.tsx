@@ -210,7 +210,7 @@ export function FundedUntilCell({
     remainingBalance,
 }: {
     projectedInsolvencyAt: number | null
-    remainingBalance: BN
+    remainingBalance: bigint
 }) {
     const value =
         projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
@@ -222,7 +222,7 @@ export function FundedUntilCell({
             ) : (
                 <>{value.format('YYYY-MM-DD')}</>
             )}
-            {remainingBalance.isLessThanOrEqualTo(0) && (
+            {remainingBalance <= 0n && (
                 <Tooltip content="Sponsorship expired">
                     <TooltipIconWrap
                         $color="#ff5c00"

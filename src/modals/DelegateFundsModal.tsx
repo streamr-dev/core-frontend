@@ -18,8 +18,8 @@ import FormModal, {
     TextInput,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
-import { BN, toBN } from '~/utils/bn'
-import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
+import { BN, toBN, toBigInt, toFloat } from '~/utils/bn'
+import { toDecimals } from '~/marketplace/utils/math'
 import { Alert as PrestyledAlert } from '~/components/Alert'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
@@ -70,17 +70,14 @@ export default function DelegateFundsModal({
               'to delegate to the selected Operator',
           ]
 
-    const minimumDelegationWei = useConfigValueFromChain('minimumDelegationWei')
-    const minimumDelegationAmount = minimumDelegationWei
-        ? fromDecimals(minimumDelegationWei, 18)
-        : toBN(0)
+    const minimumDelegationAmount =
+        useConfigValueFromChain('minimumDelegationWei', (value) => toFloat(value, 18n)) ||
+        toBN(0)
 
-    const minimumSelfDelegationFraction = useConfigValueFromChain(
-        'minimumSelfDelegationFraction',
-    )
-    const minimumSelfDelegation = minimumSelfDelegationFraction
-        ? fromDecimals(minimumSelfDelegationFraction, 18)
-        : toBN(0)
+    const minimumSelfDelegationFraction =
+        useConfigValueFromChain('minimumSelfDelegationFraction', (value) =>
+            toFloat(value, 18n),
+        ) || toBN(0)
 
     const minimumDelegationSecondsValue = useConfigValueFromChain(
         'minimumDelegationSeconds',
@@ -100,43 +97,52 @@ export default function DelegateFundsModal({
 
     const finalValue = toBN(value)
 
-    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
-    const delegatedTotal = fromDecimals(delegatedTotalProp, decimals)
+    // @todo convert `delegatedTotalProp` to #bigint in props.
+    const delegatedTotal = toFloat(toBigInt(delegatedTotalProp), decimals)
 
-    const finalValueDecimals = toDecimals(finalValue, decimals)
+    const finalValueDecimals = toBigInt(finalValue, decimals)
 
     const insufficientFunds = finalValue.isGreaterThan(balance)
 
     const tooLowCurrentSelfDelegation = useMemo(() => {
         return (
             !isOwner &&
-            getSelfDelegationFraction(operator).isLessThanOrEqualTo(minimumSelfDelegation)
+            getSelfDelegationFraction(operator).isLessThanOrEqualTo(
+                minimumSelfDelegationFraction,
+            )
         )
-    }, [operator, minimumSelfDelegation, isOwner])
+    }, [operator, minimumSelfDelegationFraction, isOwner])
 
     const tooLowSelfDelegationWithNewAmount = useMemo(() => {
         return (
             !isOwner &&
             getSelfDelegationFraction(operator, {
                 offset: finalValueDecimals,
-            }).isLessThanOrEqualTo(minimumSelfDelegation)
+            }).isLessThanOrEqualTo(minimumSelfDelegationFraction)
         )
-    }, [operator, minimumSelfDelegation, finalValueDecimals, isOwner])
+    }, [operator, minimumSelfDelegationFraction, finalValueDecimals, isOwner])
 
     const tooLowOwnerSelfDelegation =
         tooLowCurrentSelfDelegation || tooLowSelfDelegationWithNewAmount
 
     const maxAmount = useMemo<BN>(() => {
-        if (minimumSelfDelegation.isZero()) {
+        if (minimumSelfDelegationFraction.isZero()) {
             return toBN(0)
         }
+
         const operatorSelfStake = getSelfDelegatedAmount(operator)
-        return fromDecimals(
-            operatorSelfStake.dividedBy(minimumSelfDelegation).minus(operatorSelfStake),
+
+        return toFloat(
+            toBigInt(
+                toBN(operatorSelfStake)
+                    .dividedBy(minimumSelfDelegationFraction)
+                    .minus(delegatedTotalProp),
+            ) - operatorSelfStake,
             decimals,
-        ).minus(delegatedTotal)
-    }, [operator, minimumSelfDelegation, decimals, delegatedTotal])
+        )
+    }, [operator, minimumSelfDelegationFraction, decimals, delegatedTotalProp])
 
     const canSubmit =
         finalValue.isFinite() &&

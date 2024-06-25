@@ -4,9 +4,8 @@ import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { useOperatorByIdQuery } from '~/hooks/operators'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { toAtto } from '~/marketplace/utils/math'
+import { toBigInt } from '~/utils/bn'
 import { getNativeTokenBalance } from '~/marketplace/utils/web3'
-import { toBN } from '~/utils/bn'
 import Spinner from '~/components/Spinner'
 import { Separator } from '~/components/Separator'
 import { TABLET } from '~/shared/utils/styled'
@@ -165,15 +164,16 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
 
             try {
                 for (const { address: nodeAddress } of operator.nodes) {
-                    const balance = toBN(
-                        await getNativeTokenBalance(nodeAddress, currentChainId),
+                    const balance = await getNativeTokenBalance(
+                        nodeAddress,
+                        currentChainId,
                     )
 
                     if (!mounted) {
                         return
                     }
 
-                    if (balance.isLessThan(toAtto(0.1))) {
+                    if (balance < toBigInt(0.1, 18n)) {
                         throw new InsufficientFundsError()
                     }
                 }
@@ -218,7 +218,7 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
         }
     }
 
-    const funded = operator.valueWithoutEarnings.isGreaterThan(0)
+    const funded = operator.valueWithoutEarnings > 0n
 
     if (stale) {
         return {

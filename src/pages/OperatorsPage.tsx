@@ -7,7 +7,7 @@ import Tabs, { Tab } from '~/shared/components/Tabs'
 import { Button } from '~/components/Button'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { fromAtto } from '~/marketplace/utils/math'
+import { toFloat } from '~/utils/bn'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
 import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { LoadMoreButton } from '~/components/LoadMore'
@@ -26,6 +26,7 @@ import { OperatorIdCell } from '~/components/Table'
 import { useCurrentChainFullName, useCurrentChainId } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
 const PAGE_SIZE = 20
 
@@ -70,8 +71,6 @@ export const OperatorsPage = () => {
     const chainId = useCurrentChainId()
 
     const chainName = useCurrentChainSymbolicName()
-
-    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const operatorQuery = useOperatorForWalletQuery(wallet)
 
@@ -162,16 +161,12 @@ export const OperatorsPage = () => {
                         {selectedTab === TabOption.AllOperators ? (
                             <OperatorsTable
                                 query={allOperatorsQuery}
-                                tokenSymbol={tokenSymbol}
                                 orderBy={orderBy}
                                 orderDirection={orderDirection}
                                 onOrderChange={setOrder}
                             />
                         ) : (
-                            <DelegationsTable
-                                query={myDelegationsQuery}
-                                tokenSymbol={tokenSymbol}
-                            />
+                            <DelegationsTable query={myDelegationsQuery} />
                         )}
                         {currentQuery.hasNextPage && (
                             <LoadMoreButton
@@ -193,10 +188,8 @@ export const OperatorsPage = () => {
 
 function DelegationsTable({
     query,
-    tokenSymbol,
 }: {
     query: UseInfiniteQueryResult<{ skip: number; elements: Delegation[] }>
-    tokenSymbol: string
 }) {
     // We want to hide delegations to broken operator contract version 1
     // as we cannot get rid of them otherwise
@@ -208,6 +201,8 @@ function DelegationsTable({
     const chainName = useCurrentChainSymbolicName()
 
     const chainFullName = useCurrentChainFullName()
+
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <ScrollTableCore
@@ -231,7 +226,8 @@ function DelegationsTable({
                     displayName: 'My delegation',
                     valueMapper: (element) => (
                         <>
-                            {abbr(fromAtto(element.myShare))} {tokenSymbol}
+                            {abbr(toFloat(element.myShare, decimals))}{' '}
+                            <SponsorshipPaymentTokenName />
                         </>
                     ),
                     align: 'start',
@@ -242,7 +238,8 @@ function DelegationsTable({
                     displayName: 'Total stake',
                     valueMapper: (element) => (
                         <>
-                            {abbr(fromAtto(element.valueWithoutEarnings))} {tokenSymbol}
+                            {abbr(toFloat(element.valueWithoutEarnings, decimals))}{' '}
+                            <SponsorshipPaymentTokenName />
                         </>
                     ),
                     align: 'end',
@@ -279,13 +276,11 @@ function DelegationsTable({
 
 function OperatorsTable({
     query,
-    tokenSymbol,
     orderBy,
     orderDirection,
     onOrderChange,
 }: {
     query: UseInfiniteQueryResult<{ skip: number; elements: ParsedOperator[] }>
-    tokenSymbol: string
     orderBy?: string
     orderDirection?: OrderDirection
     onOrderChange: (columnKey: string) => void
@@ -295,6 +290,8 @@ function OperatorsTable({
     const chainName = useCurrentChainSymbolicName()
 
     const chainFullName = useCurrentChainFullName()
+
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <ScrollTableCore
@@ -321,7 +318,8 @@ function OperatorsTable({
                     displayName: 'Total stake',
                     valueMapper: (element) => (
                         <>
-                            {abbr(fromAtto(element.valueWithoutEarnings))} {tokenSymbol}
+                            {abbr(toFloat(element.valueWithoutEarnings, decimals))}{' '}
+                            <SponsorshipPaymentTokenName />
                         </>
                     ),
                     align: 'start',
@@ -333,8 +331,8 @@ function OperatorsTable({
                     displayName: 'Deployed stake',
                     valueMapper: (element) => (
                         <>
-                            {abbr(fromAtto(element.totalStakeInSponsorshipsWei))}{' '}
-                            {tokenSymbol}
+                            {abbr(toFloat(element.totalStakeInSponsorshipsWei, decimals))}{' '}
+                            <SponsorshipPaymentTokenName />
                         </>
                     ),
                     align: 'end',

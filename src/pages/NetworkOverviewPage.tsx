@@ -20,12 +20,11 @@ import WalletPass from '~/components/WalletPass'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { fromAtto, fromDecimals } from '~/marketplace/utils/math'
 import {
     useSponsorshipsForCreatorQuery,
     useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
-import { BNish, toBN } from '~/utils/bn'
+import { toFloat } from '~/utils/bn'
 import {
     useDelegationsForWalletQuery,
     useDelegationsStats,
@@ -86,7 +85,7 @@ function NetworkStats() {
             <Pad>
                 <StatGrid>
                     <StatCell label="Total stake">
-                        {data?.totalStake && <Abbr>{fromAtto(data.totalStake)}</Abbr>}
+                        {data && <Abbr>{toFloat(data.totalStake, 18n)}</Abbr>}
                     </StatCell>
                     <StatCell label="Sponsorships">{data?.sponsorshipsCount}</StatCell>
                     <StatCell label="Operators">{data?.operatorsCount}</StatCell>
@@ -99,11 +98,12 @@ function NetworkStats() {
 function MyOperatorSummary() {
     const wallet = useWalletAccount()
 
-    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
+    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
+        useSponsorshipTokenInfo() || {}
 
     const stats = useOperatorStatsForWallet(wallet)
 
-    const { value = toBN(0), numOfDelegators = 0, numOfSponsorships = 0 } = stats || {}
+    const { value = 0n, numOfDelegators = 0, numOfSponsorships = 0 } = stats || {}
 
     const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.ThreeMonths)
 
@@ -144,14 +144,14 @@ function MyOperatorSummary() {
 
                 const { decimals } = await getSponsorshipTokenInfo(currentChainId)
 
-                const toValue: (bucket: OperatorDailyBucket) => BNish =
+                const toValue: (bucket: OperatorDailyBucket) => bigint =
                     chartId === 'stake'
-                        ? ({ valueWithoutEarnings }) => valueWithoutEarnings
-                        : ({ cumulativeEarningsWei }) => cumulativeEarningsWei
+                        ? ({ valueWithoutEarnings }) => BigInt(valueWithoutEarnings)
+                        : ({ cumulativeEarningsWei }) => BigInt(cumulativeEarningsWei)
 
                 return buckets.map((bucket) => ({
                     x: Number(bucket.date) * 1000,
-                    y: fromDecimals(
+                    y: toFloat(
                         toValue(bucket as OperatorDailyBucket),
                         decimals,
                     ).toNumber(),
@@ -196,7 +196,7 @@ function MyOperatorSummary() {
                         <Pad>
                             <StatGrid>
                                 <StatCell label="Total stake">
-                                    {abbr(fromAtto(value))} {tokenSymbol}
+                                    {abbr(toFloat(value, decimals))} {tokenSymbol}
                                 </StatCell>
                                 <StatCell label="Delegators">{numOfDelegators}</StatCell>
                                 <StatCell label="Sponsorships">
@@ -271,17 +271,20 @@ function MyOperatorSummary() {
 
 function MyDelegationsSummary() {
     const wallet = useWalletAccount()
+
     const currentChainId = useCurrentChainId()
 
     const stats = useDelegationsStats(wallet)
 
-    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
+    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
+        useSponsorshipTokenInfo() || {}
 
-    const { value = toBN(0), numOfOperators = 0, minApy = 0, maxApy = 0 } = stats || {}
+    const { value = 0n, numOfOperators = 0, minApy = 0, maxApy = 0 } = stats || {}
 
     const apy = minApy === maxApy ? [minApy] : [minApy, maxApy]
 
     const [chartPeriod, setChartPeriod] = useState<ChartPeriod>(ChartPeriod.ThreeMonths)
+
     const [chartDataSource, setChartDataSource] = useState<
         'currentValue' | 'cumulativeEarnings'
     >('cumulativeEarnings')
@@ -326,7 +329,7 @@ function MyDelegationsSummary() {
                 <Pad>
                     <StatGrid>
                         <StatCell label="Current value">
-                            {abbr(fromAtto(value))} {tokenSymbol}
+                            {abbr(toFloat(value, decimals))} {tokenSymbol}
                         </StatCell>
                         <StatCell label="Operators">{numOfOperators}</StatCell>
                         <StatCell label="APY">
@@ -425,7 +428,7 @@ function MyDelegations() {
                                     displayName: 'My delegation',
                                     valueMapper: ({ myShare }) => (
                                         <>
-                                            {abbr(fromAtto(myShare))}{' '}
+                                            {abbr(toFloat(myShare, 18n))}{' '}
                                             <SponsorshipPaymentTokenName />
                                         </>
                                     ),
@@ -437,7 +440,7 @@ function MyDelegations() {
                                     displayName: 'Total stake',
                                     valueMapper: ({ valueWithoutEarnings }) => (
                                         <>
-                                            {abbr(fromAtto(valueWithoutEarnings))}{' '}
+                                            {abbr(toFloat(valueWithoutEarnings, 18n))}{' '}
                                             <SponsorshipPaymentTokenName />
                                         </>
                                     ),

@@ -20,6 +20,7 @@ import {
     useIsFundingSponsorship,
     useIsJoiningSponsorshipAsOperator,
     useJoinSponsorshipAsOperator,
+    useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
 import { COLORS } from '~/shared/utils/styled'
 import { abbr } from '~/utils'
@@ -36,6 +37,7 @@ import { useCurrentChainId } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
+import { toFloat } from '~/utils/bn'
 
 const DayInSeconds = 60 * 60 * 24
 
@@ -53,7 +55,7 @@ export function SponsorshipActionBar({
     const { projectedInsolvencyAt, isRunning, timeCorrectedRemainingBalance } =
         sponsorship
 
-    const isPaying = isRunning && timeCorrectedRemainingBalance.isGreaterThan(0)
+    const isPaying = isRunning && timeCorrectedRemainingBalance > 0n
 
     const fundedUntil = useMemo(
         () =>
@@ -81,6 +83,8 @@ export function SponsorshipActionBar({
     const chainId = useCurrentChainId()
 
     const chainName = useCurrentChainSymbolicName()
+
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <AbstractActionBar
@@ -188,7 +192,7 @@ export function SponsorshipActionBar({
                                 /day
                             </StatCell>
                             <StatCell label="Remaining balance">
-                                {abbr(timeCorrectedRemainingBalance)}{' '}
+                                {abbr(toFloat(timeCorrectedRemainingBalance, decimals))}{' '}
                                 <SponsorshipPaymentTokenName />
                             </StatCell>
                             <StatCell
@@ -204,7 +208,7 @@ export function SponsorshipActionBar({
                                     </Hint>
                                 }
                             >
-                                {abbr(sponsorship.totalStake)}{' '}
+                                {abbr(toFloat(sponsorship.totalStakedWei, decimals))}{' '}
                                 <SponsorshipPaymentTokenName />
                             </StatCell>
                         </StatGrid>
@@ -237,7 +241,9 @@ export function SponsorshipActionBar({
                                     </Hint>
                                 }
                             >
-                                {abbr(sponsorship.cumulativeSponsoring)}{' '}
+                                {abbr(
+                                    toFloat(sponsorship.cumulativeSponsoring, decimals),
+                                )}{' '}
                                 <SponsorshipPaymentTokenName />
                             </StatCell>
                             <StatCell

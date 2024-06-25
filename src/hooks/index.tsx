@@ -83,11 +83,18 @@ export function useInfoToastEffect() {
 
 export function useConfigValueFromChain<
     T extends ChainConfigKey,
-    U extends Awaited<ReturnType<StreamrConfig[T]>>,
->(key: T): U | undefined {
-    const [value, setValue] = useState<U>()
+    U extends NoInfer<Awaited<ReturnType<StreamrConfig[T]>>>,
+    R = U,
+>(key: T, transform?: (value: U) => R): R | undefined {
+    const [value, setValue] = useState<R>()
 
     const chainId = useCurrentChainId()
+
+    const transformRef = useRef(transform)
+
+    if (transformRef.current !== transform) {
+        transformRef.current = transform
+    }
 
     useEffect(() => {
         let mounted = true
@@ -99,8 +106,11 @@ export function useConfigValueFromChain<
                 if (!mounted) {
                     return
                 }
-
-                setValue(newValue as U)
+                setValue(
+                    (transformRef.current
+                        ? transformRef.current(newValue as U)
+                        : newValue) as R,
+                )
             } catch (e) {
                 console.warn(`Could not load ${key} config from chain`, e)
 
@@ -116,13 +126,10 @@ export function useConfigValueFromChain<
     return value
 }
 
-export function useMaxUndelegationQueueDays() {
-    const maxQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
-    const maxQueueDays =
-        maxQueueSeconds != null && maxQueueSeconds > 0
-            ? maxQueueSeconds / 60n / 60n / 24n
-            : 0n
-    return maxQueueDays
+export function useMaxUndelegationQueueDays(): number {
+    return (
+        useConfigValueFromChain('maxQueueSeconds', (value) => Number(value) / 86400) || 0
+    )
 }
 
 export function useMediaQuery(query: string): boolean {

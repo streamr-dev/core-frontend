@@ -15,11 +15,11 @@ export interface ProjectFilter {
  */
 export interface Delegation extends ParsedOperator {
     apy: number
-    myShare: BN
+    myShare: bigint
 }
 
 export interface DelegationsStats {
-    value: BN
+    value: bigint
     minApy: number
     maxApy: number
     numOfOperators: number

@@ -11,6 +11,9 @@ const cache: Record<
 
 const TTL = 60 * 60 * 1000 // 1h
 
+/**
+ * @todo Refactor to use `fetchQuery` for cache.
+ */
 export async function getConfigValueFromChain<
     T extends ChainConfigKey,
     U extends Awaited<ReturnType<StreamrConfig[T]>>,

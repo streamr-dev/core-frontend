@@ -99,7 +99,7 @@ export function getMostRelevantTimeUnit(pricePerSecond: BN): TimeUnit {
      * bigger than 1. This should be the most relevant unit for the user.
      */
     const guess = Object.keys(timeUnits).find((unit) =>
-        toBN(pricePerSecond).multipliedBy(toSeconds(1, unit)).gte(1),
+        pricePerSecond.multipliedBy(toSeconds(1, unit)).gte(1),
     )
 
     return guess || timeUnits.second

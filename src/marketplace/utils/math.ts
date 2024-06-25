@@ -1,13 +1,5 @@
 import { toBN, BNish, BN } from '~/utils/bn'
 
-export function toAtto(value: BNish) {
-    return toDecimals(value, 18)
-}
-
-export function fromAtto(value: BNish) {
-    return fromDecimals(value, 18)
-}
-
 export function toDecimals(value: BNish, decimals: BNish) {
     return toBN(value)
         .multipliedBy(toBN(10).pow(toBN(decimals)))

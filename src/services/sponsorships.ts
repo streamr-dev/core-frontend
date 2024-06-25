@@ -333,8 +333,8 @@ export async function forceUnstakeFromSponsorship(
 }
 
 export interface SponsorshipEarnings {
-    uncollectedEarnings: BN
-    rateOfChangePerSec: BN | undefined
+    uncollectedEarnings: bigint
+    rateOfChangePerSec: bigint | undefined
 }
 
 export async function getEarningsForSponsorships(
@@ -386,7 +386,7 @@ export async function getEarningsForSponsorships(
                 : undefined
 
         result[sponsorshipId] = {
-            uncollectedEarnings: toBN(earnings[i]),
+            uncollectedEarnings: earnings[i],
             rateOfChangePerSec: myEarningsChangePerSec,
         }
     }

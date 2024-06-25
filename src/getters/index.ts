@@ -734,6 +734,7 @@ export async function getParsedOperatorsByOwnerOrControllerAddress(
     }
 
     const result: ParsedOperator[] = []
+
     queryResult.map((operator) => {
         try {
             const parsedOperator = parseOperator(operator, { chainId })
@@ -848,7 +849,7 @@ export async function getParsedOperators<
 export function getSpotApy<
     T extends Pick<ParsedOperator, 'valueWithoutEarnings' | 'stakes'>,
 >({ valueWithoutEarnings, stakes }: T): number {
-    if (valueWithoutEarnings.isEqualTo(0)) {
+    if (valueWithoutEarnings === 0n) {
         return 0
     }
 
@@ -867,7 +868,7 @@ export function getSpotApy<
                 return sum
             }
 
-            return sum.plus(amountWei.multipliedBy(spotAPY))
+            return sum.plus(toBN(amountWei).multipliedBy(spotAPY))
         },
         toBN(0),
     )
@@ -876,7 +877,7 @@ export function getSpotApy<
         return 0
     }
 
-    return yearlyIncome.dividedBy(valueWithoutEarnings).toNumber()
+    return yearlyIncome.dividedBy(toBN(valueWithoutEarnings)).toNumber()
 }
 
 /**
@@ -885,19 +886,19 @@ export function getSpotApy<
 export function getDelegatedAmountForWallet(
     address: string,
     { delegations }: ParsedOperator,
-): BN {
+): bigint {
     const addr = address.toLowerCase()
 
     return (
         delegations.find(({ delegator }) => delegator.toLowerCase() === addr)?.amount ||
-        toBN(0)
+        0n
     )
 }
 
 /**
  * Sums amounts delegated to given operator by its owner.
  */
-export function getSelfDelegatedAmount(operator: ParsedOperator) {
+export function getSelfDelegatedAmount(operator: ParsedOperator): bigint {
     return getDelegatedAmountForWallet(operator.owner, operator)
 }
 
@@ -908,44 +909,44 @@ export function getSelfDelegatedAmount(operator: ParsedOperator) {
 export function getDelegationFractionForWallet(
     address: string,
     operator: ParsedOperator,
-    { offset = toBN(0) }: { offset?: BN } = {},
-) {
-    const total = operator.valueWithoutEarnings.plus(offset)
+    { offset = 0n }: { offset?: bigint } = {},
+): BN {
+    const total = operator.valueWithoutEarnings + offset
 
-    if (total.isEqualTo(0)) {
+    if (total === 0n) {
         return toBN(0)
     }
 
-    return getDelegatedAmountForWallet(address, operator).dividedBy(total)
+    return toBN(getDelegatedAmountForWallet(address, operator)).dividedBy(toBN(total))
 }
 
 /**
  * Calculates the amount of DATA needed to payout undelegation queue in full.
  */
-export function calculateUndelegationQueueSize(operator: ParsedOperator): BN {
-    const lookup: Record<string, BN> = {}
+export function calculateUndelegationQueueSize(operator: ParsedOperator): bigint {
+    const lookup: Record<string, bigint> = {}
 
     // Sum up queue by addresses
     for (let i = 0; i < operator.queueEntries.length; i++) {
         const element = operator.queueEntries[i]
 
         if (lookup[element.delegator] == null) {
-            lookup[element.delegator] = toBN(0)
+            lookup[element.delegator] = 0n
         }
 
-        lookup[element.delegator] = lookup[element.delegator].plus(element.amount)
+        lookup[element.delegator] = lookup[element.delegator] + element.amount
     }
 
     // Go through addresses and make sure we cap to max delegation
     for (const address of Object.keys(lookup)) {
-        lookup[address] = BN.min(
+        lookup[address] = ((a, b) => (a < b ? a : b))(
             lookup[address],
             getDelegatedAmountForWallet(address, operator),
         )
     }
 
     // Return total sum of all addresses
-    return Object.values(lookup).reduce((a, b) => a.plus(b), toBN(0))
+    return Object.values(lookup).reduce((sum, b) => sum + b, 0n)
 }
 
 /**
@@ -954,8 +955,8 @@ export function calculateUndelegationQueueSize(operator: ParsedOperator): BN {
  */
 export function getSelfDelegationFraction(
     operator: ParsedOperator,
-    { offset = toBN(0) }: { offset?: BN } = {},
-) {
+    { offset = 0n }: { offset?: bigint } = {},
+): BN {
     return getDelegationFractionForWallet(operator.owner, operator, { offset })
 }
 
@@ -988,7 +989,7 @@ function parseNetworkStats(stats: GetNetworkStatsQuery) {
     try {
         return z
             .object({
-                totalStake: z.string().transform(toBN),
+                totalStake: z.string().transform(BigInt),
                 sponsorshipsCount: z.number(),
                 operatorsCount: z.number(),
             })

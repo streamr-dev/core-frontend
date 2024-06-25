@@ -9,18 +9,17 @@ import FormModal, {
     SectionHeadline,
 } from '~/modals/FormModal'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { BN } from '~/utils/bn'
-import { fromAtto } from '~/marketplace/utils/math'
+import { BN, toBigInt, toFloat } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { Alert } from '~/components/Alert'
 import { Radio } from '~/shared/components/Radio'
-import { abbr, waitForIndexedBlock } from '~/utils'
+import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { StreamIdCell } from '~/components/Table'
 import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
+import { Abbr } from '~/components/Abbr'
 
 type OperatorStake = ParsedOperator['stakes'][0]
 
@@ -39,7 +38,7 @@ function getOptimalStake(
         stakes.find(
             (s) =>
                 isStakedLongEnough(s.joinTimestamp, s.minimumStakingPeriodSeconds) &&
-                s.amountWei.isGreaterThanOrEqualTo(requestedAmount),
+                s.amountWei >= toBigInt(requestedAmount),
         ) || stakes[0]
     )
 }
@@ -52,7 +51,7 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
     const [busy, setBusy] = useState(false)
 
     const stakes = useMemo(
-        () => [...operator.stakes].sort((a, b) => b.amountWei.comparedTo(a.amountWei)),
+        () => [...operator.stakes].sort((a, b) => (b.amountWei > a.amountWei ? -1 : 1)),
         [operator],
     )
 
@@ -73,7 +72,7 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
         )
 
     const isPartialPayout =
-        !!selectedSponsorship && selectedSponsorship.amountWei.isLessThan(amount)
+        !!selectedSponsorship && selectedSponsorship.amountWei < toBigInt(amount)
 
     const canSubmit = !!selectedSponsorshipId
 
@@ -141,9 +140,8 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
                                 displayName: 'Amount',
                                 valueMapper: (element) => (
                                     <WarningCell>
-                                        {abbr(fromAtto(element.amountWei))}{' '}
-                                        <SponsorshipPaymentTokenName />
-                                        {element.amountWei.isLessThan(amount) && (
+                                        <Abbr>{toFloat(element.amountWei, 18n)}</Abbr>
+                                        {element.amountWei < toBigInt(amount) && (
                                             <Tooltip content={<p>Partial payout</p>}>
                                                 <TooltipIconWrap $color="#ff5c00">
                                                     <JiraFailedBuildStatusIcon label="Error" />

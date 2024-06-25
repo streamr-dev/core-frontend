@@ -14,10 +14,9 @@ import {
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
 import { errorToast } from '~/utils/toast'
-import { toBN } from '~/utils/bn'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { fromAtto } from '~/marketplace/utils/math'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import { getOperatorStats } from '~/getters/getOperatorStats'
 import NetworkPageSegment, {
@@ -100,7 +99,9 @@ export const SingleOperatorPage = () => {
 
     const walletAddress = useWalletAccount()
 
-    const slashingFraction = useConfigValueFromChain('slashingFraction')
+    const slashingFraction =
+        useConfigValueFromChain('slashingFraction', (value) => toFloat(value, 18n)) ??
+        null
 
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
@@ -119,7 +120,8 @@ export const SingleOperatorPage = () => {
 
     const canCollect = useCanCollectEarningsCallback()
 
-    const { symbol: tokenSymbol = 'DATA' } = useSponsorshipTokenInfo() || {}
+    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
+        useSponsorshipTokenInfo() || {}
 
     const editSponsorshipFunding = useEditSponsorshipFunding()
 
@@ -171,7 +173,7 @@ export const SingleOperatorPage = () => {
 
     const myDelegationAmount = useMemo(() => {
         if (!walletAddress || !operator) {
-            return toBN(0)
+            return 0n
         }
 
         return getDelegatedAmountForWallet(walletAddress, operator)
@@ -179,10 +181,10 @@ export const SingleOperatorPage = () => {
 
     const myDelegationPercentage = useMemo(() => {
         if (!walletAddress || !operator) {
-            return toBN(0)
+            return 0
         }
 
-        return getDelegationFractionForWallet(walletAddress, operator).multipliedBy(100)
+        return getDelegationFractionForWallet(walletAddress, operator) * 100
     }, [walletAddress, operator])
 
     const chartLabel =
@@ -468,8 +470,9 @@ export const SingleOperatorPage = () => {
                                                         </StatCellLabel>
                                                         <StatCellContent>
                                                             {abbr(
-                                                                fromAtto(
+                                                                toFloat(
                                                                     myDelegationAmount,
+                                                                    decimals,
                                                                 ),
                                                             )}{' '}
                                                             {tokenSymbol}
@@ -535,7 +538,12 @@ export const SingleOperatorPage = () => {
                                             )
                                             return (
                                                 <>
-                                                    {abbr(fromAtto(element.amountWei))}{' '}
+                                                    {abbr(
+                                                        toFloat(
+                                                            element.amountWei,
+                                                            decimals,
+                                                        ),
+                                                    )}{' '}
                                                     {tokenSymbol}
                                                     {minimumStakeReachTime.isAfter(
                                                         Date.now(),
@@ -681,7 +689,9 @@ export const SingleOperatorPage = () => {
                                             displayName: 'Slashed',
                                             valueMapper: (element) => (
                                                 <>
-                                                    {abbr(fromAtto(element.amount))}{' '}
+                                                    {abbr(
+                                                        toFloat(element.amount, decimals),
+                                                    )}{' '}
                                                     {tokenSymbol}
                                                 </>
                                             ),
@@ -698,17 +708,18 @@ export const SingleOperatorPage = () => {
                                                 ) {
                                                     return ''
                                                 }
+
                                                 if (
-                                                    element.amount.isLessThan(
-                                                        fromAtto(
-                                                            toBN(slashingFraction),
-                                                        ).multipliedBy(
+                                                    element.amount <
+                                                    toBigInt(
+                                                        slashingFraction.multipliedBy(
                                                             toBN(minimumStakeWei),
                                                         ),
                                                     )
                                                 ) {
                                                     return 'False flag'
                                                 }
+
                                                 return 'Normal slashing'
                                             },
                                             align: 'start',
@@ -908,9 +919,11 @@ function UncollectedEarnings({
 }) {
     const value = useUncollectedEarnings(operatorId, sponsorshipId)
 
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
+
     return typeof value !== 'undefined' ? (
         <>
-            {abbr(fromAtto(value?.uncollectedEarnings || 0))}{' '}
+            {abbr(toFloat(value?.uncollectedEarnings || 0n, decimals))}{' '}
             <SponsorshipPaymentTokenName />
         </>
     ) : (

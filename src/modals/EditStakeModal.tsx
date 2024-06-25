@@ -22,8 +22,7 @@ import FormModal, {
     WingedLabelWrap,
 } from '~/modals/FormModal'
 import Label from '~/shared/components/Ui/Label'
-import { BN, toBN } from '~/utils/bn'
-import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
+import { BN, toBN, toBigInt, toFloat } from '~/utils/bn'
 import { Alert } from '~/components/Alert'
 import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { ParsedOperator } from '~/parsers/OperatorParser'
@@ -49,25 +48,28 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     sponsorship: ParsedSponsorship
 }
 
-const DefaultCurrentAmount = toBN(0)
-
 function EditStakeModal({
     chainId,
-    leavePenaltyWei,
+    leavePenaltyWei: leavePenaltyWeiProp,
     onResolve,
     onReject,
-    operator: { dataTokenBalanceWei: operatorBalance, id: operatorId, queueEntries },
+    operator: { dataTokenBalanceWei: availableBalance, id: operatorId, queueEntries },
     sponsorship: { id: sponsorshipId, stakes, minimumStakingPeriodSeconds },
     ...props
 }: Props) {
+    // @todo convert to #bigint at prop level.
+    const leavePenaltyWei = toBigInt(leavePenaltyWeiProp)
+
     const [busy, setBusy] = useState(false)
 
-    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     const stake = useMemo(
         () => getSponsorshipStakeForOperator(stakes, operatorId),
         [stakes, operatorId],
     )
+
+    const lockedStake = stake?.lockedWei || 0n
 
     useEffect(() => {
         if (!stake) {
@@ -75,18 +77,22 @@ function EditStakeModal({
         }
     }, [stake, onReject])
 
-    const globalMinimumStakeWei = toBN(useConfigValueFromChain('minimumStakeWei') || 0)
+    const globalMinimumStakeWei = useConfigValueFromChain('minimumStakeWei') || 0n
 
-    const minimumStakeWei = BN.max(globalMinimumStakeWei, stake?.lockedWei || 0)
+    const minimumStakeWei = ((a: bigint, b: bigint) => (a > b ? a : b))(
+        globalMinimumStakeWei,
+        lockedStake,
+    )
 
-    const { joinTimestamp = 0, amount: currentAmount = DefaultCurrentAmount } =
-        stake || {}
+    const { joinTimestamp = 0, amountWei: currentAmount = 0n } = stake || {}
 
-    const [rawAmount, setRawAmount] = useState(currentAmount.toString())
+    const [rawAmount, setRawAmount] = useState(
+        toFloat(currentAmount, decimals).toString(),
+    )
 
     useEffect(() => {
-        setRawAmount(currentAmount.toString())
-    }, [currentAmount])
+        setRawAmount(toFloat(currentAmount, decimals).toString())
+    }, [currentAmount, decimals])
 
     const minLeaveDate = moment(joinTimestamp + minimumStakingPeriodSeconds, 'X').format(
         'YYYY-MM-DD HH:mm',
@@ -94,53 +100,44 @@ function EditStakeModal({
 
     const hasUndelegationQueue = queueEntries.length > 0
 
-    const amount = toDecimals(rawAmount || '0', decimals)
+    const amount = toBigInt(toBN(rawAmount || 0), decimals)
 
-    const finalAmount =
-        amount.isFinite() && amount.isGreaterThanOrEqualTo(0) ? amount : toBN(0)
+    const finalAmount = amount >= 0 ? amount : 0n
 
-    const difference = finalAmount.minus(toDecimals(currentAmount, decimals))
+    const difference = finalAmount - currentAmount
 
-    const insufficientFunds = difference.isGreaterThan(0)
-        ? difference.isGreaterThan(operatorBalance)
-        : false
+    const insufficientFunds = difference > 0n && difference > availableBalance
 
     const isFinalAmountWithinAcceptedRange =
-        finalAmount.isEqualTo(0) || finalAmount.isGreaterThanOrEqualTo(minimumStakeWei)
+        finalAmount === 0n || finalAmount >= minimumStakeWei
 
     const canSubmit =
         isFinalAmountWithinAcceptedRange &&
         !insufficientFunds &&
-        !difference.isEqualTo(0) &&
-        (difference.isGreaterThan(0) ? !hasUndelegationQueue : true)
+        difference !== 0n &&
+        (difference > 0n ? !hasUndelegationQueue : true)
 
     let submitLabel = 'Save'
 
-    if (finalAmount.isEqualTo(0)) {
+    if (finalAmount === 0n) {
         submitLabel = 'Unstake'
     }
-    if (difference.isGreaterThan(0)) {
+
+    if (difference > 0n) {
         submitLabel = 'Increase stake'
     }
-    if (difference.isLessThan(0) && !finalAmount.isEqualTo(0)) {
+
+    if (difference < 0n && finalAmount !== 0n) {
         submitLabel = 'Reduce stake'
     }
 
-    const leavePenalty = fromDecimals(leavePenaltyWei, decimals)
+    const slashingAmount = finalAmount > 0n ? 0n : leavePenaltyWei + lockedStake
 
-    const lockedStake = fromDecimals(stake?.lockedWei || 0, decimals)
-
-    const slashingAmount = finalAmount.isGreaterThan(0)
-        ? toBN(0)
-        : leavePenalty.plus(lockedStake)
-
-    const dirty = sameBN(rawAmount || '0', currentAmount)
+    const clean = toBigInt(rawAmount || 0) === currentAmount
 
     const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
 
-    const diff = fromDecimals(difference, decimals)
-
-    const availableBalance = fromDecimals(operatorBalance, decimals)
+    const diff = toFloat(difference, decimals)
 
     return (
         <FormModal
@@ -150,7 +147,7 @@ function EditStakeModal({
             submitLabel={submitLabel}
             submitting={busy}
             onBeforeAbort={(reason) =>
-                !busy && (reason !== RejectionReason.Backdrop || !dirty)
+                !busy && (reason !== RejectionReason.Backdrop || clean)
             }
             onReject={onReject}
             onSubmit={async () => {
@@ -161,7 +158,7 @@ function EditStakeModal({
                 setBusy(true)
 
                 try {
-                    if (difference.isGreaterThanOrEqualTo(0)) {
+                    if (difference >= 0n) {
                         await stakeOnSponsorship(
                             chainId,
                             sponsorshipId,
@@ -177,7 +174,7 @@ function EditStakeModal({
                         return void onResolve?.()
                     }
 
-                    if (slashingAmount.isZero()) {
+                    if (slashingAmount === 0n) {
                         await reduceStakeOnSponsorship(
                             chainId,
                             sponsorshipId,
@@ -186,9 +183,10 @@ function EditStakeModal({
                             {
                                 onBlockNumber: (blockNumber) =>
                                     waitForIndexedBlock(chainId, blockNumber),
-                                toastLabel: finalAmount.isZero()
-                                    ? 'Unstake from sponsorship'
-                                    : 'Reduce stake on sponsorship',
+                                toastLabel:
+                                    finalAmount === 0n
+                                        ? 'Unstake from sponsorship'
+                                        : 'Reduce stake on sponsorship',
                             },
                         )
 
@@ -196,13 +194,13 @@ function EditStakeModal({
                     }
 
                     const slashingReason =
-                        leavePenalty.isGreaterThan(0) && lockedStake.isGreaterThan(0) ? (
+                        leavePenaltyWei > 0n && lockedStake > 0n ? (
                             <>
                                 Your minimum staking period is still ongoing and ends on{' '}
                                 {minLeaveDate}, and additionally some of your stake is
                                 locked in the Sponsorship due to open flags.
                             </>
-                        ) : leavePenalty.isGreaterThan(0) ? (
+                        ) : leavePenaltyWei > 0n ? (
                             <>
                                 Your minimum staking period is still ongoing and ends on{' '}
                                 {minLeaveDate}.
@@ -220,7 +218,7 @@ function EditStakeModal({
                             description: (
                                 <>
                                     {slashingReason} If you unstake now, you will lose{' '}
-                                    {slashingAmount.toString()}{' '}
+                                    {toFloat(slashingAmount, decimals).toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </>
                             ),
@@ -266,7 +264,7 @@ function EditStakeModal({
                     {rawAmount !== '' && !isFinalAmountWithinAcceptedRange && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            {fromDecimals(minimumStakeWei, decimals).toString()}{' '}
+                            {toFloat(minimumStakeWei, decimals).toString()}{' '}
                             <SponsorshipPaymentTokenName />
                         </ErrorLabel>
                     )}
@@ -287,7 +285,12 @@ function EditStakeModal({
                     />
                     <MaxButton
                         onClick={() => {
-                            setRawAmount(availableBalance.plus(currentAmount).toString())
+                            setRawAmount(
+                                toFloat(
+                                    availableBalance + currentAmount,
+                                    decimals,
+                                ).toString(),
+                            )
                         }}
                     />
                     <TextAppendix>
@@ -299,10 +302,10 @@ function EditStakeModal({
                         <Prop>Current stake</Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{currentAmount}</Abbr>
+                                <Abbr>{toFloat(currentAmount, decimals)}</Abbr>
                             ) : (
                                 <>
-                                    {currentAmount.toString()}{' '}
+                                    {toFloat(currentAmount, decimals).toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </>
                             )}
@@ -330,10 +333,10 @@ function EditStakeModal({
                         </Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{availableBalance}</Abbr>
+                                <Abbr>{toFloat(availableBalance, decimals)}</Abbr>
                             ) : (
                                 <>
-                                    {availableBalance.toString()}{' '}
+                                    {toFloat(availableBalance, decimals).toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </>
                             )}
@@ -341,14 +344,15 @@ function EditStakeModal({
                     </li>
                 </PropList>
             </Section>
-            {finalAmount.isEqualTo(0) && leavePenalty.isGreaterThan(0) && (
+            {finalAmount === 0n && leavePenaltyWei > 0n && (
                 <StyledAlert type="error" title="Your stake will be slashed">
                     Your minimum staking period is still ongoing and ends on{' '}
                     {minLeaveDate}. If you unstake now, you will lose{' '}
-                    {leavePenalty.toString()} <SponsorshipPaymentTokenName />.
+                    {toFloat(leavePenaltyWei, decimals).toString()}{' '}
+                    <SponsorshipPaymentTokenName />.
                 </StyledAlert>
             )}
-            {difference.isGreaterThan(0) && hasUndelegationQueue && (
+            {difference > 0n && hasUndelegationQueue && (
                 <StyledAlert type="error" title="Warning!">
                     Cannot stake on sponsorship while delegators are awaiting undelegation
                 </StyledAlert>

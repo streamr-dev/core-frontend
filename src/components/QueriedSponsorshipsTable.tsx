@@ -11,6 +11,7 @@ import {
     useEditSponsorshipFunding,
     useFundSponsorshipCallback,
     useJoinSponsorshipAsOperator,
+    useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
 import {
     FundedUntilCell,
@@ -23,6 +24,7 @@ import { useCurrentChainId } from '~/utils/chains'
 import { OrderDirection } from '~/types'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { toFloat } from '~/utils/bn'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -58,6 +60,8 @@ export function QueriedSponsorshipsTable({
     const joinSponsorshipAsOperator = useJoinSponsorshipAsOperator()
 
     const editSponsorshipFunding = useEditSponsorshipFunding()
+
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <>
@@ -100,7 +104,14 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Funds',
                         valueMapper: (element) => (
-                            <>{abbr(element.timeCorrectedRemainingBalance)}</>
+                            <>
+                                {abbr(
+                                    toFloat(
+                                        element.timeCorrectedRemainingBalance,
+                                        decimals,
+                                    ),
+                                )}
+                            </>
                         ),
                         align: 'start',
                         isSticky: false,
@@ -124,7 +135,8 @@ export function QueriedSponsorshipsTable({
                         displayName: 'Staked',
                         valueMapper: (element) => (
                             <>
-                                {abbr(element.totalStake)} <SponsorshipPaymentTokenName />
+                                {abbr(toFloat(element.totalStakedWei, decimals))}{' '}
+                                <SponsorshipPaymentTokenName />
                             </>
                         ),
                         align: 'end',
@@ -150,7 +162,7 @@ export function QueriedSponsorshipsTable({
                         valueMapper: (element) => (
                             <FundedUntilCell
                                 projectedInsolvencyAt={element.projectedInsolvencyAt}
-                                remainingBalance={element.remainingBalance}
+                                remainingBalance={element.remainingBalanceWei}
                             />
                         ),
                         align: 'start',

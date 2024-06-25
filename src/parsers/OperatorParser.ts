@@ -1,15 +1,14 @@
 import { z } from 'zod'
-import { fromAtto } from '~/marketplace/utils/math'
-import { toBN } from '~/utils/bn'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
 import {
     OperatorMetadataPreparser,
     parseOperatorMetadata,
 } from '~/parsers/OperatorMetadataParser'
 
 const OperatorParser = z.object({
-    cumulativeOperatorsCutWei: z.string().transform(toBN),
-    cumulativeProfitsWei: z.string().transform(toBN),
-    dataTokenBalanceWei: z.string().transform(toBN),
+    cumulativeOperatorsCutWei: z.string().transform(BigInt),
+    cumulativeProfitsWei: z.string().transform(BigInt),
+    dataTokenBalanceWei: z.string().transform(BigInt),
     delegatorCount: z.number(),
     delegations: z.array(
         z.object({
@@ -19,7 +18,7 @@ const OperatorParser = z.object({
                     id: z.string(),
                 })
                 .transform(({ id }) => id),
-            operatorTokenBalanceWei: z.string().transform(toBN),
+            operatorTokenBalanceWei: z.string().transform(BigInt),
             latestDelegationTimestamp: z.coerce.number(),
             earliestUndelegationTimestamp: z.coerce.number(),
         }),
@@ -41,16 +40,16 @@ const OperatorParser = z.object({
             persisted: true,
         })),
     ),
-    operatorsCutFraction: z.string().transform(fromAtto),
+    operatorsCutFraction: z.string().transform(BigInt),
     owner: z.string(),
     contractVersion: z.coerce.number(),
-    operatorTokenTotalSupplyWei: z.string().transform(toBN),
-    valueWithoutEarnings: z.string().transform(toBN),
+    operatorTokenTotalSupplyWei: z.string().transform(BigInt),
+    valueWithoutEarnings: z.string().transform(BigInt),
     valueUpdateBlockNumber: z.coerce.number().optional(),
     valueUpdateTimestamp: z.coerce.number().optional(),
     queueEntries: z.array(
         z.object({
-            amount: z.string().transform(toBN),
+            amount: z.string().transform(BigInt),
             date: z.coerce.number(),
             delegator: z.object({ id: z.string() }).transform(({ id }) => id),
             id: z.string(),
@@ -59,7 +58,7 @@ const OperatorParser = z.object({
     slashingEvents: z.array(
         z
             .object({
-                amount: z.string().transform(toBN),
+                amount: z.string().transform(BigInt),
                 date: z.coerce.number(),
                 sponsorship: z.object({
                     id: z.string(),
@@ -77,8 +76,8 @@ const OperatorParser = z.object({
     stakes: z.array(
         z
             .object({
-                amountWei: z.string().transform(toBN),
-                earningsWei: z.string().transform(toBN),
+                amountWei: z.string().transform(BigInt),
+                earningsWei: z.string().transform(BigInt),
                 joinTimestamp: z.coerce.number(),
                 operator: z.object({
                     id: z.string(),
@@ -86,7 +85,7 @@ const OperatorParser = z.object({
                 sponsorship: z.object({
                     id: z.string(),
                     isRunning: z.boolean(),
-                    remainingWei: z.string().transform(toBN),
+                    remainingWei: z.string().transform(BigInt),
                     minimumStakingPeriodSeconds: z.coerce.number(),
                     spotAPY: z.string().transform(toBN),
                     projectedInsolvency: z
@@ -116,7 +115,7 @@ const OperatorParser = z.object({
                 }) => ({
                     ...rest,
                     sponsorshipId,
-                    isSponsorshipPaying: isRunning && remainingWei.isGreaterThan(0),
+                    isSponsorshipPaying: isRunning && remainingWei > 0n,
                     remainingWei,
                     minimumStakingPeriodSeconds,
                     operatorId,
@@ -126,7 +125,7 @@ const OperatorParser = z.object({
                 }),
             ),
     ),
-    totalStakeInSponsorshipsWei: z.string().transform(toBN),
+    totalStakeInSponsorshipsWei: z.string().transform(BigInt),
 })
 
 export type ParsedOperator = ReturnType<typeof parseOperator>
@@ -149,10 +148,12 @@ export function parseOperator(value: unknown, options: ParseOperatorOptions) {
             ...rest,
             exchangeRate,
             metadata: parseOperatorMetadata(metadata, { chainId }),
-            operatorsCut: operatorsCutFraction.multipliedBy(100).toNumber(),
+            operatorsCut: toFloat(operatorsCutFraction, 18n).multipliedBy(100).toNumber(),
             delegations: delegations.map((d) => ({
                 ...d,
-                amount: d.operatorTokenBalanceWei.multipliedBy(exchangeRate),
+                amount: toBigInt(
+                    toBN(d.operatorTokenBalanceWei).multipliedBy(exchangeRate),
+                ),
             })),
         }),
     ).parse(value)

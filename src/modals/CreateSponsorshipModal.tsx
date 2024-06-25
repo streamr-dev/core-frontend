@@ -141,12 +141,10 @@ function CreateSponsorshipModal({
     const invalidMinStakeDuration =
         !!initialAmount && !!payoutRate && extensionInDays < minStakeDuration
 
-    const maxPenaltyPeriodSeconds = useConfigValueFromChain('maxPenaltyPeriodSeconds')
-
-    const maxPenaltyPeriod =
-        typeof maxPenaltyPeriodSeconds === 'undefined'
-            ? void 0
-            : toBN(maxPenaltyPeriodSeconds).dividedBy(86400).toNumber()
+    const maxPenaltyPeriod = useConfigValueFromChain(
+        'maxPenaltyPeriodSeconds',
+        (value) => Number(value) / 86400,
+    )
 
     const tooLongMinStakeDuration =
         !!maxPenaltyPeriod && minStakeDuration > maxPenaltyPeriod

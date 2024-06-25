@@ -221,7 +221,7 @@ export function useDelegationsStats(address = '') {
 
             if (!operators.length) {
                 return void setStats({
-                    value: toBN(0),
+                    value: 0n,
                     minApy: 0,
                     maxApy: 0,
                     numOfOperators: 0,
@@ -238,10 +238,7 @@ export function useDelegationsStats(address = '') {
                 maxApy = Math.max(maxApy, apy)
             })
 
-            const value = operators.reduce(
-                (sum, { myShare }) => sum.plus(myShare),
-                toBN(0),
-            )
+            const value = operators.reduce((sum, { myShare }) => sum + myShare, 0n)
 
             setStats({
                 value,

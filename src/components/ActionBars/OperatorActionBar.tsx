@@ -4,7 +4,7 @@ import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-st
 import { Button } from '~/components/Button'
 import SvgIcon from '~/shared/components/SvgIcon'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { fromAtto } from '~/marketplace/utils/math'
+import { toFloat } from '~/utils/bn'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/components/Spinner'
@@ -188,7 +188,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 label="Total stake"
                                 tip={
                                     <>
-                                        {operator.valueWithoutEarnings.isZero() ? (
+                                        {operator.valueWithoutEarnings === 0n ? (
                                             <Tooltip
                                                 content={
                                                     <p>
@@ -220,7 +220,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 }
                             >
                                 <div>
-                                    {abbr(fromAtto(operator.valueWithoutEarnings))}{' '}
+                                    {abbr(toFloat(operator.valueWithoutEarnings, 18n))}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </div>
                             </StatCell>
@@ -236,7 +236,7 @@ export const OperatorActionBar: FunctionComponent<{
                                     </Hint>
                                 }
                             >
-                                {abbr(fromAtto(operator.totalStakeInSponsorshipsWei))}{' '}
+                                {abbr(toFloat(operator.totalStakeInSponsorshipsWei, 18n))}{' '}
                                 <SponsorshipPaymentTokenName />
                             </StatCell>
                             <StatCell
@@ -335,10 +335,10 @@ export const OperatorActionBar: FunctionComponent<{
                                 }
                             >
                                 {abbr(
-                                    fromAtto(
-                                        operator.cumulativeProfitsWei.plus(
+                                    toFloat(
+                                        operator.cumulativeProfitsWei +
                                             operator.cumulativeOperatorsCutWei,
-                                        ),
+                                        18n,
                                     ),
                                 )}{' '}
                                 <SponsorshipPaymentTokenName />
