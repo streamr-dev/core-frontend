@@ -1,94 +1,94 @@
-import { Contract, Provider, Signer } from 'ethers'
-import { toaster } from 'toasterhea'
-import { z } from 'zod'
+import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import {
+    MarketplaceV4 as MarketplaceContract,
+    ProjectRegistryV1 as ProjectRegistryContract,
     marketplaceV4ABI as marketplaceAbi,
     projectRegistryV1ABI as projectRegistryAbi,
-    ProjectRegistryV1 as ProjectRegistryContract,
-    MarketplaceV4 as MarketplaceContract,
 } from '@streamr/hub-contracts'
+import { Contract, Provider, Signer } from 'ethers'
 import moment, { Moment } from 'moment'
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import { Token as TokenContract } from '~/generated/types'
-import { getMarketplaceAddress } from '~/marketplace/utils/web3'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { Layer } from '~/utils/Layer'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { ProjectType } from '~/shared/types'
-import tokenAbi from '~/shared/web3/abis/token.json'
+import { toaster } from 'toasterhea'
+import { z } from 'zod'
 import { address0 } from '~/consts'
-import {
-    GetSponsorshipByIdQuery,
-    GetSponsorshipByIdDocument,
-    GetAllSponsorshipsQuery,
-    GetAllSponsorshipsDocument,
-    GetAllSponsorshipsQueryVariables,
-    GetSponsorshipByIdQueryVariables,
-    GetSponsorshipsByCreatorQuery,
-    GetSponsorshipsByCreatorQueryVariables,
-    GetSponsorshipsByCreatorDocument,
-    GetAllOperatorsQuery,
-    GetAllOperatorsQueryVariables,
-    GetAllOperatorsDocument,
-    GetOperatorByIdQuery,
-    GetOperatorByIdQueryVariables,
-    GetOperatorByIdDocument,
-    GetOperatorsByDelegationQuery,
-    GetOperatorsByDelegationQueryVariables,
-    GetOperatorsByDelegationDocument,
-    GetOperatorsByOwnerOrControllerAddressQuery,
-    GetOperatorsByOwnerOrControllerAddressQueryVariables,
-    GetOperatorsByOwnerOrControllerAddressDocument,
-    SearchOperatorsByMetadataQuery,
-    SearchOperatorsByMetadataQueryVariables,
-    SearchOperatorsByMetadataDocument,
-    GetOperatorsByDelegationAndIdQuery,
-    GetOperatorsByDelegationAndIdDocument,
-    GetOperatorsByDelegationAndIdQueryVariables,
-    GetOperatorsByDelegationAndMetadataQuery,
-    GetOperatorsByDelegationAndMetadataQueryVariables,
-    GetOperatorsByDelegationAndMetadataDocument,
-    GetStreamByIdQuery,
-    GetStreamByIdQueryVariables,
-    GetStreamByIdDocument,
-    Operator,
-    GetOperatorDailyBucketsQuery,
-    GetOperatorDailyBucketsDocument,
-    GetOperatorDailyBucketsQueryVariables,
-    GetSponsorshipDailyBucketsQuery,
-    GetSponsorshipDailyBucketsQueryVariables,
-    GetSponsorshipDailyBucketsDocument,
-    OrderDirection,
-    Operator_OrderBy,
-    Sponsorship_OrderBy,
-    GetDelegatorDailyBucketsQuery,
-    GetDelegatorDailyBucketsQueryVariables,
-    GetDelegatorDailyBucketsDocument,
-    Sponsorship,
-    GetSponsorshipByStreamIdQuery,
-    GetSponsorshipByStreamIdQueryVariables,
-    GetSponsorshipByStreamIdDocument,
-    GetNetworkStatsQuery,
-    GetNetworkStatsQueryVariables,
-    GetNetworkStatsDocument,
-    GetOperatorByOwnerAddressQuery,
-    GetOperatorByOwnerAddressQueryVariables,
-    GetOperatorByOwnerAddressDocument,
-    Sponsorship_Filter,
-} from '~/generated/gql/network'
-import { getGraphClient } from '~/getters/getGraphClient'
-import { ChartPeriod } from '~/types'
-import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
-import { BN, toBN } from '~/utils/bn'
-import { errorToast } from '~/utils/toast'
-import { parseSponsorship } from '~/parsers/SponsorshipParser'
+import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
 import {
     GetEnsDomainsForAccountDocument,
     GetEnsDomainsForAccountQuery,
     GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
-import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
+import {
+    GetAllOperatorsDocument,
+    GetAllOperatorsQuery,
+    GetAllOperatorsQueryVariables,
+    GetAllSponsorshipsDocument,
+    GetAllSponsorshipsQuery,
+    GetAllSponsorshipsQueryVariables,
+    GetDelegatorDailyBucketsDocument,
+    GetDelegatorDailyBucketsQuery,
+    GetDelegatorDailyBucketsQueryVariables,
+    GetNetworkStatsDocument,
+    GetNetworkStatsQuery,
+    GetNetworkStatsQueryVariables,
+    GetOperatorByIdDocument,
+    GetOperatorByIdQuery,
+    GetOperatorByIdQueryVariables,
+    GetOperatorByOwnerAddressDocument,
+    GetOperatorByOwnerAddressQuery,
+    GetOperatorByOwnerAddressQueryVariables,
+    GetOperatorDailyBucketsDocument,
+    GetOperatorDailyBucketsQuery,
+    GetOperatorDailyBucketsQueryVariables,
+    GetOperatorsByDelegationAndIdDocument,
+    GetOperatorsByDelegationAndIdQuery,
+    GetOperatorsByDelegationAndIdQueryVariables,
+    GetOperatorsByDelegationAndMetadataDocument,
+    GetOperatorsByDelegationAndMetadataQuery,
+    GetOperatorsByDelegationAndMetadataQueryVariables,
+    GetOperatorsByDelegationDocument,
+    GetOperatorsByDelegationQuery,
+    GetOperatorsByDelegationQueryVariables,
+    GetOperatorsByOwnerOrControllerAddressDocument,
+    GetOperatorsByOwnerOrControllerAddressQuery,
+    GetOperatorsByOwnerOrControllerAddressQueryVariables,
+    GetSponsorshipByIdDocument,
+    GetSponsorshipByIdQuery,
+    GetSponsorshipByIdQueryVariables,
+    GetSponsorshipByStreamIdDocument,
+    GetSponsorshipByStreamIdQuery,
+    GetSponsorshipByStreamIdQueryVariables,
+    GetSponsorshipDailyBucketsDocument,
+    GetSponsorshipDailyBucketsQuery,
+    GetSponsorshipDailyBucketsQueryVariables,
+    GetSponsorshipsByCreatorDocument,
+    GetSponsorshipsByCreatorQuery,
+    GetSponsorshipsByCreatorQueryVariables,
+    GetStreamByIdDocument,
+    GetStreamByIdQuery,
+    GetStreamByIdQueryVariables,
+    Operator,
+    Operator_OrderBy,
+    OrderDirection,
+    SearchOperatorsByMetadataDocument,
+    SearchOperatorsByMetadataQuery,
+    SearchOperatorsByMetadataQueryVariables,
+    Sponsorship,
+    Sponsorship_Filter,
+    Sponsorship_OrderBy,
+} from '~/generated/gql/network'
+import { Token as TokenContract } from '~/generated/types'
+import { getGraphClient } from '~/getters/getGraphClient'
+import { getMarketplaceAddress } from '~/marketplace/utils/web3'
+import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
+import { parseSponsorship } from '~/parsers/SponsorshipParser'
+import { getPublicWeb3Provider } from '~/shared/stores/wallet'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
+import { ProjectType } from '~/shared/types'
+import tokenAbi from '~/shared/web3/abis/token.json'
+import { ChartPeriod } from '~/types'
+import { Layer } from '~/utils/Layer'
+import { BN, toBN } from '~/utils/bn'
 import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import { errorToast } from '~/utils/toast'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id

@@ -1,76 +1,79 @@
-import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
-import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import { NetworkHelmet } from '~/components/Helmet'
-import Layout, { LayoutColumn } from '~/components/Layout'
-import { NoData } from '~/shared/components/NoData'
-import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
-import {
-    formatLongDate,
-    formatShortDate,
-} from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { errorToast } from '~/utils/toast'
-import { toBN, toBigInt, toFloat } from '~/utils/bn'
-import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import { useWalletAccount } from '~/shared/stores/wallet'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import styled from 'styled-components'
 import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
-import { getOperatorStats } from '~/getters/getOperatorStats'
+import {
+    AddressItem,
+    AddressTable,
+    AddressType,
+    useSubmitControllerAddressesCallback,
+    useSubmitNodeAddressesCallback,
+} from '~/components/AddressTable'
+import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
+import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
+import { NetworkHelmet } from '~/components/Helmet'
+import { Hint } from '~/components/Hint'
+import Layout, { LayoutColumn } from '~/components/Layout'
+import { LiveNodesTable } from '~/components/LiveNodesTable'
+import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import NetworkPageSegment, {
     Pad,
     SegmentGrid,
     TitleBar,
 } from '~/components/NetworkPageSegment'
-import NetworkChartDisplay from '~/components/NetworkChartDisplay'
-import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
-import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
-import Tabs, { Tab } from '~/shared/components/Tabs'
-import { ChartPeriod } from '~/types'
-import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
-import { Separator } from '~/components/Separator'
-import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
-import {
-    invalidateActiveOperatorByIdQueries,
-    useCollectEarnings,
-    useOperatorByIdQuery,
-} from '~/hooks/operators'
 import { OperatorChecklist } from '~/components/OperatorChecklist'
-import {
-    AddressTable,
-    AddressItem,
-    useSubmitNodeAddressesCallback,
-    AddressType,
-    useSubmitControllerAddressesCallback,
-} from '~/components/AddressTable'
+import { Separator } from '~/components/Separator'
 import Spinner from '~/components/Spinner'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import {
-    useCanCollectEarningsCallback,
-    useUncollectedEarnings,
-} from '~/shared/stores/uncollectedEarnings'
+import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
+import { FundedUntilCell, StreamIdCell } from '~/components/Table'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
+import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
+import { getOperatorStats } from '~/getters/getOperatorStats'
 import {
     useConfigValueFromChain,
     useInitialBehindIndexError,
     useLatestBehindBlockError,
     useRefetchQueryBehindIndexEffect,
 } from '~/hooks'
-import { FundedUntilCell, StreamIdCell } from '~/components/Table'
-import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
-import { onIndexedBlock } from '~/utils/blocks'
-import { LiveNodesTable } from '~/components/LiveNodesTable'
+import {
+    invalidateActiveOperatorByIdQueries,
+    useCollectEarnings,
+    useOperatorByIdQuery,
+} from '~/hooks/operators'
+import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { abbr, saveOperator } from '~/utils'
+import LoadingIndicator from '~/shared/components/LoadingIndicator'
+import { NoData } from '~/shared/components/NoData'
+import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import SvgIcon from '~/shared/components/SvgIcon'
-import { Hint } from '~/components/Hint'
-import { useCurrentChainFullName, useCurrentChainId } from '~/utils/chains'
-import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
+import {
+    formatLongDate,
+    formatShortDate,
+} from '~/shared/components/TimeSeriesGraph/chartUtils'
+import {
+    useCanCollectEarningsCallback,
+    useUncollectedEarnings,
+} from '~/shared/stores/uncollectedEarnings'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
+import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
+import { ChartPeriod } from '~/types'
+import { abbr, saveOperator } from '~/utils'
+import { onIndexedBlock } from '~/utils/blocks'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
+import {
+    useCurrentChainFullName,
+    useCurrentChainId,
+    useCurrentChainSymbolicName,
+} from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { errorToast } from '~/utils/toast'
 import { UndelegationQueue } from './UndelegationQueue'
 
 const defaultChartData = []

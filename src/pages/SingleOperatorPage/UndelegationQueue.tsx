@@ -1,24 +1,24 @@
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import moment from 'moment'
 import React from 'react'
 import styled from 'styled-components'
-import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { Button } from '~/components/Button'
-import { truncate } from '~/shared/utils/text'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { calculateUndelegationQueueSize, getDelegatedAmountForWallet } from '~/getters'
+import { useConfigValueFromChain } from '~/hooks'
 import {
     useForceUndelegate,
     useOperatorByIdQuery,
     useProcessUndelegationQueue,
 } from '~/hooks/operators'
-import { toBN, toFloat } from '~/utils/bn'
-import { useConfigValueFromChain } from '~/hooks'
-import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
-import { abbr } from '~/utils'
-import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { useCurrentChainId } from '~/utils/chains'
-import { useWalletAccount } from '~/shared/stores/wallet'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { COLORS, MEDIUM } from '~/shared/utils/styled'
+import { truncate } from '~/shared/utils/text'
+import { abbr } from '~/utils'
+import { toBN, toFloat } from '~/utils/bn'
+import { useCurrentChainId } from '~/utils/chains'
 
 function getUndelegationExpirationDate(
     date: number,
