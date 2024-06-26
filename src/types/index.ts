@@ -1,8 +1,7 @@
-import { MessageID } from '@streamr/sdk'
 import { config as configs } from '@streamr/config'
+import { MessageID } from '@streamr/sdk'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { TheGraph } from '~/shared/types'
-import { BN } from '~/utils/bn'
 
 export interface ProjectFilter {
     search: string
@@ -65,7 +64,7 @@ export interface Chain {
     id: number
     theGraphUrl?: string
     rpcEndpoints: { url: string }[]
-    contracts: Partial<Record<ContractAddressKey, string>>
+    contracts: Partial<Record<ContractAddressKey | (string & {}), string>>
     entryPoints?: {
         nodeId: string
         websocket: {
