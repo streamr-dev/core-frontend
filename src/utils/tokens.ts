@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { getERC20TokenContract } from '~/getters'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { getQueryClient } from '.'
+import { getQueryClient } from '~/utils'
+import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
 
 export interface TokenInfo {
     decimals: bigint
@@ -66,4 +67,17 @@ export function getCachedTokenInfo(
     return getQueryClient().getQueryData<TokenInfo>(
         tokenInfoQueryParams(chainId, tokenAddress).queryKey,
     )
+}
+
+export function getSponsorshipPaymentTokenAddress(chainId: number): string {
+    const tokenAddress =
+        getChainConfig(chainId).contracts[
+            getChainConfigExtension(chainId).sponsorshipPaymentToken
+        ]
+
+    if (!tokenAddress) {
+        throw new Error('Invalid token contract address for Sponsorship payments')
+    }
+
+    return tokenAddress
 }
