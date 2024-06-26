@@ -1,15 +1,16 @@
-import { ERC677ABI, ERC677, Operator, operatorABI } from 'network-contracts-ethers6'
 import { AbiCoder, Contract, EventLog, Log } from 'ethers'
-import networkPreflight from '~/utils/networkPreflight'
-import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
-import { BN, BNish, toBN } from '~/utils/bn'
-import { toastedOperation } from '~/utils/toastedOperation'
+import { ERC677, ERC677ABI, Operator, operatorABI } from 'network-contracts-ethers6'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
-import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { getParsedSponsorshipById } from '~/getters'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { toDecimals } from '~/marketplace/utils/math'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
-import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
+import { BN, BNish, toBN } from '~/utils/bn'
+import { getChainConfig } from '~/utils/chains'
+import networkPreflight from '~/utils/networkPreflight'
+import { toastedOperation } from '~/utils/toastedOperation'
+import { getSponsorshipPaymentTokenAddress } from '~/utils/tokens'
 
 export async function createSponsorship(
     chainId: number,
@@ -38,9 +39,6 @@ export async function createSponsorship(
     const streamId = formData.streamId
 
     const chainConfig = getChainConfig(chainId)
-
-    const { sponsorshipPaymentToken: paymentTokenSymbolFromConfig } =
-        getChainConfigExtension(chainId)
 
     await networkPreflight(chainId)
 
@@ -76,7 +74,7 @@ export async function createSponsorship(
                     const signer = await getSigner()
 
                     const token = new Contract(
-                        chainConfig.contracts[paymentTokenSymbolFromConfig],
+                        getSponsorshipPaymentTokenAddress(chainId),
                         ERC677ABI,
                         signer,
                     ) as unknown as ERC677
@@ -150,17 +148,12 @@ export async function fundSponsorship(
     amount: BNish,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
-    const chainConfig = getChainConfig(chainId)
-
-    const { sponsorshipPaymentToken: paymentTokenSymbolFromConfig } =
-        getChainConfigExtension(chainId)
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
     const contract = new Contract(
-        chainConfig.contracts[paymentTokenSymbolFromConfig],
+        getSponsorshipPaymentTokenAddress(chainId),
         ERC677ABI,
         signer,
     ) as unknown as ERC677

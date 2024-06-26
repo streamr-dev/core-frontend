@@ -1,12 +1,13 @@
+import moment from 'moment'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import moment from 'moment'
-import {
-    RejectionReason,
-    isRejectionReason,
-    isTransactionRejection,
-} from '~/utils/exceptions'
+import { Abbr } from '~/components/Abbr'
+import { Alert } from '~/components/Alert'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { confirm } from '~/getters/confirm'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import FormModal, {
     ErrorLabel,
     FieldWrap,
@@ -21,24 +22,23 @@ import FormModal, {
     TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
-import { BN, toBN, toBigInt, toFloat } from '~/utils/bn'
-import { Alert } from '~/components/Alert'
-import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { sameBN, waitForIndexedBlock } from '~/utils'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 import {
     forceUnstakeFromSponsorship,
     reduceStakeOnSponsorship,
     stakeOnSponsorship,
 } from '~/services/sponsorships'
-import { confirm } from '~/getters/confirm'
+import Label from '~/shared/components/Ui/Label'
+import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import { Abbr } from '~/components/Abbr'
+import { BN, toBN, toBigInt, toFloat } from '~/utils/bn'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
+import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     chainId: number

@@ -1,11 +1,9 @@
-import { TokenInfo, getTokenInfo } from '~/utils/tokens'
-import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import {
+    TokenInfo,
+    getSponsorshipPaymentTokenAddress,
+    getTokenInfo,
+} from '~/utils/tokens'
 
 export async function getSponsorshipTokenInfo(chainId: number): Promise<TokenInfo> {
-    const { sponsorshipPaymentToken } = getChainConfigExtension(chainId)
-
-    return getTokenInfo(
-        getChainConfig(chainId).contracts[sponsorshipPaymentToken],
-        chainId,
-    )
+    return getTokenInfo(getSponsorshipPaymentTokenAddress(chainId), chainId)
 }

@@ -1,18 +1,21 @@
-import React, { useMemo } from 'react'
 import moment from 'moment'
-import { truncate, truncateStreamName } from '~/shared/utils/text'
+import React, { useMemo } from 'react'
+import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
+import {
+    ActionBarButton,
+    ActionBarButtonBody,
+    ActionBarButtonCaret,
+    ActionBarButtonInnerBody,
+    ActionBarWalletDisplay,
+} from '~/components/ActionBars/ActionBarButton'
 import { Button } from '~/components/Button'
-import SvgIcon from '~/shared/components/SvgIcon'
-import { SimpleDropdown } from '~/components/SimpleDropdown'
+import { Hint } from '~/components/Hint'
 import { Separator } from '~/components/Separator'
-import StatGrid, { StatCell } from '~/components/StatGrid'
-import { useOperatorForWalletQuery } from '~/hooks/operators'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import StatGrid, { StatCell } from '~/components/StatGrid'
 import { Tooltip } from '~/components/Tooltip'
+import { useOperatorForWalletQuery } from '~/hooks/operators'
 import {
     useEditSponsorshipFunding,
     useFundSponsorshipCallback,
@@ -22,22 +25,18 @@ import {
     useJoinSponsorshipAsOperator,
     useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'
+import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { abbr } from '~/utils'
-import {
-    ActionBarButton,
-    ActionBarButtonBody,
-    ActionBarButtonCaret,
-    ActionBarButtonInnerBody,
-    ActionBarWalletDisplay,
-} from '~/components/ActionBars/ActionBarButton'
-import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
-import { Hint } from '~/components/Hint'
-import { useCurrentChainId } from '~/utils/chains'
-import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
-import { AbstractActionBar, Pad } from './AbstractActionBar'
 import { toFloat } from '~/utils/bn'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
+import { AbstractActionBar, Pad } from './AbstractActionBar'
 
 const DayInSeconds = 60 * 60 * 24
 

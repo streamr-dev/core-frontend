@@ -1,12 +1,14 @@
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
+import { getBalance } from '~/utils/balance'
 
-export async function requirePositiveBalance(chainId: number, address: string) {
-    const provider = getPublicWeb3Provider(chainId)
-
-    const balance = await provider.getBalance(address)
+export async function requirePositiveBalance(chainId: number, walletAddress: string) {
+    const balance = await getBalance({
+        chainId,
+        tokenAddress: 'native',
+        walletAddress,
+    })
 
     if (balance > 0) {
-        throw new InsufficientFundsError(address)
+        throw new InsufficientFundsError(walletAddress)
     }
 }
