@@ -1,24 +1,25 @@
 import { produce } from 'immer'
 import { useCallback, useEffect } from 'react'
 import { create } from 'zustand'
+import { Minute } from '~/consts'
 import { SponsorshipEarnings, getEarningsForSponsorships } from '~/services/sponsorships'
-import { toBN } from '~/utils/bn'
+import { toBigInt } from '~/utils/bn'
 import { useCurrentChainId } from '~/utils/chains'
 
 interface Earnings {
     fetching: boolean
-    values: Record<string, SponsorshipEarnings>
+    values: Partial<Record<string, SponsorshipEarnings>>
     lastUpdatedTimestamp: number | undefined
     lastSyncTimestamp: number | undefined
 }
 
 interface Store {
-    earnings: Record<string, undefined | Earnings>
-    fetch: (chainId: number, operatorId: string) => Promise<void>
-    tick: (chainId: number, operatorId: string) => Promise<void>
+    earnings: Partial<Record<string, Earnings>>
+    fetch(chainId: number, operatorId: string): Promise<void>
+    tick(chainId: number, operatorId: string): Promise<void>
 }
 
-const FULL_SYNC_INTERVAL_MS = 3 * 60 * 1000
+const FULL_SYNC_INTERVAL_MS = 3 * Minute
 
 export const useUncollectedEarningsStore = create<Store>((set, get) => {
     function updateEarnings(operatorId: string, fn: (draft: Earnings) => void) {
@@ -67,6 +68,7 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
 
         async tick(chainId, operatorId) {
             const now = performance.now()
+
             const { earnings, fetch } = get()
 
             const operatorEarnings = earnings[operatorId]
@@ -87,22 +89,22 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
             set((store) =>
                 produce(store, ({ earnings }) => {
                     const draft = earnings[operatorId]
-                    if (draft != null) {
-                        for (const sponsorshipId of Object.keys(draft.values)) {
-                            const sponsorship = draft.values[sponsorshipId]
-                            const timeDiffSec =
-                                (now - (draft.lastUpdatedTimestamp ?? now)) / 1000
-                            const ratePerSec = sponsorship?.changePerSecond
 
-                            if (
-                                ratePerSec != null &&
-                                sponsorship?.uncollectedEarnings != null
-                            ) {
-                                draft.values[sponsorshipId].uncollectedEarnings =
-                                    sponsorship.uncollectedEarnings.plus(
-                                        ratePerSec.multipliedBy(timeDiffSec),
-                                    )
+                    if (draft != null) {
+                        const elapsedInSeconds = toBigInt(
+                            (now - (draft.lastUpdatedTimestamp ?? now)) / 1000,
+                        )
+
+                        for (const sponsorshipId of Object.keys(draft.values)) {
+                            const sponsorshipEarnings = draft.values[sponsorshipId]
+
+                            if (!sponsorshipEarnings) {
+                                continue
                             }
+
+                            sponsorshipEarnings.uncollectedEarnings =
+                                sponsorshipEarnings.uncollectedEarnings +
+                                sponsorshipEarnings.changePerSecond * elapsedInSeconds
                         }
 
                         draft.lastUpdatedTimestamp = now
@@ -173,9 +175,9 @@ export function useCanCollectEarningsCallback() {
             }
 
             return (
-                earnings[operatorId]?.values[sponsorshipId]?.uncollectedEarnings ||
-                toBN(0)
-            ).isGreaterThan(0)
+                (earnings[operatorId]?.values[sponsorshipId]?.uncollectedEarnings || 0n) >
+                0n
+            )
         },
         [earnings],
     )
