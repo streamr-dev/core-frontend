@@ -1,6 +1,6 @@
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { getERC20TokenContract } from '~/getters'
 import { getChainConfig } from '~/utils/chains'
+import { getBalance } from '~/utils/balance'
+import { getTokenInfo } from '~/utils/tokens'
 import { fromDecimals } from './math'
 
 export const getDataAddress = (chainId: number): string => {
@@ -31,25 +31,28 @@ export const getMarketplaceAddress = (chainId: number): string => {
     return marketplaceAddress
 }
 
+/**
+ * @deprecated Use `getBalance` from `~/utils/balance`
+ */
 export const getNativeTokenBalance = async (userAddress: string, chainId: number) => {
-    const provider = getPublicWeb3Provider(chainId)
-    const balance = await provider.getBalance(userAddress)
-    return balance
+    return getBalance({ chainId, tokenAddress: 'native', walletAddress: userAddress })
 }
 
+/**
+ * @deprecated Use `getBalance` from `~/utils/balance`.
+ */
 export const getCustomTokenBalance = async (
     contractAddress: string,
     userAddress: string,
     chainId: number,
 ) => {
-    const contract = getERC20TokenContract({
+    const balance = await getBalance({
+        chainId,
         tokenAddress: contractAddress,
-        provider: getPublicWeb3Provider(chainId),
+        walletAddress: userAddress,
     })
 
-    const balance = await contract.balanceOf(userAddress)
-
-    const decimals = await contract.decimals()
+    const { decimals } = await getTokenInfo(contractAddress, chainId)
 
     return fromDecimals(balance, decimals)
 }
