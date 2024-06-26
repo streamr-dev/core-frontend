@@ -17,7 +17,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncate } from '~/shared/utils/text'
 import { abbr } from '~/utils'
-import { toBN, toFloat } from '~/utils/bn'
+import { toFloat } from '~/utils/bn'
 import { useCurrentChainId } from '~/utils/chains'
 
 function getUndelegationExpirationDate(
@@ -33,7 +33,9 @@ interface Props {
 
 export function UndelegationQueue({ operatorId }: Props) {
     const currentChainId = useCurrentChainId()
+
     const operatorQuery = useOperatorByIdQuery(operatorId)
+
     const operator = operatorQuery.data || null
 
     const walletAddress = useWalletAccount()
@@ -44,6 +46,7 @@ export function UndelegationQueue({ operatorId }: Props) {
     const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds', Number)
 
     const forceUndelegate = useForceUndelegate()
+
     const processUndelegationQueue = useProcessUndelegationQueue()
 
     const freeFunds = operator?.dataTokenBalanceWei
@@ -163,8 +166,7 @@ export function UndelegationQueue({ operatorId }: Props) {
                                         forceUndelegate(
                                             currentChainId,
                                             operator,
-                                            // @todo Make `forceUndelegate` take a #bigint.
-                                            toBN(element.amount),
+                                            element.amount,
                                         )
                                     }}
                                 >
