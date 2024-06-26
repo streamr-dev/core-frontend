@@ -15,6 +15,7 @@ import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import StatGrid, { StatCell } from '~/components/StatGrid'
 import { Tooltip } from '~/components/Tooltip'
+import { DayInSeconds } from '~/consts'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import {
     useEditSponsorshipFunding,
@@ -37,8 +38,6 @@ import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
-
-const DayInSeconds = 60 * 60 * 24
 
 export function SponsorshipActionBar({
     sponsorship,

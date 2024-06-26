@@ -43,4 +43,6 @@ export const StreamGptApiUrl = process.env.STREAM_GPT_API_URL
  *
  * @todo Replace all `60 * 1000` with this consts.
  */
-export const Minute = 60 * 1000
+export const Minute = 60000
+
+export const DayInSeconds = 86400
