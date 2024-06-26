@@ -1,20 +1,19 @@
-import React, { useState, useMemo, FunctionComponent, useEffect } from 'react'
 import { Stream } from '@streamr/sdk'
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { useClient } from 'streamr-client-react'
 import styled, { css } from 'styled-components'
-import SvgIcon from '~/shared/components/SvgIcon'
-import { COLORS } from '~/shared/utils/styled'
-import Errors from '~/shared/components/Ui/Errors'
-import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { StreamId } from '~/shared/types/stream-types'
-import useStreamData from '~/shared/hooks/useStreamData'
 import { EmptyState } from '~/components/EmptyState'
 import emptyStateIcon from '~/shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '~/shared/assets/images/empty_state_icon@2x.png'
+import LoadingIndicator from '~/shared/components/LoadingIndicator'
+import SvgIcon from '~/shared/components/SvgIcon'
+import Errors from '~/shared/components/Ui/Errors'
+import useStreamData from '~/shared/hooks/useStreamData'
+import { COLORS } from '~/shared/utils/styled'
 
-import IconButton from './IconButton'
 import Feed from './Feed'
 import Foot from './Foot'
+import IconButton from './IconButton'
 import Selector from './Selector'
 
 type InspectorButtonProps = {
@@ -47,10 +46,10 @@ const InspectorButton = styled(IconButton)<InspectorButtonProps>`
         `}
 `
 type StreamPreviewPros = {
-    streamsList: StreamId[]
+    streamsList: string[]
     activePartition?: number
     className?: string
-    preselectedStreamId?: StreamId
+    preselectedStreamId?: string
     previewDisabled?: boolean
 }
 
@@ -63,7 +62,7 @@ const UnstyledStreamPreview: FunctionComponent<StreamPreviewPros> = ({
 }) => {
     const client = useClient()
     const [inspectorFocused, setInspectorFocused] = useState<boolean>(false)
-    const [selectedStreamId, setSelectedStreamId] = useState<StreamId>(
+    const [selectedStreamId, setSelectedStreamId] = useState<string>(
         !!preselectedStreamId && streamsList.includes(preselectedStreamId)
             ? preselectedStreamId
             : streamsList[0],
