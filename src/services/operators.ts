@@ -226,7 +226,7 @@ export async function updateOperator(
 }
 
 interface DelegateToOperatorOptions {
-    onBlockNumber?: (blockNumber: number) => PromiseLike<void>
+    onBlockNumber?: (blockNumber: number) => void | Promise<void>
 }
 
 export async function delegateToOperator(
