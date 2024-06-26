@@ -66,6 +66,10 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
 
     const isInCorrectChainAndUnlocked = isProviderInCorrectChain
 
+    /**
+     * Data unions client has to be brought to ethers v6.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const clientConfig = getClientConfig(chainId, {
         auth: {
             // If MetaMask is in right chain, use it to enable signing
