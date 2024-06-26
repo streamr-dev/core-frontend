@@ -3,13 +3,13 @@ import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 
 interface GetBalanceOptions {
     chainId: number
-    tokenAddress?: 'native' | (string & {})
+    tokenAddress: 'native' | (string & {})
     walletAddress: string
 }
 
 export function getBalance({
     chainId,
-    tokenAddress = 'native',
+    tokenAddress,
     walletAddress,
 }: GetBalanceOptions): Promise<bigint> {
     const provider = getPublicWeb3Provider(chainId)
