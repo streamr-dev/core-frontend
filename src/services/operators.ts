@@ -1,20 +1,20 @@
 import { Contract, parseEther } from 'ethers'
 import {
-    operatorFactoryABI,
-    operatorABI,
-    OperatorFactory,
-    Operator,
-    ERC677ABI,
     ERC677,
+    ERC677ABI,
+    Operator,
+    OperatorFactory,
+    operatorABI,
+    operatorFactoryABI,
 } from 'network-contracts-ethers6'
-import networkPreflight from '~/utils/networkPreflight'
-import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
-import { BNish, toBN } from '~/utils/bn'
-import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
-import { postImage } from '~/services/images'
-import { Operation } from '~/shared/toasts/TransactionListToast'
 import { ParsedOperator } from '~/parsers/OperatorParser'
+import { postImage } from '~/services/images'
+import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
+import { Operation } from '~/shared/toasts/TransactionListToast'
+import { BNish, toBN } from '~/utils/bn'
 import { getChainConfig } from '~/utils/chains'
+import networkPreflight from '~/utils/networkPreflight'
+import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 
 export async function createOperator(
     chainId: number,
@@ -225,11 +225,15 @@ export async function updateOperator(
     })
 }
 
+interface DelegateToOperatorOptions {
+    onBlockNumber?: (blockNumber: number) => PromiseLike<void>
+}
+
 export async function delegateToOperator(
     chainId: number,
     operatorId: string,
-    amount: BNish,
-    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+    amount: bigint,
+    options: DelegateToOperatorOptions = {},
 ): Promise<void> {
     const chainConfig = getChainConfig(chainId)
 
@@ -252,11 +256,7 @@ export async function delegateToOperator(
     ) as unknown as ERC677
 
     await toastedOperation('Delegate to operator', async () => {
-        const tx = await contract.transferAndCall(
-            operatorId,
-            toBN(amount).toString(),
-            '0x',
-        )
+        const tx = await contract.transferAndCall(operatorId, amount, '0x')
 
         const receipt = await tx.wait()
 
@@ -314,9 +314,7 @@ export async function getOperatorDelegationAmount(
         provider,
     ) as unknown as Operator
 
-    const amount = await operatorContract.balanceInData(address)
-
-    return toBN(amount)
+    return operatorContract.balanceInData(address)
 }
 
 export async function setOperatorNodeAddresses(

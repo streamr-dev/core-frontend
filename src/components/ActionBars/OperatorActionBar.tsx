@@ -34,6 +34,7 @@ import { Hint } from '~/components/Hint'
 import { useCurrentChainId } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
@@ -51,9 +52,10 @@ export const OperatorActionBar: FunctionComponent<{
 
     const canEdit = !!walletAddress && walletAddress == operator.owner
 
-    const ownerDelegationPercentage = useMemo(() => {
-        return getSelfDelegationFraction(operator).multipliedBy(100)
-    }, [operator])
+    const ownerDelegationPercentage = useMemo(
+        () => getSelfDelegationFraction(operator).multipliedBy(100),
+        [operator],
+    )
 
     const isDelegatingFunds = useIsDelegatingFundsToOperator(operator.id, walletAddress)
 
@@ -84,12 +86,12 @@ export const OperatorActionBar: FunctionComponent<{
                 }
 
                 return (
-                    await getOperatorDelegationAmount(
+                    (await getOperatorDelegationAmount(
                         currentChainId,
                         operator.id,
                         walletAddress,
-                    )
-                ).isGreaterThan(0)
+                    )) > 0n
+                )
             } catch (e) {
                 console.warn(
                     'Failed to load delegation amount',
@@ -108,6 +110,8 @@ export const OperatorActionBar: FunctionComponent<{
         walletAddress?.toLowerCase() === operator.owner
             ? ['Fund', 'Withdraw']
             : ['Delegate', 'Undelegate']
+
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <AbstractActionBar
@@ -220,7 +224,9 @@ export const OperatorActionBar: FunctionComponent<{
                                 }
                             >
                                 <div>
-                                    {abbr(toFloat(operator.valueWithoutEarnings, 18n))}{' '}
+                                    {abbr(
+                                        toFloat(operator.valueWithoutEarnings, decimals),
+                                    )}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </div>
                             </StatCell>
@@ -236,7 +242,12 @@ export const OperatorActionBar: FunctionComponent<{
                                     </Hint>
                                 }
                             >
-                                {abbr(toFloat(operator.totalStakeInSponsorshipsWei, 18n))}{' '}
+                                {abbr(
+                                    toFloat(
+                                        operator.totalStakeInSponsorshipsWei,
+                                        decimals,
+                                    ),
+                                )}{' '}
                                 <SponsorshipPaymentTokenName />
                             </StatCell>
                             <StatCell
@@ -280,7 +291,7 @@ export const OperatorActionBar: FunctionComponent<{
                                     </Hint>
                                 }
                             >
-                                {operator.metadata?.redundancyFactor?.toString() || '1'}
+                                {operator.metadata.redundancyFactor || 1}
                             </StatCell>
                         </StatGrid>
                     </Pad>
@@ -338,7 +349,7 @@ export const OperatorActionBar: FunctionComponent<{
                                     toFloat(
                                         operator.cumulativeProfitsWei +
                                             operator.cumulativeOperatorsCutWei,
-                                        18n,
+                                        decimals,
                                     ),
                                 )}{' '}
                                 <SponsorshipPaymentTokenName />

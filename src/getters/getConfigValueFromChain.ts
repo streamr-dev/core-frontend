@@ -1,5 +1,6 @@
 import { Contract } from 'ethers'
 import { StreamrConfig, streamrConfigABI } from 'network-contracts-ethers6'
+import { Minute } from '~/consts'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ChainConfigKey } from '~/types'
 import { getChainConfig } from '~/utils/chains'
@@ -9,7 +10,7 @@ const cache: Record<
     Partial<Record<ChainConfigKey, { updatedAt: number; value: unknown }>> | undefined
 > = {}
 
-const TTL = 60 * 60 * 1000 // 1h
+const TTL = 60 * Minute
 
 /**
  * @todo Refactor to use `fetchQuery` for cache.

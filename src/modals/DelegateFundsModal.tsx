@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
-import {
-    RejectionReason,
-    isRejectionReason,
-    isTransactionRejection,
-} from '~/utils/exceptions'
+import { Abbr } from '~/components/Abbr'
+import { Alert as PrestyledAlert } from '~/components/Alert'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -17,35 +18,32 @@ import FormModal, {
     TextAppendix,
     TextInput,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
-import { BN, toBN, toBigInt, toFloat } from '~/utils/bn'
-import { toDecimals } from '~/marketplace/utils/math'
-import { Alert as PrestyledAlert } from '~/components/Alert'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { delegateToOperator } from '~/services/operators'
-import { waitForIndexedBlock } from '~/utils'
-import { Abbr } from '~/components/Abbr'
+import Label from '~/shared/components/Ui/Label'
+import { useWalletAccount } from '~/shared/stores/wallet'
 import { humanize } from '~/shared/utils/time'
+import { waitForIndexedBlock } from '~/utils'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
-    balance: BN
+    balance: bigint
     chainId: number
-    delegatedTotal: BN
+    delegatedTotal: bigint
     onResolve?: () => void
     operator: ParsedOperator
 }
 
 export default function DelegateFundsModal({
-    amount: amountProp = '',
     balance,
     chainId,
-    delegatedTotal: delegatedTotalProp,
+    delegatedTotal,
     onResolve,
     operator,
     ...props
@@ -70,84 +68,64 @@ export default function DelegateFundsModal({
               'to delegate to the selected Operator',
           ]
 
-    const minimumDelegationAmount =
-        useConfigValueFromChain('minimumDelegationWei', (value) => toFloat(value, 18n)) ||
-        toBN(0)
+    const minimumDelegationWei = useConfigValueFromChain('minimumDelegationWei') || 0n
 
     const minimumSelfDelegationFraction =
         useConfigValueFromChain('minimumSelfDelegationFraction', (value) =>
             toFloat(value, 18n),
         ) || toBN(0)
 
-    const minimumDelegationSecondsValue = useConfigValueFromChain(
-        'minimumDelegationSeconds',
-    )
     const minimumDelegationSeconds =
-        !isOwner && minimumDelegationSecondsValue
-            ? toBN(minimumDelegationSecondsValue)
-            : toBN(0)
+        useConfigValueFromChain('minimumDelegationSeconds', (value) =>
+            !isOwner ? Number(value) : 0,
+        ) || 0
 
-    const [rawAmount, setRawAmount] = useState(amountProp)
-
-    useEffect(() => {
-        setRawAmount(amountProp)
-    }, [amountProp])
-
-    const value = rawAmount || '0'
-
-    const finalValue = toBN(value)
+    const [rawAmount, setRawAmount] = useState('')
 
     const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
-    // @todo convert `delegatedTotalProp` to #bigint in props.
-    const delegatedTotal = toFloat(toBigInt(delegatedTotalProp), decimals)
+    const value = toBigInt(rawAmount || 0, decimals)
 
-    const finalValueDecimals = toBigInt(finalValue, decimals)
+    const insufficientFunds = value > balance
 
-    const insufficientFunds = finalValue.isGreaterThan(balance)
+    const selfDelegationFraction = useMemo(
+        () => getSelfDelegationFraction(operator),
+        [operator],
+    )
 
-    const tooLowCurrentSelfDelegation = useMemo(() => {
-        return (
-            !isOwner &&
-            getSelfDelegationFraction(operator).isLessThanOrEqualTo(
-                minimumSelfDelegationFraction,
-            )
-        )
-    }, [operator, minimumSelfDelegationFraction, isOwner])
+    const nextSelfDelegationFraction = useMemo(
+        () => getSelfDelegationFraction(operator, { offset: value }),
+        [operator, value],
+    )
 
-    const tooLowSelfDelegationWithNewAmount = useMemo(() => {
-        return (
-            !isOwner &&
-            getSelfDelegationFraction(operator, {
-                offset: finalValueDecimals,
-            }).isLessThanOrEqualTo(minimumSelfDelegationFraction)
-        )
-    }, [operator, minimumSelfDelegationFraction, finalValueDecimals, isOwner])
+    const tooLowCurrentSelfDelegation =
+        !isOwner &&
+        selfDelegationFraction.isLessThanOrEqualTo(minimumSelfDelegationFraction)
+
+    const tooLowNextSelfDelegation =
+        !isOwner &&
+        nextSelfDelegationFraction.isLessThanOrEqualTo(minimumSelfDelegationFraction)
 
     const tooLowOwnerSelfDelegation =
-        tooLowCurrentSelfDelegation || tooLowSelfDelegationWithNewAmount
+        tooLowCurrentSelfDelegation || tooLowNextSelfDelegation
 
-    const maxAmount = useMemo<BN>(() => {
-        if (minimumSelfDelegationFraction.isZero()) {
-            return toBN(0)
+    const maxNextAmount = useMemo(() => {
+        if (minimumSelfDelegationFraction.isEqualTo(0)) {
+            return 0n
         }
 
         const operatorSelfStake = getSelfDelegatedAmount(operator)
 
-        return toFloat(
-            toBigInt(
-                toBN(operatorSelfStake)
-                    .dividedBy(minimumSelfDelegationFraction)
-                    .minus(delegatedTotalProp),
-            ) - operatorSelfStake,
-            decimals,
+        return (
+            toBigInt(toBN(operatorSelfStake).dividedBy(minimumSelfDelegationFraction)) -
+            delegatedTotal -
+            operatorSelfStake
         )
-    }, [operator, minimumSelfDelegationFraction, decimals, delegatedTotalProp])
+    }, [minimumSelfDelegationFraction, operator, delegatedTotal])
 
     const canSubmit =
-        finalValue.isFinite() &&
-        finalValue.isGreaterThan(0) &&
-        finalValue.isGreaterThanOrEqualTo(minimumDelegationAmount) &&
+        value > 0n &&
+        value >= minimumDelegationWei &&
         !insufficientFunds &&
         !tooLowOwnerSelfDelegation
 
@@ -163,7 +141,7 @@ export default function DelegateFundsModal({
             submitting={busy}
             submitLabel={submitLabel}
             onBeforeAbort={(reason) =>
-                !busy && (rawAmount === amountProp || reason !== RejectionReason.Backdrop)
+                !busy && (rawAmount === '' || reason !== RejectionReason.Backdrop)
             }
             onSubmit={async () => {
                 if (!canSubmit) {
@@ -173,15 +151,10 @@ export default function DelegateFundsModal({
                 setBusy(true)
 
                 try {
-                    await delegateToOperator(
-                        chainId,
-                        operator.id,
-                        toDecimals(finalValue, decimals),
-                        {
-                            onBlockNumber: (blockNumber) =>
-                                waitForIndexedBlock(chainId, blockNumber),
-                        },
-                    )
+                    await delegateToOperator(chainId, operator.id, value, {
+                        onBlockNumber: (blockNumber) =>
+                            waitForIndexedBlock(chainId, blockNumber),
+                    })
 
                     onResolve?.()
                 } catch (e) {
@@ -209,7 +182,9 @@ export default function DelegateFundsModal({
                     <TextInput
                         name="amount"
                         autoFocus
-                        onChange={({ target }) => void setRawAmount(target.value)}
+                        onChange={({ target }) => {
+                            setRawAmount(target.value)
+                        }}
                         placeholder="0"
                         readOnly={busy}
                         type="number"
@@ -219,7 +194,7 @@ export default function DelegateFundsModal({
                     />
                     <MaxButton
                         onClick={() => {
-                            setRawAmount(balance.toString())
+                            setRawAmount(toFloat(balance, decimals).toString())
                         }}
                     />
                     <TextAppendix>
@@ -237,10 +212,11 @@ export default function DelegateFundsModal({
                         </Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{balance}</Abbr>
+                                <Abbr>{toFloat(balance, decimals)}</Abbr>
                             ) : (
                                 <>
-                                    {balance.toString()} <SponsorshipPaymentTokenName />
+                                    {toFloat(balance, decimals).toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
                                 </>
                             )}
                         </PropValue>
@@ -253,10 +229,10 @@ export default function DelegateFundsModal({
                         <Prop>{totalLabel}</Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{delegatedTotal}</Abbr>
+                                <Abbr>{toFloat(delegatedTotal, decimals)}</Abbr>
                             ) : (
                                 <>
-                                    {delegatedTotal.toString()}{' '}
+                                    {toFloat(delegatedTotal, decimals).toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </>
                             )}
@@ -273,11 +249,12 @@ export default function DelegateFundsModal({
                     </Alert>
                 ) : (
                     <>
-                        {tooLowSelfDelegationWithNewAmount && (
+                        {tooLowNextSelfDelegation && (
                             <Alert type="error" title="Amount too high">
                                 This operator can currently only accept less than{' '}
                                 <strong>
-                                    {maxAmount.toString()} <SponsorshipPaymentTokenName />
+                                    {toFloat(maxNextAmount, decimals).toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
                                 </strong>{' '}
                                 in further delegations, because operators must stay above
                                 a certain proportion of their own funds vs. delegations.
@@ -287,30 +264,28 @@ export default function DelegateFundsModal({
                 )}
             </>
             <>
-                {finalValue.isGreaterThan(0) &&
-                    finalValue.isLessThan(minimumDelegationAmount) && (
-                        <Alert
-                            type="notice"
-                            title={
-                                <>
-                                    Minimum delegation is{' '}
-                                    {minimumDelegationAmount.toFixed()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
-                            }
-                        ></Alert>
-                    )}
+                {value > 0n && value < minimumDelegationWei && (
+                    <Alert
+                        type="notice"
+                        title={
+                            <>
+                                Minimum delegation is{' '}
+                                {toFloat(minimumDelegationWei, decimals).toFixed()}{' '}
+                                <SponsorshipPaymentTokenName />
+                            </>
+                        }
+                    ></Alert>
+                )}
             </>
             <>
-                {operator.contractVersion > 0 &&
-                    minimumDelegationSeconds.isGreaterThan(0) && (
-                        <Alert
-                            type="notice"
-                            title={`You will need to stay delegated for at least ${humanize(
-                                minimumDelegationSeconds.toNumber(),
-                            )}.`}
-                        ></Alert>
-                    )}
+                {operator.contractVersion > 0 && minimumDelegationSeconds > 0 && (
+                    <Alert
+                        type="notice"
+                        title={`You will need to stay delegated for at least ${humanize(
+                            minimumDelegationSeconds,
+                        )}.`}
+                    ></Alert>
+                )}
             </>
             <>
                 {operator.contractVersion < 3 && !isOwner && (

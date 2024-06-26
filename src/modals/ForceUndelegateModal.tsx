@@ -1,30 +1,31 @@
-import React, { useMemo, useState } from 'react'
-import moment from 'moment'
-import styled from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
+import moment from 'moment'
+import React, { useMemo, useState } from 'react'
+import styled from 'styled-components'
 import { toaster } from 'toasterhea'
+import { Abbr } from '~/components/Abbr'
+import { Alert } from '~/components/Alert'
+import { StreamIdCell } from '~/components/Table'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import FormModal, {
     FormModalProps,
     FormModalRoot,
     SectionHeadline,
 } from '~/modals/FormModal'
-import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { BN, toBigInt, toFloat } from '~/utils/bn'
-import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import { Alert } from '~/components/Alert'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
 import { Radio } from '~/shared/components/Radio'
+import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { StreamIdCell } from '~/components/Table'
-import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
+import { toFloat } from '~/utils/bn'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
-import { Abbr } from '~/components/Abbr'
 
 type OperatorStake = ParsedOperator['stakes'][0]
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
-    amount: BN
+    amount: bigint
     chainId: number
     onResolve?: (sponsorshipId: string) => void
     operator: ParsedOperator
@@ -32,13 +33,13 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 
 function getOptimalStake(
     stakes: OperatorStake[],
-    requestedAmount: BN,
+    requestedAmount: bigint,
 ): OperatorStake | undefined {
     return (
         stakes.find(
             (s) =>
                 isStakedLongEnough(s.joinTimestamp, s.minimumStakingPeriodSeconds) &&
-                s.amountWei >= toBigInt(requestedAmount),
+                s.amountWei >= requestedAmount,
         ) || stakes[0]
     )
 }
@@ -72,9 +73,11 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
         )
 
     const isPartialPayout =
-        !!selectedSponsorship && selectedSponsorship.amountWei < toBigInt(amount)
+        !!selectedSponsorship && selectedSponsorship.amountWei < amount
 
     const canSubmit = !!selectedSponsorshipId
+
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <ForceUndelegateFormModal
@@ -140,8 +143,10 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
                                 displayName: 'Amount',
                                 valueMapper: (element) => (
                                     <WarningCell>
-                                        <Abbr>{toFloat(element.amountWei, 18n)}</Abbr>
-                                        {element.amountWei < toBigInt(amount) && (
+                                        <Abbr>
+                                            {toFloat(element.amountWei, decimals)}
+                                        </Abbr>
+                                        {element.amountWei < amount && (
                                             <Tooltip content={<p>Partial payout</p>}>
                                                 <TooltipIconWrap $color="#ff5c00">
                                                     <JiraFailedBuildStatusIcon label="Error" />

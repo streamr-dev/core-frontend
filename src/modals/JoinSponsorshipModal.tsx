@@ -1,8 +1,18 @@
+import CopyIcon from '@atlaskit/icon/glyph/copy'
 import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import CopyIcon from '@atlaskit/icon/glyph/copy'
-import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
+import { Abbr } from '~/components/Abbr'
+import { Alert } from '~/components/Alert'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { getSelfDelegationFraction } from '~/getters'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
+import { useAllOperatorsForWalletQuery } from '~/hooks/operators'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
+import { SelectField2 } from '~/marketplace/components/SelectField2'
+import { fromDecimals } from '~/marketplace/utils/math'
 import FormModal, {
     CopyButtonWrapAppendix,
     ErrorLabel,
@@ -18,33 +28,23 @@ import FormModal, {
     TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
-import useCopy from '~/shared/hooks/useCopy'
-import { toBN } from '~/utils/bn'
-import { Alert } from '~/components/Alert'
-import SvgIcon from '~/shared/components/SvgIcon'
-import { COLORS } from '~/shared/utils/styled'
-import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
-import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { stakeOnSponsorship } from '~/services/sponsorships'
-import { waitForIndexedBlock } from '~/utils'
-import { errorToast } from '~/utils/toast'
-import Toast from '~/shared/toasts/Toast'
-import { Layer } from '~/utils/Layer'
-import { getSelfDelegationFraction } from '~/getters'
-import { Abbr } from '~/components/Abbr'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { humanize } from '~/shared/utils/time'
-import { truncate } from '~/shared/utils/text'
+import SvgIcon from '~/shared/components/SvgIcon'
+import Label from '~/shared/components/Ui/Label'
+import useCopy from '~/shared/hooks/useCopy'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { useAllOperatorsForWalletQuery } from '~/hooks/operators'
-import { SelectField2 } from '~/marketplace/components/SelectField2'
+import Toast from '~/shared/toasts/Toast'
+import { COLORS } from '~/shared/utils/styled'
+import { truncate } from '~/shared/utils/text'
+import { humanize } from '~/shared/utils/time'
+import { waitForIndexedBlock } from '~/utils'
+import { Layer } from '~/utils/Layer'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
+import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
 import { Route as R } from '~/utils/routes'
+import { errorToast } from '~/utils/toast'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -68,6 +68,8 @@ function JoinSponsorshipModal({
     sponsorship,
     ...props
 }: Props) {
+    const currentAmount = toBigInt(amountProp || '0')
+
     const { decimals = 18n, symbol: tokenSymbol = 'DATA' } =
         useSponsorshipTokenInfo() || {}
 
@@ -77,7 +79,7 @@ function JoinSponsorshipModal({
 
     const [operator, setSelectedOperator] = useState(preselectedOperator)
 
-    const { id: operatorId, dataTokenBalanceWei: operatorBalance, metadata } = operator
+    const { id: operatorId, dataTokenBalanceWei: availableBalance, metadata } = operator
 
     const hasUndelegationQueue = operator.queueEntries.length > 0
 
@@ -87,9 +89,9 @@ function JoinSponsorshipModal({
 
     const [rawAmount, setRawAmount] = useState(parseAmount(amountProp, decimals))
 
-    const amount = toDecimals(rawAmount || '0', decimals)
+    const amount = toBigInt(toBN(rawAmount || 0), decimals)
 
-    const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
+    const finalAmount = amount > 0 ? amount : 0n
 
     const heartbeats = useInterceptHeartbeats(operatorId)
 
@@ -107,48 +109,38 @@ function JoinSponsorshipModal({
         setRawAmount(parseAmount(amountProp, decimals))
     }, [amountProp, decimals])
 
-    const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
+    const insufficientFunds = finalAmount > availableBalance
 
-    const minimumSelfDelegationFraction = useConfigValueFromChain(
-        'minimumSelfDelegationFraction',
+    const minimumSelfDelegationFraction =
+        useConfigValueFromChain('minimumSelfDelegationFraction', (value) =>
+            toFloat(value, decimals),
+        ) || toBN(0)
+
+    const minimumSelfDelegationAmount = toBigInt(
+        toBN(operator.valueWithoutEarnings).multipliedBy(minimumSelfDelegationFraction),
     )
 
-    const minimumSelfDelegationPercentage =
-        minimumSelfDelegationFraction != null
-            ? fromDecimals(minimumSelfDelegationFraction, decimals)
-            : toBN(0)
+    const earlyLeaverPenaltyWei = useConfigValueFromChain('earlyLeaverPenaltyWei') || 0n
 
-    const minimumSelfDelegationAmount = fromDecimals(
-        operator.valueWithoutEarnings,
-        decimals,
-    ).multipliedBy(minimumSelfDelegationPercentage)
+    const ownerDelegationPercentage = useMemo(
+        () => getSelfDelegationFraction(operator),
+        [operator],
+    )
 
-    const earlyLeaverPenaltyWei = useConfigValueFromChain('earlyLeaverPenaltyWei')
-    const earlyLeaverPenalty = earlyLeaverPenaltyWei
-        ? fromDecimals(earlyLeaverPenaltyWei, 18)
-        : toBN(0)
-
-    const ownerDelegationPercentage = useMemo(() => {
-        return getSelfDelegationFraction(operator)
-    }, [operator])
-
-    const currentSelfDelegationAmount = fromDecimals(
-        operator.valueWithoutEarnings,
-        decimals,
-    ).multipliedBy(ownerDelegationPercentage)
+    const currentSelfDelegationAmount = toBigInt(
+        toBN(operator.valueWithoutEarnings).multipliedBy(ownerDelegationPercentage),
+    )
 
     const isBelowSelfFundingLimit = ownerDelegationPercentage.isLessThan(
-        minimumSelfDelegationPercentage,
+        minimumSelfDelegationFraction,
     )
 
-    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
+    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei') || 0n
 
-    const isAboveMinimumStake = minimumStakeWei
-        ? finalAmount.isGreaterThanOrEqualTo(toBN(minimumStakeWei))
-        : true
+    const isAboveMinimumStake = minimumStakeWei === 0n || finalAmount >= minimumStakeWei
 
     const canSubmit =
-        finalAmount.isGreaterThan(0) &&
+        finalAmount > 0 &&
         !insufficientFunds &&
         liveNodesOk &&
         isAboveMinimumStake &&
@@ -159,7 +151,7 @@ function JoinSponsorshipModal({
 
     const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
 
-    const availableBalance = fromDecimals(operatorBalance, decimals)
+    const clean = currentAmount === toBigInt(rawAmount || 0, decimals)
 
     return (
         <FormModal
@@ -169,11 +161,7 @@ function JoinSponsorshipModal({
             submitLabel="Join"
             submitting={busy}
             onBeforeAbort={(reason) =>
-                !busy &&
-                (toBN(rawAmount || '0')
-                    .multipliedBy(toBN(10n ** decimals))
-                    .eq(amountProp || '0') ||
-                    reason !== RejectionReason.Backdrop)
+                !busy && (clean || reason !== RejectionReason.Backdrop)
             }
             onSubmit={async () => {
                 if (!canSubmit) {
@@ -326,11 +314,12 @@ function JoinSponsorshipModal({
                 <StyledAlert type="error" title="Low self-funding">
                     You cannot stake on Sponsorships because your Operator is below the
                     self-funding requirement of{' '}
-                    {minimumSelfDelegationPercentage.multipliedBy(100).toFixed(0)}%.
+                    {minimumSelfDelegationFraction.multipliedBy(100).toFixed(0)}%.
                     Increase your Operator stake by at least{' '}
-                    {minimumSelfDelegationAmount
-                        .minus(currentSelfDelegationAmount)
-                        .toString()}{' '}
+                    {toFloat(
+                        minimumSelfDelegationAmount - currentSelfDelegationAmount,
+                        decimals,
+                    ).toString()}{' '}
                     {tokenSymbol} to continue.
                 </StyledAlert>
             )}
@@ -351,7 +340,10 @@ function JoinSponsorshipModal({
                     title={`This Sponsorship has a minimum staking period of ${humanize(
                         sponsorship.minimumStakingPeriodSeconds,
                     )}. If you unstake or get voted out during this period, you will lose 
-                        ${earlyLeaverPenalty.toString()} ${tokenSymbol} in addition to the normal slashing penalty.`}
+                        ${toFloat(
+                            earlyLeaverPenaltyWei,
+                            decimals,
+                        ).toString()} ${tokenSymbol} in addition to the normal slashing penalty.`}
                 ></StyledAlert>
             )}
         </FormModal>

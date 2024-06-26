@@ -1,12 +1,16 @@
+import moment from 'moment'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import moment from 'moment'
+import { toaster } from 'toasterhea'
+import { Abbr } from '~/components/Abbr'
 import { Alert } from '~/components/Alert'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
-    RejectionReason,
-    isRejectionReason,
-    isTransactionRejection,
-} from '~/utils/exceptions'
+    useConfigValueFromChain,
+    useMaxUndelegationQueueDays,
+    useMediaQuery,
+} from '~/hooks'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -19,34 +23,31 @@ import FormModal, {
     TextAppendix,
     TextInput,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
-import { BN, toBN } from '~/utils/bn'
-import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import {
-    useConfigValueFromChain,
-    useMaxUndelegationQueueDays,
-    useMediaQuery,
-} from '~/hooks'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { undelegateFromOperator } from '~/services/operators'
+import Label from '~/shared/components/Ui/Label'
+import { useWalletAccount } from '~/shared/stores/wallet'
 import { waitForIndexedBlock } from '~/utils'
-import { Abbr } from '~/components/Abbr'
+import { Layer } from '~/utils/Layer'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
-    balance: BN
+    balance: bigint
     chainId: number
-    delegatedTotal: BN
+    delegatedTotal: bigint
     onResolve?: () => void
     operator: ParsedOperator
 }
 
-export default function UndelegateFundsModal({
+function UndelegateFundsModal({
     balance,
     chainId,
-    delegatedTotal: delegatedTotalProp,
+    delegatedTotal,
     onResolve,
     operator,
     ...props
@@ -75,34 +76,28 @@ export default function UndelegateFundsModal({
 
     const maxUndelegationQueueDays = useMaxUndelegationQueueDays()
 
-    const value = rawAmount || '0'
+    const amount = toBigInt(rawAmount || 0)
 
-    const finalValue = toBN(value)
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
-    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
+    const freeFunds = operator.dataTokenBalanceWei
 
-    const delegatedTotal = fromDecimals(delegatedTotalProp, decimals)
+    const hasZeroDeployed = operator.totalStakeInSponsorshipsWei === 0n
 
-    const freeFunds = fromDecimals(operator.dataTokenBalanceWei, decimals)
+    const minimumSelfDelegationFraction =
+        useConfigValueFromChain('minimumSelfDelegationFraction', (value) =>
+            toFloat(value, decimals),
+        ) || toBN(0)
 
-    const hasZeroDeployed = operator.totalStakeInSponsorshipsWei.isZero()
-
-    const minimumSelfDelegationFraction = useConfigValueFromChain(
-        'minimumSelfDelegationFraction',
-    )
-
-    const minimumSelfDelegationPercentage =
-        minimumSelfDelegationFraction != null
-            ? fromDecimals(minimumSelfDelegationFraction, decimals)
-            : toBN(0)
+    const minimumSelfDelegationPercentage = minimumSelfDelegationFraction
+        .multipliedBy(100)
+        .toNumber()
 
     const isSelfDelegationTooLow =
-        minimumSelfDelegationPercentage != null &&
         isOwner &&
-        minimumSelfDelegationPercentage.isGreaterThan(0) &&
-        delegatedTotal
-            .minus(toBN(rawAmount))
-            .isLessThan(minimumSelfDelegationPercentage.multipliedBy(delegatedTotal))
+        minimumSelfDelegationFraction.isGreaterThan(0) &&
+        delegatedTotal - amount <
+            toBigInt(toBN(delegatedTotal).multipliedBy(minimumSelfDelegationFraction))
 
     const earliestUndelegationTimestamp = operator.delegations.find(
         (d) => d.delegator.toLowerCase() === wallet?.toLowerCase(),
@@ -115,8 +110,7 @@ export default function UndelegateFundsModal({
         earliestUndelegationTimestamp * 1000 > Date.now()
 
     const canSubmit =
-        finalValue.isFinite() &&
-        finalValue.isGreaterThan(0) &&
+        amount > 0n &&
         !(isSelfDelegationTooLow && !hasZeroDeployed) &&
         !isTooEarlyToUndelegate
 
@@ -137,15 +131,11 @@ export default function UndelegateFundsModal({
             onSubmit={async () => {
                 setBusy(true)
 
-                const prefinalAmount = toDecimals(finalValue, decimals)
-
                 try {
                     await undelegateFromOperator(
                         chainId,
                         operator.id,
-                        prefinalAmount.isGreaterThanOrEqualTo(delegatedTotalProp)
-                            ? toBN(Number.POSITIVE_INFINITY)
-                            : prefinalAmount,
+                        amount >= delegatedTotal ? Infinity : amount,
                         {
                             onBlockNumber: (blockNumber) =>
                                 waitForIndexedBlock(chainId, blockNumber),
@@ -178,7 +168,9 @@ export default function UndelegateFundsModal({
                     <TextInput
                         name="amount"
                         autoFocus
-                        onChange={({ target }) => void setRawAmount(target.value)}
+                        onChange={({ target }) => {
+                            setRawAmount(target.value)
+                        }}
                         placeholder="0"
                         readOnly={busy}
                         type="number"
@@ -188,21 +180,21 @@ export default function UndelegateFundsModal({
                     />
                     <MaxButton
                         onClick={() => {
-                            setRawAmount(delegatedTotal.toString())
+                            setRawAmount(toFloat(delegatedTotal, decimals).toString())
                         }}
                     />
                     <TextAppendix>
                         <SponsorshipPaymentTokenName />
                     </TextAppendix>
                 </FieldWrap>
-                <FieldWrap $bottom={true} $padded={true}>
+                <FieldWrap $bottom $padded>
                     <Prop>
                         {totalLabel}:{' '}
                         {limitedSpace ? (
-                            <Abbr>{delegatedTotal}</Abbr>
+                            <Abbr>{toFloat(delegatedTotal, decimals)}</Abbr>
                         ) : (
                             <>
-                                {delegatedTotal.toString()}{' '}
+                                {toFloat(delegatedTotal, decimals).toString()}{' '}
                                 <SponsorshipPaymentTokenName />
                             </>
                         )}
@@ -213,10 +205,11 @@ export default function UndelegateFundsModal({
                         <Prop>Your wallet balance</Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{balance}</Abbr>
+                                <Abbr>{toFloat(balance, decimals)}</Abbr>
                             ) : (
                                 <>
-                                    {balance.toString()} <SponsorshipPaymentTokenName />
+                                    {toFloat(balance, decimals).toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
                                 </>
                             )}
                         </PropValue>
@@ -229,10 +222,11 @@ export default function UndelegateFundsModal({
                         <Prop>Available balance in Operator</Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{freeFunds}</Abbr>
+                                <Abbr>{toFloat(freeFunds, decimals)}</Abbr>
                             ) : (
                                 <>
-                                    {freeFunds.toString()} <SponsorshipPaymentTokenName />
+                                    {toFloat(freeFunds, decimals).toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
                                 </>
                             )}
                         </PropValue>
@@ -240,19 +234,19 @@ export default function UndelegateFundsModal({
                 </PropList>
             </Section>
             <Footer>
-                {toBN(rawAmount).isGreaterThan(0) &&
-                    toBN(rawAmount).isLessThanOrEqualTo(freeFunds) && (
-                        <Alert
-                            type="notice"
-                            title={
-                                <>
-                                    {rawAmount.toString()} <SponsorshipPaymentTokenName />{' '}
-                                    will be undelegated immediately
-                                </>
-                            }
-                        />
-                    )}
-                {toBN(rawAmount).isGreaterThan(freeFunds) && (
+                {amount > 0 && amount <= freeFunds && (
+                    <Alert
+                        type="notice"
+                        title={
+                            <>
+                                {toFloat(amount, decimals).toString()}{' '}
+                                <SponsorshipPaymentTokenName /> will be undelegated
+                                immediately
+                            </>
+                        }
+                    />
+                )}
+                {amount > freeFunds && (
                     <Alert type="notice" title="Undelegation will be queued">
                         Your undelegation will be queued for a maximum of{' '}
                         {maxUndelegationQueueDays.toString()} days, after which you will
@@ -261,21 +255,19 @@ export default function UndelegateFundsModal({
                 )}
                 {isSelfDelegationTooLow && hasZeroDeployed && (
                     <Alert type="error" title="Low self-funding">
-                        At least{' '}
-                        {minimumSelfDelegationPercentage.multipliedBy(100).toFixed(0)}% of
-                        the Operator&apos;s total stake must come from you as the owner.
-                        After your withdrawal, your remaining amount will be below this
-                        limit. This will prevent your Operator from staking on
-                        Sponsorships. It will also signal to Delegators that you&apos;re
-                        shutting down, and will most likely cause them to undelegate.
+                        At least {minimumSelfDelegationPercentage.toFixed(0)}% of the
+                        Operator&apos;s total stake must come from you as the owner. After
+                        your withdrawal, your remaining amount will be below this limit.
+                        This will prevent your Operator from staking on Sponsorships. It
+                        will also signal to Delegators that you&apos;re shutting down, and
+                        will most likely cause them to undelegate.
                     </Alert>
                 )}
                 {isSelfDelegationTooLow && !hasZeroDeployed && (
                     <Alert type="error" title="Low self-funding">
-                        At least{' '}
-                        {minimumSelfDelegationPercentage.multipliedBy(100).toFixed(0)}% of
-                        the Operator&apos;s total stake must come from you as the owner.
-                        If you wish to stop being an Operator, you can withdraw any amount
+                        At least {minimumSelfDelegationPercentage.toFixed(0)}% of the
+                        Operator&apos;s total stake must come from you as the owner. If
+                        you wish to stop being an Operator, you can withdraw any amount
                         once your Operator is not staked on any Sponsorships. Note that
                         this prevents your Operator from staking on Sponsorships until the
                         limit is reached again. It is also a strong signal to Delegators
@@ -302,3 +294,5 @@ const Footer = styled.div`
     gap: 8px;
     margin-top: 8px;
 `
+
+export const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)

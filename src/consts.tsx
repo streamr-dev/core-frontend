@@ -1,5 +1,5 @@
-import React, { ReactNode, useLayoutEffect, useState } from 'react'
 import { BrowserHistory, createBrowserHistory } from 'history'
+import React, { ReactNode, useLayoutEffect, useState } from 'react'
 import { Router } from 'react-router-dom'
 
 export const history = createBrowserHistory({ window })
@@ -37,3 +37,10 @@ export const MaxSearchPhraseLength = 250
 export const address0 = '0x0000000000000000000000000000000000000000'
 
 export const StreamGptApiUrl = process.env.STREAM_GPT_API_URL
+
+/**
+ * A minute in milliseconds.
+ *
+ * @todo Replace all `60 * 1000` with this consts.
+ */
+export const Minute = 60 * 1000
