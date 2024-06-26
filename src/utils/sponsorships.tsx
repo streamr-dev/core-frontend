@@ -3,6 +3,7 @@ import { Sponsorship, sponsorshipABI } from 'network-contracts-ethers6'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
+import { toBN } from '~/utils/bn'
 
 /**
  * Scouts for Operator's funding share.
@@ -45,4 +46,13 @@ export async function getSponsorshipLeavePenalty(
     ) as unknown as Sponsorship
 
     return contract.getLeavePenalty(operatorId)
+}
+
+export function getSponsorshipExtensionInDays(
+    amount: bigint,
+    dailyPayoutRate: bigint,
+): number {
+    return dailyPayoutRate > 0n && amount >= 0n
+        ? toBN(amount).dividedBy(toBN(dailyPayoutRate)).toNumber()
+        : 0
 }

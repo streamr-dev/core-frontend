@@ -92,7 +92,7 @@ export const useUncollectedEarningsStore = create<Store>((set, get) => {
                             const sponsorship = draft.values[sponsorshipId]
                             const timeDiffSec =
                                 (now - (draft.lastUpdatedTimestamp ?? now)) / 1000
-                            const ratePerSec = sponsorship?.rateOfChangePerSec
+                            const ratePerSec = sponsorship?.changePerSecond
 
                             if (
                                 ratePerSec != null &&
@@ -151,11 +151,11 @@ export function useUncollectedEarnings(
         return null
     }
 
-    // Show spinner when fetching AND we don't have rateOfChangePerSec ready.
+    // Show spinner when fetching AND we don't have changePerSecond ready.
     // Otherwise just keep the earnings updating and let the full sync catch up.
     if (
         earnings[operatorId]?.fetching &&
-        earnings[operatorId]?.values[sponsorshipId]?.rateOfChangePerSec == null
+        earnings[operatorId]?.values[sponsorshipId]?.changePerSecond == null
     ) {
         return undefined
     }
