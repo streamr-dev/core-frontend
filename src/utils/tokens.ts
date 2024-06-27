@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 import { getERC20TokenContract } from '~/getters'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { getQueryClient } from '~/utils'
@@ -45,15 +45,21 @@ function tokenInfoQueryParams(
                 provider: getPublicWeb3Provider(chainId),
             })
 
-            return {
-                decimals: await contact.decimals(),
-                name: await contact.name(),
-                symbol: await contact.symbol(),
+            try {
+                return {
+                    decimals: await contact.decimals(),
+                    name: await contact.name(),
+                    symbol: await contact.symbol(),
+                }
+            } catch (e) {
+                console.warn(`Failed to fetch token info for ${tokenAddress}`, e)
             }
+
+            return null
         },
         staleTime: Infinity,
         cacheTime: Infinity,
-    }
+    } satisfies UseQueryOptions
 }
 
 export function getCachedTokenInfo(

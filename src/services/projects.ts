@@ -333,25 +333,29 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
     }
 }
 
+interface CreateProjectOptions {
+    domainIds: number[]
+    isPublicPurchasable: boolean
+    metadata: string
+    minimumSubscriptionSeconds?: number
+    paymentDetails: WritablePaymentDetail[]
+    streams: string[]
+}
+
 export async function createProject(
     chainId: number,
     projectId: string,
-    {
+    options: CreateProjectOptions,
+) {
+    const {
         domainIds,
         isPublicPurchasable,
         metadata,
         minimumSubscriptionSeconds = 0,
         paymentDetails,
         streams,
-    }: {
-        domainIds: number[]
-        isPublicPurchasable: boolean
-        metadata: string
-        minimumSubscriptionSeconds?: number
-        paymentDetails: WritablePaymentDetail[]
-        streams: string[]
-    },
-) {
+    } = options
+
     await networkPreflight(chainId)
 
     const signer = await getSigner()
@@ -374,23 +378,27 @@ export async function createProject(
     await tx.wait()
 }
 
+interface UpdateProjectOptions {
+    domainIds: number[]
+    metadata: string
+    minimumSubscriptionSeconds?: number
+    paymentDetails: WritablePaymentDetail[]
+    streams: string[]
+}
+
 export async function updateProject(
     chainId: number,
     projectId: string,
-    {
+    options: UpdateProjectOptions,
+) {
+    const {
         domainIds,
         metadata,
         minimumSubscriptionSeconds = 0,
         paymentDetails,
         streams,
-    }: {
-        domainIds: number[]
-        metadata: string
-        minimumSubscriptionSeconds?: number
-        paymentDetails: WritablePaymentDetail[]
-        streams: string[]
-    },
-) {
+    } = options
+
     await networkPreflight(chainId)
 
     const signer = await getSigner()
