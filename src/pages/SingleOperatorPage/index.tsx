@@ -113,13 +113,12 @@ export const SingleOperatorPage = () => {
         operator != null &&
         walletAddress.toLowerCase() === operator.owner.toLowerCase()
 
-    // Techically Owner is a controller too, but for UI purposes we want only non-owner controllers
     const isController =
         walletAddress != null &&
         operator != null &&
-        operator.controllers
-            .filter((c) => c.address.toLowerCase() !== operator.owner.toLowerCase())
-            .some((c) => c.address.toLowerCase() === walletAddress.toLowerCase())
+        operator.controllers.some(
+            (c) => c.address.toLowerCase() === walletAddress.toLowerCase(),
+        )
 
     const canCollect = useCanCollectEarningsCallback()
 
@@ -267,7 +266,7 @@ export const SingleOperatorPage = () => {
                     },
                     onError() {
                         errorToast({
-                            title: 'Faild to save the new node addresses',
+                            title: 'Failed to save the new node addresses',
                         })
                     },
                 })
@@ -324,7 +323,7 @@ export const SingleOperatorPage = () => {
                     },
                     onError() {
                         errorToast({
-                            title: 'Faild to save the new node addresses',
+                            title: 'Failed to save the new controllers',
                         })
                     },
                 })
@@ -624,7 +623,7 @@ export const SingleOperatorPage = () => {
                                 actions={[
                                     (element) => ({
                                         displayName: 'Edit',
-                                        disabled: !(isOwner || isController),
+                                        disabled: !isController,
                                         async callback() {
                                             if (!operator) {
                                                 return
@@ -736,7 +735,7 @@ export const SingleOperatorPage = () => {
                                 />
                             </SlashingHistoryTableContainer>
                         </NetworkPageSegment>
-                        {(isOwner || isController) && (
+                        {isController && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
@@ -773,18 +772,20 @@ export const SingleOperatorPage = () => {
                                             ...nodes.map((n) => n.address),
                                             address,
                                         ]
+
                                         await saveNodeAddressesCb(addresses)
                                     }}
                                     onRemoveAddress={async (address) => {
                                         const addresses = nodes
                                             .filter((n) => n.address !== address)
                                             .map((n) => n.address)
+
                                         await saveNodeAddressesCb(addresses)
                                     }}
                                 />
                             </NetworkPageSegment>
                         )}
-                        {(isOwner || isController) && (
+                        {isController && (
                             <NetworkPageSegment
                                 title={
                                     <NodeAddressHeader>
@@ -809,23 +810,23 @@ export const SingleOperatorPage = () => {
                                 <AddressTable
                                     type={AddressType.Automation}
                                     busy={isSavingControllerAddresses}
-                                    disableEditing={isController}
+                                    disableEditing={!isOwner}
                                     value={controllers.filter(
                                         (c) =>
-                                            c.address.toLowerCase() !=
+                                            c.address.toLowerCase() !==
                                             operator.owner.toLowerCase(),
                                     )}
                                     onChange={setControllers}
-                                    onAddAddress={async (address) => {
+                                    onAddAddress={(address) => {
                                         saveControllerAddressesCb(address, true)
                                     }}
-                                    onRemoveAddress={async (address) => {
+                                    onRemoveAddress={(address) => {
                                         saveControllerAddressesCb(address, false)
                                     }}
                                 />
                             </NetworkPageSegment>
                         )}
-                        {(isOwner || isController) && (
+                        {isController && (
                             <NetworkPageSegment
                                 title={
                                     <TitleBar label={Object.keys(heartbeats).length}>
