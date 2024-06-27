@@ -247,13 +247,6 @@ export function abbr(value: BNish, options: AbbrOptions = {}) {
 }
 
 /**
- * Compares 2 BigNumberish values.
- */
-export function sameBN(a: BNish, b: BNish) {
-    return toBN(a).isEqualTo(toBN(b))
-}
-
-/**
  * A function that takes the user through the process of creating
  * an operator or updating an existing operator.
  */
