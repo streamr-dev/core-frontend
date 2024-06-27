@@ -11,7 +11,6 @@ import {
     timeUnits,
 } from '~/shared/utils/timeUnit'
 import { Chain } from '~/types'
-import { toFloat } from '~/utils/bn'
 import {
     getChainConfig,
     getChainConfigExtension,
@@ -155,8 +154,8 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
                     beneficiaryAddress: '',
                     chainId: id,
                     enabled: false,
-                    price: '',
-                    pricePerSecond: '',
+                    price: undefined,
+                    pricePerSecond: 0n,
                     pricingTokenAddress: getDataAddress(id).toLowerCase(),
                     readOnly: false,
                     timeUnit: timeUnits.day,
@@ -173,8 +172,6 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
                     )
 
                     const { decimals } = await getTokenInfo(pricingTokenAddress, chainId)
-
-                    const pricePerSecondFromDecimals = toFloat(pricePerSecond, decimals)
 
                     const timeUnit: TimeUnit = getMostRelevantTimeUnit(
                         pricePerSecond,
@@ -193,10 +190,8 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
                             : beneficiary.toLowerCase(),
                         chainId,
                         enabled: true,
-                        price: pricePerSecondFromDecimals
-                            .multipliedBy(multiplier)
-                            .toString(),
-                        pricePerSecond: pricePerSecond.toString(),
+                        price: pricePerSecond * BigInt(multiplier),
+                        pricePerSecond,
                         pricingTokenAddress: pricingTokenAddress.toLowerCase(),
                         readOnly: true,
                         timeUnit,
@@ -249,8 +244,8 @@ function getEmptySalePoints(chainId: number) {
             beneficiaryAddress: '',
             chainId: id,
             enabled: false,
-            price: '',
-            pricePerSecond: '',
+            price: undefined,
+            pricePerSecond: 0n,
             pricingTokenAddress: getDataAddress(id).toLowerCase(),
             readOnly: false,
             timeUnit: timeUnits.day,

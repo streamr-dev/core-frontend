@@ -10,6 +10,7 @@ import { SalePoint } from '~/shared/types'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { usePersistProjectCallback } from '~/stores/projectDraft'
+import { toBigInt, toFloat } from '~/utils/bn'
 import { errorToast } from '~/utils/toast'
 import { getCachedTokenInfo, getTokenInfo, useTokenInfo } from '~/utils/tokens'
 
@@ -38,6 +39,23 @@ export default function SalePointTokenSelector({
 
     const [useDataToken, setUseDataToken] = useState(tokenAddress === dataTokenAddress)
 
+    const tokenInfo = useTokenInfo(tokenAddress, chainId)
+
+    const isLoadingTokenInfo = typeof tokenInfo === 'undefined'
+
+    const { symbol: tokenSymbol, decimals = 18n } = tokenInfo || {}
+
+    const [rawPrice, setRawPrice] = useState(
+        price == null ? '' : toFloat(price, decimals).toString(),
+    )
+
+    useEffect(
+        function setRawPriceFromUpstream() {
+            setRawPrice(price == null ? '' : toFloat(price, decimals).toString())
+        },
+        [price, decimals],
+    )
+
     const [customTokenAddress, setCustomTokenAddress] = useState(
         useDataToken ? '' : tokenAddress,
     )
@@ -52,12 +70,6 @@ export default function SalePointTokenSelector({
         }
     }, [tokenAddress, dataTokenAddress])
 
-    const tokenInfo = useTokenInfo(tokenAddress, chainId)
-
-    const isLoadingTokenInfo = typeof tokenInfo === 'undefined'
-
-    const { symbol: tokenSymbol } = tokenInfo || {}
-
     const isCustomTokenInfoCached = isTokenInfoCached(customTokenAddress, chainId)
 
     const canFetchTokenInfo =
@@ -67,6 +79,22 @@ export default function SalePointTokenSelector({
         !isLoadingTokenInfo
 
     const persist = usePersistProjectCallback()
+
+    function commitNewPrice(value: string) {
+        if (!value) {
+            onSalePointChange?.({
+                ...salePoint,
+                price: undefined,
+            })
+
+            return
+        }
+
+        onSalePointChange?.({
+            ...salePoint,
+            price: toBigInt(value || 0, decimals),
+        })
+    }
 
     return (
         <Root>
@@ -186,17 +214,19 @@ export default function SalePointTokenSelector({
                         className="price-input"
                         placeholder="Set your price"
                         onChange={(e) => {
-                            onSalePointChange?.({
-                                ...salePoint,
-                                price: e.target.value,
-                            })
+                            setRawPrice(e.target.value)
                         }}
                         onKeyDown={({ key }) => {
                             if (key === 'Enter') {
+                                commitNewPrice(rawPrice)
+
                                 persist()
                             }
                         }}
-                        value={price}
+                        onBlur={() => {
+                            commitNewPrice(rawPrice)
+                        }}
+                        value={rawPrice}
                         disabled={disabled || !tokenInfo}
                     />
                     {tokenSymbol && <TokenSymbol>{tokenSymbol}</TokenSymbol>}

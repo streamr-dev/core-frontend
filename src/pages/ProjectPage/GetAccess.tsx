@@ -13,7 +13,6 @@ import { ProjectType, SalePoint } from '~/shared/types'
 import { MEDIUM } from '~/shared/utils/styled'
 import { timeUnits } from '~/shared/utils/timeUnit'
 import { formatChainName } from '~/utils'
-import { toBigInt } from '~/utils/bn'
 import { getChainConfig, useCurrentChainId } from '~/utils/chains'
 import { errorToast } from '~/utils/toast'
 
@@ -72,9 +71,6 @@ export default function GetAccess({
         return null
     }
 
-    /**
-     * @todo `pricePerSecond` should be a #bigint organically.
-     */
     const { pricePerSecond, chainId, pricingTokenAddress } = firstSalePoint
 
     return (
@@ -88,7 +84,7 @@ export default function GetAccess({
                     <br />
                     <strong>
                         <FormattedPaymentRate
-                            amount={toBigInt(pricePerSecond)}
+                            amount={pricePerSecond}
                             chainId={chainId}
                             pricingTokenAddress={pricingTokenAddress}
                             timeUnit={timeUnits.hour}

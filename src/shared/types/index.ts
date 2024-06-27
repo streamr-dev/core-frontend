@@ -6,18 +6,12 @@ export enum ProjectType {
     PaidData = 'PAID_DATA',
     DataUnion = 'DATA_UNION',
 }
-
-/**
- * @todo Refactor to make SalePoint carry bigint `price` and `pricePerSecond`. `price` takes
- * part in price setting so in theory it may end up blank. Maybe `undefined | bigint` is
- * the way to go? Or dynamic. TDB.
- */
-export interface SalePoint<T = string> {
+export interface SalePoint {
     beneficiaryAddress: string
     chainId: number
     enabled: boolean
-    price: T
-    pricePerSecond: T
+    price: bigint | undefined
+    pricePerSecond: bigint
     pricingTokenAddress: string
     readOnly: boolean
     timeUnit: TimeUnit

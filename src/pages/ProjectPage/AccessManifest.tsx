@@ -14,7 +14,6 @@ import { REGULAR, TABLET } from '~/shared/utils/styled'
 import { timeUnits } from '~/shared/utils/timeUnit'
 import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
 import { formatChainName } from '~/utils'
-import { toBigInt } from '~/utils/bn'
 import {
     getChainConfig,
     useCurrentChainId,
@@ -48,9 +47,6 @@ export function AccessManifest({
 
     const isBeingPurchased = useIsProjectBeingPurchased(projectId)
 
-    /**
-     * @todo `pricePerSecond` should be a #bigint organically.
-     */
     const { pricePerSecond, chainId, pricingTokenAddress } = firstSalePoint
 
     const chainName = useCurrentChainSymbolicName()
@@ -67,7 +63,7 @@ export function AccessManifest({
                     <strong>
                         {' '}
                         <FormattedPaymentRate
-                            amount={toBigInt(pricePerSecond)}
+                            amount={pricePerSecond}
                             chainId={chainId}
                             pricingTokenAddress={pricingTokenAddress}
                             timeUnit={timeUnits.hour}
