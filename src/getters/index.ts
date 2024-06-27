@@ -6,12 +6,6 @@ import { z } from 'zod'
 import { address0 } from '~/consts'
 import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
 import {
-    MarketplaceV4 as MarketplaceContract,
-    MarketplaceV4__factory,
-    ProjectRegistryV1 as ProjectRegistryContract,
-    ProjectRegistryV1__factory,
-} from '~/generaged/types'
-import {
     GetEnsDomainsForAccountDocument,
     GetEnsDomainsForAccountQuery,
     GetEnsDomainsForAccountQueryVariables,
@@ -75,7 +69,13 @@ import {
     Sponsorship_Filter,
     Sponsorship_OrderBy,
 } from '~/generated/gql/network'
-import { Token as TokenContract } from '~/generated/types'
+import {
+    MarketplaceV4 as MarketplaceContract,
+    MarketplaceV4__factory,
+    ProjectRegistryV1 as ProjectRegistryContract,
+    ProjectRegistryV1__factory,
+} from '~/generated/types/hub'
+import { Token as TokenContract, Token__factory } from '~/generated/types/local'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
@@ -83,7 +83,6 @@ import { parseSponsorship } from '~/parsers/SponsorshipParser'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
-import tokenAbi from '~/shared/web3/abis/token.json'
 import { ChartPeriod } from '~/types'
 import { Layer } from '~/utils/Layer'
 import { BN, toBN } from '~/utils/bn'
@@ -123,7 +122,11 @@ export function getERC20TokenContract({
     tokenAddress: string
     provider?: Signer | Provider
 }) {
-    return new Contract(tokenAddress, tokenAbi, provider) as unknown as TokenContract
+    return new Contract(
+        tokenAddress,
+        Token__factory.abi,
+        provider,
+    ) as unknown as TokenContract
 }
 
 export function getMarketplaceContract({

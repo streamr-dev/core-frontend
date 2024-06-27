@@ -127,6 +127,8 @@ export const ProjectDraft = createDraftStore<ParsedProject>({
             const { domainIds, paymentDetails, adminFee, streams, metadata } =
                 await getPublishableProjectProperties(project)
 
+            console.log(paymentDetails)
+
             if (shouldDeployDataUnion) {
                 const [domainId] = domainIds
 

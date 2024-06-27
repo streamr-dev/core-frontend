@@ -11,7 +11,7 @@ export interface SalePoint {
     chainId: number
     enabled: boolean
     price: bigint | undefined
-    pricePerSecond: bigint
+    pricePerSecond: bigint | undefined
     pricingTokenAddress: string
     readOnly: boolean
     timeUnit: TimeUnit

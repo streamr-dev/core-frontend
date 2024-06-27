@@ -1,4 +1,3 @@
-import { toaster } from 'toasterhea'
 import {
     GetProjectsByTextDocument,
     GetProjectsByTextQuery,
@@ -13,14 +12,12 @@ import { getGraphClient } from '~/getters/getGraphClient'
 import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
 import { ParsedProject } from '~/parsers/ProjectParser'
 import { getSigner, getWalletAccount } from '~/shared/stores/wallet'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType, TheGraph } from '~/shared/types'
 import { truncate } from '~/shared/utils/text'
 import { timeUnits } from '~/shared/utils/timeUnit'
 import { WritablePaymentDetail } from '~/types'
 import { PublishableProjectPayload } from '~/types/projects'
-import { Layer } from '~/utils/Layer'
-import { toBN, toBigInt } from '~/utils/bn'
+import { toBN } from '~/utils/bn'
 import { isMessagedObject } from '~/utils/exceptions'
 import networkPreflight from '~/utils/networkPreflight'
 import { convertPrice } from '~/utils/price'
@@ -274,8 +271,8 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
             beneficiaryAddress,
             chainId: domainId,
             enabled,
-            price: rawPrice,
-            pricePerSecond: initialPricePerSecond,
+            price,
+            pricePerSecond: currentPricePerSecond,
             pricingTokenAddress,
             timeUnit,
         } = salePoints[i]
@@ -283,8 +280,6 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
         if (!enabled) {
             continue
         }
-
-        const price = toBigInt(rawPrice)
 
         /**
          * Use current wallet's address as the default beneficiary for *paid* projects
@@ -295,43 +290,24 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
             beneficiaryAddress || (payload.type === ProjectType.PaidData ? wallet : '')
 
         const pricePerSecond = await (async () => {
-            if (initialPricePerSecond) {
+            if (currentPricePerSecond != null) {
                 /**
                  * In the current implementation we disallow price changes, so
                  * if initial `pricePerSecond` is defined we reuse it.
                  */
-                return toBigInt(initialPricePerSecond)
+
+                return currentPricePerSecond
             }
 
-            if (rawPrice === '0') {
+            if (!price) {
                 /**
-                 * 0 tokens per time unit constitues 0 per second. No need
-                 * to fetch decimals.
+                 * 0 (or undefined amount of) tokens per time unit constitues 0 per
+                 * second. No need to fetch decimals.
                  */
                 return 0n
             }
 
-            while (true) {
-                try {
-                    return convertPrice([price, timeUnit], timeUnits.second)
-                } catch (e) {
-                    try {
-                        await toaster(Toast, Layer.Toast).pop({
-                            title: 'Warning',
-                            type: ToastType.Warning,
-                            desc: `Failed to fetch decimals for ${truncate(
-                                pricingTokenAddress,
-                            )}. Would you like to try again?`,
-                            okLabel: 'Yes',
-                            cancelLabel: 'No',
-                        })
-
-                        continue
-                    } catch (_) {
-                        throw e
-                    }
-                }
-            }
+            return convertPrice([price, timeUnit], timeUnits.second)
         })()
 
         domainIds.push(domainId)

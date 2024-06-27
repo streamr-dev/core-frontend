@@ -23,8 +23,8 @@
         "prettier": "pretty-quick --staged",
         "prepare": "husky install",
         "codegen": "graphql-codegen --config codegen.ts",
-        "typechain": "typechain --target=ethers-v6 'src/shared/web3/abis/*.json' --out-dir src/generated/types",
-        "typechain-hub": "npx typechain --target=ethers-v6 --out-dir=src/generaged/types ./node_modules/@streamr/hub-contracts/dist/**/*.json"
+        "typechain": "npx typechain --target=ethers-v6 --out-dir=src/generated/types/local src/shared/web3/abis/*.json",
+        "typechain-hub": "npx typechain --target=ethers-v6 --out-dir=src/generated/types/hub ./node_modules/@streamr/hub-contracts/dist/**/*.json"
     },
     "lint-staged": {
         "*.{js,ts,tsx}": [
