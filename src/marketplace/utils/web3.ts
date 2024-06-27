@@ -1,5 +1,5 @@
-import { getChainConfig } from '~/utils/chains'
 import { getBalance } from '~/utils/balance'
+import { getChainConfig } from '~/utils/chains'
 import { getTokenInfo } from '~/utils/tokens'
 import { fromDecimals } from './math'
 
@@ -29,13 +29,6 @@ export const getMarketplaceAddress = (chainId: number): string => {
     }
 
     return marketplaceAddress
-}
-
-/**
- * @deprecated Use `getBalance` from `~/utils/balance`
- */
-export const getNativeTokenBalance = async (userAddress: string, chainId: number) => {
-    return getBalance({ chainId, tokenAddress: 'native', walletAddress: userAddress })
 }
 
 /**

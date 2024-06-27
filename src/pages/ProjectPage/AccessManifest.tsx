@@ -1,24 +1,27 @@
 import React from 'react'
-import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { REGULAR, TABLET } from '~/shared/utils/styled'
+import styled from 'styled-components'
 import { Button } from '~/components/Button'
-import { ProjectType, SalePoint } from '~/shared/types'
 import FormattedPaymentRate from '~/components/FormattedPaymentRate'
-import { formatChainName } from '~/utils'
-import { timeUnits } from '~/shared/utils/timeUnit'
 import { getProjectTypeName } from '~/getters'
+import { isAbandonment } from '~/modals/ProjectModal'
 import {
     useIsProjectBeingPurchased,
     usePurchaseCallback,
 } from '~/shared/stores/purchases'
-import { errorToast } from '~/utils/toast'
+import { ProjectType, SalePoint } from '~/shared/types'
+import { REGULAR, TABLET } from '~/shared/utils/styled'
+import { timeUnits } from '~/shared/utils/timeUnit'
 import { useIsAccessibleByCurrentWallet } from '~/stores/projectDraft'
-import { isAbandonment } from '~/modals/ProjectModal'
-import { toBN } from '~/utils/bn'
-import { getChainConfig, useCurrentChainId } from '~/utils/chains'
+import { formatChainName } from '~/utils'
+import { toBigInt } from '~/utils/bn'
+import {
+    getChainConfig,
+    useCurrentChainId,
+    useCurrentChainSymbolicName,
+} from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { errorToast } from '~/utils/toast'
 
 interface Props {
     projectId: string
@@ -45,6 +48,9 @@ export function AccessManifest({
 
     const isBeingPurchased = useIsProjectBeingPurchased(projectId)
 
+    /**
+     * @todo `pricePerSecond` should be a #bigint organically.
+     */
     const { pricePerSecond, chainId, pricingTokenAddress } = firstSalePoint
 
     const chainName = useCurrentChainSymbolicName()
@@ -61,7 +67,7 @@ export function AccessManifest({
                     <strong>
                         {' '}
                         <FormattedPaymentRate
-                            amount={toBN(pricePerSecond)}
+                            amount={toBigInt(pricePerSecond)}
                             chainId={chainId}
                             pricingTokenAddress={pricingTokenAddress}
                             timeUnit={timeUnits.hour}

@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Button } from '~/components/Button'
+import { ParsedPaymentDetail } from '~/parsers/ProjectParser'
 import NetworkIcon from '~/shared/components/NetworkIcon'
+import useIsMounted from '~/shared/hooks/useIsMounted'
+import { getUsdRate } from '~/shared/utils/coingecko'
 import { MEDIUM } from '~/shared/utils/styled'
 import { formatChainName } from '~/utils'
-import useIsMounted from '~/shared/hooks/useIsMounted'
-import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import { getTokenInfo } from '~/utils/tokens'
-import { getUsdRate } from '~/shared/utils/coingecko'
-import networkPreflight from '~/utils/networkPreflight'
-import { ParsedPaymentDetail } from '~/parsers/ProjectParser'
-import { RejectionReason } from '~/utils/exceptions'
+import { getBalance } from '~/utils/balance'
 import { getChainConfig } from '~/utils/chains'
-import ProjectModal, { Actions } from './ProjectModal'
+import { RejectionReason } from '~/utils/exceptions'
+import networkPreflight from '~/utils/networkPreflight'
+import { getTokenInfo } from '~/utils/tokens'
 import { connectModal } from './ConnectModal'
+import ProjectModal, { Actions } from './ProjectModal'
 
 const ChainIcon = styled(NetworkIcon)`
     width: 40px;
@@ -99,11 +99,11 @@ const Placeholder = styled.div`
 
 export interface ChainSelectorResult {
     account: string
-    balance: string
+    balance: bigint
     chainId: number
-    pricePerSecond: string
+    pricePerSecond: bigint
     tokenAddress: string
-    tokenDecimals: string
+    tokenDecimals: bigint
     tokenSymbol: string
     usdRate: number
 }
@@ -133,17 +133,21 @@ export async function getPurchasePreconditions({
         throw new Error('No account')
     }
 
-    const balance = await getCustomTokenBalance(tokenAddress, account, chainId)
+    const balance = await getBalance({
+        chainId,
+        tokenAddress,
+        walletAddress: account,
+    })
 
     const usdRate = await getUsdRate(tokenAddress, chainId)
 
     return {
         account,
-        balance: balance.toString(),
+        balance,
         chainId,
         pricePerSecond,
         tokenAddress,
-        tokenDecimals: String(tokenInfo.decimals),
+        tokenDecimals: tokenInfo.decimals,
         tokenSymbol: tokenInfo.symbol,
         usdRate,
     }

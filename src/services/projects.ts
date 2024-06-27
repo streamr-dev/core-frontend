@@ -1,19 +1,4 @@
 import { toaster } from 'toasterhea'
-import { getSigner, getWalletAccount } from '~/shared/stores/wallet'
-import { getProjectRegistryContract } from '~/getters'
-import networkPreflight from '~/utils/networkPreflight'
-import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
-import { BN, toBN } from '~/utils/bn'
-import { ProjectType, TheGraph } from '~/shared/types'
-import { isMessagedObject } from '~/utils/exceptions'
-import { errorToast } from '~/utils/toast'
-import { truncate } from '~/shared/utils/text'
-import { PublishableProjectPayload } from '~/types/projects'
-import { getTokenInfo } from '~/utils/tokens'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { Layer } from '~/utils/Layer'
-import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
-import { ParsedProject } from '~/parsers/ProjectParser'
 import {
     GetProjectsByTextDocument,
     GetProjectsByTextQuery,
@@ -23,7 +8,22 @@ import {
     GetProjectsQueryVariables,
     Project_Filter,
 } from '~/generated/gql/network'
+import { getProjectRegistryContract } from '~/getters'
 import { getGraphClient } from '~/getters/getGraphClient'
+import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
+import { ParsedProject } from '~/parsers/ProjectParser'
+import { getSigner, getWalletAccount } from '~/shared/stores/wallet'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
+import { ProjectType, TheGraph } from '~/shared/types'
+import { truncate } from '~/shared/utils/text'
+import { timeUnits } from '~/shared/utils/timeUnit'
+import { PublishableProjectPayload } from '~/types/projects'
+import { Layer } from '~/utils/Layer'
+import { BN, toBN, toBigInt } from '~/utils/bn'
+import { isMessagedObject } from '~/utils/exceptions'
+import networkPreflight from '~/utils/networkPreflight'
+import { convertPrice } from '~/utils/price'
+import { errorToast } from '~/utils/toast'
 import { postImage } from './images'
 
 /**
@@ -302,7 +302,7 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
     const paymentDetails: {
         beneficiary: string
         pricingTokenAddress: string
-        pricePerSecond: string
+        pricePerSecond: bigint
     }[] = []
 
     const wallet = (await getWalletAccount()) || ''
@@ -312,7 +312,7 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
             beneficiaryAddress,
             chainId: domainId,
             enabled,
-            price,
+            price: rawPrice,
             pricePerSecond: initialPricePerSecond,
             pricingTokenAddress,
             timeUnit,
@@ -321,6 +321,8 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
         if (!enabled) {
             continue
         }
+
+        const price = toBigInt(rawPrice)
 
         /**
          * Use current wallet's address as the default beneficiary for *paid* projects
@@ -336,27 +338,20 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
                  * In the current implementation we disallow price changes, so
                  * if initial `pricePerSecond` is defined we reuse it.
                  */
-                return initialPricePerSecond
+                return toBigInt(initialPricePerSecond)
             }
 
-            if (price === '0') {
+            if (rawPrice === '0') {
                 /**
                  * 0 tokens per time unit constitues 0 per second. No need
                  * to fetch decimals.
                  */
-                return '0'
+                return 0n
             }
 
             while (true) {
                 try {
-                    const decimals = (await getTokenInfo(pricingTokenAddress, domainId))
-                        .decimals
-
-                    return pricePerSecondFromTimeUnit(
-                        price,
-                        timeUnit,
-                        decimals,
-                    ).toString()
+                    return convertPrice([price, timeUnit], timeUnits.second)
                 } catch (e) {
                     try {
                         await toaster(Toast, Layer.Toast).pop({
@@ -418,7 +413,7 @@ export async function createProject(
         paymentDetails: {
             beneficiary: string
             pricingTokenAddress: string
-            pricePerSecond: string
+            pricePerSecond: bigint
         }[]
         streams: string[]
     },

@@ -1,17 +1,17 @@
 import React, { ComponentProps, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { isAddress } from 'web3-validator'
-import SvgIcon from '~/shared/components/SvgIcon'
-import { getDataAddress } from '~/marketplace/utils/web3'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
-import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import { Button } from '~/components/Button'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
+import { getDataAddress } from '~/marketplace/utils/web3'
+import SvgIcon from '~/shared/components/SvgIcon'
+import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import { SalePoint } from '~/shared/types'
-import { useTokenInfo, getCachedTokenInfo, getTokenInfo } from '~/utils/tokens'
+import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
-import { errorToast } from '~/utils/toast'
 import { usePersistProjectCallback } from '~/stores/projectDraft'
+import { errorToast } from '~/utils/toast'
+import { getCachedTokenInfo, getTokenInfo, useTokenInfo } from '~/utils/tokens'
 
 const TimeUnitOptions = Object.values(timeUnits).map((unit: TimeUnit) => ({
     label: `Per ${unit}`,
@@ -215,7 +215,7 @@ export default function SalePointTokenSelector({
 
                             onSalePointChange?.({
                                 ...salePoint,
-                                timeUnit,
+                                timeUnit: timeUnit as TimeUnit,
                             })
                         }}
                         disabled={disabled || !tokenInfo}

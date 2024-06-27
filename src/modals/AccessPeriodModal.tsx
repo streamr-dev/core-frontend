@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
-import Text from '~/shared/components/Ui/Text'
+import { address0 } from '~/consts'
+import { getAllowance } from '~/getters'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
-import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
-import { COLORS, LIGHT, MEDIUM } from '~/shared/utils/styled'
 import NetworkIcon from '~/shared/components/NetworkIcon'
 import TokenLogo from '~/shared/components/TokenLogo'
-import { formatChainName } from '~/utils'
-import { fromDecimals } from '~/marketplace/utils/math'
-import { priceForTimeUnits } from '~/marketplace/utils/price'
-import { address0 } from '~/consts'
+import Text from '~/shared/components/Ui/Text'
 import useIsMounted from '~/shared/hooks/useIsMounted'
-import { getAllowance } from '~/getters'
-import { toBN } from '~/utils/bn'
-import { RejectionReason } from '~/utils/exceptions'
+import { COLORS, LIGHT, MEDIUM } from '~/shared/utils/styled'
+import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
+import { formatChainName } from '~/utils'
+import { toBN, toFloat } from '~/utils/bn'
 import { getChainConfig } from '~/utils/chains'
+import { RejectionReason } from '~/utils/exceptions'
+import { convertPrice } from '~/utils/price'
 import ProjectModal, { Actions } from './ProjectModal'
 
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map(
@@ -153,14 +152,13 @@ export interface AccessPeriod {
 interface Props {
     account?: string
     backable?: boolean
-    balance?: string
+    balance?: bigint
     chainId?: number
     onReject?: (reason?: unknown) => void
     onResolve?: (result: AccessPeriod) => void
-    pricePerSecond?: string
-    quantity?: number
+    pricePerSecond?: bigint
     tokenAddress?: string
-    tokenDecimals?: string
+    tokenDecimals?: bigint
     tokenSymbol?: string
     unit?: TimeUnit
     usdRate?: number
@@ -169,25 +167,22 @@ interface Props {
 export default function AccessPeriodModal({
     account = address0,
     backable = false,
-    balance = '0',
+    balance = 0n,
     chainId = 137,
     onReject,
     onResolve,
-    pricePerSecond = '0',
-    quantity = 1,
+    pricePerSecond = 0n,
     tokenAddress = address0,
-    tokenDecimals = '18',
+    tokenDecimals = 18n,
     tokenSymbol = 'DATA',
     unit = timeUnits.hour,
     usdRate = 1,
 }: Props) {
-    const [length, setLength] = useState(`${quantity}`)
+    const [rawLength, setRawLength] = useState('1')
+
+    const length = Math.max(0, Number(rawLength) || 0)
 
     const [selectedUnit, setSelectedUnit] = useState(unit)
-
-    useEffect(() => {
-        setLength(`${quantity}`)
-    }, [quantity])
 
     useEffect(() => {
         setSelectedUnit(unit)
@@ -195,18 +190,13 @@ export default function AccessPeriodModal({
 
     const chainName = formatChainName(getChainConfig(chainId).name)
 
-    let price = fromDecimals(
-        priceForTimeUnits(pricePerSecond, toBN(length).toNumber(), selectedUnit),
-        toBN(tokenDecimals),
+    const total = ((a: bigint) => (a > 0n ? a : 0n))(
+        convertPrice(pricePerSecond, [length, selectedUnit]),
     )
 
-    if (!price.isFinite() || price.isLessThanOrEqualTo(0)) {
-        price = toBN(0)
-    }
+    const disabled = total === 0n
 
-    const disabled = price.isEqualTo(0)
-
-    const usdPrice = price.multipliedBy(usdRate)
+    const totalInUSD = toBN(total).multipliedBy(usdRate)
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -234,9 +224,7 @@ export default function AccessPeriodModal({
                     try {
                         setIsSubmitting(true)
 
-                        const bnQuantity = toBN(length)
-
-                        if (!bnQuantity.isFinite() || bnQuantity.isEqualTo(0)) {
+                        if (!length) {
                             throw new Error('Invalid quantity')
                         }
 
@@ -249,18 +237,10 @@ export default function AccessPeriodModal({
                             },
                         )
 
-                        const newQuantity = bnQuantity.toNumber()
-
-                        const total = priceForTimeUnits(
-                            pricePerSecond,
-                            newQuantity,
-                            selectedUnit,
-                        )
-
                         onResolve?.({
-                            quantity: newQuantity,
+                            quantity: length,
                             unit: selectedUnit,
-                            exceedsAllowance: toBN(allowance).lt(total.toString()),
+                            exceedsAllowance: allowance < total,
                         })
                     } catch (e) {
                         onReject?.(e)
@@ -274,8 +254,10 @@ export default function AccessPeriodModal({
                 <PeriodContainer>
                     <Text
                         value={length}
-                        onChange={(e: any) => void setLength(e.target.value)}
-                        onCommit={setLength}
+                        onChange={(e: any) => {
+                            setRawLength(e.target.value)
+                        }}
+                        onCommit={setRawLength}
                         autoFocus
                         name="quantity"
                         disabled={isSubmitting}
@@ -299,7 +281,7 @@ export default function AccessPeriodModal({
                         <AmountBar>
                             <AmountBarInner>
                                 <div>
-                                    <em>{toBN(balance).toFixed(3)}</em>{' '}
+                                    <em>{toFloat(balance, tokenDecimals).toFixed(3)}</em>{' '}
                                     <span>Balance</span>
                                     <div>
                                         <TokenLogo
@@ -313,14 +295,16 @@ export default function AccessPeriodModal({
                         </AmountBar>
                         <AmountScrollable>
                             <AmountBoxInner>
-                                <Amount>{price.toFixed(3)}</Amount>
+                                <Amount>
+                                    {toFloat(total, tokenDecimals).toFixed(3)}
+                                </Amount>
                                 <Currency>{tokenSymbol}</Currency>
                             </AmountBoxInner>
                         </AmountScrollable>
                         <AmountBar>
                             <AmountBarInner>
                                 <div>
-                                    <div>Approx {usdPrice.toFixed(2)} USD</div>
+                                    <div>Approx {totalInUSD.toFixed(2)} USD</div>
                                 </div>
                             </AmountBarInner>
                         </AmountBar>
@@ -331,7 +315,9 @@ export default function AccessPeriodModal({
                         <Button
                             kind="link"
                             type="button"
-                            onClick={() => void onReject?.(RejectionReason.CancelButton)}
+                            onClick={() => {
+                                onReject?.(RejectionReason.CancelButton)
+                            }}
                         >
                             Cancel
                         </Button>

@@ -1,26 +1,25 @@
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import React, { ButtonHTMLAttributes, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import AddAddressModal from '~/modals/AddAddressModal'
-import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import { Layer } from '~/utils/Layer'
 import { Button } from '~/components/Button'
+import { Separator } from '~/components/Separator'
 import Spinner from '~/components/Spinner'
-import { COLORS } from '~/shared/utils/styled'
-import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
-import { getNativeTokenBalance } from '~/marketplace/utils/web3'
-import { fromDecimals } from '~/marketplace/utils/math'
-import { errorToast } from '~/utils/toast'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
+import AddAddressModal from '~/modals/AddAddressModal'
 import {
     addOperatorControllerAddress,
     removeOperatorControllerAddress,
     setOperatorNodeAddresses,
 } from '~/services/operators'
-import { toBN } from '~/utils/bn'
-import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { Separator } from '~/components/Separator'
+import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
+import { COLORS } from '~/shared/utils/styled'
+import { Layer } from '~/utils/Layer'
+import { getBalance } from '~/utils/balance'
+import { toBigInt, toFloat } from '~/utils/bn'
 import { useCurrentChainId } from '~/utils/chains'
+import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
+import { errorToast } from '~/utils/toast'
 
 export interface AddressItem {
     address: string
@@ -89,9 +88,7 @@ export function AddressTable({
                 },
                 {
                     displayName: 'MATIC balance',
-                    valueMapper: (element) => (
-                        <MaticBalance address={element.address} minAmount="0.1" />
-                    ),
+                    valueMapper: (element) => <MaticBalance address={element.address} />,
                     align: 'start',
                     isSticky: false,
                     key: 'balance',
@@ -204,8 +201,11 @@ const Footer = styled.div`
     gap: 10px;
 `
 
-function MaticBalance({ address, minAmount }: { address: string; minAmount?: string }) {
-    const [balance, setBalance] = useState<string>()
+const LowBalanceThreshold = toBigInt(0.1, 18n)
+
+function MaticBalance({ address }: { address: string }) {
+    const [balance, setBalance] = useState<bigint>()
+
     const currentChainId = useCurrentChainId()
 
     useEffect(() => {
@@ -213,10 +213,14 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
 
         void (async () => {
             try {
-                const newBalance = await getNativeTokenBalance(address, currentChainId)
+                const newBalance = await getBalance({
+                    chainId: currentChainId,
+                    tokenAddress: 'native',
+                    walletAddress: address,
+                })
 
                 if (mounted) {
-                    setBalance(fromDecimals(newBalance, 18).toFixed(2))
+                    setBalance(newBalance)
                 }
             } catch (e) {
                 console.warn(`Failed to get balance for "${address}"`, e)
@@ -228,10 +232,12 @@ function MaticBalance({ address, minAmount }: { address: string; minAmount?: str
         }
     }, [address, currentChainId])
 
+    const lowBalance = balance != null && balance < LowBalanceThreshold
+
     return balance ? (
         <MaticBalanceRoot>
-            <div>{balance}</div>
-            {balance && minAmount && toBN(balance).isLessThan(toBN(minAmount)) && (
+            <div>{toFloat(balance, 18n).toFixed(2)}</div>
+            {lowBalance && (
                 <Tooltip content="Low MATIC">
                     <TooltipIconWrap
                         className="ml-1"

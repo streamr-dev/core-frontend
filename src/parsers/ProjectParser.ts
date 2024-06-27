@@ -2,13 +2,6 @@ import { z } from 'zod'
 import { address0 } from '~/consts'
 import { getProjectImageUrl } from '~/getters'
 import { getDataUnionAdminFeeForSalePoint } from '~/getters/du'
-import {
-    getChainConfig,
-    getChainConfigExtension,
-    getCurrentChainId,
-} from '~/utils/chains'
-import { getTokenInfo } from '~/utils/tokens'
-import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
 import { getDataAddress } from '~/marketplace/utils/web3'
 import { ProjectType, SalePoint } from '~/shared/types'
@@ -18,15 +11,18 @@ import {
     timeUnits,
 } from '~/shared/utils/timeUnit'
 import { Chain } from '~/types'
-import { toBN } from '~/utils/bn'
+import { toFloat } from '~/utils/bn'
+import {
+    getChainConfig,
+    getChainConfigExtension,
+    getCurrentChainId,
+} from '~/utils/chains'
+import { getTokenInfo } from '~/utils/tokens'
 
 const ParsedPaymentDetail = z.object({
     beneficiary: z.string(),
     domainId: z.coerce.number(),
-    pricePerSecond: z
-        .string()
-        .optional()
-        .transform((v) => v || '0'),
+    pricePerSecond: z.string().optional().default('0').transform(BigInt),
     pricingTokenAddress: z.string(),
 })
 
@@ -137,7 +133,7 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
         }) => {
             const [payment, secondPayment] = paymentDetails
 
-            const isOpenData = payment?.pricePerSecond === '0' && !secondPayment
+            const isOpenData = payment?.pricePerSecond === 0n && !secondPayment
 
             let adminFee: number | undefined
 
@@ -178,13 +174,11 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
 
                     const { decimals } = await getTokenInfo(pricingTokenAddress, chainId)
 
-                    const pricePerSecondFromDecimals = fromDecimals(
-                        pricePerSecond,
-                        decimals,
-                    )
+                    const pricePerSecondFromDecimals = toFloat(pricePerSecond, decimals)
 
                     const timeUnit: TimeUnit = getMostRelevantTimeUnit(
-                        pricePerSecondFromDecimals,
+                        pricePerSecond,
+                        decimals,
                     )
 
                     const multiplier = timeUnitSecondsMultiplierMap.get(timeUnit)
@@ -202,7 +196,7 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
                         price: pricePerSecondFromDecimals
                             .multipliedBy(multiplier)
                             .toString(),
-                        pricePerSecond,
+                        pricePerSecond: pricePerSecond.toString(),
                         pricingTokenAddress: pricingTokenAddress.toLowerCase(),
                         readOnly: true,
                         timeUnit,
@@ -216,10 +210,7 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
             }
 
             return {
-                adminFee:
-                    typeof adminFee === 'undefined'
-                        ? ''
-                        : toBN(adminFee).multipliedBy(100).toString(),
+                adminFee: typeof adminFee === 'undefined' ? '' : `${adminFee * 100}`,
                 chainId,
                 contact,
                 creator,

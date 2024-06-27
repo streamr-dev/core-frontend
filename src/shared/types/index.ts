@@ -1,5 +1,5 @@
-import { TimeUnit } from '~/shared/utils/timeUnit'
 import { GetProjectQuery } from '~/generated/gql/network'
+import { TimeUnit } from '~/shared/utils/timeUnit'
 
 export enum ProjectType {
     OpenData = 'OPEN_DATA',
@@ -7,12 +7,17 @@ export enum ProjectType {
     DataUnion = 'DATA_UNION',
 }
 
-export interface SalePoint {
+/**
+ * @todo Refactor to make SalePoint carry bigint `price` and `pricePerSecond`. `price` takes
+ * part in price setting so in theory it may end up blank. Maybe `undefined | bigint` is
+ * the way to go? Or dynamic. TDB.
+ */
+export interface SalePoint<T = string> {
     beneficiaryAddress: string
     chainId: number
     enabled: boolean
-    price: string
-    pricePerSecond: string
+    price: T
+    pricePerSecond: T
     pricingTokenAddress: string
     readOnly: boolean
     timeUnit: TimeUnit

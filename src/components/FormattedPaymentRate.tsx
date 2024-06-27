@@ -1,19 +1,18 @@
 import React from 'react'
-import { contractCurrencies as currencies } from '~/shared/utils/constants'
 import { formatPrice } from '~/marketplace/utils/price'
+import { contractCurrencies as currencies } from '~/shared/utils/constants'
 import { TimeUnit } from '~/shared/utils/timeUnit'
-import { BNish, toBN } from '~/utils/bn'
 import { useTokenInfo } from '~/utils/tokens'
 
 interface Options {
-    amount?: BNish
+    amount?: bigint
     pricingTokenAddress?: string
     chainId: number
     timeUnit: TimeUnit
 }
 
 export default function FormattedPaymentRate({
-    amount = 0,
+    amount = 0n,
     pricingTokenAddress,
     chainId,
     timeUnit,
@@ -22,14 +21,6 @@ export default function FormattedPaymentRate({
         useTokenInfo(pricingTokenAddress, chainId) || {}
 
     return (
-        <>
-            {formatPrice(
-                toBN(amount),
-                currencies.PRODUCT_DEFINED,
-                decimals,
-                timeUnit,
-                symbol,
-            )}
-        </>
+        <>{formatPrice(amount, currencies.PRODUCT_DEFINED, decimals, timeUnit, symbol)}</>
     )
 }
