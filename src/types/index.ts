@@ -93,3 +93,10 @@ export interface WritablePaymentDetail<P = bigint> {
     pricingTokenAddress: string
     pricePerSecond: P
 }
+
+export type FundingEvent = {
+    id: string
+    amount: bigint
+    sponsor: string
+    date: string
+}

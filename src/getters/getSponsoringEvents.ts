@@ -5,7 +5,7 @@ import {
     GetSponsoringEventsQueryVariables,
 } from '~/generated/gql/network'
 import { getGraphClient } from '~/getters/getGraphClient'
-import { FundingEvent } from '~/types/fundingEvent'
+import { FundingEvent } from '~/types'
 
 export const getSponsoringEvents = async (
     chainId: number,
