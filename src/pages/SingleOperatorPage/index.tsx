@@ -183,10 +183,10 @@ export const SingleOperatorPage = () => {
 
     const myDelegationPercentage = useMemo(() => {
         if (!walletAddress || !operator) {
-            return 0
+            return toBN(0)
         }
 
-        return getDelegationFractionForWallet(walletAddress, operator) * 100
+        return getDelegationFractionForWallet(walletAddress, operator).multipliedBy(100)
     }, [walletAddress, operator])
 
     const chartLabel =

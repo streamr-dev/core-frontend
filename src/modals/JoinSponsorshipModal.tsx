@@ -1,5 +1,5 @@
 import CopyIcon from '@atlaskit/icon/glyph/copy'
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { Abbr } from '~/components/Abbr'
@@ -61,15 +61,12 @@ function parseAmount(amount: string | undefined, decimals: bigint) {
 const limitErrorToaster = toaster(Toast, Layer.Toast)
 
 function JoinSponsorshipModal({
-    amount: amountProp = '0',
     chainId,
     onResolve,
     preselectedOperator,
     sponsorship,
     ...props
 }: Props) {
-    const currentAmount = toBigInt(amountProp || '0')
-
     const { decimals = 18n, symbol: tokenSymbol = 'DATA' } =
         useSponsorshipTokenInfo() || {}
 
@@ -79,7 +76,7 @@ function JoinSponsorshipModal({
 
     const [operator, setSelectedOperator] = useState(preselectedOperator)
 
-    const { id: operatorId, dataTokenBalanceWei: availableBalance, metadata } = operator
+    const { id: operatorId, dataTokenBalanceWei: operatorBalance, metadata } = operator
 
     const hasUndelegationQueue = operator.queueEntries.length > 0
 
@@ -87,29 +84,24 @@ function JoinSponsorshipModal({
 
     const [busy, setBusy] = useState(false)
 
-    const [rawAmount, setRawAmount] = useState(parseAmount(amountProp, decimals))
+    const [rawAmount, setRawAmount] = useState('')
 
-    const amount = toBigInt(toBN(rawAmount || 0), decimals)
-
-    const finalAmount = amount > 0 ? amount : 0n
+    const amount = ((a: bigint) => (a > 0n ? a : 0n))(toBigInt(rawAmount || 0, decimals))
 
     const heartbeats = useInterceptHeartbeats(operatorId)
 
     const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
         useOperatorLiveNodes(heartbeats)
 
-    let liveNodesOk = !liveNodesCountLoading && liveNodesCount > 0
+    const liveNodesOk =
+        (!liveNodesCountLoading && liveNodesCount > 0) ||
+        /**
+         * Relax live node checking for broken operators (v1) as they cannot join the recovery
+         * sponsorship otherwise.
+         */
+        operator.contractVersion === 1
 
-    // Relax live node checking for broken operators as they cannot join the recovery sponsorship otherwise
-    if (operator.contractVersion === 1) {
-        liveNodesOk = true
-    }
-
-    useEffect(() => {
-        setRawAmount(parseAmount(amountProp, decimals))
-    }, [amountProp, decimals])
-
-    const insufficientFunds = finalAmount > availableBalance
+    const insufficientFunds = amount > operatorBalance
 
     const minimumSelfDelegationFraction =
         useConfigValueFromChain('minimumSelfDelegationFraction', (value) =>
@@ -135,12 +127,12 @@ function JoinSponsorshipModal({
         minimumSelfDelegationFraction,
     )
 
-    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei') || 0n
+    const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
-    const isAboveMinimumStake = minimumStakeWei === 0n || finalAmount >= minimumStakeWei
+    const isAboveMinimumStake = minimumStakeWei != null && amount >= minimumStakeWei
 
     const canSubmit =
-        finalAmount > 0 &&
+        amount > 0n &&
         !insufficientFunds &&
         liveNodesOk &&
         isAboveMinimumStake &&
@@ -151,7 +143,7 @@ function JoinSponsorshipModal({
 
     const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
 
-    const clean = currentAmount === toBigInt(rawAmount || 0, decimals)
+    const clean = amount === 0n
 
     return (
         <FormModal
@@ -174,7 +166,7 @@ function JoinSponsorshipModal({
                     await stakeOnSponsorship(
                         chainId,
                         sponsorship.id,
-                        finalAmount.toString(),
+                        amount,
                         operator.id,
                         {
                             onBlockNumber: (blockNumber) =>
@@ -201,8 +193,8 @@ function JoinSponsorshipModal({
             }}
         >
             <SectionHeadline>
-                Please set the amount of {tokenSymbol} to stake on the selected
-                Sponsorship
+                Please set the amount of <SponsorshipPaymentTokenName /> to stake on the
+                selected Sponsorship
             </SectionHeadline>
             <Section>
                 <Label $wrap>Sponsorship Stream ID</Label>
@@ -221,8 +213,8 @@ function JoinSponsorshipModal({
                     {rawAmount !== '' && !isAboveMinimumStake && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            {fromDecimals(minimumStakeWei || 0, decimals).toString()}{' '}
-                            {tokenSymbol}
+                            {toFloat(minimumStakeWei || 0n, decimals).toString()}{' '}
+                            <SponsorshipPaymentTokenName />
                         </ErrorLabel>
                     )}
                 </StyledLabelWrap>
@@ -240,10 +232,12 @@ function JoinSponsorshipModal({
                     />
                     <MaxButton
                         onClick={() => {
-                            setRawAmount(availableBalance.toString())
+                            setRawAmount(toFloat(operatorBalance, decimals).toString())
                         }}
                     />
-                    <TextAppendix>{tokenSymbol}</TextAppendix>
+                    <TextAppendix>
+                        <SponsorshipPaymentTokenName />
+                    </TextAppendix>
                 </FieldWrap>
                 <PropList>
                     <li>
@@ -262,10 +256,10 @@ function JoinSponsorshipModal({
                         </Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{availableBalance}</Abbr>
+                                <Abbr>{toFloat(operatorBalance, decimals)}</Abbr>
                             ) : (
                                 <>
-                                    {availableBalance.toString()}{' '}
+                                    {toFloat(operatorBalance, decimals).toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                 </>
                             )}
@@ -297,6 +291,7 @@ function JoinSponsorshipModal({
                                             const selectedOp = operatorChoices?.find(
                                                 (o) => o.id === id,
                                             )
+
                                             if (selectedOp) {
                                                 setSelectedOperator(selectedOp)
                                             }
@@ -320,7 +315,7 @@ function JoinSponsorshipModal({
                         minimumSelfDelegationAmount - currentSelfDelegationAmount,
                         decimals,
                     ).toString()}{' '}
-                    {tokenSymbol} to continue.
+                    <SponsorshipPaymentTokenName /> to continue.
                 </StyledAlert>
             )}
             {hasUndelegationQueue && (
@@ -337,61 +332,67 @@ function JoinSponsorshipModal({
             {sponsorship.minimumStakingPeriodSeconds > 0 && (
                 <StyledAlert
                     type="error"
-                    title={`This Sponsorship has a minimum staking period of ${humanize(
-                        sponsorship.minimumStakingPeriodSeconds,
-                    )}. If you unstake or get voted out during this period, you will lose 
-                        ${toFloat(
-                            earlyLeaverPenaltyWei,
-                            decimals,
-                        ).toString()} ${tokenSymbol} in addition to the normal slashing penalty.`}
-                ></StyledAlert>
+                    title={
+                        <>
+                            This Sponsorship has a minimum staking period of{' '}
+                            {humanize(sponsorship.minimumStakingPeriodSeconds)}. If you
+                            unstake or get voted out during this period, you will lose
+                            {toFloat(earlyLeaverPenaltyWei, decimals).toString()}{' '}
+                            <SponsorshipPaymentTokenName /> in addition to the normal
+                            slashing penalty.
+                        </>
+                    }
+                />
             )}
         </FormModal>
     )
 }
 
-const LiveNodesCheck: FunctionComponent<{
+interface LiveNodesCheckProps {
     liveNodesCountLoading: boolean
     liveNodesCount: number
-}> = ({ liveNodesCount, liveNodesCountLoading }) => {
+}
+
+function LiveNodesCheck({ liveNodesCountLoading, liveNodesCount }: LiveNodesCheckProps) {
+    if (liveNodesCountLoading) {
+        return (
+            <StyledAlert type="loading" title="Checking Streamr nodes">
+                <span>
+                    In order to continue, you need to have one or more Streamr nodes
+                    running and correctly configured. You will be slashed if you stake
+                    without your nodes contributing resources to the stream.
+                </span>
+            </StyledAlert>
+        )
+    }
+
+    if (liveNodesCount > 0) {
+        return (
+            <StyledAlert type="success" title="Streamr nodes detected">
+                <span>
+                    Once you stake, your nodes will start working on the stream. Please
+                    ensure your nodes have enough resources available to handle the
+                    traffic in the stream.
+                </span>
+            </StyledAlert>
+        )
+    }
+
     return (
-        <>
-            {liveNodesCountLoading && (
-                <StyledAlert type="loading" title="Checking Streamr nodes">
-                    <span>
-                        In order to continue, you need to have one or more Streamr nodes
-                        running and correctly configured. You will be slashed if you stake
-                        without your nodes contributing resources to the stream.
-                    </span>
-                </StyledAlert>
-            )}
-            {!liveNodesCountLoading &&
-                (liveNodesCount > 0 ? (
-                    <StyledAlert type="success" title="Streamr nodes detected">
-                        <span>
-                            Once you stake, your nodes will start working on the stream.
-                            Please ensure your nodes have enough resources available to
-                            handle the traffic in the stream.
-                        </span>
-                    </StyledAlert>
-                ) : (
-                    <StyledAlert type="error" title="Streamr nodes not detected">
-                        <p>
-                            In order to continue, you need to have one or more Streamr
-                            nodes running and correctly configured. You will be slashed if
-                            you stake without your nodes contributing resources to the
-                            stream.
-                        </p>
-                        <a
-                            href={R.docs('/node-runners/run-a-node')}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                        >
-                            How to run a Streamr node <LinkIcon name="externalLink" />
-                        </a>
-                    </StyledAlert>
-                ))}
-        </>
+        <StyledAlert type="error" title="Streamr nodes not detected">
+            <p>
+                In order to continue, you need to have one or more Streamr nodes running
+                and correctly configured. You will be slashed if you stake without your
+                nodes contributing resources to the stream.
+            </p>
+            <a
+                href={R.docs('/node-runners/run-a-node')}
+                target="_blank"
+                rel="noreferrer noopener"
+            >
+                How to run a Streamr node <LinkIcon name="externalLink" />
+            </a>
+        </StyledAlert>
     )
 }
 

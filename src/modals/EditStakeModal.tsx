@@ -32,7 +32,7 @@ import {
 import Label from '~/shared/components/Ui/Label'
 import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import { BN, toBN, toBigInt, toFloat } from '~/utils/bn'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
 import {
     RejectionReason,
     isRejectionReason,
@@ -42,7 +42,7 @@ import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     chainId: number
-    leavePenaltyWei: BN
+    leavePenaltyWei: bigint
     onResolve?: () => void
     operator: ParsedOperator
     sponsorship: ParsedSponsorship
@@ -50,7 +50,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 
 function EditStakeModal({
     chainId,
-    leavePenaltyWei: leavePenaltyWeiProp,
+    leavePenaltyWei,
     onResolve,
     onReject,
     operator: { dataTokenBalanceWei: availableBalance, id: operatorId, queueEntries },

@@ -1,8 +1,8 @@
 import moment from 'moment'
-import { ChartPeriod } from '~/types'
 import { GetOperatorDailyBucketsQuery } from '~/generated/gql/network'
-import { toBN } from '~/utils/bn'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
+import { ChartPeriod } from '~/types'
+import { toBN } from '~/utils/bn'
 import { getOperatorDailyBuckets } from '.'
 
 export const getOperatorStats = async (
@@ -12,7 +12,7 @@ export const getOperatorStats = async (
     dataSource: string,
     { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
-    const tokenInfo = await getSponsorshipTokenInfo(chainId)
+    const { decimals = 18n } = await getSponsorshipTokenInfo(chainId)
 
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
 
@@ -83,12 +83,12 @@ export const getOperatorStats = async (
         switch (dataSource) {
             case 'totalValue':
                 yValue = toBN(bucket.valueWithoutEarnings)
-                    .dividedBy(Math.pow(10, Number(tokenInfo?.decimals.toString())))
+                    .dividedBy(10 ** Number(decimals))
                     .toNumber()
                 break
             case 'cumulativeEarnings':
                 yValue = toBN(bucket.cumulativeEarningsWei)
-                    .dividedBy(Math.pow(10, Number(tokenInfo?.decimals.toString())))
+                    .dividedBy(10 ** Number(decimals))
                     .toNumber()
                 break
             default:
@@ -96,7 +96,7 @@ export const getOperatorStats = async (
                 break
         }
         return {
-            x: toBN(bucket.date).multipliedBy(1000).toNumber(),
+            x: Number(bucket.date) / 1000,
             y: yValue,
         }
     })

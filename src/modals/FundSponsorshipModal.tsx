@@ -1,11 +1,13 @@
-import React, { useMemo, useState } from 'react'
 import moment from 'moment'
+import React, { useMemo, useState } from 'react'
 import { toaster } from 'toasterhea'
-import {
-    RejectionReason,
-    isRejectionReason,
-    isTransactionRejection,
-} from '~/utils/exceptions'
+import { Abbr } from '~/components/Abbr'
+import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { DayInSeconds } from '~/consts'
+import { useMediaQuery } from '~/hooks'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { toDecimals } from '~/marketplace/utils/math'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -18,30 +20,29 @@ import FormModal, {
     TextAppendix,
     TextInput,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
-import { BN } from '~/utils/bn'
-import { pluralizeUnit } from '~/utils/pluralizeUnit'
-import { Layer } from '~/utils/Layer'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { toDecimals } from '~/marketplace/utils/math'
 import { fundSponsorship } from '~/services/sponsorships'
+import Label from '~/shared/components/Ui/Label'
 import { waitForIndexedBlock } from '~/utils'
-import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
-import { useMediaQuery } from '~/hooks'
-import { Abbr } from '~/components/Abbr'
+import { Layer } from '~/utils/Layer'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
+import { pluralizeUnit } from '~/utils/pluralizeUnit'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
-    balance: BN
+    balance: bigint
     chainId: number
     onResolve?: () => void
     sponsorship: ParsedSponsorship
 }
 
-const DayInSeconds = 60 * 60 * 24
-
 function FundSponsorshipModal({
+    /**
+     * @todo balance is now a #bigint and the assumption is that it's a float. Refactor.
+     */
     balance,
     chainId,
     onResolve,
