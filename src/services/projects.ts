@@ -378,12 +378,14 @@ export async function createProject(
 ) {
     await networkPreflight(chainId)
 
-    const provider = await getSigner()
+    const signer = await getSigner()
 
-    await getProjectRegistryContract({
+    const contract = getProjectRegistryContract({
         chainId,
-        provider,
-    }).createProject(
+        provider: signer,
+    })
+
+    const tx = await contract.createProject(
         projectId,
         domainIds,
         paymentDetails,
@@ -392,6 +394,8 @@ export async function createProject(
         isPublicPurchasable,
         metadata,
     )
+
+    await tx.wait()
 }
 
 export async function updateProject(
@@ -413,9 +417,11 @@ export async function updateProject(
 ) {
     await networkPreflight(chainId)
 
-    const provider = await getSigner()
+    const signer = await getSigner()
 
-    await getProjectRegistryContract({ chainId, provider }).updateProject(
+    const contract = getProjectRegistryContract({ chainId, provider: signer })
+
+    const tx = await contract.updateProject(
         projectId,
         domainIds,
         paymentDetails,
@@ -423,18 +429,24 @@ export async function updateProject(
         minimumSubscriptionSeconds,
         metadata,
     )
+
+    await tx.wait()
 }
 
 export async function deleteProject(chainId: number, projectId: string) {
     await networkPreflight(chainId)
 
-    const provider = await getSigner()
+    const signer = await getSigner()
+
+    const contract = getProjectRegistryContract({
+        chainId,
+        provider: signer,
+    })
 
     try {
-        await getProjectRegistryContract({
-            chainId,
-            provider,
-        }).deleteProject(projectId)
+        const tx = await contract.deleteProject(projectId)
+
+        await tx.wait()
     } catch (e) {
         if (isMessagedObject(e) && /error_projectDoesNotExist/.test(e.message)) {
             errorToast({
