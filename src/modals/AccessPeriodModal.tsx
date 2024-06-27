@@ -157,6 +157,7 @@ interface Props {
     onReject?: (reason?: unknown) => void
     onResolve?: (result: AccessPeriod) => void
     pricePerSecond?: bigint
+    quantity?: number
     tokenAddress?: string
     tokenDecimals?: bigint
     tokenSymbol?: string
@@ -172,13 +173,21 @@ export default function AccessPeriodModal({
     onReject,
     onResolve,
     pricePerSecond = 0n,
+    quantity = 1,
     tokenAddress = address0,
     tokenDecimals = 18n,
     tokenSymbol = 'DATA',
     unit = timeUnits.hour,
     usdRate = 1,
 }: Props) {
-    const [rawLength, setRawLength] = useState('1')
+    const [rawLength, setRawLength] = useState(`${quantity}`)
+
+    useEffect(
+        function updateRawLength() {
+            setRawLength(`${quantity}`)
+        },
+        [quantity],
+    )
 
     const length = Math.max(0, Number(rawLength) || 0)
 
