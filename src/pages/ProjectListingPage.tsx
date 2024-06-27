@@ -1,17 +1,17 @@
-import React, { useReducer } from 'react'
-import isEqual from 'lodash/isEqual'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import isEqual from 'lodash/isEqual'
+import React, { useReducer } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import Layout from '~/components/Layout'
 import ActionBar, { isOwnedTabOption } from '~/components/ActionBar'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import useModal from '~/shared/hooks/useModal'
-import { getProjects, getProjectsByText } from '~/services/projects'
-import { ProjectFilter } from '~/types'
-import { MaxSearchPhraseLength } from '~/consts'
-import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
+import Layout from '~/components/Layout'
+import { MaxSearchPhraseLength, Minute } from '~/consts'
 import { Projects, ProjectsContainer } from '~/marketplace/components/Projects'
+import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
+import { getProjects, getProjectsByText } from '~/services/projects'
+import LoadingIndicator from '~/shared/components/LoadingIndicator'
+import useModal from '~/shared/hooks/useModal'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { ProjectFilter } from '~/types'
 import { useCurrentChainId } from '~/utils/chains'
 
 const DefaultFilter: ProjectFilter = {
@@ -66,7 +66,7 @@ export default function ProjectListingPage() {
         getNextPageParam(lastPage, pages) {
             return lastPage.hasNextPage ? pages.flatMap((p) => p.projects).length : null
         },
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
         keepPreviousData: true,
     })
 

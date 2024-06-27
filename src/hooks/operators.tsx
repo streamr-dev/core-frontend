@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { toaster } from 'toasterhea'
 import { isAddress } from 'web3-validator'
 import { z } from 'zod'
+import { Minute } from '~/consts'
 import { Operator, Operator_OrderBy, OrderDirection } from '~/generated/gql/network'
 import {
     getAllOperators,
@@ -115,7 +116,7 @@ export function useOperatorByIdQuery(operatorId = '') {
         },
         keepPreviousData: true,
         retry: false,
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
     })
 }
 
@@ -352,7 +353,7 @@ export function useDelegationsForWalletQuery({
         getNextPageParam: ({ skip, elements }) => {
             return elements.length === pageSize ? skip + pageSize : undefined
         },
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
         keepPreviousData: true,
     })
 }
@@ -432,7 +433,7 @@ export function useAllOperatorsQuery({
         getNextPageParam: ({ skip, elements }) => {
             return elements.length === batchSize ? skip + batchSize : undefined
         },
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
         keepPreviousData: true,
     })
 }

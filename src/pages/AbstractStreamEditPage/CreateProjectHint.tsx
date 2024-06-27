@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { DESKTOP, TABLET, LAPTOP } from '~/shared/utils/styled'
-import dataUnionImage2x from '~/marketplace/assets/product_dataunion@2x.png'
-import { TheGraphProject, getProjects } from '~/services/projects'
 import { Button } from '~/components/Button'
-import useModal from '~/shared/hooks/useModal'
+import dataUnionImage2x from '~/marketplace/assets/product_dataunion@2x.png'
 import CreateProjectModal from '~/marketplace/containers/CreateProjectModal'
+import { getProjects } from '~/services/projects'
+import useModal from '~/shared/hooks/useModal'
+import { DESKTOP, LAPTOP, TABLET } from '~/shared/utils/styled'
 import { useCurrentChainId } from '~/utils/chains'
 
 const Container = styled.div`
@@ -80,7 +80,8 @@ type Props = {
 }
 
 export default function CreateProjectHint({ streamId }: Props) {
-    const [projects, setProjects] = useState<TheGraphProject[]>([])
+    const [projects, setProjects] = useState<unknown[]>([])
+
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
     const chainId = useCurrentChainId()

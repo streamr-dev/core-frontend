@@ -87,3 +87,9 @@ export interface DataPoint {
         timestamp: number
     }
 }
+
+export interface WritablePaymentDetail<P = bigint> {
+    beneficiary: string
+    pricingTokenAddress: string
+    pricePerSecond: P
+}

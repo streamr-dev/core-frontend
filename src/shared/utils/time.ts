@@ -1,3 +1,5 @@
+import { Minute } from '~/consts'
+
 const units = [
     {
         max: 60000,
@@ -46,7 +48,7 @@ export function ago(date: Date): string {
     const diff = Math.abs(Date.now() - date.getTime())
 
     // less than a minute
-    if (diff < 60000) {
+    if (diff < Minute) {
         return 'just now'
     }
 

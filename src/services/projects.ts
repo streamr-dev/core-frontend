@@ -17,9 +17,10 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType, TheGraph } from '~/shared/types'
 import { truncate } from '~/shared/utils/text'
 import { timeUnits } from '~/shared/utils/timeUnit'
+import { WritablePaymentDetail } from '~/types'
 import { PublishableProjectPayload } from '~/types/projects'
 import { Layer } from '~/utils/Layer'
-import { BN, toBN, toBigInt } from '~/utils/bn'
+import { toBN, toBigInt } from '~/utils/bn'
 import { isMessagedObject } from '~/utils/exceptions'
 import networkPreflight from '~/utils/networkPreflight'
 import { convertPrice } from '~/utils/price'
@@ -27,95 +28,60 @@ import { errorToast } from '~/utils/toast'
 import { postImage } from './images'
 
 /**
- * @todo Let's shake off the unnecessary types.
+ * @deprecated Use the `ParsedProject` (see `ProjectParser`) instead.
  */
-
-export type TheGraphPaymentDetails = {
-    domainId: string
-    beneficiary: string
-    pricingTokenAddress: string
-    pricePerSecond: string
-}
-
-export type ProjectPermissions = {
-    canBuy: boolean
-    canDelete: boolean
-    canEdit: boolean
-    canGrant: boolean
-}
-
-export type TheGraphPermission = ProjectPermissions & {
-    userAddress: string
-}
-
-export type TheGraphPurchase = {
-    subscriber: string
-    subscriptionSeconds: string
-    price: string
-    fee: string
-}
-
 export type TheGraphProject = {
     id: string
-    paymentDetails: TheGraphPaymentDetails[]
+    paymentDetails: (WritablePaymentDetail<string> & {
+        domainId: string
+    })[]
     minimumSubscriptionSeconds: string
-    metadata: SmartContractProjectMetadata
+    metadata: {
+        name: string
+        description: string
+        imageIpfsCid: string | null | undefined
+        creator: string
+        termsOfUse:
+            | {
+                  commercialUse: boolean
+                  redistribution: boolean
+                  reselling: boolean
+                  storage: boolean
+                  termsName: string | null | undefined
+                  termsUrl: string | null | undefined
+              }
+            | undefined
+        contactDetails:
+            | {
+                  url?: string | null | undefined
+                  email?: string | null | undefined
+                  twitter?: string | null | undefined
+                  telegram?: string | null | undefined
+                  reddit?: string | null | undefined
+                  linkedIn?: string | null | undefined
+              }
+            | undefined
+        isDataUnion?: boolean
+    }
     version: number | null
     streams: string[]
-    permissions: TheGraphPermission[]
+    permissions: {
+        canBuy: boolean
+        canDelete: boolean
+        canEdit: boolean
+        canGrant: boolean
+        userAddress: string
+    }[]
     createdAt: string
     updatedAt: string
-    purchases: TheGraphPurchase[]
+    purchases: {
+        subscriber: string
+        subscriptionSeconds: string
+        price: string
+        fee: string
+    }[]
     purchasesCount: number
     isDataUnion: boolean
-}
-
-export type PaymentDetails = {
-    chainId: number
-    beneficiaryAddress: string
-    pricePerSecond: BN
-    pricingTokenAddress: string
-}
-
-export type SmartContractProjectMetadata = {
-    name: string
-    description: string
-    imageIpfsCid: string | null | undefined
-    creator: string
-    termsOfUse:
-        | {
-              commercialUse: boolean
-              redistribution: boolean
-              reselling: boolean
-              storage: boolean
-              termsName: string | null | undefined
-              termsUrl: string | null | undefined
-          }
-        | undefined
-    contactDetails:
-        | {
-              url?: string | null | undefined
-              email?: string | null | undefined
-              twitter?: string | null | undefined
-              telegram?: string | null | undefined
-              reddit?: string | null | undefined
-              linkedIn?: string | null | undefined
-          }
-        | undefined
-    isDataUnion?: boolean
-}
-
-export type SmartContractProject = {
-    id: string
-    paymentDetails: PaymentDetails[]
-    minimumSubscriptionInSeconds: number
-    metadata: string
-    chainId: number
-    streams: string[]
-}
-
-export interface SmartContractProjectCreate extends SmartContractProject {
-    isPublicPurchasable: boolean
 }
 
 const mapProject = (project: any): TheGraphProject => {
@@ -299,11 +265,7 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
 
     const domainIds: number[] = []
 
-    const paymentDetails: {
-        beneficiary: string
-        pricingTokenAddress: string
-        pricePerSecond: bigint
-    }[] = []
+    const paymentDetails: WritablePaymentDetail[] = []
 
     const wallet = (await getWalletAccount()) || ''
 
@@ -410,11 +372,7 @@ export async function createProject(
         isPublicPurchasable: boolean
         metadata: string
         minimumSubscriptionSeconds?: number
-        paymentDetails: {
-            beneficiary: string
-            pricingTokenAddress: string
-            pricePerSecond: bigint
-        }[]
+        paymentDetails: WritablePaymentDetail[]
         streams: string[]
     },
 ) {
@@ -449,11 +407,7 @@ export async function updateProject(
         domainIds: number[]
         metadata: string
         minimumSubscriptionSeconds?: number
-        paymentDetails: {
-            beneficiary: string
-            pricingTokenAddress: string
-            pricePerSecond: bigint
-        }[]
+        paymentDetails: WritablePaymentDetail[]
         streams: string[]
     },
 ) {

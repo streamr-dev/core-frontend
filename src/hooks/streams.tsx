@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import uniqueId from 'lodash/uniqueId'
-import { address0 } from '~/consts'
+import { Minute, address0 } from '~/consts'
 import {
     GetGlobalStreamsStatsDocument,
     GetGlobalStreamsStatsQuery,
@@ -22,9 +22,9 @@ import {
 } from '~/generated/gql/network'
 import { getDescription } from '~/getters'
 import { getGraphClient, getIndexerClient } from '~/getters/getGraphClient'
-import { getChainConfigExtension, useCurrentChainId } from '~/utils/chains'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection } from '~/types'
+import { getChainConfigExtension, useCurrentChainId } from '~/utils/chains'
 
 export enum StreamsTabOption {
     All = 'all',
@@ -331,7 +331,7 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
         },
         getNextPageParam: ({ hasNextPage, nextPageParam }) =>
             hasNextPage ? nextPageParam : null,
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
         keepPreviousData: true,
     })
 }
