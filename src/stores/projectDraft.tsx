@@ -6,7 +6,6 @@ import { randomHex } from 'web3-utils'
 import { ValidationError } from '~/errors'
 import { getDataUnion } from '~/getters/du'
 import { ParsedProject } from '~/parsers/ProjectParser'
-import { Route as R, routeOptions } from '~/utils/routes'
 import {
     createProject,
     deployDataUnionContract,
@@ -22,6 +21,7 @@ import { toBN } from '~/utils/bn'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { createDraftStore, getEmptyDraft } from '~/utils/draft'
 import networkPreflight from '~/utils/networkPreflight'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { validationErrorToast } from '~/utils/toast'
 import { toastedOperations } from '~/utils/toastedOperation'
 
