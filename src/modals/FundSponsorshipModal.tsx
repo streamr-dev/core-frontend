@@ -4,10 +4,8 @@ import { toaster } from 'toasterhea'
 import { Abbr } from '~/components/Abbr'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { DayInSeconds } from '~/consts'
 import { useMediaQuery } from '~/hooks'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import { toDecimals } from '~/marketplace/utils/math'
 import FormModal, {
     FieldWrap,
     FormModalProps,
@@ -25,6 +23,7 @@ import { fundSponsorship } from '~/services/sponsorships'
 import Label from '~/shared/components/Ui/Label'
 import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
+import { toBigInt, toFloat } from '~/utils/bn'
 import {
     RejectionReason,
     isRejectionReason,
@@ -40,33 +39,23 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 }
 
 function FundSponsorshipModal({
-    /**
-     * @todo balance is now a #bigint and the assumption is that it's a float. Refactor.
-     */
     balance,
     chainId,
     onResolve,
     sponsorship,
     ...props
 }: Props) {
-    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     const [rawAmount, setRawAmount] = useState('')
 
+    const amount = ((a: bigint) => (a > 0n ? a : 0n))(toBigInt(rawAmount || 0, decimals))
+
     const [confirmState, setConfirmState] = useState(false)
 
-    const pricePerSecond = toDecimals(sponsorship.payoutPerDay, decimals).dividedBy(
-        DayInSeconds,
-    )
+    const { payoutPerSec: pricePerSecond } = sponsorship
 
-    const value = rawAmount || '0'
-
-    const finalValue = toDecimals(value, decimals)
-
-    const extensionInSeconds =
-        pricePerSecond.isGreaterThan(0) && finalValue.isGreaterThanOrEqualTo(0)
-            ? finalValue.dividedBy(pricePerSecond).toNumber()
-            : 0
+    const extensionInSeconds = Number(pricePerSecond > 0n ? amount / pricePerSecond : 0n)
 
     const extensionDuration = moment.duration(extensionInSeconds, 'seconds')
 
@@ -123,17 +112,13 @@ function FundSponsorshipModal({
 
     const endDate = new Date(startDate + extensionInSeconds * 1000)
 
-    const insufficientFunds = finalValue.isGreaterThan(toDecimals(balance, decimals))
+    const insufficientFunds = amount > balance
 
-    const canSubmit =
-        finalValue.isFinite() &&
-        finalValue.isGreaterThan(0) &&
-        !insufficientFunds &&
-        confirmState
+    const canSubmit = amount > 0n && !insufficientFunds && confirmState
 
     const [busy, setBusy] = useState(false)
 
-    const dirty = rawAmount !== ''
+    const clean = rawAmount === ''
 
     const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
 
@@ -145,13 +130,13 @@ function FundSponsorshipModal({
             submitting={busy}
             submitLabel="Fund"
             onBeforeAbort={(reason) =>
-                !busy && (reason !== RejectionReason.Backdrop || !dirty)
+                !busy && (reason !== RejectionReason.Backdrop || clean)
             }
             onSubmit={async () => {
                 setBusy(true)
 
                 try {
-                    await fundSponsorship(chainId, sponsorship.id, finalValue, {
+                    await fundSponsorship(chainId, sponsorship.id, amount, {
                         onBlockNumber: (blockNumber) =>
                             waitForIndexedBlock(chainId, blockNumber),
                     })
@@ -192,7 +177,7 @@ function FundSponsorshipModal({
                     />
                     <MaxButton
                         onClick={() => {
-                            setRawAmount(balance.toString())
+                            setRawAmount(toFloat(balance, decimals).toString())
                         }}
                     />
                     <TextAppendix>
@@ -210,10 +195,11 @@ function FundSponsorshipModal({
                         </Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr>{balance}</Abbr>
+                                <Abbr>{toFloat(balance, decimals)}</Abbr>
                             ) : (
                                 <>
-                                    {balance.toString()} <SponsorshipPaymentTokenName />
+                                    {toFloat(balance, decimals).toString()}{' '}
+                                    <SponsorshipPaymentTokenName />
                                 </>
                             )}
                         </PropValue>
@@ -234,10 +220,15 @@ function FundSponsorshipModal({
                         <Prop>Rate</Prop>
                         <PropValue>
                             {limitedSpace ? (
-                                <Abbr suffix="/day">{sponsorship.payoutPerDay}</Abbr>
+                                <Abbr suffix="/day">
+                                    {toFloat(sponsorship.payoutPerDay, decimals)}
+                                </Abbr>
                             ) : (
                                 <>
-                                    {sponsorship.payoutPerDay.toString()}{' '}
+                                    {toFloat(
+                                        sponsorship.payoutPerDay,
+                                        decimals,
+                                    ).toString()}{' '}
                                     <SponsorshipPaymentTokenName />
                                     /day
                                 </>

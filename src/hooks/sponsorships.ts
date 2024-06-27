@@ -654,7 +654,7 @@ export function useEditSponsorshipFunding() {
                                  */
                                 await getSponsorshipTokenInfo(chainId)
 
-                                const leavePenaltyWei = await getSponsorshipLeavePenalty(
+                                const leavePenalty = await getSponsorshipLeavePenalty(
                                     chainId,
                                     sponsorship.id,
                                     operator.id,
@@ -664,7 +664,7 @@ export function useEditSponsorshipFunding() {
                                     chainId,
                                     operator,
                                     sponsorship,
-                                    leavePenaltyWei,
+                                    leavePenalty,
                                 })
 
                                 invalidateSponsorshipQueries(

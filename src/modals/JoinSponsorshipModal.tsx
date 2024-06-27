@@ -12,7 +12,6 @@ import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
-import { fromDecimals } from '~/marketplace/utils/math'
 import FormModal, {
     CopyButtonWrapAppendix,
     ErrorLabel,
@@ -54,10 +53,6 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     sponsorship: ParsedSponsorship
 }
 
-function parseAmount(amount: string | undefined, decimals: bigint) {
-    return !amount || amount === '0' ? '' : fromDecimals(amount, decimals).toString()
-}
-
 const limitErrorToaster = toaster(Toast, Layer.Toast)
 
 function JoinSponsorshipModal({
@@ -67,8 +62,7 @@ function JoinSponsorshipModal({
     sponsorship,
     ...props
 }: Props) {
-    const { decimals = 18n, symbol: tokenSymbol = 'DATA' } =
-        useSponsorshipTokenInfo() || {}
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     const wallet = useWalletAccount()
 
