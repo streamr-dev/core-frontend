@@ -1,16 +1,16 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import {
-    MarketplaceV4 as MarketplaceContract,
-    ProjectRegistryV1 as ProjectRegistryContract,
-    marketplaceV4ABI as marketplaceAbi,
-    projectRegistryV1ABI as projectRegistryAbi,
-} from '@streamr/hub-contracts'
 import { Contract, Provider, Signer } from 'ethers'
 import moment, { Moment } from 'moment'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { address0 } from '~/consts'
 import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
+import {
+    MarketplaceV4 as MarketplaceContract,
+    MarketplaceV4__factory,
+    ProjectRegistryV1 as ProjectRegistryContract,
+    ProjectRegistryV1__factory,
+} from '~/generaged/types'
 import {
     GetEnsDomainsForAccountDocument,
     GetEnsDomainsForAccountQuery,
@@ -111,7 +111,7 @@ export function getProjectRegistryContract({
 
     return new Contract(
         contractAddress,
-        projectRegistryAbi,
+        ProjectRegistryV1__factory.abi,
         provider,
     ) as unknown as ProjectRegistryContract
 }
@@ -135,7 +135,7 @@ export function getMarketplaceContract({
 }) {
     return new Contract(
         getMarketplaceAddress(chainId),
-        marketplaceAbi,
+        MarketplaceV4__factory.abi,
         provider,
     ) as unknown as MarketplaceContract
 }

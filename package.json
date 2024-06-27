@@ -23,7 +23,8 @@
         "prettier": "pretty-quick --staged",
         "prepare": "husky install",
         "codegen": "graphql-codegen --config codegen.ts",
-        "typechain": "typechain --target=ethers-v6 'src/shared/web3/abis/*.json' --out-dir src/generated/types"
+        "typechain": "typechain --target=ethers-v6 'src/shared/web3/abis/*.json' --out-dir src/generated/types",
+        "typechain-hub": "npx typechain --target=ethers-v6 --out-dir=src/generaged/types ./node_modules/@streamr/hub-contracts/dist/**/*.json"
     },
     "lint-staged": {
         "*.{js,ts,tsx}": [
@@ -47,7 +48,7 @@
         "@sentry/browser": "^7.51.2",
         "@sentry/integrations": "^7.51.2",
         "@streamr/config": "^5.3.12",
-        "@streamr/hub-contracts": "^1.0.2",
+        "@streamr/hub-contracts": "^1.1.2",
         "@streamr/sdk": "^101.0.0-beta.1",
         "@streamr/streamr-icons": "^0.1.9",
         "@streamr/streamr-layout": "^2.5.3",
