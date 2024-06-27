@@ -452,7 +452,7 @@ export async function updateProject(
         paymentDetails: {
             beneficiary: string
             pricingTokenAddress: string
-            pricePerSecond: string
+            pricePerSecond: bigint
         }[]
         streams: string[]
     },
