@@ -7,8 +7,10 @@ export const timeUnits = {
     day: 'day',
     week: 'week',
     month: 'month',
-}
+} as const
+
 export type TimeUnit = $Values<typeof timeUnits>
+
 export const timeUnitSecondsMultiplierMap = new Map<TimeUnit, number>([
     ['second', 1],
     ['minute', 60],
