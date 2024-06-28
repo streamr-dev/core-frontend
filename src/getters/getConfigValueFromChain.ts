@@ -43,7 +43,32 @@ export async function getConfigValueFromChain<
         provider,
     ) as unknown as StreamrConfig
 
-    const result = (await contract[key]()) as U
+    const result = await (async () => {
+        try {
+            return (await contract[key]()) as U
+        } catch (e) {
+            if (
+                key === 'minimumDelegationSeconds' &&
+                chainId === getChainConfig('amoy').id
+            ) {
+                console.warn('Falling back to minimumDelegationSeconds from Polygon')
+                /**
+                 * `minimumDelegationSeconds` feature has not been deployed
+                 * to Amoy. In the meantime use the value from Polygon.
+                 *
+                 * @todo Remove this fallback when Amoy is ready.
+                 *
+                 * @link https://linear.app/streamr/issue/ETH-776/amoy-streamrconfig-contract-address-is-out-of-date
+                 */
+                return (await getConfigValueFromChain(
+                    getChainConfig('polygon').id,
+                    key,
+                )) as U
+            }
+
+            throw e
+        }
+    })()
 
     const obj = cache[chainId] || {}
 
