@@ -234,7 +234,7 @@ function MaticBalance({ address }: { address: string }) {
 
     const lowBalance = balance != null && balance < LowBalanceThreshold
 
-    return balance ? (
+    return balance != null ? (
         <MaticBalanceRoot>
             <div>{toFloat(balance, 18n).toFixed(2)}</div>
             {lowBalance && (
