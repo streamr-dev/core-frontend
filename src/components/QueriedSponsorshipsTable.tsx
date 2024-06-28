@@ -1,30 +1,29 @@
-import React, { ReactNode } from 'react'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { useOperatorForWalletQuery } from '~/hooks/operators'
+import React, { ReactNode } from 'react'
 import { LoadMoreButton } from '~/components/LoadMore'
-import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
-import {
-    useEditSponsorshipFunding,
-    useFundSponsorshipCallback,
-    useJoinSponsorshipAsOperator,
-    useSponsorshipTokenInfo,
-} from '~/hooks/sponsorships'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
     FundedUntilCell,
     NumberOfOperatorsCell,
     SponsorshipApyCell,
     StreamIdCell,
 } from '~/components/Table'
-import { abbr } from '~/utils'
-import { useCurrentChainId } from '~/utils/chains'
+import { useOperatorForWalletQuery } from '~/hooks/operators'
+import {
+    useEditSponsorshipFunding,
+    useFundSponsorshipCallback,
+    useJoinSponsorshipAsOperator,
+    useSponsorshipTokenInfo,
+} from '~/hooks/sponsorships'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
+import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection } from '~/types'
-import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { abbr } from '~/utils'
 import { toFloat } from '~/utils/bn'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 
 interface Props {
     noDataFirstLine?: ReactNode
