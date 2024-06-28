@@ -326,6 +326,7 @@ export async function setOperatorNodeAddresses(
     await networkPreflight(chainId)
 
     const signer = await getSigner()
+
     const operatorContract = new Contract(
         operatorId,
         operatorABI,

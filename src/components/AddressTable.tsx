@@ -350,12 +350,13 @@ export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, 
                     },
                 })
             } catch (e) {
-                if (isTransactionRejection(e)) {
+                if (isTransactionRejection(e) || isRejectionReason(e)) {
                     /**
                      * User rejected the transaction. Let's move on like
                      * nothing happened.
                      */
                     onReject?.()
+
                     return
                 }
 
@@ -415,12 +416,13 @@ export function useSubmitControllerAddressesCallback(): [
                     })
                 }
             } catch (e) {
-                if (isTransactionRejection(e)) {
+                if (isTransactionRejection(e) || isRejectionReason(e)) {
                     /**
                      * User rejected the transaction. Let's move on like
                      * nothing happened.
                      */
                     onReject?.()
+
                     return
                 }
 
