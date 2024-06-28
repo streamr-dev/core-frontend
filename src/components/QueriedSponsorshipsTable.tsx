@@ -106,6 +106,7 @@ export function QueriedSponsorshipsTable({
                         displayName: 'Funds',
                         valueMapper: (element) => (
                             <Decimals
+                                abbr
                                 amount={element.timeCorrectedRemainingBalance}
                                 decimals={decimals}
                             />
@@ -131,7 +132,7 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Staked',
                         valueMapper: (element) => (
-                            <SponsorshipDecimals amount={element.totalStakedWei} />
+                            <SponsorshipDecimals abbr amount={element.totalStakedWei} />
                         ),
                         align: 'end',
                         isSticky: false,

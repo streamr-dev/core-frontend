@@ -1,7 +1,6 @@
 import moment from 'moment'
 import React, { useMemo, useState } from 'react'
 import { toaster } from 'toasterhea'
-import { Abbr } from '~/components/Abbr'
 import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -195,11 +194,11 @@ function FundSponsorshipModal({
                             )}
                         </Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(balance, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={balance} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={balance}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                     <li>
@@ -217,17 +216,12 @@ function FundSponsorshipModal({
                     <li>
                         <Prop>Rate</Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr suffix="/day">
-                                    {toFloat(sponsorship.payoutPerDay, decimals)}
-                                </Abbr>
-                            ) : (
-                                <SponsorshipDecimals
-                                    amount={sponsorship.payoutPerDay}
-                                    unitSuffix="/day"
-                                    raw
-                                />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={sponsorship.payoutPerDay}
+                                unitSuffix="/day"
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                 </PropList>

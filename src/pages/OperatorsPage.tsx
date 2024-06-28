@@ -224,7 +224,7 @@ function DelegationsTable({
                 {
                     displayName: 'My delegation',
                     valueMapper: (element) => (
-                        <SponsorshipDecimals amount={element.myShare} />
+                        <SponsorshipDecimals abbr amount={element.myShare} />
                     ),
                     align: 'start',
                     isSticky: false,
@@ -233,7 +233,7 @@ function DelegationsTable({
                 {
                     displayName: 'Total stake',
                     valueMapper: (element) => (
-                        <SponsorshipDecimals amount={element.valueWithoutEarnings} />
+                        <SponsorshipDecimals abbr amount={element.valueWithoutEarnings} />
                     ),
                     align: 'end',
                     isSticky: false,
@@ -308,7 +308,7 @@ function OperatorsTable({
                 {
                     displayName: 'Total stake',
                     valueMapper: (element) => (
-                        <SponsorshipDecimals amount={element.valueWithoutEarnings} />
+                        <SponsorshipDecimals abbr amount={element.valueWithoutEarnings} />
                     ),
                     align: 'start',
                     isSticky: false,
@@ -319,6 +319,7 @@ function OperatorsTable({
                     displayName: 'Deployed stake',
                     valueMapper: (element) => (
                         <SponsorshipDecimals
+                            abbr
                             amount={element.totalStakeInSponsorshipsWei}
                         />
                     ),

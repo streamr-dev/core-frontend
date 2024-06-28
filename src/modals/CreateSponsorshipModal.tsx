@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { toaster } from 'toasterhea'
-import { Abbr } from '~/components/Abbr'
 import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -33,7 +32,7 @@ import Label from '~/shared/components/Ui/Label'
 import Toast from '~/shared/toasts/Toast'
 import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import { toBigInt, toFloat } from '~/utils/bn'
+import { toBigInt } from '~/utils/bn'
 import {
     RejectionReason,
     isRejectionReason,
@@ -244,11 +243,11 @@ function CreateSponsorshipModal({
                         <p>
                             Wallet balance:{' '}
                             <strong>
-                                {limitedSpace ? (
-                                    <Abbr>{toFloat(balance, decimals)}</Abbr>
-                                ) : (
-                                    <SponsorshipDecimals amount={balance} raw />
-                                )}
+                                <SponsorshipDecimals
+                                    abbr={limitedSpace}
+                                    amount={balance}
+                                    tooltip={limitedSpace}
+                                />
                             </strong>
                         </p>
                     </Hint>

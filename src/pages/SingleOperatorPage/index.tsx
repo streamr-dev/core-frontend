@@ -924,7 +924,7 @@ function UncollectedEarnings({
     const value = useUncollectedEarnings(operatorId, sponsorshipId)
 
     return typeof value !== 'undefined' ? (
-        <SponsorshipDecimals amount={value?.uncollectedEarnings || 0n} />
+        <SponsorshipDecimals abbr amount={value?.uncollectedEarnings || 0n} />
     ) : (
         <Spinner color="blue" />
     )

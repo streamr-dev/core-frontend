@@ -1,48 +1,78 @@
 import React, { ReactNode, useMemo } from 'react'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { Tooltip } from '~/components/Tooltip'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { abbr } from '~/utils'
-import { BN, toFloat } from '~/utils/bn'
+import { toFloat } from '~/utils/bn'
 
 interface DecimalsProps {
+    abbr?: boolean
     amount: bigint
     decimals: bigint
-    raw?: boolean
+    tooltip?: boolean
     unit?: ReactNode
 }
 
-export function Decimals({ amount, decimals, raw = false, unit }: DecimalsProps) {
+export function Decimals({
+    abbr: abbrProp = false,
+    amount,
+    decimals,
+    tooltip = false,
+    unit,
+}: DecimalsProps) {
+    const humanAmount = toFloat(amount, decimals)
+
     const value = useMemo(
-        () => ((x: BN) => (raw ? x.toString() : abbr(x)))(toFloat(amount, decimals)),
-        [raw, amount, decimals],
+        () => (abbrProp ? humanAmount.toString() : abbr(humanAmount)),
+        [abbrProp, humanAmount],
     )
 
+    if (value === humanAmount.toString() || !tooltip) {
+        return (
+            <>
+                {value}
+                {unit != null ? <>&nbsp;{unit}</> : <></>}
+            </>
+        )
+    }
+
     return (
-        <>
+        <Tooltip
+            anchorDisplay="inline"
+            content={
+                <>
+                    {humanAmount}
+                    {unit != null ? <>&nbsp;{unit}</> : <></>}
+                </>
+            }
+        >
             {value}
             {unit != null ? <>&nbsp;{unit}</> : <></>}
-        </>
+        </Tooltip>
     )
 }
 
 interface SponsorshipDecimalsProps {
+    abbr?: boolean
     amount: bigint
-    raw?: boolean
+    tooltip?: boolean
     unitSuffix?: ReactNode
 }
 
 export function SponsorshipDecimals({
+    abbr = false,
     amount,
-    raw = false,
+    tooltip = false,
     unitSuffix,
 }: SponsorshipDecimalsProps) {
     const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <Decimals
+            abbr={abbr}
             amount={amount}
             decimals={decimals}
-            raw={raw}
+            tooltip={tooltip}
             unit={
                 <>
                     <SponsorshipPaymentTokenName />

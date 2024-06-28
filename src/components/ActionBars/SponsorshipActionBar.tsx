@@ -182,12 +182,14 @@ export function SponsorshipActionBar({
                                 }
                             >
                                 <SponsorshipDecimals
+                                    abbr
                                     amount={sponsorship.payoutPerDay}
                                     unitSuffix="/day"
                                 />
                             </StatCell>
                             <StatCell label="Remaining balance">
                                 <SponsorshipDecimals
+                                    abbr
                                     amount={timeCorrectedRemainingBalance}
                                 />
                             </StatCell>
@@ -205,6 +207,7 @@ export function SponsorshipActionBar({
                                 }
                             >
                                 <SponsorshipDecimals
+                                    abbr
                                     amount={sponsorship.totalStakedWei}
                                 />
                             </StatCell>
@@ -239,6 +242,7 @@ export function SponsorshipActionBar({
                                 }
                             >
                                 <SponsorshipDecimals
+                                    abbr
                                     amount={sponsorship.cumulativeSponsoring}
                                 />
                             </StatCell>

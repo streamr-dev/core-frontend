@@ -322,6 +322,7 @@ export const SingleSponsorshipPage = () => {
                                         displayName: 'Amount',
                                         valueMapper: (element) => (
                                             <SponsorshipDecimals
+                                                abbr
                                                 amount={element.amount}
                                             />
                                         ),

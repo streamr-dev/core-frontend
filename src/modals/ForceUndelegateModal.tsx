@@ -3,8 +3,8 @@ import moment from 'moment'
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import { Abbr } from '~/components/Abbr'
 import { Alert } from '~/components/Alert'
+import { Decimals } from '~/components/Decimals'
 import { StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
@@ -19,7 +19,6 @@ import { Radio } from '~/shared/components/Radio'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import { toFloat } from '~/utils/bn'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 
 type OperatorStake = ParsedOperator['stakes'][0]
@@ -143,9 +142,12 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
                                 displayName: 'Amount',
                                 valueMapper: (element) => (
                                     <WarningCell>
-                                        <Abbr>
-                                            {toFloat(element.amountWei, decimals)}
-                                        </Abbr>
+                                        <Decimals
+                                            abbr
+                                            amount={element.amountWei}
+                                            decimals={decimals}
+                                            tooltip
+                                        />
                                         {element.amountWei < amount && (
                                             <Tooltip content={<p>Partial payout</p>}>
                                                 <TooltipIconWrap $color="#ff5c00">

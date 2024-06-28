@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Abbr } from '~/components/Abbr'
 import { Alert as PrestyledAlert } from '~/components/Alert'
 import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -212,11 +211,11 @@ export default function DelegateFundsModal({
                             )}
                         </Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(balance, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={balance} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={balance}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                     <li>
@@ -226,11 +225,11 @@ export default function DelegateFundsModal({
                     <li>
                         <Prop>{totalLabel}</Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(delegatedTotal, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={delegatedTotal} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={delegatedTotal}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                 </PropList>
@@ -248,7 +247,7 @@ export default function DelegateFundsModal({
                             <Alert type="error" title="Amount too high">
                                 This operator can currently only accept less than{' '}
                                 <strong>
-                                    <SponsorshipDecimals amount={maxNextAmount} raw />
+                                    <SponsorshipDecimals amount={maxNextAmount} />
                                 </strong>{' '}
                                 in further delegations, because operators must stay above
                                 a certain proportion of their own funds vs. delegations.
@@ -264,7 +263,7 @@ export default function DelegateFundsModal({
                         title={
                             <>
                                 Minimum delegation is{' '}
-                                <SponsorshipDecimals amount={minimumDelegationWei} raw />
+                                <SponsorshipDecimals amount={minimumDelegationWei} />
                             </>
                         }
                     ></Alert>

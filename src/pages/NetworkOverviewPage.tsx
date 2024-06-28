@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import moment from 'moment'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Abbr } from '~/components/Abbr'
 import { Button } from '~/components/Button'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
 import { SponsorshipDecimals } from '~/components/Decimals'
@@ -84,7 +83,9 @@ function NetworkStats() {
             <Pad>
                 <StatGrid>
                     <StatCell label="Total stake">
-                        {data && <Abbr>{toFloat(data.totalStake, 18n)}</Abbr>}
+                        {data && (
+                            <SponsorshipDecimals abbr amount={data.totalStake} tooltip />
+                        )}
                     </StatCell>
                     <StatCell label="Sponsorships">{data?.sponsorshipsCount}</StatCell>
                     <StatCell label="Operators">{data?.operatorsCount}</StatCell>
@@ -426,7 +427,7 @@ function MyDelegations() {
                                 {
                                     displayName: 'My delegation',
                                     valueMapper: ({ myShare }) => (
-                                        <SponsorshipDecimals amount={myShare} />
+                                        <SponsorshipDecimals abbr amount={myShare} />
                                     ),
                                     align: 'start',
                                     isSticky: false,
@@ -436,6 +437,7 @@ function MyDelegations() {
                                     displayName: 'Total stake',
                                     valueMapper: ({ valueWithoutEarnings }) => (
                                         <SponsorshipDecimals
+                                            abbr
                                             amount={valueWithoutEarnings}
                                         />
                                     ),

@@ -2,7 +2,6 @@ import CopyIcon from '@atlaskit/icon/glyph/copy'
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import { Abbr } from '~/components/Abbr'
 import { Alert } from '~/components/Alert'
 import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -208,7 +207,7 @@ function JoinSponsorshipModal({
                     {rawAmount !== '' && !isAboveMinimumStake && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            <SponsorshipDecimals amount={minimumStakeWei || 0n} raw />
+                            <SponsorshipDecimals amount={minimumStakeWei || 0n} />
                         </ErrorLabel>
                     )}
                 </StyledLabelWrap>
@@ -249,11 +248,11 @@ function JoinSponsorshipModal({
                             )}
                         </Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(operatorBalance, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={operatorBalance} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={operatorBalance}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                     <li>
@@ -304,7 +303,6 @@ function JoinSponsorshipModal({
                     Increase your Operator stake by at least{' '}
                     <SponsorshipDecimals
                         amount={minimumSelfDelegationAmount - currentSelfDelegationAmount}
-                        raw
                     />{' '}
                     to continue.
                 </StyledAlert>
@@ -328,7 +326,7 @@ function JoinSponsorshipModal({
                             This Sponsorship has a minimum staking period of{' '}
                             {humanize(sponsorship.minimumStakingPeriodSeconds)}. If you
                             unstake or get voted out during this period, you will lose{' '}
-                            <SponsorshipDecimals amount={earlyLeaverPenaltyWei} raw /> in
+                            <SponsorshipDecimals amount={earlyLeaverPenaltyWei} /> in
                             addition to the normal slashing penalty.
                         </>
                     }

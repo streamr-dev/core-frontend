@@ -220,6 +220,7 @@ export const OperatorActionBar: FunctionComponent<{
                             >
                                 <div>
                                     <SponsorshipDecimals
+                                        abbr
                                         amount={operator.valueWithoutEarnings}
                                     />
                                 </div>
@@ -237,6 +238,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 }
                             >
                                 <SponsorshipDecimals
+                                    abbr
                                     amount={operator.totalStakeInSponsorshipsWei}
                                 />
                             </StatCell>
@@ -336,6 +338,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 }
                             >
                                 <SponsorshipDecimals
+                                    abbr
                                     amount={
                                         operator.cumulativeProfitsWei +
                                         operator.cumulativeOperatorsCutWei

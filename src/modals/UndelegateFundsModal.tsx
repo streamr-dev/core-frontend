@@ -2,7 +2,6 @@ import moment from 'moment'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import { Abbr } from '~/components/Abbr'
 import { Alert } from '~/components/Alert'
 import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -191,22 +190,22 @@ function UndelegateFundsModal({
                 <FieldWrap $bottom $padded>
                     <Prop>
                         {totalLabel}:{' '}
-                        {limitedSpace ? (
-                            <Abbr>{toFloat(delegatedTotal, decimals)}</Abbr>
-                        ) : (
-                            <SponsorshipDecimals amount={delegatedTotal} raw />
-                        )}
+                        <SponsorshipDecimals
+                            abbr={limitedSpace}
+                            amount={delegatedTotal}
+                            tooltip={limitedSpace}
+                        />
                     </Prop>
                 </FieldWrap>
                 <PropList>
                     <li>
                         <Prop>Your wallet balance</Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(balance, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={balance} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={balance}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                     <li>
@@ -216,11 +215,11 @@ function UndelegateFundsModal({
                     <li>
                         <Prop>Available balance in Operator</Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(freeFunds, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={freeFunds} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={freeFunds}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                 </PropList>
@@ -231,7 +230,7 @@ function UndelegateFundsModal({
                         type="notice"
                         title={
                             <>
-                                <SponsorshipDecimals amount={amount} raw /> will be
+                                <SponsorshipDecimals amount={amount} /> will be
                                 undelegated immediately
                             </>
                         }

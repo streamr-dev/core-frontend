@@ -2,7 +2,6 @@ import moment from 'moment'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import { Abbr } from '~/components/Abbr'
 import { Alert } from '~/components/Alert'
 import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
@@ -211,7 +210,7 @@ function EditStakeModal({
                             description: (
                                 <>
                                     {slashingReason} If you unstake now, you will lose{' '}
-                                    <SponsorshipDecimals amount={slashingAmount} raw />
+                                    <SponsorshipDecimals amount={slashingAmount} />
                                 </>
                             ),
                             proceedLabel: 'Proceed anyway',
@@ -256,7 +255,7 @@ function EditStakeModal({
                     {rawAmount !== '' && !isAmountWithinAcceptedRange && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            <SponsorshipDecimals amount={minimumStakeWei} raw />
+                            <SponsorshipDecimals amount={minimumStakeWei} />
                         </ErrorLabel>
                     )}
                 </WingedLabelWrap>
@@ -292,21 +291,21 @@ function EditStakeModal({
                     <li>
                         <Prop>Current stake</Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(currentAmount, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={currentAmount} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={currentAmount}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                     <li>
                         <Prop>Stake change</Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(difference, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={difference} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={difference}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                     <li>
@@ -318,11 +317,11 @@ function EditStakeModal({
                             )}
                         </Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{toFloat(availableBalance, decimals)}</Abbr>
-                            ) : (
-                                <SponsorshipDecimals amount={availableBalance} raw />
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={availableBalance}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                 </PropList>
@@ -331,7 +330,7 @@ function EditStakeModal({
                 <StyledAlert type="error" title="Your stake will be slashed">
                     Your minimum staking period is still ongoing and ends on{' '}
                     {minLeaveDate}. If you unstake now, you will lose{' '}
-                    <SponsorshipDecimals amount={leavePenalty} raw />.
+                    <SponsorshipDecimals amount={leavePenalty} />.
                 </StyledAlert>
             )}
             {difference > 0n && hasUndelegationQueue && (
