@@ -8,7 +8,7 @@ export async function requirePositiveBalance(chainId: number, walletAddress: str
         walletAddress,
     })
 
-    if (balance > 0) {
+    if (balance <= 0n) {
         throw new InsufficientFundsError(walletAddress)
     }
 }

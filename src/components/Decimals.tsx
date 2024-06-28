@@ -13,6 +13,10 @@ interface DecimalsProps {
     unit?: ReactNode
 }
 
+/**
+ * Displays amount (in wei) in a human-readable way. Optionally it abbreviates
+ * it and adds a on-hover tooltip showing a full value.
+ */
 export function Decimals({
     abbr: abbrProp = false,
     amount,
@@ -23,7 +27,7 @@ export function Decimals({
     const humanAmount = toFloat(amount, decimals)
 
     const value = useMemo(
-        () => (abbrProp ? humanAmount.toString() : abbr(humanAmount)),
+        () => (abbrProp ? abbr(humanAmount) : humanAmount.toString()),
         [abbrProp, humanAmount],
     )
 
