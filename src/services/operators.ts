@@ -7,11 +7,12 @@ import {
     operatorABI,
     operatorFactoryABI,
 } from 'network-contracts-ethers6'
+import { DefaultGasLimitMultiplier } from '~/consts'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { postImage } from '~/services/images'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { Operation } from '~/shared/toasts/TransactionListToast'
-import { BNish, toBN } from '~/utils/bn'
+import { BNish, toBN, toBigInt } from '~/utils/bn'
 import { getChainConfig } from '~/utils/chains'
 import networkPreflight from '~/utils/networkPreflight'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
@@ -317,12 +318,19 @@ export async function getOperatorDelegationAmount(
     return operatorContract.balanceInData(address)
 }
 
+interface SetOperatorNodeAddressesOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?: (blockNumber: number) => void | Promise<void>
+}
+
 export async function setOperatorNodeAddresses(
     chainId: number,
     operatorId: string,
     addresses: string[],
-    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+    options: SetOperatorNodeAddressesOptions = {},
 ) {
+    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
+
     await networkPreflight(chainId)
 
     const signer = await getSigner()
@@ -334,25 +342,41 @@ export async function setOperatorNodeAddresses(
     ) as unknown as Operator
 
     await toastedOperation('Save node addresses', async () => {
-        const tx = await operatorContract.setNodeAddresses(addresses)
+        const estimatedGasLimit = await operatorContract.setNodeAddresses.estimateGas(
+            addresses,
+        )
+
+        const gasLimit = toBigInt(
+            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
+        )
+
+        const tx = await operatorContract.setNodeAddresses(addresses, { gasLimit })
 
         const receipt = await tx.wait()
 
         if (receipt?.blockNumber) {
-            await options.onBlockNumber?.(receipt.blockNumber)
+            await onBlockNumber?.(receipt.blockNumber)
         }
     })
+}
+
+interface AddOperatorControllerAddressOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?: (blockNumber: number) => void | Promise<void>
 }
 
 export async function addOperatorControllerAddress(
     chainId: number,
     operatorId: string,
     address: string,
-    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+    options: AddOperatorControllerAddressOptions = {},
 ) {
+    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
+
     await networkPreflight(chainId)
 
     const signer = await getSigner()
+
     const operatorContract = new Contract(
         operatorId,
         operatorABI,
@@ -361,25 +385,45 @@ export async function addOperatorControllerAddress(
 
     await toastedOperation('Authorise staking agent', async () => {
         const controllerRoleId = await operatorContract.CONTROLLER_ROLE()
-        const tx = await operatorContract.grantRole(controllerRoleId, address)
+
+        const estimatedGasLimit = await operatorContract.grantRole.estimateGas(
+            controllerRoleId,
+            address,
+        )
+
+        const gasLimit = toBigInt(
+            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
+        )
+
+        const tx = await operatorContract.grantRole(controllerRoleId, address, {
+            gasLimit,
+        })
 
         const receipt = await tx.wait()
 
         if (receipt?.blockNumber) {
-            await options.onBlockNumber?.(receipt.blockNumber)
+            await onBlockNumber?.(receipt.blockNumber)
         }
     })
+}
+
+interface RemoveOperatorControllerAddressOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?: (blockNumber: number) => void | Promise<void>
 }
 
 export async function removeOperatorControllerAddress(
     chainId: number,
     operatorId: string,
     address: string,
-    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+    options: RemoveOperatorControllerAddressOptions = {},
 ) {
+    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
+
     await networkPreflight(chainId)
 
     const signer = await getSigner()
+
     const operatorContract = new Contract(
         operatorId,
         operatorABI,
@@ -388,12 +432,24 @@ export async function removeOperatorControllerAddress(
 
     await toastedOperation('Revoke staking agent', async () => {
         const controllerRoleId = await operatorContract.CONTROLLER_ROLE()
-        const tx = await operatorContract.revokeRole(controllerRoleId, address)
+
+        const estimatedGasLimit = await operatorContract.revokeRole.estimateGas(
+            controllerRoleId,
+            address,
+        )
+
+        const gasLimit = toBigInt(
+            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
+        )
+
+        const tx = await operatorContract.revokeRole(controllerRoleId, address, {
+            gasLimit,
+        })
 
         const receipt = await tx.wait()
 
         if (receipt?.blockNumber) {
-            await options.onBlockNumber?.(receipt.blockNumber)
+            await onBlockNumber?.(receipt.blockNumber)
         }
     })
 }
