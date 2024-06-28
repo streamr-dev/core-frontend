@@ -1,16 +1,21 @@
-import { StreamrConfig } from 'network-contracts-ethers6'
 import { UseQueryResult } from '@tanstack/react-query'
-import React, { useCallback, useRef, useState, useSyncExternalStore } from 'react'
-import { useEffect } from 'react'
+import { StreamrConfig } from 'network-contracts-ethers6'
+import React, {
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    useSyncExternalStore,
+} from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { BehindIndexError } from '~/errors/BehindIndexError'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
-import { useCurrentChainId } from '~/utils/chains'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ChainConfigKey } from '~/types'
 import { Layer } from '~/utils/Layer'
+import { useCurrentChainId } from '~/utils/chains'
 import { errorToast } from '~/utils/toast'
 
 const infoToast = toaster(Toast, Layer.Toast)
@@ -106,6 +111,7 @@ export function useConfigValueFromChain<
                 if (!mounted) {
                     return
                 }
+
                 setValue(
                     (transformRef.current
                         ? transformRef.current(newValue as U)
