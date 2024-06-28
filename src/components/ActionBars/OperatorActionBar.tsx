@@ -1,17 +1,22 @@
-import React, { FunctionComponent, useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
+import { useQuery } from '@tanstack/react-query'
+import React, { FunctionComponent, useMemo } from 'react'
+import { AboutOperator } from '~/components/ActionBars/AboutOperator'
+import {
+    ActionBarButton,
+    ActionBarButtonCaret,
+    ActionBarButtonInnerBody,
+    ActionBarWalletDisplay,
+} from '~/components/ActionBars/ActionBarButton'
 import { Button } from '~/components/Button'
-import SvgIcon from '~/shared/components/SvgIcon'
-import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { toFloat } from '~/utils/bn'
-import { useWalletAccount } from '~/shared/stores/wallet'
+import { SponsorshipDecimals } from '~/components/Decimals'
+import { Hint } from '~/components/Hint'
+import { Separator } from '~/components/Separator'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/components/Spinner'
-import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
-import { ParsedOperator } from '~/parsers/OperatorParser'
 import {
     useDelegateFunds,
     useIsDelegatingFundsToOperator,
@@ -19,22 +24,14 @@ import {
     useUndelegateFunds,
 } from '~/hooks/operators'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { getOperatorDelegationAmount } from '~/services/operators'
+import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { PencilIcon } from '~/icons'
-import { abbr } from '~/utils'
-import {
-    ActionBarButton,
-    ActionBarButtonCaret,
-    ActionBarButtonInnerBody,
-    ActionBarWalletDisplay,
-} from '~/components/ActionBars/ActionBarButton'
-import { AboutOperator } from '~/components/ActionBars/AboutOperator'
-import { Hint } from '~/components/Hint'
-import { useCurrentChainId } from '~/utils/chains'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { getOperatorDelegationAmount } from '~/services/operators'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
@@ -110,8 +107,6 @@ export const OperatorActionBar: FunctionComponent<{
         walletAddress?.toLowerCase() === operator.owner
             ? ['Fund', 'Withdraw']
             : ['Delegate', 'Undelegate']
-
-    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <AbstractActionBar
@@ -224,10 +219,9 @@ export const OperatorActionBar: FunctionComponent<{
                                 }
                             >
                                 <div>
-                                    {abbr(
-                                        toFloat(operator.valueWithoutEarnings, decimals),
-                                    )}{' '}
-                                    <SponsorshipPaymentTokenName />
+                                    <SponsorshipDecimals
+                                        amount={operator.valueWithoutEarnings}
+                                    />
                                 </div>
                             </StatCell>
                             <StatCell
@@ -242,13 +236,9 @@ export const OperatorActionBar: FunctionComponent<{
                                     </Hint>
                                 }
                             >
-                                {abbr(
-                                    toFloat(
-                                        operator.totalStakeInSponsorshipsWei,
-                                        decimals,
-                                    ),
-                                )}{' '}
-                                <SponsorshipPaymentTokenName />
+                                <SponsorshipDecimals
+                                    amount={operator.totalStakeInSponsorshipsWei}
+                                />
                             </StatCell>
                             <StatCell
                                 label="Owner's stake"
@@ -345,14 +335,12 @@ export const OperatorActionBar: FunctionComponent<{
                                     </Hint>
                                 }
                             >
-                                {abbr(
-                                    toFloat(
+                                <SponsorshipDecimals
+                                    amount={
                                         operator.cumulativeProfitsWei +
-                                            operator.cumulativeOperatorsCutWei,
-                                        decimals,
-                                    ),
-                                )}{' '}
-                                <SponsorshipPaymentTokenName />
+                                        operator.cumulativeOperatorsCutWei
+                                    }
+                                />
                             </StatCell>
                             <StatCell
                                 label="Live nodes"

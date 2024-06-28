@@ -11,8 +11,7 @@ import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
-import { abbr, getStreamGptApiUrl } from '~/utils'
-import { toFloat } from '~/utils/bn'
+import { getStreamGptApiUrl } from '~/utils'
 import { getChainConfigExtension } from '~/utils/chains'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 import Spinner from './Spinner'
@@ -78,18 +77,6 @@ function DeletedStreamIdCell() {
             </StreamInfoCellOuter>
         </StreamInfoCell>
     )
-}
-
-interface DecimalsCellProps {
-    amount: bigint
-    decimals: bigint
-}
-
-/**
- * Decimal-driven token amount formatter.
- */
-export function DecimalsCell({ amount, decimals }: DecimalsCellProps) {
-    return <>{abbr(toFloat(amount, decimals))}</>
 }
 
 /**

@@ -1,11 +1,11 @@
 import React from 'react'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { Tooltip } from '~/components/Tooltip'
 import { abbr } from '~/utils'
 import { BNish } from '~/utils/bn'
-import { Tooltip } from '~/components/Tooltip'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 
 /**
- * @todo replace `children` with `value`. Using BigNumberish values as children feels weird.
+ * @todo Integrate with `Decimals` component and deprecate.
  */
 export function Abbr({ children, suffix }: { children: BNish; suffix?: string }) {
     const abbreviated = abbr(children)

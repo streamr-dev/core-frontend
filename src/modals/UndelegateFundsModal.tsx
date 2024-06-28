@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { Abbr } from '~/components/Abbr'
 import { Alert } from '~/components/Alert'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
     useConfigValueFromChain,
@@ -193,10 +194,7 @@ function UndelegateFundsModal({
                         {limitedSpace ? (
                             <Abbr>{toFloat(delegatedTotal, decimals)}</Abbr>
                         ) : (
-                            <>
-                                {toFloat(delegatedTotal, decimals).toString()}{' '}
-                                <SponsorshipPaymentTokenName />
-                            </>
+                            <SponsorshipDecimals amount={delegatedTotal} raw />
                         )}
                     </Prop>
                 </FieldWrap>
@@ -207,10 +205,7 @@ function UndelegateFundsModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(balance, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(balance, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={balance} raw />
                             )}
                         </PropValue>
                     </li>
@@ -224,10 +219,7 @@ function UndelegateFundsModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(freeFunds, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(freeFunds, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={freeFunds} raw />
                             )}
                         </PropValue>
                     </li>
@@ -239,9 +231,8 @@ function UndelegateFundsModal({
                         type="notice"
                         title={
                             <>
-                                {toFloat(amount, decimals).toString()}{' '}
-                                <SponsorshipPaymentTokenName /> will be undelegated
-                                immediately
+                                <SponsorshipDecimals amount={amount} raw /> will be
+                                undelegated immediately
                             </>
                         }
                     />

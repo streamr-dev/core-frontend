@@ -1,59 +1,58 @@
+import { useQuery } from '@tanstack/react-query'
+import moment from 'moment'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import moment from 'moment'
-import { useQuery } from '@tanstack/react-query'
-import Layout from '~/components/Layout'
+import { Abbr } from '~/components/Abbr'
+import { Button } from '~/components/Button'
+import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { NetworkHelmet } from '~/components/Helmet'
+import Layout from '~/components/Layout'
+import { LoadMoreButton } from '~/components/LoadMore'
+import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import NetworkPageSegment, {
     Pad,
     SegmentGrid,
     TitleBar,
 } from '~/components/NetworkPageSegment'
+import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
+import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
-import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
-import {
-    formatLongDate,
-    formatShortDate,
-} from '~/shared/components/TimeSeriesGraph/chartUtils'
-import NetworkChartDisplay from '~/components/NetworkChartDisplay'
+import { OperatorIdCell } from '~/components/Table'
 import WalletPass from '~/components/WalletPass'
-import { NoData } from '~/shared/components/NoData'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
+import { OperatorDailyBucket } from '~/generated/gql/network'
 import {
-    useSponsorshipsForCreatorQuery,
-    useSponsorshipTokenInfo,
-} from '~/hooks/sponsorships'
-import { toFloat } from '~/utils/bn'
+    getNetworkStats,
+    getOperatorDailyBuckets,
+    getTimestampForChartPeriod,
+} from '~/getters'
+import { getDelegationStats } from '~/getters/getDelegationStats'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import {
     useDelegationsForWalletQuery,
     useDelegationsStats,
     useOperatorForWalletQuery,
     useOperatorStatsForWallet,
 } from '~/hooks/operators'
-import { ChartPeriod, XY } from '~/types'
-import { errorToast } from '~/utils/toast'
 import {
-    getNetworkStats,
-    getOperatorDailyBuckets,
-    getTimestampForChartPeriod,
-} from '~/getters'
-import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
-import { OperatorDailyBucket } from '~/generated/gql/network'
-import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
+    useSponsorshipTokenInfo,
+    useSponsorshipsForCreatorQuery,
+} from '~/hooks/sponsorships'
+import { NoData } from '~/shared/components/NoData'
+import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { LoadMoreButton } from '~/components/LoadMore'
-import { Separator } from '~/components/Separator'
-import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
+import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
+import {
+    formatLongDate,
+    formatShortDate,
+} from '~/shared/components/TimeSeriesGraph/chartUtils'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { ChartPeriod, XY } from '~/types'
 import { abbr } from '~/utils'
-import { OperatorIdCell } from '~/components/Table'
-import { Button } from '~/components/Button'
-import { getDelegationStats } from '~/getters/getDelegationStats'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useCurrentChainId } from '~/utils/chains'
-import { Abbr } from '~/components/Abbr'
+import { toFloat } from '~/utils/bn'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { errorToast } from '~/utils/toast'
 
 export function NetworkOverviewPage() {
     return (
@@ -427,10 +426,7 @@ function MyDelegations() {
                                 {
                                     displayName: 'My delegation',
                                     valueMapper: ({ myShare }) => (
-                                        <>
-                                            {abbr(toFloat(myShare, 18n))}{' '}
-                                            <SponsorshipPaymentTokenName />
-                                        </>
+                                        <SponsorshipDecimals amount={myShare} />
                                     ),
                                     align: 'start',
                                     isSticky: false,
@@ -439,10 +435,9 @@ function MyDelegations() {
                                 {
                                     displayName: 'Total stake',
                                     valueMapper: ({ valueWithoutEarnings }) => (
-                                        <>
-                                            {abbr(toFloat(valueWithoutEarnings, 18n))}{' '}
-                                            <SponsorshipPaymentTokenName />
-                                        </>
+                                        <SponsorshipDecimals
+                                            amount={valueWithoutEarnings}
+                                        />
                                     ),
                                     align: 'end',
                                     isSticky: false,

@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
@@ -13,7 +14,6 @@ import NetworkPageSegment, {
     TitleBar,
 } from '~/components/NetworkPageSegment'
 import Spinner from '~/components/Spinner'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { OperatorIdCell } from '~/components/Table'
 import {
     useInitialBehindIndexError,
@@ -321,10 +321,9 @@ export const SingleSponsorshipPage = () => {
                                     {
                                         displayName: 'Amount',
                                         valueMapper: (element) => (
-                                            <>
-                                                {abbr(toFloat(element.amount, decimals))}{' '}
-                                                <SponsorshipPaymentTokenName />
-                                            </>
+                                            <SponsorshipDecimals
+                                                amount={element.amount}
+                                            />
                                         ),
                                         align: 'start',
                                         isSticky: false,

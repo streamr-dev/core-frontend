@@ -14,6 +14,7 @@ import {
 } from '~/components/AddressTable'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { NetworkHelmet } from '~/components/Helmet'
 import { Hint } from '~/components/Hint'
 import Layout, { LayoutColumn } from '~/components/Layout'
@@ -27,7 +28,6 @@ import NetworkPageSegment, {
 import { OperatorChecklist } from '~/components/OperatorChecklist'
 import { Separator } from '~/components/Separator'
 import Spinner from '~/components/Spinner'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
 import { FundedUntilCell, StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
@@ -923,13 +923,8 @@ function UncollectedEarnings({
 }) {
     const value = useUncollectedEarnings(operatorId, sponsorshipId)
 
-    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
-
     return typeof value !== 'undefined' ? (
-        <>
-            {abbr(toFloat(value?.uncollectedEarnings || 0n, decimals))}{' '}
-            <SponsorshipPaymentTokenName />
-        </>
+        <SponsorshipDecimals amount={value?.uncollectedEarnings || 0n} />
     ) : (
         <Spinner color="blue" />
     )

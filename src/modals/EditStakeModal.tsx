@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { Abbr } from '~/components/Abbr'
 import { Alert } from '~/components/Alert'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { confirm } from '~/getters/confirm'
 import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
@@ -210,8 +211,7 @@ function EditStakeModal({
                             description: (
                                 <>
                                     {slashingReason} If you unstake now, you will lose{' '}
-                                    {toFloat(slashingAmount, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
+                                    <SponsorshipDecimals amount={slashingAmount} raw />
                                 </>
                             ),
                             proceedLabel: 'Proceed anyway',
@@ -256,8 +256,7 @@ function EditStakeModal({
                     {rawAmount !== '' && !isAmountWithinAcceptedRange && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            {toFloat(minimumStakeWei, decimals).toString()}{' '}
-                            <SponsorshipPaymentTokenName />
+                            <SponsorshipDecimals amount={minimumStakeWei} raw />
                         </ErrorLabel>
                     )}
                 </WingedLabelWrap>
@@ -296,10 +295,7 @@ function EditStakeModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(currentAmount, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(currentAmount, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={currentAmount} raw />
                             )}
                         </PropValue>
                     </li>
@@ -309,10 +305,7 @@ function EditStakeModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(difference, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(difference, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={difference} raw />
                             )}
                         </PropValue>
                     </li>
@@ -328,10 +321,7 @@ function EditStakeModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(availableBalance, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(availableBalance, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={availableBalance} raw />
                             )}
                         </PropValue>
                     </li>
@@ -341,8 +331,7 @@ function EditStakeModal({
                 <StyledAlert type="error" title="Your stake will be slashed">
                     Your minimum staking period is still ongoing and ends on{' '}
                     {minLeaveDate}. If you unstake now, you will lose{' '}
-                    {toFloat(leavePenalty, decimals).toString()}{' '}
-                    <SponsorshipPaymentTokenName />.
+                    <SponsorshipDecimals amount={leavePenalty} raw />.
                 </StyledAlert>
             )}
             {difference > 0n && hasUndelegationQueue && (

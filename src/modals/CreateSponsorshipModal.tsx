@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { toaster } from 'toasterhea'
 import { Abbr } from '~/components/Abbr'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { StreamIdDropdown } from '~/components/StreamIdDropdown'
@@ -246,10 +247,7 @@ function CreateSponsorshipModal({
                                 {limitedSpace ? (
                                     <Abbr>{toFloat(balance, decimals)}</Abbr>
                                 ) : (
-                                    <>
-                                        {toFloat(balance, decimals).toString()}{' '}
-                                        <SponsorshipPaymentTokenName />
-                                    </>
+                                    <SponsorshipDecimals amount={balance} raw />
                                 )}
                             </strong>
                         </p>

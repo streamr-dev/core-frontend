@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import { Abbr } from '~/components/Abbr'
 import { Alert } from '~/components/Alert'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { getSelfDelegationFraction } from '~/getters'
 import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
@@ -207,8 +208,7 @@ function JoinSponsorshipModal({
                     {rawAmount !== '' && !isAboveMinimumStake && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            {toFloat(minimumStakeWei || 0n, decimals).toString()}{' '}
-                            <SponsorshipPaymentTokenName />
+                            <SponsorshipDecimals amount={minimumStakeWei || 0n} raw />
                         </ErrorLabel>
                     )}
                 </StyledLabelWrap>
@@ -252,10 +252,7 @@ function JoinSponsorshipModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(operatorBalance, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(operatorBalance, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={operatorBalance} raw />
                             )}
                         </PropValue>
                     </li>
@@ -305,11 +302,11 @@ function JoinSponsorshipModal({
                     self-funding requirement of{' '}
                     {minimumSelfDelegationFraction.multipliedBy(100).toFixed(0)}%.
                     Increase your Operator stake by at least{' '}
-                    {toFloat(
-                        minimumSelfDelegationAmount - currentSelfDelegationAmount,
-                        decimals,
-                    ).toString()}{' '}
-                    <SponsorshipPaymentTokenName /> to continue.
+                    <SponsorshipDecimals
+                        amount={minimumSelfDelegationAmount - currentSelfDelegationAmount}
+                        raw
+                    />{' '}
+                    to continue.
                 </StyledAlert>
             )}
             {hasUndelegationQueue && (
@@ -330,10 +327,9 @@ function JoinSponsorshipModal({
                         <>
                             This Sponsorship has a minimum staking period of{' '}
                             {humanize(sponsorship.minimumStakingPeriodSeconds)}. If you
-                            unstake or get voted out during this period, you will lose
-                            {toFloat(earlyLeaverPenaltyWei, decimals).toString()}{' '}
-                            <SponsorshipPaymentTokenName /> in addition to the normal
-                            slashing penalty.
+                            unstake or get voted out during this period, you will lose{' '}
+                            <SponsorshipDecimals amount={earlyLeaverPenaltyWei} raw /> in
+                            addition to the normal slashing penalty.
                         </>
                     }
                 />

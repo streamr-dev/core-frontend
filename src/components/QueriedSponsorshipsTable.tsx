@@ -1,9 +1,9 @@
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import React, { ReactNode } from 'react'
+import { Decimals, SponsorshipDecimals } from '~/components/Decimals'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
-    DecimalsCell,
     FundedUntilCell,
     NumberOfOperatorsCell,
     SponsorshipApyCell,
@@ -105,7 +105,7 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Funds',
                         valueMapper: (element) => (
-                            <DecimalsCell
+                            <Decimals
                                 amount={element.timeCorrectedRemainingBalance}
                                 decimals={decimals}
                             />
@@ -131,13 +131,7 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Staked',
                         valueMapper: (element) => (
-                            <>
-                                <DecimalsCell
-                                    amount={element.totalStakedWei}
-                                    decimals={decimals}
-                                />{' '}
-                                <SponsorshipPaymentTokenName />
-                            </>
+                            <SponsorshipDecimals amount={element.totalStakedWei} />
                         ),
                         align: 'end',
                         isSticky: false,

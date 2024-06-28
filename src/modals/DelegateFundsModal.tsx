@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Abbr } from '~/components/Abbr'
 import { Alert as PrestyledAlert } from '~/components/Alert'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { getSelfDelegatedAmount, getSelfDelegationFraction } from '~/getters'
 import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
@@ -214,10 +215,7 @@ export default function DelegateFundsModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(balance, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(balance, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={balance} raw />
                             )}
                         </PropValue>
                     </li>
@@ -231,10 +229,7 @@ export default function DelegateFundsModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(delegatedTotal, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(delegatedTotal, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={delegatedTotal} raw />
                             )}
                         </PropValue>
                     </li>
@@ -253,8 +248,7 @@ export default function DelegateFundsModal({
                             <Alert type="error" title="Amount too high">
                                 This operator can currently only accept less than{' '}
                                 <strong>
-                                    {toFloat(maxNextAmount, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
+                                    <SponsorshipDecimals amount={maxNextAmount} raw />
                                 </strong>{' '}
                                 in further delegations, because operators must stay above
                                 a certain proportion of their own funds vs. delegations.
@@ -270,8 +264,7 @@ export default function DelegateFundsModal({
                         title={
                             <>
                                 Minimum delegation is{' '}
-                                {toFloat(minimumDelegationWei, decimals).toFixed()}{' '}
-                                <SponsorshipPaymentTokenName />
+                                <SponsorshipDecimals amount={minimumDelegationWei} raw />
                             </>
                         }
                     ></Alert>

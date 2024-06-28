@@ -2,6 +2,7 @@ import moment from 'moment'
 import React, { useMemo, useState } from 'react'
 import { toaster } from 'toasterhea'
 import { Abbr } from '~/components/Abbr'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { useMediaQuery } from '~/hooks'
@@ -197,10 +198,7 @@ function FundSponsorshipModal({
                             {limitedSpace ? (
                                 <Abbr>{toFloat(balance, decimals)}</Abbr>
                             ) : (
-                                <>
-                                    {toFloat(balance, decimals).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
+                                <SponsorshipDecimals amount={balance} raw />
                             )}
                         </PropValue>
                     </li>
@@ -224,14 +222,11 @@ function FundSponsorshipModal({
                                     {toFloat(sponsorship.payoutPerDay, decimals)}
                                 </Abbr>
                             ) : (
-                                <>
-                                    {toFloat(
-                                        sponsorship.payoutPerDay,
-                                        decimals,
-                                    ).toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                    /day
-                                </>
+                                <SponsorshipDecimals
+                                    amount={sponsorship.payoutPerDay}
+                                    unitSuffix="/day"
+                                    raw
+                                />
                             )}
                         </PropValue>
                     </li>
