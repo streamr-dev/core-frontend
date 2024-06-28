@@ -96,7 +96,7 @@ export const getOperatorStats = async (
                 break
         }
         return {
-            x: Number(bucket.date) / 1000,
+            x: Number(bucket.date) * 1000,
             y: yValue,
         }
     })
