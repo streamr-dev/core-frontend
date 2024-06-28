@@ -22,6 +22,9 @@ export default function getClientConfig(
     }
 
     config.contracts = {
+        ethereumNetwork: {
+            chainId,
+        },
         rpcs: chainConfig.rpcEndpoints,
         streamRegistryChainAddress: chainConfig.contracts.StreamRegistry,
         streamStorageRegistryChainAddress: chainConfig.contracts.StreamStorageRegistry,
