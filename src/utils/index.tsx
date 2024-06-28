@@ -202,7 +202,7 @@ export function abbr(value: BNish, options: AbbrOptions = {}) {
     const { fractionalLength = defaultFractionLength, stripFractionalZeros = true } =
         options
 
-    const v = toBN(value)
+    const v = toBN(value).dp(10)
 
     if (!v.isFinite()) {
         console.warn('Invalid value', v.toString())
