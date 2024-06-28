@@ -94,7 +94,8 @@ export function QueriedSponsorshipsTable({
                                 /day
                             </>
                         ),
-                        valueMapper: (element) => abbr(element.payoutPerDay),
+                        valueMapper: (element) =>
+                            abbr(toFloat(element.payoutPerDay, decimals)),
                         align: 'start',
                         isSticky: hideStreamId,
                         key: 'payoutPerDay',
