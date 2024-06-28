@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
+import { toBigInt } from '~/utils/bn'
 import {
     OperatorMetadataPreparser,
     parseOperatorMetadata,
@@ -79,7 +80,7 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
 
             const timeCorrectedRemainingBalance = ((value) => (value < 0n ? 0n : value))(
                 remainingWei -
-                    BigInt(Date.now() / 1000 - remainingWeiUpdateTimestamp) *
+                    toBigInt(Date.now() / 1000 - remainingWeiUpdateTimestamp) *
                         totalPayoutWeiPerSec,
             )
 
