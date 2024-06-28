@@ -71,7 +71,10 @@ const OperatorIdCellRoot = styled.div`
 function DeletedStreamIdCell() {
     return (
         <StreamInfoCell>
-            <StreamIdWrap as="em">(deleted stream)</StreamIdWrap>
+            <StreamAvatarWrap />
+            <StreamInfoCellOuter>
+                <StreamIdWrap as="em">(deleted stream)</StreamIdWrap>
+            </StreamInfoCellOuter>
         </StreamInfoCell>
     )
 }
