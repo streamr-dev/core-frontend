@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
+    DecimalsCell,
     FundedUntilCell,
     NumberOfOperatorsCell,
     SponsorshipApyCell,
@@ -104,14 +105,10 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Funds',
                         valueMapper: (element) => (
-                            <>
-                                {abbr(
-                                    toFloat(
-                                        element.timeCorrectedRemainingBalance,
-                                        decimals,
-                                    ),
-                                )}
-                            </>
+                            <DecimalsCell
+                                amount={element.timeCorrectedRemainingBalance}
+                                decimals={decimals}
+                            />
                         ),
                         align: 'start',
                         isSticky: false,
@@ -135,7 +132,10 @@ export function QueriedSponsorshipsTable({
                         displayName: 'Staked',
                         valueMapper: (element) => (
                             <>
-                                {abbr(toFloat(element.totalStakedWei, decimals))}{' '}
+                                <DecimalsCell
+                                    amount={element.totalStakedWei}
+                                    decimals={decimals}
+                                />{' '}
                                 <SponsorshipPaymentTokenName />
                             </>
                         ),
