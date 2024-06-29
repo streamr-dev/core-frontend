@@ -260,7 +260,7 @@ export default function AccessPeriodModal({
                         onResolve?.({
                             quantity: newQuantity,
                             unit: selectedUnit,
-                            exceedsAllowance: allowance.lt(total.toString()),
+                            exceedsAllowance: toBN(allowance).lt(total.toString()),
                         })
                     } catch (e) {
                         onReject?.(e)

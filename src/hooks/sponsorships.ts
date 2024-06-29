@@ -9,7 +9,7 @@ import {
 } from '~/getters'
 import { ParsedSponsorship, parseSponsorship } from '~/parsers/SponsorshipParser'
 import { errorToast } from '~/utils/toast'
-import useTokenInfo from '~/hooks/useTokenInfo'
+import { useTokenInfo } from '~/utils/tokens'
 import { ChartPeriod } from '~/types'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'

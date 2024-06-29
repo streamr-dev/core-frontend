@@ -1,4 +1,4 @@
-import { Contract } from 'ethers'
+import { Contract, parseEther } from 'ethers'
 import {
     operatorFactoryABI,
     operatorABI,
@@ -6,8 +6,7 @@ import {
     Operator,
     ERC677ABI,
     ERC677,
-} from '@streamr/network-contracts'
-import { parseEther } from 'ethers/lib/utils'
+} from 'network-contracts-ethers6'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { BNish, toBN } from '~/utils/bn'
@@ -54,7 +53,7 @@ export async function createOperator(
         factoryContractAddress,
         operatorFactoryABI,
         signer,
-    ) as OperatorFactory
+    ) as unknown as OperatorFactory
 
     const metadata = {
         name,
@@ -101,7 +100,7 @@ export async function createOperator(
         operatorDefaultUndelegationPolicyAddress,
     ]
 
-    const operatorsCutFraction = parseEther(cut.toString()).div(100)
+    const operatorsCutFraction = parseEther(cut.toString()) / 100n
 
     const policiesParams: [number, number, number] = [0, 0, 0]
 
@@ -113,9 +112,11 @@ export async function createOperator(
             policies,
             policiesParams,
         )
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
     })
 }
 
@@ -173,18 +174,20 @@ export async function updateOperator(
                 operator.id,
                 operatorABI,
                 await getSigner(),
-            ) as Operator
+            ) as unknown as Operator
 
             const tx = await operatorContract.updateOperatorsCutFraction(
-                parseEther(toBN(cut).toString()).div(100),
+                parseEther(toBN(cut).toString()) / 100n,
             )
 
-            const { blockNumber } = await tx.wait()
+            const receipt = await tx.wait()
 
-            blockNumbers.push(blockNumber)
+            if (receipt?.blockNumber) {
+                blockNumbers.push(receipt.blockNumber)
 
-            if (!hasUpdateMetadataOperation) {
-                await options.onBlockNumber?.(blockNumber)
+                if (!hasUpdateMetadataOperation) {
+                    await options.onBlockNumber?.(receipt.blockNumber)
+                }
             }
 
             next()
@@ -197,7 +200,7 @@ export async function updateOperator(
                 operator.id,
                 operatorABI,
                 await getSigner(),
-            ) as Operator
+            ) as unknown as Operator
 
             const imageIpfsCid = imageToUpload
                 ? await postImage(chainId, imageToUpload)
@@ -212,11 +215,12 @@ export async function updateOperator(
                 }),
             )
 
-            const { blockNumber } = await tx.wait()
+            const receipt = await tx.wait()
 
-            await options.onBlockNumber?.(blockNumber)
-
-            blockNumbers.push(blockNumber)
+            if (receipt?.blockNumber) {
+                await options.onBlockNumber?.(receipt.blockNumber)
+                blockNumbers.push(receipt.blockNumber)
+            }
         }
     })
 }
@@ -241,7 +245,11 @@ export async function delegateToOperator(
         )
     }
 
-    const contract = new Contract(dataTokenContractAddress, ERC677ABI, signer) as ERC677
+    const contract = new Contract(
+        dataTokenContractAddress,
+        ERC677ABI,
+        signer,
+    ) as unknown as ERC677
 
     await toastedOperation('Delegate to operator', async () => {
         const tx = await contract.transferAndCall(
@@ -250,9 +258,11 @@ export async function delegateToOperator(
             '0x',
         )
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
     })
 }
 
@@ -266,7 +276,11 @@ export async function undelegateFromOperator(
 
     const signer = await getSigner()
 
-    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+    const operatorContract = new Contract(
+        operatorId,
+        operatorABI,
+        signer,
+    ) as unknown as Operator
 
     // If we are requesting all funds to be undelegated,
     // send 'reallyBigNumber' instead of 'Infinity'
@@ -279,9 +293,11 @@ export async function undelegateFromOperator(
     await toastedOperation('Undelegate from operator', async () => {
         const tx = await operatorContract.undelegate(actualAmount.toString())
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
     })
 }
 
@@ -292,7 +308,11 @@ export async function getOperatorDelegationAmount(
 ) {
     const provider = getPublicWeb3Provider(chainId)
 
-    const operatorContract = new Contract(operatorId, operatorABI, provider) as Operator
+    const operatorContract = new Contract(
+        operatorId,
+        operatorABI,
+        provider,
+    ) as unknown as Operator
 
     const amount = await operatorContract.balanceInData(address)
 
@@ -308,14 +328,20 @@ export async function setOperatorNodeAddresses(
     await networkPreflight(chainId)
 
     const signer = await getSigner()
-    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+    const operatorContract = new Contract(
+        operatorId,
+        operatorABI,
+        signer,
+    ) as unknown as Operator
 
     await toastedOperation('Save node addresses', async () => {
         const tx = await operatorContract.setNodeAddresses(addresses)
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
     })
 }
 
@@ -328,15 +354,21 @@ export async function addOperatorControllerAddress(
     await networkPreflight(chainId)
 
     const signer = await getSigner()
-    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+    const operatorContract = new Contract(
+        operatorId,
+        operatorABI,
+        signer,
+    ) as unknown as Operator
 
     await toastedOperation('Authorise staking agent', async () => {
         const controllerRoleId = await operatorContract.CONTROLLER_ROLE()
         const tx = await operatorContract.grantRole(controllerRoleId, address)
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
     })
 }
 
@@ -349,15 +381,21 @@ export async function removeOperatorControllerAddress(
     await networkPreflight(chainId)
 
     const signer = await getSigner()
-    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+    const operatorContract = new Contract(
+        operatorId,
+        operatorABI,
+        signer,
+    ) as unknown as Operator
 
     await toastedOperation('Revoke staking agent', async () => {
         const controllerRoleId = await operatorContract.CONTROLLER_ROLE()
         const tx = await operatorContract.revokeRole(controllerRoleId, address)
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
     })
 }
 
@@ -369,13 +407,19 @@ export async function processOperatorUndelegationQueue(
     await networkPreflight(chainId)
 
     const signer = await getSigner()
-    const operatorContract = new Contract(operatorId, operatorABI, signer) as Operator
+    const operatorContract = new Contract(
+        operatorId,
+        operatorABI,
+        signer,
+    ) as unknown as Operator
 
     await toastedOperation('Process undelegation queue', async () => {
         const tx = await operatorContract.payOutQueue(0)
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await options.onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await options.onBlockNumber?.(receipt.blockNumber)
+        }
     })
 }

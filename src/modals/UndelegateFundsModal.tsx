@@ -255,8 +255,8 @@ export default function UndelegateFundsModal({
                 {toBN(rawAmount).isGreaterThan(freeFunds) && (
                     <Alert type="notice" title="Undelegation will be queued">
                         Your undelegation will be queued for a maximum of{' '}
-                        {maxUndelegationQueueDays.toNumber().toFixed(0)} days, after which
-                        you will be able to force undelegation.
+                        {maxUndelegationQueueDays.toString()} days, after which you will
+                        be able to force undelegation.
                     </Alert>
                 )}
                 {isSelfDelegationTooLow && hasZeroDeployed && (

@@ -7,7 +7,7 @@ import {
     getChainConfigExtension,
     getCurrentChainId,
 } from '~/utils/chains'
-import { getTokenInfo } from '~/hooks/useTokenInfo'
+import { getTokenInfo } from '~/utils/tokens'
 import { fromDecimals } from '~/marketplace/utils/math'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
 import { getDataAddress } from '~/marketplace/utils/web3'

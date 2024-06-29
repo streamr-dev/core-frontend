@@ -6,7 +6,7 @@ export async function requirePositiveBalance(chainId: number, address: string) {
 
     const balance = await provider.getBalance(address)
 
-    if (balance.lte(0)) {
+    if (balance > 0) {
         throw new InsufficientFundsError(address)
     }
 }
