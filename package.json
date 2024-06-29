@@ -114,7 +114,7 @@
         "use-debounce": "^10.0.0",
         "utility-types": "^3.10.0",
         "uuid": "^9.0.0",
-        "web3-utils": "^4.0.2",
+        "web3-utils": "^4.3.0",
         "web3-validator": "^1.0.1",
         "yup": "^1.1.1",
         "zod": "^3.22.3",
