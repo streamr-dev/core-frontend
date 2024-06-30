@@ -76,9 +76,9 @@ function UndelegateFundsModal({
 
     const maxUndelegationQueueDays = useMaxUndelegationQueueDays()
 
-    const amount = toBigInt(rawAmount || 0)
-
     const { decimals = 18n } = useSponsorshipTokenInfo() || {}
+
+    const amount = toBigInt(rawAmount || 0, decimals)
 
     const freeFunds = operator.dataTokenBalanceWei
 
