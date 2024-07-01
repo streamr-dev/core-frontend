@@ -12,7 +12,7 @@ import { ParsedOperator } from '~/parsers/OperatorParser'
 import { postImage } from '~/services/images'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { Operation } from '~/shared/toasts/TransactionListToast'
-import { BNish, toBN, toBigInt } from '~/utils/bn'
+import { toBN, toBigInt } from '~/utils/bn'
 import { getChainConfig } from '~/utils/chains'
 import networkPreflight from '~/utils/networkPreflight'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
@@ -270,7 +270,7 @@ export async function delegateToOperator(
 export async function undelegateFromOperator(
     chainId: number,
     operatorId: string,
-    amount: BNish,
+    amount: bigint,
     options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
 ): Promise<void> {
     await networkPreflight(chainId)
@@ -283,16 +283,8 @@ export async function undelegateFromOperator(
         signer,
     ) as unknown as Operator
 
-    // If we are requesting all funds to be undelegated,
-    // send 'reallyBigNumber' instead of 'Infinity'
-    const amountBn = toBN(amount)
-
-    const reallyBigNumber = '110763745230805656649802800132303954225'
-
-    const actualAmount = amountBn.isFinite() ? amountBn : toBN(reallyBigNumber)
-
     await toastedOperation('Undelegate from operator', async () => {
-        const tx = await operatorContract.undelegate(actualAmount.toString())
+        const tx = await operatorContract.undelegate(amount)
 
         const receipt = await tx.wait()
 

@@ -135,7 +135,13 @@ function UndelegateFundsModal({
                     await undelegateFromOperator(
                         chainId,
                         operator.id,
-                        amount >= delegatedTotal ? Infinity : amount,
+                        amount >= delegatedTotal
+                            ? /**
+                               * If we are requesting all funds to be undelegated, send
+                               * a truely big number instead of infinity.
+                               */
+                              110763745230805656649802800132303954225n
+                            : amount,
                         {
                             onBlockNumber: (blockNumber) =>
                                 waitForIndexedBlock(chainId, blockNumber),

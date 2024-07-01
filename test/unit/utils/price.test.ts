@@ -1,31 +1,7 @@
 import * as all from '../../../src/marketplace/utils/price'
-import { toBN, toBigInt } from '../../../src/utils/bn'
+import { toBigInt } from '../../../src/utils/bn'
 
 describe('price utils', () => {
-    describe('isPriceValid', () => {
-        it('works with positive number', () => {
-            expect(all.isPriceValid('2')).toBe(true)
-            expect(all.isPriceValid('300')).toBe(true)
-            expect(all.isPriceValid(toBN(4e20))).toBe(true)
-            expect(all.isPriceValid(toBN('4444562598.111772'))).toBe(true)
-        })
-        it('works with zero', () => {
-            expect(all.isPriceValid('0')).toBe(false)
-            expect(all.isPriceValid('0')).toBe(false)
-            expect(all.isPriceValid(toBN(0))).toBe(false)
-            expect(all.isPriceValid(toBN('0'))).toBe(false)
-        })
-        it('works with negative number', () => {
-            expect(all.isPriceValid('-2')).toBe(false)
-            expect(all.isPriceValid('-300')).toBe(false)
-            expect(all.isPriceValid(toBN(-4e20))).toBe(false)
-            expect(all.isPriceValid(toBN('-1234567.898765'))).toBe(false)
-        })
-        it('works with NaN', () => {
-            expect(all.isPriceValid('NaN')).toBe(false)
-        })
-    })
-
     describe('formatDecimals', () => {
         it('displays, rounds and recognizes currency', () => {
             expect(all.formatDecimals(toBigInt(1, 18n), 'DATA', 18n)).toBe('1')

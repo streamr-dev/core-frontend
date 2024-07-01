@@ -1,22 +1,9 @@
 import { ContractCurrency, PaymentCurrency } from '~/shared/types/common-types'
 import { contractCurrencies, paymentCurrencies } from '~/shared/utils/constants'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
-import { BNish, toBN, toFloat } from '~/utils/bn'
+import { toFloat } from '~/utils/bn'
 import { convertPrice } from '~/utils/price'
 import { getAbbreviation } from './time'
-
-/**
- * Validates if given string can be used as price
- * @param value string Number as string
- * @return boolean
- */
-export function isPriceValid(value: BNish): boolean {
-    try {
-        return toBN(value).gt(0)
-    } catch (e) {
-        return false
-    }
-}
 
 /**
  * "Intelligently" reduce and display decimals in relation to number size and currency.
