@@ -1,9 +1,10 @@
 import { produce } from 'immer'
 import { useEffect } from 'react'
 import { create } from 'zustand'
+import { Minute } from '~/consts'
 import { Heartbeat } from '~/hooks/useInterceptHeartbeats'
 
-const TTL = 60 * 1000
+const TTL = Minute
 
 interface Probe {
     updatedAt: number

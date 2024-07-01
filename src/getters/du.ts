@@ -1,4 +1,3 @@
-import DataUnionClient, { DataUnion } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
 import {
     GetDataUnionsOwnedByDocument,
@@ -34,6 +33,10 @@ export async function getDataUnionsOwnedByInChain(
     }))
 }
 
+type DataUnionClient = any
+
+type DataUnion = any
+
 export async function getDataUnionClient(chainId: number): Promise<DataUnionClient> {
     const provider: any = await getWalletProvider()
 
@@ -63,6 +66,10 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
 
     const isInCorrectChainAndUnlocked = isProviderInCorrectChain
 
+    /**
+     * Data unions client has to be brought to ethers v6.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const clientConfig = getClientConfig(chainId, {
         auth: {
             // If MetaMask is in right chain, use it to enable signing
@@ -91,7 +98,7 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
             : {}),
     })
 
-    return new (await require('@dataunions/client')).DataUnionClient(clientConfig)
+    throw new Error('Not implemented')
 }
 
 export async function getDataUnion(

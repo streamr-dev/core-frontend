@@ -1,4 +1,5 @@
-import NoModalRootError from '~/shared/errors/NoModalRootError'
+import NoModalRootError from '../../../src/shared/errors/NoModalRootError'
+
 describe(NoModalRootError, () => {
     it('extends Error', () => {
         expect(new NoModalRootError()).toBeInstanceOf(Error)

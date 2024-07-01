@@ -37,6 +37,6 @@ export function isMessagedObject(e: unknown): e is z.infer<typeof ObjectWithMess
 export function isTransactionRejection(e: unknown) {
     return (
         (isCodedError(e) && e.code === 4001) ||
-        (isMessagedObject(e) && /user rejected transaction/i.test(e.message))
+        (isMessagedObject(e) && /action_rejected/i.test(e.message))
     )
 }

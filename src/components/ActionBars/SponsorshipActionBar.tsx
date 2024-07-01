@@ -1,18 +1,23 @@
-import React, { useMemo } from 'react'
 import moment from 'moment'
-import { truncate, truncateStreamName } from '~/shared/utils/text'
+import React, { useMemo } from 'react'
+import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
+import {
+    ActionBarButton,
+    ActionBarButtonBody,
+    ActionBarButtonCaret,
+    ActionBarButtonInnerBody,
+    ActionBarWalletDisplay,
+} from '~/components/ActionBars/ActionBarButton'
 import { Button } from '~/components/Button'
-import SvgIcon from '~/shared/components/SvgIcon'
-import { SimpleDropdown } from '~/components/SimpleDropdown'
+import { SponsorshipDecimals } from '~/components/Decimals'
+import { Hint } from '~/components/Hint'
 import { Separator } from '~/components/Separator'
-import StatGrid, { StatCell } from '~/components/StatGrid'
-import { useOperatorForWalletQuery } from '~/hooks/operators'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { SimpleDropdown } from '~/components/SimpleDropdown'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import StatGrid, { StatCell } from '~/components/StatGrid'
 import { Tooltip } from '~/components/Tooltip'
+import { DayInSeconds } from '~/consts'
+import { useOperatorForWalletQuery } from '~/hooks/operators'
 import {
     useEditSponsorshipFunding,
     useFundSponsorshipCallback,
@@ -21,23 +26,16 @@ import {
     useIsJoiningSponsorshipAsOperator,
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'
-import { abbr } from '~/utils'
-import {
-    ActionBarButton,
-    ActionBarButtonBody,
-    ActionBarButtonCaret,
-    ActionBarButtonInnerBody,
-    ActionBarWalletDisplay,
-} from '~/components/ActionBars/ActionBarButton'
-import { AboutSponsorship } from '~/components/ActionBars/AboutSponsorship'
-import { Hint } from '~/components/Hint'
-import { useCurrentChainId } from '~/utils/chains'
+import { truncate, truncateStreamName } from '~/shared/utils/text'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
-
-const DayInSeconds = 60 * 60 * 24
 
 export function SponsorshipActionBar({
     sponsorship,
@@ -53,7 +51,7 @@ export function SponsorshipActionBar({
     const { projectedInsolvencyAt, isRunning, timeCorrectedRemainingBalance } =
         sponsorship
 
-    const isPaying = isRunning && timeCorrectedRemainingBalance.isGreaterThan(0)
+    const isPaying = isRunning && timeCorrectedRemainingBalance > 0n
 
     const fundedUntil = useMemo(
         () =>
@@ -183,13 +181,17 @@ export function SponsorshipActionBar({
                                     </Hint>
                                 }
                             >
-                                {abbr(sponsorship.payoutPerDay)}{' '}
-                                <SponsorshipPaymentTokenName />
-                                /day
+                                <SponsorshipDecimals
+                                    abbr
+                                    amount={sponsorship.payoutPerDay}
+                                    unitSuffix="/day"
+                                />
                             </StatCell>
                             <StatCell label="Remaining balance">
-                                {abbr(timeCorrectedRemainingBalance)}{' '}
-                                <SponsorshipPaymentTokenName />
+                                <SponsorshipDecimals
+                                    abbr
+                                    amount={timeCorrectedRemainingBalance}
+                                />
                             </StatCell>
                             <StatCell
                                 label="Total staked"
@@ -204,8 +206,10 @@ export function SponsorshipActionBar({
                                     </Hint>
                                 }
                             >
-                                {abbr(sponsorship.totalStake)}{' '}
-                                <SponsorshipPaymentTokenName />
+                                <SponsorshipDecimals
+                                    abbr
+                                    amount={sponsorship.totalStakedWei}
+                                />
                             </StatCell>
                         </StatGrid>
                     </Pad>
@@ -237,8 +241,10 @@ export function SponsorshipActionBar({
                                     </Hint>
                                 }
                             >
-                                {abbr(sponsorship.cumulativeSponsoring)}{' '}
-                                <SponsorshipPaymentTokenName />
+                                <SponsorshipDecimals
+                                    abbr
+                                    amount={sponsorship.cumulativeSponsoring}
+                                />
                             </StatCell>
                             <StatCell
                                 label="Minimum stake duration"

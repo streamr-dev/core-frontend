@@ -1,16 +1,15 @@
+import { StreamPermission } from '@streamr/sdk'
+import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
-import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
-import { StreamPermission } from '@streamr/sdk'
-import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
-import SvgIcon from '~/shared/components/SvgIcon'
 import { Button } from '~/components/Button'
+import { address0 } from '~/consts'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
-import { StreamId } from '~/shared/types/stream-types'
-import { truncateStreamName } from '~/shared/utils/text'
+import SvgIcon from '~/shared/components/SvgIcon'
 import useCopy from '~/shared/hooks/useCopy'
 import { useStreamAbility } from '~/shared/stores/streamAbilities'
-import { address0 } from '~/consts'
+import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
+import { truncateStreamName } from '~/shared/utils/text'
 import { Route as R } from '~/utils/routes'
 
 function stripIndent(code: string): string {
@@ -140,12 +139,13 @@ const Snippet = {
     },
 }
 
-export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
-    streams,
-}) => {
-    const [streamId, setSelectedStream] = useState<StreamId>(streams[0])
+export const StreamConnect: FunctionComponent<{ streams: string[] }> = ({ streams }) => {
+    const [streamId, setSelectedStream] = useState<string>(streams[0])
+
     const [action, setAction] = useState<'subscribe' | 'publish'>('subscribe')
+
     const [nodeType, setNodeType] = useState<'lightNode' | 'brokerNode'>('lightNode')
+
     const [currentProtocol, setCurrentProtocol] = useState<'websocket' | 'http' | 'mqtt'>(
         'websocket',
     )
@@ -155,6 +155,7 @@ export const StreamConnect: FunctionComponent<{ streams: StreamId[] }> = ({
         address0,
         StreamPermission.PUBLISH,
     )
+
     const hasPublicSubPermission = useStreamAbility(
         streamId,
         address0,

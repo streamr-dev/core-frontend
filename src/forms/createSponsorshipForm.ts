@@ -1,18 +1,16 @@
 import { z } from 'zod'
-import { toBN } from '~/utils/bn'
+import { getSponsorshipExtensionInDays } from '~/utils/sponsorships'
 
 export const MinNumberOfOperatorsParser = z
     .number()
     .gte(1)
     .refine((value) => Number.isSafeInteger(value))
 
-export const CreateSponsorshipForm = z
+const CreateSponsorshipForm = z
     .object({
         streamId: z.string().trim().min(1),
-        initialAmount: z
-            .string()
-            .refine((value) => toBN(value).isGreaterThanOrEqualTo(0)),
-        payoutRate: z.string().refine((value) => toBN(value).isGreaterThan(0)),
+        initialAmount: z.bigint().min(0n),
+        dailyPayoutRate: z.bigint().gt(0n),
         minStakeDuration: z
             .number()
             .gte(0)
@@ -25,30 +23,25 @@ export const CreateSponsorshipForm = z
             .optional(),
     })
     .refine(
-        ({ minNumberOfOperators, maxNumberOfOperators }) => {
-            if (typeof maxNumberOfOperators === 'undefined') {
-                return true
-            }
-            return maxNumberOfOperators >= minNumberOfOperators
-        },
+        ({ minNumberOfOperators: min, maxNumberOfOperators: max }) =>
+            typeof max === 'undefined' || max >= min,
         {
             message: 'invalid range of operator numbers',
             path: ['maxNumberOfOperators'],
         },
     )
     .refine(
-        ({ initialAmount, payoutRate, minStakeDuration }) => {
-            const payoutRateBN = toBN(payoutRate)
-            const initialAmountBN = toBN(initialAmount)
-            const extensionInDays =
-                payoutRateBN.isGreaterThan(0) && initialAmountBN.isGreaterThanOrEqualTo(0)
-                    ? initialAmountBN.dividedBy(payoutRateBN).toNumber()
-                    : 0
-            return toBN(extensionInDays).isGreaterThanOrEqualTo(toBN(minStakeDuration))
-        },
+        ({ initialAmount, dailyPayoutRate, minStakeDuration }) =>
+            getSponsorshipExtensionInDays(initialAmount, dailyPayoutRate) >=
+            minStakeDuration,
         {
             message: 'Payout rate is lower than minimum stake duration',
             path: ['minStakeDuration'],
         },
     )
+
 export type CreateSponsorshipForm = z.infer<typeof CreateSponsorshipForm>
+
+export function isValidCreateSponsorshipForm(input: CreateSponsorshipForm): boolean {
+    return CreateSponsorshipForm.safeParse(input).success
+}

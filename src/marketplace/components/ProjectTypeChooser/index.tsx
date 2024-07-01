@@ -1,23 +1,22 @@
-import React, { FunctionComponent, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ProjectType } from '~/shared/types'
+import React, { FunctionComponent, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { Button } from '~/components/Button'
 import openDataImage from '~/marketplace/assets/open-data.png'
 import openDataImage2x from '~/marketplace/assets/open-data@2x.png'
 import paidDataImage from '~/marketplace/assets/paid-data.png'
 import paidDataImage2x from '~/marketplace/assets/paid-data@2x.png'
 import dataUnionImage from '~/marketplace/assets/product_dataunion.png'
 import dataUnionImage2x from '~/marketplace/assets/product_dataunion@2x.png'
-import SvgIcon from '~/shared/components/SvgIcon'
-import { COLORS, DESKTOP, REGULAR } from '~/shared/utils/styled'
-import { Radio } from '~/shared/components/Radio'
-import { Button } from '~/components/Button'
-import { useWalletAccount } from '~/shared/stores/wallet'
 import { getPagedStreams } from '~/services/streams'
-import { useCurrentChainId } from '~/utils/chains'
+import { Radio } from '~/shared/components/Radio'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { ProjectType } from '~/shared/types'
+import { COLORS, DESKTOP, REGULAR } from '~/shared/utils/styled'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const Root = styled.div`
     color: #323232;
@@ -66,6 +65,11 @@ const Product = styled.button`
         padding: 0;
         grid-template-columns: auto;
         grid-template-rows: auto auto auto;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: default;
     }
 `
 const ProductTitle = styled.div`
@@ -236,6 +240,7 @@ export const ProjectTypeChooser: FunctionComponent<{
                     </RadioWrap>
                 </Product>
                 <Product
+                    disabled
                     onClick={() => setSelectedProductType(ProjectType.DataUnion)}
                     title={'Data Union'}
                 >

@@ -1,8 +1,17 @@
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import CopyIcon from '@atlaskit/icon/glyph/copy'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import CopyIcon from '@atlaskit/icon/glyph/copy'
-import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
+import { Alert } from '~/components/Alert'
+import { SponsorshipDecimals } from '~/components/Decimals'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { getSelfDelegationFraction } from '~/getters'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
+import { useAllOperatorsForWalletQuery } from '~/hooks/operators'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
+import { SelectField2 } from '~/marketplace/components/SelectField2'
 import FormModal, {
     CopyButtonWrapAppendix,
     ErrorLabel,
@@ -18,33 +27,23 @@ import FormModal, {
     TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
-import useCopy from '~/shared/hooks/useCopy'
-import { toBN } from '~/utils/bn'
-import { Alert } from '~/components/Alert'
-import SvgIcon from '~/shared/components/SvgIcon'
-import { COLORS } from '~/shared/utils/styled'
-import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { fromDecimals, toDecimals } from '~/marketplace/utils/math'
-import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
-import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { stakeOnSponsorship } from '~/services/sponsorships'
-import { waitForIndexedBlock } from '~/utils'
-import { errorToast } from '~/utils/toast'
-import Toast from '~/shared/toasts/Toast'
-import { Layer } from '~/utils/Layer'
-import { getSelfDelegationFraction } from '~/getters'
-import { Abbr } from '~/components/Abbr'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { humanize } from '~/shared/utils/time'
-import { truncate } from '~/shared/utils/text'
+import SvgIcon from '~/shared/components/SvgIcon'
+import Label from '~/shared/components/Ui/Label'
+import useCopy from '~/shared/hooks/useCopy'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { useAllOperatorsForWalletQuery } from '~/hooks/operators'
-import { SelectField2 } from '~/marketplace/components/SelectField2'
+import Toast from '~/shared/toasts/Toast'
+import { COLORS } from '~/shared/utils/styled'
+import { truncate } from '~/shared/utils/text'
+import { humanize } from '~/shared/utils/time'
+import { waitForIndexedBlock } from '~/utils'
+import { Layer } from '~/utils/Layer'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
+import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
 import { Route as R } from '~/utils/routes'
+import { errorToast } from '~/utils/toast'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
@@ -54,22 +53,16 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     sponsorship: ParsedSponsorship
 }
 
-function parseAmount(amount: string | undefined, decimals: number) {
-    return !amount || amount === '0' ? '' : fromDecimals(amount, decimals).toString()
-}
-
 const limitErrorToaster = toaster(Toast, Layer.Toast)
 
 function JoinSponsorshipModal({
-    amount: amountProp = '0',
     chainId,
     onResolve,
     preselectedOperator,
     sponsorship,
     ...props
 }: Props) {
-    const { decimals = 18, symbol: tokenSymbol = 'DATA' } =
-        useSponsorshipTokenInfo() || {}
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     const wallet = useWalletAccount()
 
@@ -85,70 +78,55 @@ function JoinSponsorshipModal({
 
     const [busy, setBusy] = useState(false)
 
-    const [rawAmount, setRawAmount] = useState(parseAmount(amountProp, decimals))
+    const [rawAmount, setRawAmount] = useState('')
 
-    const amount = toDecimals(rawAmount || '0', decimals)
-
-    const finalAmount = amount.isFinite() && amount.isGreaterThan(0) ? amount : toBN(0)
+    const amount = ((a: bigint) => (a > 0n ? a : 0n))(toBigInt(rawAmount || 0, decimals))
 
     const heartbeats = useInterceptHeartbeats(operatorId)
 
     const { count: liveNodesCount, isLoading: liveNodesCountLoading } =
         useOperatorLiveNodes(heartbeats)
 
-    let liveNodesOk = !liveNodesCountLoading && liveNodesCount > 0
+    const liveNodesOk =
+        (!liveNodesCountLoading && liveNodesCount > 0) ||
+        /**
+         * Relax live node checking for broken operators (v1) as they cannot join the recovery
+         * sponsorship otherwise.
+         */
+        operator.contractVersion === 1
 
-    // Relax live node checking for broken operators as they cannot join the recovery sponsorship otherwise
-    if (operator.contractVersion === 1) {
-        liveNodesOk = true
-    }
+    const insufficientFunds = amount > operatorBalance
 
-    useEffect(() => {
-        setRawAmount(parseAmount(amountProp, decimals))
-    }, [amountProp, decimals])
+    const minimumSelfDelegationFraction =
+        useConfigValueFromChain('minimumSelfDelegationFraction', (value) =>
+            toFloat(value, decimals),
+        ) || toBN(0)
 
-    const insufficientFunds = finalAmount.isGreaterThan(operatorBalance)
-
-    const minimumSelfDelegationFraction = useConfigValueFromChain(
-        'minimumSelfDelegationFraction',
+    const minimumSelfDelegationAmount = toBigInt(
+        toBN(operator.valueWithoutEarnings).multipliedBy(minimumSelfDelegationFraction),
     )
 
-    const minimumSelfDelegationPercentage =
-        minimumSelfDelegationFraction != null
-            ? fromDecimals(minimumSelfDelegationFraction, decimals)
-            : toBN(0)
+    const earlyLeaverPenaltyWei = useConfigValueFromChain('earlyLeaverPenaltyWei') || 0n
 
-    const minimumSelfDelegationAmount = fromDecimals(
-        operator.valueWithoutEarnings,
-        decimals,
-    ).multipliedBy(minimumSelfDelegationPercentage)
+    const ownerDelegationPercentage = useMemo(
+        () => getSelfDelegationFraction(operator),
+        [operator],
+    )
 
-    const earlyLeaverPenaltyWei = useConfigValueFromChain('earlyLeaverPenaltyWei')
-    const earlyLeaverPenalty = earlyLeaverPenaltyWei
-        ? fromDecimals(earlyLeaverPenaltyWei, 18)
-        : toBN(0)
-
-    const ownerDelegationPercentage = useMemo(() => {
-        return getSelfDelegationFraction(operator)
-    }, [operator])
-
-    const currentSelfDelegationAmount = fromDecimals(
-        operator.valueWithoutEarnings,
-        decimals,
-    ).multipliedBy(ownerDelegationPercentage)
+    const currentSelfDelegationAmount = toBigInt(
+        toBN(operator.valueWithoutEarnings).multipliedBy(ownerDelegationPercentage),
+    )
 
     const isBelowSelfFundingLimit = ownerDelegationPercentage.isLessThan(
-        minimumSelfDelegationPercentage,
+        minimumSelfDelegationFraction,
     )
 
     const minimumStakeWei = useConfigValueFromChain('minimumStakeWei')
 
-    const isAboveMinimumStake = minimumStakeWei
-        ? finalAmount.isGreaterThanOrEqualTo(toBN(minimumStakeWei))
-        : true
+    const isAboveMinimumStake = minimumStakeWei != null && amount >= minimumStakeWei
 
     const canSubmit =
-        finalAmount.isGreaterThan(0) &&
+        amount > 0n &&
         !insufficientFunds &&
         liveNodesOk &&
         isAboveMinimumStake &&
@@ -159,7 +137,7 @@ function JoinSponsorshipModal({
 
     const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
 
-    const availableBalance = fromDecimals(operatorBalance, decimals)
+    const clean = amount === 0n
 
     return (
         <FormModal
@@ -169,11 +147,7 @@ function JoinSponsorshipModal({
             submitLabel="Join"
             submitting={busy}
             onBeforeAbort={(reason) =>
-                !busy &&
-                (toBN(rawAmount || '0')
-                    .multipliedBy(Math.pow(10, decimals))
-                    .eq(amountProp || '0') ||
-                    reason !== RejectionReason.Backdrop)
+                !busy && (clean || reason !== RejectionReason.Backdrop)
             }
             onSubmit={async () => {
                 if (!canSubmit) {
@@ -186,7 +160,7 @@ function JoinSponsorshipModal({
                     await stakeOnSponsorship(
                         chainId,
                         sponsorship.id,
-                        finalAmount.toString(),
+                        amount,
                         operator.id,
                         {
                             onBlockNumber: (blockNumber) =>
@@ -213,8 +187,8 @@ function JoinSponsorshipModal({
             }}
         >
             <SectionHeadline>
-                Please set the amount of {tokenSymbol} to stake on the selected
-                Sponsorship
+                Please set the amount of <SponsorshipPaymentTokenName /> to stake on the
+                selected Sponsorship
             </SectionHeadline>
             <Section>
                 <Label $wrap>Sponsorship Stream ID</Label>
@@ -233,8 +207,7 @@ function JoinSponsorshipModal({
                     {rawAmount !== '' && !isAboveMinimumStake && (
                         <ErrorLabel>
                             Minimum value is{' '}
-                            {fromDecimals(minimumStakeWei || 0, decimals).toString()}{' '}
-                            {tokenSymbol}
+                            <SponsorshipDecimals amount={minimumStakeWei || 0n} />
                         </ErrorLabel>
                     )}
                 </StyledLabelWrap>
@@ -252,10 +225,12 @@ function JoinSponsorshipModal({
                     />
                     <MaxButton
                         onClick={() => {
-                            setRawAmount(availableBalance.toString())
+                            setRawAmount(toFloat(operatorBalance, decimals).toString())
                         }}
                     />
-                    <TextAppendix>{tokenSymbol}</TextAppendix>
+                    <TextAppendix>
+                        <SponsorshipPaymentTokenName />
+                    </TextAppendix>
                 </FieldWrap>
                 <PropList>
                     <li>
@@ -273,14 +248,11 @@ function JoinSponsorshipModal({
                             )}
                         </Prop>
                         <PropValue>
-                            {limitedSpace ? (
-                                <Abbr>{availableBalance}</Abbr>
-                            ) : (
-                                <>
-                                    {availableBalance.toString()}{' '}
-                                    <SponsorshipPaymentTokenName />
-                                </>
-                            )}
+                            <SponsorshipDecimals
+                                abbr={limitedSpace}
+                                amount={operatorBalance}
+                                tooltip={limitedSpace}
+                            />
                         </PropValue>
                     </li>
                     <li>
@@ -309,6 +281,7 @@ function JoinSponsorshipModal({
                                             const selectedOp = operatorChoices?.find(
                                                 (o) => o.id === id,
                                             )
+
                                             if (selectedOp) {
                                                 setSelectedOperator(selectedOp)
                                             }
@@ -326,12 +299,12 @@ function JoinSponsorshipModal({
                 <StyledAlert type="error" title="Low self-funding">
                     You cannot stake on Sponsorships because your Operator is below the
                     self-funding requirement of{' '}
-                    {minimumSelfDelegationPercentage.multipliedBy(100).toFixed(0)}%.
+                    {minimumSelfDelegationFraction.multipliedBy(100).toFixed(0)}%.
                     Increase your Operator stake by at least{' '}
-                    {minimumSelfDelegationAmount
-                        .minus(currentSelfDelegationAmount)
-                        .toString()}{' '}
-                    {tokenSymbol} to continue.
+                    <SponsorshipDecimals
+                        amount={minimumSelfDelegationAmount - currentSelfDelegationAmount}
+                    />{' '}
+                    to continue.
                 </StyledAlert>
             )}
             {hasUndelegationQueue && (
@@ -348,58 +321,66 @@ function JoinSponsorshipModal({
             {sponsorship.minimumStakingPeriodSeconds > 0 && (
                 <StyledAlert
                     type="error"
-                    title={`This Sponsorship has a minimum staking period of ${humanize(
-                        sponsorship.minimumStakingPeriodSeconds,
-                    )}. If you unstake or get voted out during this period, you will lose 
-                        ${earlyLeaverPenalty.toString()} ${tokenSymbol} in addition to the normal slashing penalty.`}
-                ></StyledAlert>
+                    title={
+                        <>
+                            This Sponsorship has a minimum staking period of{' '}
+                            {humanize(sponsorship.minimumStakingPeriodSeconds)}. If you
+                            unstake or get voted out during this period, you will lose{' '}
+                            <SponsorshipDecimals amount={earlyLeaverPenaltyWei} /> in
+                            addition to the normal slashing penalty.
+                        </>
+                    }
+                />
             )}
         </FormModal>
     )
 }
 
-const LiveNodesCheck: FunctionComponent<{
+interface LiveNodesCheckProps {
     liveNodesCountLoading: boolean
     liveNodesCount: number
-}> = ({ liveNodesCount, liveNodesCountLoading }) => {
+}
+
+function LiveNodesCheck({ liveNodesCountLoading, liveNodesCount }: LiveNodesCheckProps) {
+    if (liveNodesCountLoading) {
+        return (
+            <StyledAlert type="loading" title="Checking Streamr nodes">
+                <span>
+                    In order to continue, you need to have one or more Streamr nodes
+                    running and correctly configured. You will be slashed if you stake
+                    without your nodes contributing resources to the stream.
+                </span>
+            </StyledAlert>
+        )
+    }
+
+    if (liveNodesCount > 0) {
+        return (
+            <StyledAlert type="success" title="Streamr nodes detected">
+                <span>
+                    Once you stake, your nodes will start working on the stream. Please
+                    ensure your nodes have enough resources available to handle the
+                    traffic in the stream.
+                </span>
+            </StyledAlert>
+        )
+    }
+
     return (
-        <>
-            {liveNodesCountLoading && (
-                <StyledAlert type="loading" title="Checking Streamr nodes">
-                    <span>
-                        In order to continue, you need to have one or more Streamr nodes
-                        running and correctly configured. You will be slashed if you stake
-                        without your nodes contributing resources to the stream.
-                    </span>
-                </StyledAlert>
-            )}
-            {!liveNodesCountLoading &&
-                (liveNodesCount > 0 ? (
-                    <StyledAlert type="success" title="Streamr nodes detected">
-                        <span>
-                            Once you stake, your nodes will start working on the stream.
-                            Please ensure your nodes have enough resources available to
-                            handle the traffic in the stream.
-                        </span>
-                    </StyledAlert>
-                ) : (
-                    <StyledAlert type="error" title="Streamr nodes not detected">
-                        <p>
-                            In order to continue, you need to have one or more Streamr
-                            nodes running and correctly configured. You will be slashed if
-                            you stake without your nodes contributing resources to the
-                            stream.
-                        </p>
-                        <a
-                            href={R.docs('/node-runners/run-a-node')}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                        >
-                            How to run a Streamr node <LinkIcon name="externalLink" />
-                        </a>
-                    </StyledAlert>
-                ))}
-        </>
+        <StyledAlert type="error" title="Streamr nodes not detected">
+            <p>
+                In order to continue, you need to have one or more Streamr nodes running
+                and correctly configured. You will be slashed if you stake without your
+                nodes contributing resources to the stream.
+            </p>
+            <a
+                href={R.docs('/node-runners/run-a-node')}
+                target="_blank"
+                rel="noreferrer noopener"
+            >
+                How to run a Streamr node <LinkIcon name="externalLink" />
+            </a>
+        </StyledAlert>
     )
 }
 

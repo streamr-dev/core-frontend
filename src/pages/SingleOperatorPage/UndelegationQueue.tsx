@@ -1,31 +1,28 @@
+import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import moment from 'moment'
 import React from 'react'
 import styled from 'styled-components'
-import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { Button } from '~/components/Button'
-import { truncate } from '~/shared/utils/text'
+import { SponsorshipDecimals } from '~/components/Decimals'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { calculateUndelegationQueueSize, getDelegatedAmountForWallet } from '~/getters'
+import { useConfigValueFromChain } from '~/hooks'
 import {
     useForceUndelegate,
     useOperatorByIdQuery,
     useProcessUndelegationQueue,
 } from '~/hooks/operators'
-import { BN, BNish, toBN } from '~/utils/bn'
-import { useConfigValueFromChain } from '~/hooks'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
-import { abbr } from '~/utils'
-import { fromAtto } from '~/marketplace/utils/math'
-import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { useCurrentChainId } from '~/utils/chains'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { COLORS, MEDIUM } from '~/shared/utils/styled'
+import { truncate } from '~/shared/utils/text'
+import { useCurrentChainId } from '~/utils/chains'
 
 function getUndelegationExpirationDate(
     date: number,
-    maxUndelegationQueueSeconds: BNish | undefined = '0',
+    maxUndelegationQueueSeconds: number | undefined = 0,
 ) {
-    return moment((date + toBN(maxUndelegationQueueSeconds).toNumber()) * 1000)
+    return moment((date + maxUndelegationQueueSeconds) * 1000)
 }
 
 interface Props {
@@ -34,24 +31,28 @@ interface Props {
 
 export function UndelegationQueue({ operatorId }: Props) {
     const currentChainId = useCurrentChainId()
+
     const operatorQuery = useOperatorByIdQuery(operatorId)
+
     const operator = operatorQuery.data || null
 
     const walletAddress = useWalletAccount()
-    const { symbol: tokenSymbol = 'DATA' } = useSponsorshipTokenInfo() || {}
 
-    const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds')
+    const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds', Number)
+
     const forceUndelegate = useForceUndelegate()
+
     const processUndelegationQueue = useProcessUndelegationQueue()
 
     const freeFunds = operator?.dataTokenBalanceWei
+
     const undelegationQueueSize =
         operator != null ? calculateUndelegationQueueSize(operator) : undefined
 
     const isProcessButtonDisabled =
         freeFunds != null &&
         undelegationQueueSize != null &&
-        freeFunds.isLessThan(undelegationQueueSize)
+        freeFunds < undelegationQueueSize
 
     const ProcessQueueButton = () => (
         <Button
@@ -61,6 +62,7 @@ export function UndelegationQueue({ operatorId }: Props) {
                 if (operatorId == null) {
                     return
                 }
+
                 processUndelegationQueue(currentChainId, operatorId)
             }}
         >
@@ -93,20 +95,13 @@ export function UndelegationQueue({ operatorId }: Props) {
                 {
                     displayName: 'Amount',
                     valueMapper: (element) => (
-                        <>
-                            {abbr(
-                                fromAtto(
-                                    BN.min(
-                                        getDelegatedAmountForWallet(
-                                            element.delegator,
-                                            operator,
-                                        ),
-                                        element.amount,
-                                    ),
-                                ),
-                            )}{' '}
-                            {tokenSymbol}
-                        </>
+                        <SponsorshipDecimals
+                            abbr
+                            amount={((a: bigint, b: bigint) => (a < b ? a : b))(
+                                getDelegatedAmountForWallet(element.delegator, operator),
+                                element.amount,
+                            )}
+                        />
                     ),
                     align: 'end',
                     isSticky: false,

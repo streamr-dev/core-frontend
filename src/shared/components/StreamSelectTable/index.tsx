@@ -1,15 +1,13 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
-import styled, { css } from 'styled-components'
-import { StreamID } from '@streamr/sdk'
 import { Link } from 'react-router-dom'
+import styled, { css } from 'styled-components'
 import LoadMore from '~/marketplace/components/LoadMore'
-import { StreamId } from '~/shared/types/stream-types'
-import { COLORS, MEDIUM, REGULAR, DESKTOP, TABLET } from '~/shared/utils/styled'
-import Checkbox from '~/shared/components/Checkbox'
 import { IndexerStream, TheGraphStream } from '~/services/streams'
+import Checkbox from '~/shared/components/Checkbox'
+import { COLORS, DESKTOP, MEDIUM, REGULAR, TABLET } from '~/shared/utils/styled'
 import { truncateStreamName } from '~/shared/utils/text'
-import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
 
 const ROW_HEIGHT = 88
 
@@ -161,11 +159,11 @@ const StreamDescription = styled(GridCell)`
 
 type Props = {
     streams: Array<TheGraphStream>
-    streamStats: Record<StreamID, IndexerStream>
+    streamStats: Record<string, IndexerStream>
     loadMore?: () => void | Promise<void>
     hasMoreResults?: boolean
-    onSelectionChange: (selectedStreams: StreamId[]) => void
-    selected: StreamId[]
+    onSelectionChange: (selectedStreams: string[]) => void
+    selected: string[]
     disabled?: boolean
 }
 
@@ -178,11 +176,11 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
     selected,
     disabled = false,
 }: Props) => {
-    const [selectedStreams, setSelectedStreams] = useState<Record<StreamId, boolean>>({})
+    const [selectedStreams, setSelectedStreams] = useState<Record<string, boolean>>({})
     const [allSelected, setAllSelected] = useState<boolean>(false)
 
     const emitSelectedStreamsChange = useCallback(
-        (streams: Record<StreamId, boolean>) => {
+        (streams: Record<string, boolean>) => {
             if (onSelectionChange) {
                 const selectedStreamsArray = Object.entries(streams)
                     .filter(([, isSelected]) => isSelected)
@@ -194,7 +192,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
     )
 
     const handleSelectChange = useCallback(
-        (streamId: StreamId) => {
+        (streamId: string) => {
             const newSelectedStreams = {
                 ...selectedStreams,
                 [streamId]: !selectedStreams[streamId],
@@ -207,7 +205,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
 
     const handleSelectAllChange = useCallback(() => {
         const shouldAllBeChecked = !allSelected
-        const newSelectedStreams: Record<StreamId, boolean> = {}
+        const newSelectedStreams: Record<string, boolean> = {}
         streams.forEach((stream) => {
             newSelectedStreams[stream.id] = shouldAllBeChecked
         })
@@ -234,7 +232,7 @@ export const StreamSelectTable: FunctionComponent<Props> = ({
 
     useEffect(() => {
         if (selected && selected.length) {
-            const newSelectedStreams: Record<StreamId, boolean> = {}
+            const newSelectedStreams: Record<string, boolean> = {}
             selected.forEach((streamId) => {
                 newSelectedStreams[streamId] = true
             })

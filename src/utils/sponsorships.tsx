@@ -1,11 +1,9 @@
-import { Sponsorship, sponsorshipABI } from '@streamr/network-contracts'
 import { Contract } from 'ethers'
+import { Sponsorship, sponsorshipABI } from 'network-contracts-ethers6'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { toBN } from '~/utils/bn'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { getCustomTokenBalance } from '~/marketplace/utils/web3'
-import { getChainConfig, getChainConfigExtension } from './chains'
+import { toBN } from '~/utils/bn'
 
 /**
  * Scouts for Operator's funding share.
@@ -29,7 +27,8 @@ export function isSponsorshipFundedByOperator(
     }
 
     const operatorStake = getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
-    return operatorStake != null && operatorStake.amount.isGreaterThan(0)
+
+    return operatorStake != null && operatorStake.amountWei > 0n
 }
 
 /**
@@ -44,23 +43,16 @@ export async function getSponsorshipLeavePenalty(
         sponsorshipId,
         sponsorshipABI,
         getPublicWeb3Provider(chainId),
-    ) as Sponsorship
+    ) as unknown as Sponsorship
 
-    return toBN(await contract.getLeavePenalty(operatorId))
+    return contract.getLeavePenalty(operatorId)
 }
 
-/**
- * Fetches wallet's balance of the Sponsorship-native token
- * on the default chain.
- */
-export async function getBalanceForSponsorship(chainId: number, wallet: string) {
-    const chain = getChainConfig(chainId)
-
-    const { sponsorshipPaymentToken } = getChainConfigExtension(chainId)
-
-    return getCustomTokenBalance(
-        chain.contracts[sponsorshipPaymentToken],
-        wallet,
-        chain.id,
-    )
+export function getSponsorshipExtensionInDays(
+    amount: bigint,
+    dailyPayoutRate: bigint,
+): number {
+    return dailyPayoutRate > 0n && amount >= 0n
+        ? toBN(amount).dividedBy(toBN(dailyPayoutRate)).toNumber()
+        : 0
 }

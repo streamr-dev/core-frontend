@@ -2,10 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { Buttons } from '~/components/Buttons'
 import PngIcon from '~/shared/components/PngIcon'
-import { ethereumNetworks } from '~/shared/utils/constants'
+import { getChainConfig } from '~/utils/chains'
 import { RejectionReason } from '~/utils/exceptions'
-import Modal, { ModalProps } from './Modal'
 import { Footer } from './BaseModal'
+import Modal, { ModalProps } from './Modal'
 
 interface Props extends Pick<ModalProps, 'onReject' | 'darkBackdrop'> {
     expectedNetwork: number | string
@@ -14,7 +14,11 @@ interface Props extends Pick<ModalProps, 'onReject' | 'darkBackdrop'> {
 }
 
 function getChainName(chainId: number | string) {
-    return ethereumNetworks[chainId] || `#${chainId}`
+    try {
+        return getChainConfig(chainId).name
+    } catch (_) {
+        return `#${chainId}`
+    }
 }
 
 export default function SwitchNetworkModal({

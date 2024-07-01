@@ -1,5 +1,6 @@
 import EventEmitter from 'events'
-import Transaction from '~/shared/utils/Transaction'
+import Transaction from '../../../src/shared/utils/Transaction'
+
 describe('Transaction', () => {
     let emitter
     let tx

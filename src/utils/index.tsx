@@ -202,7 +202,7 @@ export function abbr(value: BNish, options: AbbrOptions = {}) {
     const { fractionalLength = defaultFractionLength, stripFractionalZeros = true } =
         options
 
-    const v = toBN(value)
+    const v = toBN(value).dp(10)
 
     if (!v.isFinite()) {
         console.warn('Invalid value', v.toString())
@@ -244,13 +244,6 @@ export function abbr(value: BNish, options: AbbrOptions = {}) {
     }
 
     return `${sign}${integral}${frac && `.${frac}`}${SiSymbol[size]}`
-}
-
-/**
- * Compares 2 BigNumberish values.
- */
-export function sameBN(a: BNish, b: BNish) {
-    return toBN(a).isEqualTo(toBN(b))
 }
 
 /**

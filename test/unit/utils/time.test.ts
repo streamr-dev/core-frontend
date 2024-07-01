@@ -1,4 +1,4 @@
-import * as all from '~/marketplace/utils/time'
+import * as all from '../../../src/marketplace/utils/time'
 
 describe('time utils', () => {
     describe('toSeconds', () => {

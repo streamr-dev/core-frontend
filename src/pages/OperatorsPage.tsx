@@ -1,31 +1,33 @@
+import { UseInfiniteQueryResult } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { UseInfiniteQueryResult } from '@tanstack/react-query'
+import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
+import { Button } from '~/components/Button'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
-import Tabs, { Tab } from '~/shared/components/Tabs'
-import { Button } from '~/components/Button'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { fromAtto } from '~/marketplace/utils/math'
-import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
-import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { LoadMoreButton } from '~/components/LoadMore'
+import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
+import { OperatorIdCell } from '~/components/Table'
 import { getSpotApy } from '~/getters'
 import {
     useAllOperatorsQuery,
     useDelegationsForWalletQuery,
     useOperatorForWalletQuery,
 } from '~/hooks/operators'
-import { Delegation, OrderDirection } from '~/types'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { abbr, saveOperator } from '~/utils'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { OperatorIdCell } from '~/components/Table'
-import { useCurrentChainFullName, useCurrentChainId } from '~/utils/chains'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { Delegation, OrderDirection } from '~/types'
+import { saveOperator } from '~/utils'
+import {
+    useCurrentChainFullName,
+    useCurrentChainId,
+    useCurrentChainSymbolicName,
+} from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const PAGE_SIZE = 20
 
@@ -70,8 +72,6 @@ export const OperatorsPage = () => {
     const chainId = useCurrentChainId()
 
     const chainName = useCurrentChainSymbolicName()
-
-    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
 
     const operatorQuery = useOperatorForWalletQuery(wallet)
 
@@ -162,16 +162,12 @@ export const OperatorsPage = () => {
                         {selectedTab === TabOption.AllOperators ? (
                             <OperatorsTable
                                 query={allOperatorsQuery}
-                                tokenSymbol={tokenSymbol}
                                 orderBy={orderBy}
                                 orderDirection={orderDirection}
                                 onOrderChange={setOrder}
                             />
                         ) : (
-                            <DelegationsTable
-                                query={myDelegationsQuery}
-                                tokenSymbol={tokenSymbol}
-                            />
+                            <DelegationsTable query={myDelegationsQuery} />
                         )}
                         {currentQuery.hasNextPage && (
                             <LoadMoreButton
@@ -193,10 +189,8 @@ export const OperatorsPage = () => {
 
 function DelegationsTable({
     query,
-    tokenSymbol,
 }: {
     query: UseInfiniteQueryResult<{ skip: number; elements: Delegation[] }>
-    tokenSymbol: string
 }) {
     // We want to hide delegations to broken operator contract version 1
     // as we cannot get rid of them otherwise
@@ -230,9 +224,7 @@ function DelegationsTable({
                 {
                     displayName: 'My delegation',
                     valueMapper: (element) => (
-                        <>
-                            {abbr(fromAtto(element.myShare))} {tokenSymbol}
-                        </>
+                        <SponsorshipDecimals abbr amount={element.myShare} />
                     ),
                     align: 'start',
                     isSticky: false,
@@ -241,9 +233,7 @@ function DelegationsTable({
                 {
                     displayName: 'Total stake',
                     valueMapper: (element) => (
-                        <>
-                            {abbr(fromAtto(element.valueWithoutEarnings))} {tokenSymbol}
-                        </>
+                        <SponsorshipDecimals abbr amount={element.valueWithoutEarnings} />
                     ),
                     align: 'end',
                     isSticky: false,
@@ -279,13 +269,11 @@ function DelegationsTable({
 
 function OperatorsTable({
     query,
-    tokenSymbol,
     orderBy,
     orderDirection,
     onOrderChange,
 }: {
     query: UseInfiniteQueryResult<{ skip: number; elements: ParsedOperator[] }>
-    tokenSymbol: string
     orderBy?: string
     orderDirection?: OrderDirection
     onOrderChange: (columnKey: string) => void
@@ -320,9 +308,7 @@ function OperatorsTable({
                 {
                     displayName: 'Total stake',
                     valueMapper: (element) => (
-                        <>
-                            {abbr(fromAtto(element.valueWithoutEarnings))} {tokenSymbol}
-                        </>
+                        <SponsorshipDecimals abbr amount={element.valueWithoutEarnings} />
                     ),
                     align: 'start',
                     isSticky: false,
@@ -332,10 +318,10 @@ function OperatorsTable({
                 {
                     displayName: 'Deployed stake',
                     valueMapper: (element) => (
-                        <>
-                            {abbr(fromAtto(element.totalStakeInSponsorshipsWei))}{' '}
-                            {tokenSymbol}
-                        </>
+                        <SponsorshipDecimals
+                            abbr
+                            amount={element.totalStakeInSponsorshipsWei}
+                        />
                     ),
                     align: 'end',
                     isSticky: false,
