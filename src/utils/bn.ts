@@ -6,11 +6,7 @@ export type BNish = number | string | BN | BigNumberish
 export { BN }
 
 export function toBN(value: BNish) {
-    if (typeof value === 'bigint') {
-        return toBN(value.toString())
-    }
-
-    return new BN(value)
+    return typeof value === 'bigint' ? toBN(value.toString()) : new BN(value)
 }
 
 export function toBigInt(value: Exclude<BNish, bigint>, decimals = 0n): bigint {
