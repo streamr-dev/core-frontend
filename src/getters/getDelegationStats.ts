@@ -12,7 +12,7 @@ export const getDelegationStats = async (
     dataSource: string,
     { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
-    const { decimals = 18n } = (await getSponsorshipTokenInfo(chainId)) || {}
+    const { decimals = 18n } = await getSponsorshipTokenInfo(chainId)
 
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
     let result: GetDelegatorDailyBucketsQuery['delegatorDailyBuckets']
