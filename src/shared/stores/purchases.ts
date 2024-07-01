@@ -466,7 +466,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * network. Note that the gas limit is dynamic and depends
                                              * on the number of streams associated with the project.
                                              */
-                                            const tx = getMarketplaceContract({
+                                            const tx = await getMarketplaceContract({
                                                 chainId: selectedChainId,
                                                 provider,
                                             }).buy(projectId, seconds, {
@@ -493,7 +493,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 }
                                             })
 
-                                            await tx
+                                            await tx.wait()
 
                                             /**
                                              * `Buy` transaction is done and now we wait for the `Subscribe` event
