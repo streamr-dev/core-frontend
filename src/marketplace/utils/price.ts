@@ -19,27 +19,6 @@ export function isPriceValid(value: BNish): boolean {
 }
 
 /**
- * @deprecated Use `convertPrice`.
- */
-export function priceForTimeUnits(
-    pricePerSecond: bigint,
-    duration: number,
-    timeUnit: TimeUnit,
-): bigint {
-    return convertPrice(pricePerSecond, [duration, timeUnit])
-}
-
-/**
- * @deprecated Use `convertPrice`.
- */
-export function pricePerSecondFromTimeUnit(
-    pricePerTimeUnit: bigint,
-    timeUnit: TimeUnit,
-): bigint {
-    return convertPrice([pricePerTimeUnit, timeUnit], timeUnits.second)
-}
-
-/**
  * "Intelligently" reduce and display decimals in relation to number size and currency.
  * Human currencies: always 2 decimals for 0-99, always 1 decimal 100-999. 1000+ no decimals
  * DATA currency: Hide decimals for round numbers. 1000+ no decimals.

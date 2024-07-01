@@ -26,42 +26,6 @@ describe('price utils', () => {
         })
     })
 
-    describe('priceForTimeUnits', () => {
-        it('works without the digits parameter', () => {
-            const pps = toBigInt(2, 18n)
-            expect(all.priceForTimeUnits(pps, 0, 'second')).toEqual(0n)
-            expect(all.priceForTimeUnits(0n, 0, 'second')).toEqual(0n)
-            expect(all.priceForTimeUnits(pps, 7, 'second')).toEqual(toBigInt(14, 18n))
-            expect(all.priceForTimeUnits(pps, 7, 'minute')).toEqual(toBigInt(840, 18n))
-            expect(all.priceForTimeUnits(pps, 7, 'hour')).toEqual(toBigInt(50400, 18n))
-            expect(all.priceForTimeUnits(pps, 7, 'day')).toEqual(toBigInt(1209600, 18n))
-            expect(all.priceForTimeUnits(pps, 7, 'week')).toEqual(toBigInt(8467200, 18n))
-        })
-    })
-
-    describe('pricePerSecondFromTimeUnit', () => {
-        it('calculates PPS for time units', () => {
-            expect(all.pricePerSecondFromTimeUnit(0n, 'second').toString()).toStrictEqual(
-                '0',
-            )
-            expect(
-                all.pricePerSecondFromTimeUnit(toBigInt(1, 18n), 'second').toString(),
-            ).toStrictEqual('1000000000000000000')
-            expect(
-                all.pricePerSecondFromTimeUnit(toBigInt(1, 18n), 'minute').toString(),
-            ).toStrictEqual('16666666666666667')
-            expect(
-                all.pricePerSecondFromTimeUnit(toBigInt(1, 18n), 'hour').toString(),
-            ).toStrictEqual('277777777777778')
-            expect(
-                all.pricePerSecondFromTimeUnit(toBigInt(1, 18n), 'day').toString(),
-            ).toStrictEqual('11574074074074')
-            expect(
-                all.pricePerSecondFromTimeUnit(toBigInt(1, 18n), 'week').toString(),
-            ).toStrictEqual('1653439153439')
-        })
-    })
-
     describe('formatDecimals', () => {
         it('displays, rounds and recognizes currency', () => {
             expect(all.formatDecimals(toBigInt(1, 18n), 'DATA', 18n)).toBe('1')

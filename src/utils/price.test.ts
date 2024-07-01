@@ -10,6 +10,8 @@ describe('pricePerTimeUnit', () => {
 
         expect(cp(1n, timeUnits.hour)).toEqual(3600n)
 
+        expect(cp(1n, [2, timeUnits.hour])).toEqual(7200n)
+
         expect(cp([1n, timeUnits.second], timeUnits.second)).toEqual(1n)
 
         expect(cp([1n, timeUnits.second], timeUnits.minute)).toEqual(60n)

@@ -1,31 +1,31 @@
 import { produce } from 'immer'
-import { Toaster, toaster } from 'toasterhea'
 import { useEffect } from 'react'
+import { Toaster, toaster } from 'toasterhea'
 import { create } from 'zustand'
+import { getAllowance, getERC20TokenContract, getMarketplaceContract } from '~/getters'
+import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
+import { toSeconds } from '~/marketplace/utils/time'
+import { getMarketplaceAddress } from '~/marketplace/utils/web3'
+import AccessPeriodModal, { AccessPeriod } from '~/modals/AccessPeriodModal'
+import AccessingProjectModal from '~/modals/AccessingProjectModal'
+import AllowanceModal from '~/modals/AllowanceModal'
 import ChainSelectorModal, {
     ChainSelectorResult,
     getPurchasePreconditions,
 } from '~/modals/ChainSelectorModal'
-import { Layer } from '~/utils/Layer'
-import AccessPeriodModal, { AccessPeriod } from '~/modals/AccessPeriodModal'
-import { isAbandonment } from '~/modals/ProjectModal'
-import AllowanceModal from '~/modals/AllowanceModal'
-import PurchaseCompleteModal from '~/modals/PurchaseCompleteModal'
-import { getMarketplaceAddress } from '~/marketplace/utils/web3'
-import { priceForTimeUnits } from '~/marketplace/utils/price'
-import networkPreflight from '~/utils/networkPreflight'
-import { timeUnits } from '~/shared/utils/timeUnit'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
 import ConfirmPurchaseModal from '~/modals/ConfirmPurchaseModal'
-import { toSeconds } from '~/marketplace/utils/time'
-import AccessingProjectModal from '~/modals/AccessingProjectModal'
-import { getAllowance, getERC20TokenContract, getMarketplaceContract } from '~/getters'
-import { RejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import FailedPurchaseModal from '~/modals/FailedPurchaseModal'
-import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
+import { isAbandonment } from '~/modals/ProjectModal'
+import PurchaseCompleteModal from '~/modals/PurchaseCompleteModal'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
+import { timeUnits } from '~/shared/utils/timeUnit'
+import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
+import { Layer } from '~/utils/Layer'
 import { useCurrentChainId } from '~/utils/chains'
+import { RejectionReason, isTransactionRejection } from '~/utils/exceptions'
+import networkPreflight from '~/utils/networkPreflight'
+import { convertPrice } from '~/utils/price'
 import { TheGraph } from '../types'
 import { getSigner } from './wallet'
 
@@ -284,11 +284,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                     }
                                 })
 
-                                const total = priceForTimeUnits(
-                                    pricePerSecond,
+                                const total = convertPrice(pricePerSecond, [
                                     quantity,
                                     unit,
-                                ).toString()
+                                ])
 
                                 async function setAllowance() {
                                     while (true) {
@@ -344,7 +343,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 },
                                             )
 
-                                            if (allowance < BigInt(total)) {
+                                            if (allowance < total) {
                                                 /**
                                                  * If `total` exceeds `allowance` we loop back to top
                                                  * and make the wallet pop up the allowance box again.
