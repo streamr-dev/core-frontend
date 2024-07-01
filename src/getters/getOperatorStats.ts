@@ -2,7 +2,7 @@ import moment from 'moment'
 import { GetOperatorDailyBucketsQuery } from '~/generated/gql/network'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { ChartPeriod } from '~/types'
-import { toBN } from '~/utils/bn'
+import { toFloat } from '~/utils/bn'
 import { getOperatorDailyBuckets } from '.'
 
 export const getOperatorStats = async (
@@ -79,22 +79,13 @@ export const getOperatorStats = async (
             result = []
     }
     return result.map((bucket) => {
-        let yValue: number
-        switch (dataSource) {
-            case 'totalValue':
-                yValue = toBN(bucket.valueWithoutEarnings)
-                    .dividedBy(10 ** Number(decimals))
-                    .toNumber()
-                break
-            case 'cumulativeEarnings':
-                yValue = toBN(bucket.cumulativeEarningsWei)
-                    .dividedBy(10 ** Number(decimals))
-                    .toNumber()
-                break
-            default:
-                yValue = 0
-                break
-        }
+        const yValue =
+            dataSource === 'totalValue'
+                ? toFloat(bucket.valueWithoutEarnings, decimals).toNumber()
+                : dataSource === 'cumulativeEarnings'
+                ? toFloat(bucket.cumulativeEarningsWei, decimals).toNumber()
+                : 0
+
         return {
             x: Number(bucket.date) * 1000,
             y: yValue,

@@ -1,10 +1,9 @@
 import moment from 'moment/moment'
-import { ChartPeriod } from '~/types'
-import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { GetDelegatorDailyBucketsQuery } from '~/generated/gql/network'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { getDelegatorDailyBuckets } from '~/getters/index'
-import { toBN } from '~/utils/bn'
-import { fromDecimals } from '~/marketplace/utils/math'
+import { ChartPeriod } from '~/types'
+import { toBN, toFloat } from '~/utils/bn'
 
 export const getDelegationStats = async (
     chainId: number,
@@ -13,7 +12,7 @@ export const getDelegationStats = async (
     dataSource: string,
     { force = false, ignoreToday = false } = {},
 ): Promise<{ x: number; y: number }[]> => {
-    const tokenInfo = await getSponsorshipTokenInfo(chainId)
+    const { decimals = 18n } = (await getSponsorshipTokenInfo(chainId)) || {}
 
     const start = ignoreToday ? moment().utc().startOf('day') : moment().utc()
     let result: GetDelegatorDailyBucketsQuery['delegatorDailyBuckets']
@@ -84,24 +83,13 @@ export const getDelegationStats = async (
     }
 
     return result.map((bucket) => {
-        let yValue: number
-        switch (dataSource) {
-            case 'currentValue':
-                yValue = fromDecimals(
-                    bucket.totalValueDataWei,
-                    tokenInfo?.decimals || 18,
-                ).toNumber()
-                break
-            case 'cumulativeEarnings':
-                yValue = fromDecimals(
-                    bucket.cumulativeEarningsWei,
-                    tokenInfo?.decimals || 18,
-                ).toNumber()
-                break
-            default:
-                yValue = 0
-                break
-        }
+        const yValue =
+            dataSource === 'currentValue'
+                ? toFloat(bucket.totalValueDataWei, decimals).toNumber()
+                : dataSource === 'cumulativeEarnings'
+                ? toFloat(bucket.cumulativeEarningsWei, decimals).toNumber()
+                : 0
+
         return {
             x: toBN(bucket.date).multipliedBy(1000).toNumber(),
             y: yValue,

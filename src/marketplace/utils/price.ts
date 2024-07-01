@@ -3,7 +3,6 @@ import { contractCurrencies, paymentCurrencies } from '~/shared/utils/constants'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { BNish, toBN, toFloat } from '~/utils/bn'
 import { convertPrice } from '~/utils/price'
-import { fromDecimals } from './math'
 import { getAbbreviation } from './time'
 
 /**
@@ -69,7 +68,7 @@ export function formatDecimals(
             throw new Error('Decimals are required')
         }
 
-        return fromDecimals(value, decimals).toFixed(2)
+        return toFloat(value, decimals).toFixed(2)
     }
 
     if (bn.abs().lt(10)) {

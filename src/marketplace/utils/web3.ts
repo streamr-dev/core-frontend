@@ -1,7 +1,4 @@
-import { getBalance } from '~/utils/balance'
 import { getChainConfig } from '~/utils/chains'
-import { getTokenInfo } from '~/utils/tokens'
-import { fromDecimals } from './math'
 
 export const getDataAddress = (chainId: number): string => {
     const { contracts } = getChainConfig(chainId)
@@ -29,23 +26,4 @@ export const getMarketplaceAddress = (chainId: number): string => {
     }
 
     return marketplaceAddress
-}
-
-/**
- * @deprecated Use `getBalance` from `~/utils/balance`.
- */
-export const getCustomTokenBalance = async (
-    contractAddress: string,
-    userAddress: string,
-    chainId: number,
-) => {
-    const balance = await getBalance({
-        chainId,
-        tokenAddress: contractAddress,
-        walletAddress: userAddress,
-    })
-
-    const { decimals } = await getTokenInfo(contractAddress, chainId)
-
-    return fromDecimals(balance, decimals)
 }
