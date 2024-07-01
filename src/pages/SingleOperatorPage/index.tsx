@@ -122,8 +122,7 @@ export const SingleOperatorPage = () => {
 
     const canCollect = useCanCollectEarningsCallback()
 
-    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
-        useSponsorshipTokenInfo() || {}
+    const { symbol: tokenSymbol = 'DATA' } = useSponsorshipTokenInfo() || {}
 
     const editSponsorshipFunding = useEditSponsorshipFunding()
 
@@ -471,13 +470,12 @@ export const SingleOperatorPage = () => {
                                                                 )}
                                                         </StatCellLabel>
                                                         <StatCellContent>
-                                                            {abbr(
-                                                                toFloat(
-                                                                    myDelegationAmount,
-                                                                    decimals,
-                                                                ),
-                                                            )}{' '}
-                                                            {tokenSymbol}
+                                                            <SponsorshipDecimals
+                                                                abbr
+                                                                amount={
+                                                                    myDelegationAmount
+                                                                }
+                                                            />
                                                         </StatCellContent>
                                                     </Pad>
                                                 </DelegationCell>
@@ -540,13 +538,10 @@ export const SingleOperatorPage = () => {
                                             )
                                             return (
                                                 <>
-                                                    {abbr(
-                                                        toFloat(
-                                                            element.amountWei,
-                                                            decimals,
-                                                        ),
-                                                    )}{' '}
-                                                    {tokenSymbol}
+                                                    <SponsorshipDecimals
+                                                        abbr
+                                                        amount={element.amountWei}
+                                                    />
                                                     {minimumStakeReachTime.isAfter(
                                                         Date.now(),
                                                     ) && (
@@ -690,12 +685,10 @@ export const SingleOperatorPage = () => {
                                         {
                                             displayName: 'Slashed',
                                             valueMapper: (element) => (
-                                                <>
-                                                    {abbr(
-                                                        toFloat(element.amount, decimals),
-                                                    )}{' '}
-                                                    {tokenSymbol}
-                                                </>
+                                                <SponsorshipDecimals
+                                                    abbr
+                                                    amount={element.amount}
+                                                />
                                             ),
                                             align: 'start',
                                             isSticky: false,

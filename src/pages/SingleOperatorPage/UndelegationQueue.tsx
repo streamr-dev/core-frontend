@@ -3,6 +3,7 @@ import moment from 'moment'
 import React from 'react'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
+import { SponsorshipDecimals } from '~/components/Decimals'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { calculateUndelegationQueueSize, getDelegatedAmountForWallet } from '~/getters'
 import { useConfigValueFromChain } from '~/hooks'
@@ -11,13 +12,10 @@ import {
     useOperatorByIdQuery,
     useProcessUndelegationQueue,
 } from '~/hooks/operators'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncate } from '~/shared/utils/text'
-import { abbr } from '~/utils'
-import { toFloat } from '~/utils/bn'
 import { useCurrentChainId } from '~/utils/chains'
 
 function getUndelegationExpirationDate(
@@ -39,9 +37,6 @@ export function UndelegationQueue({ operatorId }: Props) {
     const operator = operatorQuery.data || null
 
     const walletAddress = useWalletAccount()
-
-    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
-        useSponsorshipTokenInfo() || {}
 
     const maxUndelegationQueueSeconds = useConfigValueFromChain('maxQueueSeconds', Number)
 
@@ -100,21 +95,13 @@ export function UndelegationQueue({ operatorId }: Props) {
                 {
                     displayName: 'Amount',
                     valueMapper: (element) => (
-                        <>
-                            {abbr(
-                                toFloat(
-                                    ((a: bigint, b: bigint) => (a < b ? a : b))(
-                                        getDelegatedAmountForWallet(
-                                            element.delegator,
-                                            operator,
-                                        ),
-                                        element.amount,
-                                    ),
-                                    decimals,
-                                ),
-                            )}{' '}
-                            {tokenSymbol}
-                        </>
+                        <SponsorshipDecimals
+                            abbr
+                            amount={((a: bigint, b: bigint) => (a < b ? a : b))(
+                                getDelegatedAmountForWallet(element.delegator, operator),
+                                element.amount,
+                            )}
+                        />
                     ),
                     align: 'end',
                     isSticky: false,

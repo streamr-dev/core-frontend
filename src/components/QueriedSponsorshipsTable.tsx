@@ -20,8 +20,6 @@ import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection } from '~/types'
-import { abbr } from '~/utils'
-import { toFloat } from '~/utils/bn'
 import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
@@ -95,8 +93,13 @@ export function QueriedSponsorshipsTable({
                                 /day
                             </>
                         ),
-                        valueMapper: (element) =>
-                            abbr(toFloat(element.payoutPerDay, decimals)),
+                        valueMapper: (element) => (
+                            <Decimals
+                                abbr
+                                amount={element.payoutPerDay}
+                                decimals={decimals}
+                            />
+                        ),
                         align: 'start',
                         isSticky: hideStreamId,
                         key: 'payoutPerDay',

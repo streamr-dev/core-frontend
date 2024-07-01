@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
 import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
 import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
-import { SponsorshipDecimals } from '~/components/Decimals'
+import { Decimals, SponsorshipDecimals } from '~/components/Decimals'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
@@ -40,7 +40,6 @@ import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
 import { truncate } from '~/shared/utils/text'
 import { ChartPeriod } from '~/types'
 import { abbr } from '~/utils'
-import { toFloat } from '~/utils/bn'
 import { useCurrentChainFullName, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 
@@ -277,12 +276,11 @@ export const SingleSponsorshipPage = () => {
                                                         />
                                                     </div>
                                                     <strong>
-                                                        {abbr(
-                                                            toFloat(
-                                                                stake.amountWei,
-                                                                decimals,
-                                                            ),
-                                                        )}
+                                                        <Decimals
+                                                            abbr
+                                                            amount={stake.amountWei}
+                                                            decimals={decimals}
+                                                        />
                                                     </strong>
                                                 </Link>
                                             </OperatorListItem>

@@ -98,8 +98,7 @@ function NetworkStats() {
 function MyOperatorSummary() {
     const wallet = useWalletAccount()
 
-    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
-        useSponsorshipTokenInfo() || {}
+    const { symbol: tokenSymbol = 'DATA' } = useSponsorshipTokenInfo() || {}
 
     const stats = useOperatorStatsForWallet(wallet)
 
@@ -196,7 +195,7 @@ function MyOperatorSummary() {
                         <Pad>
                             <StatGrid>
                                 <StatCell label="Total stake">
-                                    {abbr(toFloat(value, decimals))} {tokenSymbol}
+                                    <SponsorshipDecimals abbr amount={value} />
                                 </StatCell>
                                 <StatCell label="Delegators">{numOfDelegators}</StatCell>
                                 <StatCell label="Sponsorships">
@@ -276,8 +275,7 @@ function MyDelegationsSummary() {
 
     const stats = useDelegationsStats(wallet)
 
-    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
-        useSponsorshipTokenInfo() || {}
+    const { symbol: tokenSymbol = 'DATA' } = useSponsorshipTokenInfo() || {}
 
     const { value = 0n, numOfOperators = 0, minApy = 0, maxApy = 0 } = stats || {}
 
@@ -329,7 +327,7 @@ function MyDelegationsSummary() {
                 <Pad>
                     <StatGrid>
                         <StatCell label="Current value">
-                            {abbr(toFloat(value, decimals))} {tokenSymbol}
+                            <SponsorshipDecimals abbr amount={value} />
                         </StatCell>
                         <StatCell label="Operators">{numOfOperators}</StatCell>
                         <StatCell label="APY">
