@@ -1,7 +1,7 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 import { getERC20TokenContract } from '~/getters'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { getQueryClient } from '~/utils'
+import { getPublicProvider } from '~/utils/providers'
 
 export interface TokenInfo {
     decimals: bigint
@@ -39,9 +39,11 @@ function tokenInfoQueryParams(
                 return null
             }
 
+            const provider = await getPublicProvider(chainId)
+
             const contact = getERC20TokenContract({
                 tokenAddress,
-                provider: getPublicWeb3Provider(chainId),
+                provider,
             })
 
             try {

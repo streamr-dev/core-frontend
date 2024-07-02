@@ -4,10 +4,11 @@ import { DayInSeconds, DefaultGasLimitMultiplier } from '~/consts'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { getParsedSponsorshipById } from '~/getters'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
-import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
+import { getSigner } from '~/shared/stores/wallet'
 import { toBN, toBigInt } from '~/utils/bn'
 import { getContractAbi, getContractAddress } from '~/utils/contracts'
 import networkPreflight from '~/utils/networkPreflight'
+import { getPublicProvider } from '~/utils/providers'
 import { toastedOperation } from '~/utils/toastedOperation'
 
 interface CreateSponsorshipOptions {
@@ -378,7 +379,7 @@ export async function getEarningsForSponsorships(
     chainId: number,
     operatorAddress: string,
 ): Promise<Record<string, SponsorshipEarnings>> {
-    const provider = getPublicWeb3Provider(chainId)
+    const provider = await getPublicProvider(chainId)
 
     const contract = new Contract(
         operatorAddress,

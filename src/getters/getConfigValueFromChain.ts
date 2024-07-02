@@ -1,10 +1,10 @@
 import { Contract } from 'ethers'
 import { StreamrConfig } from 'network-contracts-ethers6'
 import { Minute } from '~/consts'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ChainConfigKey } from '~/types'
 import { getChainConfig } from '~/utils/chains'
 import { getContractAbi, getContractAddress } from '~/utils/contracts'
+import { getPublicProvider } from '~/utils/providers'
 
 const cache: Record<
     number,
@@ -26,7 +26,7 @@ export async function getConfigValueFromChain<
         return value as U
     }
 
-    const provider = getPublicWeb3Provider(chainId)
+    const provider = await getPublicProvider(chainId)
 
     const contract = new Contract(
         getContractAddress('config', chainId),

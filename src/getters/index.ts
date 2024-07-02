@@ -77,7 +77,6 @@ import { Token as TokenContract } from '~/generated/types/local'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
 import { parseSponsorship } from '~/parsers/SponsorshipParser'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
 import { ChartPeriod } from '~/types'
@@ -85,6 +84,7 @@ import { Layer } from '~/utils/Layer'
 import { BN, toBN } from '~/utils/bn'
 import { getChainConfigExtension } from '~/utils/chains'
 import { getContractAbi, getContractAddress } from '~/utils/contracts'
+import { getPublicProvider } from '~/utils/providers'
 import { errorToast } from '~/utils/toast'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
@@ -141,7 +141,7 @@ export async function getAllowance(
 ): Promise<bigint> {
     while (true) {
         try {
-            const provider = getPublicWeb3Provider(chainId)
+            const provider = await getPublicProvider(chainId)
 
             return await getERC20TokenContract({
                 tokenAddress,
@@ -190,9 +190,11 @@ export async function getProjectPermissions(
         }
     }
 
+    const provider = await getPublicProvider(chainId)
+
     const response = await getProjectRegistryContract({
         chainId,
-        provider: getPublicWeb3Provider(chainId),
+        provider,
     }).getPermission(projectId, account)
 
     const [canBuy = false, canDelete = false, canEdit = false, canGrant = false] = z

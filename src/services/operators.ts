@@ -3,11 +3,12 @@ import { ERC677, Operator, OperatorFactory } from 'network-contracts-ethers6'
 import { DefaultGasLimitMultiplier } from '~/consts'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { postImage } from '~/services/images'
-import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
+import { getSigner } from '~/shared/stores/wallet'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import { toBN, toBigInt } from '~/utils/bn'
 import { getContractAbi, getContractAddress } from '~/utils/contracts'
 import networkPreflight from '~/utils/networkPreflight'
+import { getPublicProvider } from '~/utils/providers'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 
 export async function createOperator(
@@ -245,7 +246,7 @@ export async function getOperatorDelegationAmount(
     operatorId: string,
     address: string,
 ) {
-    const provider = getPublicWeb3Provider(chainId)
+    const provider = await getPublicProvider(chainId)
 
     const operatorContract = new Contract(
         operatorId,

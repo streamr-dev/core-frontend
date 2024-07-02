@@ -1,13 +1,12 @@
 import detectProvider from '@metamask/detect-provider'
 import { MetaMaskInpageProvider } from '@metamask/providers'
-import { BrowserProvider, FallbackProvider, JsonRpcProvider, Network } from 'ethers'
+import { BrowserProvider } from 'ethers'
 import { produce } from 'immer'
 import { isAddress } from 'web3-validator'
 import { z } from 'zod'
 import { create } from 'zustand'
 import { getENSDomainsForWallet } from '~/getters'
 import { connectModal } from '~/modals/ConnectModal'
-import { getChainConfig } from '~/utils/chains'
 import { Break } from '~/utils/errors'
 import { isMessagedObject, isRejectionReason } from '~/utils/exceptions'
 
@@ -159,40 +158,6 @@ export async function getWalletAccount({
     })
 
     return promise
-}
-
-/**
- * @todo Move to getters/index.
- */
-export function getPublicWeb3Provider(chainId: number) {
-    const config = getChainConfig(chainId)
-
-    const httpEntries = config.rpcEndpoints
-        .filter(({ url }) => url.startsWith('http'))
-        .map(({ url }) => url)
-
-    if (httpEntries.length === 0) {
-        throw new Error(`No rpcEndpoints configured for chainId "${chainId}"`)
-    }
-
-    const network = Network.from(chainId)
-
-    if (httpEntries.length === 1) {
-        return new JsonRpcProvider(httpEntries[0], network, {
-            staticNetwork: network,
-        })
-    }
-
-    const providers = httpEntries.map(
-        (url) =>
-            new JsonRpcProvider(url, network, {
-                staticNetwork: network,
-            }),
-    )
-
-    return new FallbackProvider(providers, network, {
-        quorum: 2,
-    })
 }
 
 interface WalletStore {

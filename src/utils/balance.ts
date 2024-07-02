@@ -1,5 +1,5 @@
 import { getERC20TokenContract } from '~/getters'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
+import { getPublicProvider } from '~/utils/providers'
 
 interface GetBalanceOptions {
     chainId: number
@@ -7,12 +7,12 @@ interface GetBalanceOptions {
     walletAddress: string
 }
 
-export function getBalance({
+export async function getBalance({
     chainId,
     tokenAddress,
     walletAddress,
 }: GetBalanceOptions): Promise<bigint> {
-    const provider = getPublicWeb3Provider(chainId)
+    const provider = await getPublicProvider(chainId)
 
     if (tokenAddress === 'native') {
         return provider.getBalance(walletAddress)
