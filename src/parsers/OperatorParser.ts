@@ -1,14 +1,14 @@
 import { z } from 'zod'
-import { toBN, toBigInt, toFloat } from '~/utils/bn'
 import {
     OperatorMetadataPreparser,
     parseOperatorMetadata,
 } from '~/parsers/OperatorMetadataParser'
+import { toBN, toBigInt, toFloat } from '~/utils/bn'
 
 const OperatorParser = z.object({
-    cumulativeOperatorsCutWei: z.string().transform(BigInt),
-    cumulativeProfitsWei: z.string().transform(BigInt),
-    dataTokenBalanceWei: z.string().transform(BigInt),
+    cumulativeOperatorsCutWei: z.string().transform((v) => toBigInt(v)),
+    cumulativeProfitsWei: z.string().transform((v) => toBigInt(v)),
+    dataTokenBalanceWei: z.string().transform((v) => toBigInt(v)),
     delegatorCount: z.number(),
     delegations: z.array(
         z.object({
@@ -18,7 +18,7 @@ const OperatorParser = z.object({
                     id: z.string(),
                 })
                 .transform(({ id }) => id),
-            operatorTokenBalanceWei: z.string().transform(BigInt),
+            operatorTokenBalanceWei: z.string().transform((v) => toBigInt(v)),
             latestDelegationTimestamp: z.coerce.number(),
             earliestUndelegationTimestamp: z.coerce.number(),
         }),
@@ -40,16 +40,16 @@ const OperatorParser = z.object({
             persisted: true,
         })),
     ),
-    operatorsCutFraction: z.string().transform(BigInt),
+    operatorsCutFraction: z.string().transform((v) => toBigInt(v)),
     owner: z.string(),
     contractVersion: z.coerce.number(),
-    operatorTokenTotalSupplyWei: z.string().transform(BigInt),
-    valueWithoutEarnings: z.string().transform(BigInt),
+    operatorTokenTotalSupplyWei: z.string().transform((v) => toBigInt(v)),
+    valueWithoutEarnings: z.string().transform((v) => toBigInt(v)),
     valueUpdateBlockNumber: z.coerce.number().optional(),
     valueUpdateTimestamp: z.coerce.number().optional(),
     queueEntries: z.array(
         z.object({
-            amount: z.string().transform(BigInt),
+            amount: z.string().transform((v) => toBigInt(v)),
             date: z.coerce.number(),
             delegator: z.object({ id: z.string() }).transform(({ id }) => id),
             id: z.string(),
@@ -58,7 +58,7 @@ const OperatorParser = z.object({
     slashingEvents: z.array(
         z
             .object({
-                amount: z.string().transform(BigInt),
+                amount: z.string().transform((v) => toBigInt(v)),
                 date: z.coerce.number(),
                 sponsorship: z.object({
                     id: z.string(),
@@ -76,8 +76,8 @@ const OperatorParser = z.object({
     stakes: z.array(
         z
             .object({
-                amountWei: z.string().transform(BigInt),
-                earningsWei: z.string().transform(BigInt),
+                amountWei: z.string().transform((v) => toBigInt(v)),
+                earningsWei: z.string().transform((v) => toBigInt(v)),
                 joinTimestamp: z.coerce.number(),
                 operator: z.object({
                     id: z.string(),
@@ -85,7 +85,7 @@ const OperatorParser = z.object({
                 sponsorship: z.object({
                     id: z.string(),
                     isRunning: z.boolean(),
-                    remainingWei: z.string().transform(BigInt),
+                    remainingWei: z.string().transform((v) => toBigInt(v)),
                     minimumStakingPeriodSeconds: z.coerce.number(),
                     spotAPY: z.string().transform(toBN),
                     projectedInsolvency: z
@@ -125,7 +125,7 @@ const OperatorParser = z.object({
                 }),
             ),
     ),
-    totalStakeInSponsorshipsWei: z.string().transform(BigInt),
+    totalStakeInSponsorshipsWei: z.string().transform((v) => toBigInt(v)),
 })
 
 export type ParsedOperator = ReturnType<typeof parseOperator>

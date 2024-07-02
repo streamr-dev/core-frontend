@@ -7,7 +7,7 @@ import {
 } from './OperatorMetadataParser'
 
 const SponsorshipParser = z.object({
-    cumulativeSponsoring: z.string().transform(BigInt),
+    cumulativeSponsoring: z.string().transform((v) => toBigInt(v)),
     id: z.string(),
     isRunning: z.boolean(),
     minOperators: z.number(),
@@ -20,7 +20,7 @@ const SponsorshipParser = z.object({
     projectedInsolvency: z
         .union([z.string(), z.null()])
         .transform((v) => (v == null ? null : Number(v))),
-    remainingWei: z.string().transform(BigInt),
+    remainingWei: z.string().transform((v) => toBigInt(v)),
     remainingWeiUpdateTimestamp: z.coerce.number(),
     spotAPY: z.coerce.number(),
     stream: z.union([
@@ -36,8 +36,8 @@ const SponsorshipParser = z.object({
                     id: z.string(),
                     metadataJsonString: OperatorMetadataPreparser,
                 }),
-                amountWei: z.string().transform(BigInt),
-                lockedWei: z.string().transform(BigInt),
+                amountWei: z.string().transform((v) => toBigInt(v)),
+                lockedWei: z.string().transform((v) => toBigInt(v)),
                 joinTimestamp: z.coerce.number(),
             })
             .transform(
@@ -51,8 +51,8 @@ const SponsorshipParser = z.object({
                 }),
             ),
     ),
-    totalPayoutWeiPerSec: z.string().transform(BigInt),
-    totalStakedWei: z.string().transform(BigInt),
+    totalPayoutWeiPerSec: z.string().transform((v) => toBigInt(v)),
+    totalStakedWei: z.string().transform((v) => toBigInt(v)),
 })
 
 interface ParseSponsorshipOptions {

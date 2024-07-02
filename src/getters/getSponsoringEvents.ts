@@ -6,6 +6,7 @@ import {
 } from '~/generated/gql/network'
 import { getGraphClient } from '~/getters/getGraphClient'
 import { FundingEvent } from '~/types'
+import { toBigInt } from '~/utils/bn'
 
 export const getSponsoringEvents = async (
     chainId: number,
@@ -31,7 +32,7 @@ export const getSponsoringEvents = async (
 
     return sponsoringEvents.map((event) => ({
         id: event.id,
-        amount: BigInt(event.amount),
+        amount: toBigInt(event.amount),
         sponsor: event.sponsor,
         date: format(new Date(Number(event.date) * 1000), 'yyyy-MM-dd HH:mm:ss'),
     }))

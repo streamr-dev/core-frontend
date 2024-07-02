@@ -81,7 +81,7 @@ import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
 import { ChartPeriod } from '~/types'
 import { Layer } from '~/utils/Layer'
-import { BN, toBN } from '~/utils/bn'
+import { BN, toBN, toBigInt } from '~/utils/bn'
 import { getChainConfigExtension } from '~/utils/chains'
 import { getContractAbi, getContractAddress } from '~/utils/contracts'
 import { getPublicProvider } from '~/utils/providers'
@@ -986,7 +986,7 @@ function parseNetworkStats(stats: GetNetworkStatsQuery) {
     try {
         return z
             .object({
-                totalStake: z.string().transform(BigInt),
+                totalStake: z.string().transform((v) => toBigInt(v)),
                 sponsorshipsCount: z.number(),
                 operatorsCount: z.number(),
             })

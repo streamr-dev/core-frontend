@@ -10,6 +10,7 @@ import {
     timeUnits,
 } from '~/shared/utils/timeUnit'
 import { Chain } from '~/types'
+import { toBigInt } from '~/utils/bn'
 import {
     getChainConfig,
     getChainConfigExtension,
@@ -21,7 +22,11 @@ import { getTokenInfo } from '~/utils/tokens'
 const ParsedPaymentDetail = z.object({
     beneficiary: z.string(),
     domainId: z.coerce.number(),
-    pricePerSecond: z.string().optional().default('0').transform(BigInt),
+    pricePerSecond: z
+        .string()
+        .optional()
+        .default('0')
+        .transform((v) => toBigInt(v)),
     pricingTokenAddress: z.string(),
 })
 
@@ -190,7 +195,7 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
                             : beneficiary.toLowerCase(),
                         chainId,
                         enabled: true,
-                        price: pricePerSecond * BigInt(multiplier),
+                        price: pricePerSecond * toBigInt(multiplier),
                         pricePerSecond,
                         pricingTokenAddress: pricingTokenAddress.toLowerCase(),
                         readOnly: true,

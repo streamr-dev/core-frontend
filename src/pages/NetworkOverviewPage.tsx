@@ -48,7 +48,7 @@ import {
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { ChartPeriod, XY } from '~/types'
 import { abbr } from '~/utils'
-import { toFloat } from '~/utils/bn'
+import { toBigInt, toFloat } from '~/utils/bn'
 import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { errorToast } from '~/utils/toast'
@@ -145,8 +145,8 @@ function MyOperatorSummary() {
 
                 const toValue: (bucket: OperatorDailyBucket) => bigint =
                     chartId === 'stake'
-                        ? ({ valueWithoutEarnings }) => BigInt(valueWithoutEarnings)
-                        : ({ cumulativeEarningsWei }) => BigInt(cumulativeEarningsWei)
+                        ? ({ valueWithoutEarnings }) => toBigInt(valueWithoutEarnings)
+                        : ({ cumulativeEarningsWei }) => toBigInt(cumulativeEarningsWei)
 
                 return buckets.map((bucket) => ({
                     x: Number(bucket.date) * 1000,
