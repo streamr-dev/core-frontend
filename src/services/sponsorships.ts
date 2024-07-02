@@ -1,4 +1,4 @@
-import { AbiCoder, Contract, EventLog, Log } from 'ethers'
+import { AbiCoder, Contract, EventLog } from 'ethers'
 import { ERC677, Operator } from 'network-contracts-ethers6'
 import { DayInSeconds, DefaultGasLimitMultiplier } from '~/consts'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
@@ -105,19 +105,11 @@ export async function createSponsorship(
                      * 2nd transfer is the transfer from the sponsorship factory to the newly
                      * deployed sponsorship contract.
                      */
-                    let initialFundingTransfer: Log | EventLog | undefined = undefined
+                    const [, transfer = undefined] = (receipt?.logs.filter(
+                        (item) => 'eventName' in item && item.eventName === 'Transfer',
+                    ) || []) as EventLog[]
 
-                    if (receipt?.logs) {
-                        const [, transfer]: (Log | EventLog | undefined)[] =
-                            receipt.logs.filter((e) => e.topics.includes('Transfer')) ||
-                            []
-                        initialFundingTransfer = transfer
-                    }
-
-                    const sponsorshipId =
-                        initialFundingTransfer instanceof EventLog
-                            ? initialFundingTransfer.args['to']
-                            : null
+                    const sponsorshipId = transfer?.args.to
 
                     if (typeof sponsorshipId !== 'string') {
                         throw new Error('Sponsorship deployment failed')
