@@ -9,6 +9,7 @@ import { getDataUnionGraphClient } from '~/getters/getGraphClient'
 import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
 import { TheGraph } from '~/shared/types'
 import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 
 export async function getDataUnionsOwnedByInChain(
     account: string,
@@ -46,14 +47,6 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
 
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
 
-    const factoryAddress = config.contracts.DataUnionFactory
-
-    if (!factoryAddress) {
-        throw new Error(
-            `No contract address for DataUnionFactory found for chain ${chainId}`,
-        )
-    }
-
     const providerChainId = hexToNumber(provider.chainId)
 
     const isProviderInCorrectChain = providerChainId === chainId
@@ -89,7 +82,7 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
             ],
         },
         dataUnion: {
-            factoryAddress,
+            factoryAddress: getContractAddress('dataUnionFactory', chainId),
         },
         ...(joinServerUrl
             ? {

@@ -1,9 +1,10 @@
 import { Contract } from 'ethers'
-import { Sponsorship, sponsorshipABI } from 'network-contracts-ethers6'
+import { Sponsorship } from 'network-contracts-ethers6'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { toBN } from '~/utils/bn'
+import { getContractAbi } from '~/utils/contracts'
 
 /**
  * Scouts for Operator's funding share.
@@ -41,7 +42,7 @@ export async function getSponsorshipLeavePenalty(
 ) {
     const contract = new Contract(
         sponsorshipId,
-        sponsorshipABI,
+        getContractAbi('sponsorship'),
         getPublicWeb3Provider(chainId),
     ) as unknown as Sponsorship
 

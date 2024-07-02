@@ -1,9 +1,10 @@
 import { Contract } from 'ethers'
-import { StreamrConfig, streamrConfigABI } from 'network-contracts-ethers6'
+import { StreamrConfig } from 'network-contracts-ethers6'
 import { Minute } from '~/consts'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import { ChainConfigKey } from '~/types'
 import { getChainConfig } from '~/utils/chains'
+import { getContractAbi, getContractAddress } from '~/utils/contracts'
 
 const cache: Record<
     number,
@@ -25,21 +26,11 @@ export async function getConfigValueFromChain<
         return value as U
     }
 
-    const chain = getChainConfig(chainId)
-
     const provider = getPublicWeb3Provider(chainId)
 
-    const { StreamrConfig: contractAddress } = chain.contracts
-
-    if (!contractAddress) {
-        throw new Error(
-            `StreamrConfig contract address is required for chain ${chain.id}`,
-        )
-    }
-
     const contract = new Contract(
-        contractAddress,
-        streamrConfigABI,
+        getContractAddress('config', chainId),
+        getContractAbi('config'),
         provider,
     ) as unknown as StreamrConfig
 

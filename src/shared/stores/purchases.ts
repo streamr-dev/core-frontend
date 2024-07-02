@@ -5,7 +5,6 @@ import { create } from 'zustand'
 import { getAllowance, getERC20TokenContract, getMarketplaceContract } from '~/getters'
 import { getParsedProjectById, getProjectSubscriptions } from '~/getters/hub'
 import { toSeconds } from '~/marketplace/utils/time'
-import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import AccessPeriodModal, { AccessPeriod } from '~/modals/AccessPeriodModal'
 import AccessingProjectModal from '~/modals/AccessingProjectModal'
 import AllowanceModal from '~/modals/AllowanceModal'
@@ -23,6 +22,7 @@ import { timeUnits } from '~/shared/utils/timeUnit'
 import { ensureGasMonies, waitForPurchasePropagation } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { useCurrentChainId } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 import { RejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import networkPreflight from '~/utils/networkPreflight'
 import { convertPrice } from '~/utils/price'
@@ -320,7 +320,10 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 tokenAddress,
                                                 provider,
                                             }).approve(
-                                                getMarketplaceAddress(selectedChainId),
+                                                getContractAddress(
+                                                    'marketplace',
+                                                    selectedChainId,
+                                                ),
                                                 total,
                                             )
 
@@ -442,7 +445,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                         })
 
                                         /**
-                                         * Make sure the user can affort gas. Empty wallets
+                                         * Make sure the user can afford gas. Empty wallets
                                          * take a walk.
                                          */
                                         await ensureGasMonies(selectedChainId, account, {

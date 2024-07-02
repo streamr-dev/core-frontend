@@ -1,11 +1,11 @@
 import { isAddress } from 'web3-validator'
 import { z } from 'zod'
 import { address0 } from '~/consts'
-import { getDataAddress } from '~/marketplace/utils/web3'
 import { ProjectType, SalePoint } from '~/shared/types'
 import { timeUnits } from '~/shared/utils/timeUnit'
 import { formatChainName } from '~/utils'
 import { getCurrentChain } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 
 function getFormattedChainNameFromContext({ path: [, chainName] }: z.RefinementCtx) {
     if (typeof chainName !== 'string' || !chainName) {
@@ -201,7 +201,7 @@ export const OpenDataPayload = z.object({
                 enabled: true,
                 price: 0n,
                 pricePerSecond: 0n,
-                pricingTokenAddress: getDataAddress(chainId),
+                pricingTokenAddress: getContractAddress('data', chainId),
                 readOnly: true,
                 timeUnit: timeUnits.second,
             } satisfies SalePoint,

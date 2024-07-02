@@ -1,15 +1,14 @@
 import { AbiCoder, Contract, EventLog, Log } from 'ethers'
-import { ERC677, ERC677ABI, Operator, operatorABI } from 'network-contracts-ethers6'
+import { ERC677, Operator } from 'network-contracts-ethers6'
 import { DayInSeconds, DefaultGasLimitMultiplier } from '~/consts'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { getParsedSponsorshipById } from '~/getters'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { toBN, toBigInt } from '~/utils/bn'
-import { getChainConfig } from '~/utils/chains'
+import { getContractAbi, getContractAddress } from '~/utils/contracts'
 import networkPreflight from '~/utils/networkPreflight'
 import { toastedOperation } from '~/utils/toastedOperation'
-import { getSponsorshipPaymentTokenAddress } from '~/utils/tokens'
 
 interface CreateSponsorshipOptions {
     gasLimitMultiplier?: number
@@ -21,37 +20,7 @@ export async function createSponsorship(
     formData: CreateSponsorshipForm,
     options: CreateSponsorshipOptions = {},
 ): Promise<string> {
-    const chainConfig = getChainConfig(chainId)
-
     const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
-
-    const {
-        SponsorshipDefaultLeavePolicy,
-        SponsorshipFactory,
-        SponsorshipMaxOperatorsJoinPolicy,
-        SponsorshipStakeWeightedAllocationPolicy,
-        SponsorshipVoteKickPolicy,
-    } = chainConfig.contracts
-
-    if (!SponsorshipFactory) {
-        throw new Error(`Missing SponsorshipFactory address`)
-    }
-
-    if (!SponsorshipStakeWeightedAllocationPolicy) {
-        throw new Error(`Missing SponsorshipStakeWeightedAllocationPolicy address`)
-    }
-
-    if (!SponsorshipDefaultLeavePolicy) {
-        throw new Error(`Missing SponsorshipDefaultLeavePolicy address`)
-    }
-
-    if (!SponsorshipVoteKickPolicy) {
-        throw new Error(`Missing SponsorshipVoteKickPolicy address`)
-    }
-
-    if (!SponsorshipMaxOperatorsJoinPolicy) {
-        throw new Error(`Missing SponsorshipMaxOperatorsJoinPolicy address`)
-    }
 
     const {
         dailyPayoutRate,
@@ -67,13 +36,22 @@ export async function createSponsorship(
     const minStakeDurationInSeconds = minStakeDuration * DayInSeconds
 
     const policies: [string, string | 0][] = [
-        [SponsorshipStakeWeightedAllocationPolicy, `${payoutRatePerSecond}`],
-        [SponsorshipDefaultLeavePolicy, `${minStakeDurationInSeconds}`],
-        [SponsorshipVoteKickPolicy, 0],
+        [
+            getContractAddress('sponsorshipStakeWeightedAllocationPolicy', chainId),
+            `${payoutRatePerSecond}`,
+        ],
+        [
+            getContractAddress('sponsorshipDefaultLeavePolicy', chainId),
+            `${minStakeDurationInSeconds}`,
+        ],
+        [getContractAddress('sponsorshipVoteKickPolicy', chainId), 0],
     ]
 
     if (maxNumberOfOperators !== undefined) {
-        policies.push([SponsorshipMaxOperatorsJoinPolicy, `${maxNumberOfOperators}`])
+        policies.push([
+            getContractAddress('sponsorshipMaxOperatorsJoinPolicy', chainId),
+            `${maxNumberOfOperators}`,
+        ])
     }
 
     await networkPreflight(chainId)
@@ -96,13 +74,13 @@ export async function createSponsorship(
                     const signer = await getSigner()
 
                     const token = new Contract(
-                        getSponsorshipPaymentTokenAddress(chainId),
-                        ERC677ABI,
+                        getContractAddress('sponsorshipPaymentToken', chainId),
+                        getContractAbi('erc677'),
                         signer,
                     ) as unknown as ERC677
 
                     const estimatedGasLimit = await token.transferAndCall.estimateGas(
-                        SponsorshipFactory,
+                        getContractAddress('sponsorshipFactory', chainId),
                         initialAmount,
                         data,
                     )
@@ -112,7 +90,7 @@ export async function createSponsorship(
                     )
 
                     const sponsorshipDeployTx = await token.transferAndCall(
-                        SponsorshipFactory,
+                        getContractAddress('sponsorshipFactory', chainId),
                         initialAmount,
                         data,
                         {
@@ -175,8 +153,8 @@ export async function fundSponsorship(
     const signer = await getSigner()
 
     const contract = new Contract(
-        getSponsorshipPaymentTokenAddress(chainId),
-        ERC677ABI,
+        getContractAddress('sponsorshipPaymentToken', chainId),
+        getContractAbi('erc677'),
         signer,
     ) as unknown as ERC677
 
@@ -229,7 +207,7 @@ export async function stakeOnSponsorship(
 
         const contract = new Contract(
             operatorAddress,
-            operatorABI,
+            getContractAbi('operator'),
             signer,
         ) as unknown as Operator
 
@@ -290,7 +268,7 @@ export async function reduceStakeOnSponsorship(
 
         const contract = new Contract(
             operatorAddress,
-            operatorABI,
+            getContractAbi('operator'),
             signer,
         ) as unknown as Operator
 
@@ -348,7 +326,7 @@ export async function forceUnstakeFromSponsorship(
 
         const contract = new Contract(
             operatorAddress,
-            operatorABI,
+            getContractAbi('operator'),
             signer,
         ) as unknown as Operator
 
@@ -404,7 +382,7 @@ export async function getEarningsForSponsorships(
 
     const contract = new Contract(
         operatorAddress,
-        operatorABI,
+        getContractAbi('operator'),
         provider,
     ) as unknown as Operator
 
@@ -475,7 +453,7 @@ export async function collectEarnings(
 
     const contract = new Contract(
         operatorAddress,
-        operatorABI,
+        getContractAbi('operator'),
         signer,
     ) as unknown as Operator
 

@@ -1,15 +1,15 @@
-import { z } from 'zod'
-import { produce } from 'immer'
 import detectProvider from '@metamask/detect-provider'
-import { create } from 'zustand'
-import { BrowserProvider, FallbackProvider, JsonRpcProvider, Network } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
+import { BrowserProvider, FallbackProvider, JsonRpcProvider, Network } from 'ethers'
+import { produce } from 'immer'
 import { isAddress } from 'web3-validator'
+import { z } from 'zod'
+import { create } from 'zustand'
 import { getENSDomainsForWallet } from '~/getters'
 import { connectModal } from '~/modals/ConnectModal'
-import { isRejectionReason, isMessagedObject } from '~/utils/exceptions'
-import { Break } from '~/utils/errors'
 import { getChainConfig } from '~/utils/chains'
+import { Break } from '~/utils/errors'
+import { isMessagedObject, isRejectionReason } from '~/utils/exceptions'
 
 interface MetaMaskProvider extends MetaMaskInpageProvider {
     providers?: MetaMaskProvider[]

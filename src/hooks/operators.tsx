@@ -39,10 +39,10 @@ import { getQueryClient, waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { getBalance } from '~/utils/balance'
 import { useCurrentChainId } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 import { Break, FlagBusy } from '~/utils/errors'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import { errorToast, successToast } from '~/utils/toast'
-import { getSponsorshipPaymentTokenAddress } from '~/utils/tokens'
 
 export function useOperatorForWalletQuery(address = '') {
     const currentChainId = useCurrentChainId()
@@ -478,8 +478,10 @@ export function useDelegateFunds() {
                             async () => {
                                 const balance = await getBalance({
                                     chainId,
-                                    tokenAddress:
-                                        getSponsorshipPaymentTokenAddress(chainId),
+                                    tokenAddress: getContractAddress(
+                                        'sponsorshipPaymentToken',
+                                        chainId,
+                                    ),
                                     walletAddress: wallet,
                                 })
 
@@ -559,8 +561,10 @@ export function useUndelegateFunds() {
                             async () => {
                                 const balance = await getBalance({
                                     chainId,
-                                    tokenAddress:
-                                        getSponsorshipPaymentTokenAddress(chainId),
+                                    tokenAddress: getContractAddress(
+                                        'sponsorshipPaymentToken',
+                                        chainId,
+                                    ),
                                     walletAddress: wallet,
                                 })
 

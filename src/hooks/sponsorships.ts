@@ -28,11 +28,12 @@ import { ChartPeriod } from '~/types'
 import { getQueryClient } from '~/utils'
 import { getBalance } from '~/utils/balance'
 import { useCurrentChainId } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 import { FlagBusy } from '~/utils/errors'
 import { isRejectionReason } from '~/utils/exceptions'
 import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
 import { errorToast } from '~/utils/toast'
-import { getSponsorshipPaymentTokenAddress, useTokenInfo } from '~/utils/tokens'
+import { useTokenInfo } from '~/utils/tokens'
 import { useRequestedBlockNumber } from '.'
 
 function getDefaultQueryParams(pageSize: number) {
@@ -318,7 +319,7 @@ function invalidateSponsorshipsByStreamIdQueries(
 export function useSponsorshipTokenInfo() {
     const chainId = useCurrentChainId()
 
-    return useTokenInfo(getSponsorshipPaymentTokenAddress(chainId), chainId)
+    return useTokenInfo(getContractAddress('sponsorshipPaymentToken', chainId), chainId)
 }
 
 export function useIsCreatingSponsorshipForWallet(wallet: string | undefined) {
@@ -349,8 +350,10 @@ export function useCreateSponsorship() {
                             async () => {
                                 const balance = await getBalance({
                                     chainId,
-                                    tokenAddress:
-                                        getSponsorshipPaymentTokenAddress(chainId),
+                                    tokenAddress: getContractAddress(
+                                        'sponsorshipPaymentToken',
+                                        chainId,
+                                    ),
                                     walletAddress: wallet,
                                 })
 
@@ -482,8 +485,10 @@ export function useFundSponsorshipCallback() {
 
                                 const balance = await getBalance({
                                     chainId,
-                                    tokenAddress:
-                                        getSponsorshipPaymentTokenAddress(chainId),
+                                    tokenAddress: getContractAddress(
+                                        'sponsorshipPaymentToken',
+                                        chainId,
+                                    ),
                                     walletAddress: wallet,
                                 })
 

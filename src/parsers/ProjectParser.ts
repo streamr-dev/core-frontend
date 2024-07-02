@@ -3,7 +3,6 @@ import { address0 } from '~/consts'
 import { getProjectImageUrl } from '~/getters'
 import { getDataUnionAdminFeeForSalePoint } from '~/getters/du'
 import { getMostRelevantTimeUnit } from '~/marketplace/utils/price'
-import { getDataAddress } from '~/marketplace/utils/web3'
 import { ProjectType, SalePoint } from '~/shared/types'
 import {
     TimeUnit,
@@ -16,6 +15,7 @@ import {
     getChainConfigExtension,
     getCurrentChainId,
 } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 import { getTokenInfo } from '~/utils/tokens'
 
 const ParsedPaymentDetail = z.object({
@@ -156,7 +156,7 @@ export function parseProject(value: unknown, options: ParseProjectOptions) {
                     enabled: false,
                     price: undefined,
                     pricePerSecond: undefined,
-                    pricingTokenAddress: getDataAddress(id).toLowerCase(),
+                    pricingTokenAddress: getContractAddress('data', id).toLowerCase(),
                     readOnly: false,
                     timeUnit: timeUnits.day,
                 }
@@ -246,7 +246,7 @@ function getEmptySalePoints(chainId: number) {
             enabled: false,
             price: undefined,
             pricePerSecond: undefined,
-            pricingTokenAddress: getDataAddress(id).toLowerCase(),
+            pricingTokenAddress: getContractAddress('data', id).toLowerCase(),
             readOnly: false,
             timeUnit: timeUnits.day,
         }

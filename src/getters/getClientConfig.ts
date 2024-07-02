@@ -1,5 +1,6 @@
 import { StreamrClientConfig } from '@streamr/sdk'
 import { getChainConfig } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 import { getGraphUrl } from './getGraphClient'
 
 export default function getClientConfig(
@@ -26,8 +27,8 @@ export default function getClientConfig(
             chainId,
         },
         rpcs: chainConfig.rpcEndpoints,
-        streamRegistryChainAddress: chainConfig.contracts.StreamRegistry,
-        streamStorageRegistryChainAddress: chainConfig.contracts.StreamStorageRegistry,
+        streamRegistryChainAddress: getContractAddress('streamRegistry', chainId),
+        streamStorageRegistryChainAddress: getContractAddress('streamStorage', chainId),
         theGraphUrl: getGraphUrl(chainId),
     }
 

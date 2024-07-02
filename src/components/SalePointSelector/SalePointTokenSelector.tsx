@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components'
 import { isAddress } from 'web3-validator'
 import { Button } from '~/components/Button'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
-import { getDataAddress } from '~/marketplace/utils/web3'
 import SvgIcon from '~/shared/components/SvgIcon'
 import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import { SalePoint } from '~/shared/types'
@@ -11,6 +10,7 @@ import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { usePersistProjectCallback } from '~/stores/projectDraft'
 import { toBigInt, toFloat } from '~/utils/bn'
+import { getContractAddress } from '~/utils/contracts'
 import { errorToast } from '~/utils/toast'
 import { getCachedTokenInfo, getTokenInfo, useTokenInfo } from '~/utils/tokens'
 
@@ -35,7 +35,7 @@ export default function SalePointTokenSelector({
 }) {
     const { pricingTokenAddress: tokenAddress, chainId, price } = salePoint
 
-    const dataTokenAddress = getDataAddress(chainId).toLowerCase()
+    const dataTokenAddress = getContractAddress('data', chainId).toLowerCase()
 
     const [useDataToken, setUseDataToken] = useState(tokenAddress === dataTokenAddress)
 

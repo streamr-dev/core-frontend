@@ -71,13 +71,10 @@ import {
 } from '~/generated/gql/network'
 import {
     MarketplaceV4 as MarketplaceContract,
-    MarketplaceV4__factory,
     ProjectRegistryV1 as ProjectRegistryContract,
-    ProjectRegistryV1__factory,
 } from '~/generated/types/hub'
-import { Token as TokenContract, Token__factory } from '~/generated/types/local'
+import { Token as TokenContract } from '~/generated/types/local'
 import { getGraphClient } from '~/getters/getGraphClient'
-import { getMarketplaceAddress } from '~/marketplace/utils/web3'
 import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
 import { parseSponsorship } from '~/parsers/SponsorshipParser'
 import { getPublicWeb3Provider } from '~/shared/stores/wallet'
@@ -86,7 +83,8 @@ import { ProjectType } from '~/shared/types'
 import { ChartPeriod } from '~/types'
 import { Layer } from '~/utils/Layer'
 import { BN, toBN } from '~/utils/bn'
-import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import { getChainConfigExtension } from '~/utils/chains'
+import { getContractAbi, getContractAddress } from '~/utils/contracts'
 import { errorToast } from '~/utils/toast'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
@@ -100,17 +98,9 @@ export function getProjectRegistryContract({
     chainId: number
     provider?: Signer | Provider
 }) {
-    const { contracts } = getChainConfig(chainId)
-
-    const { ProjectRegistryV1: contractAddress } = contracts
-
-    if (!contractAddress) {
-        throw new Error(`No ProjectRegistry contract address found for chain ${chainId}`)
-    }
-
     return new Contract(
-        contractAddress,
-        ProjectRegistryV1__factory.abi,
+        getContractAddress('projectRegistry', chainId),
+        getContractAbi('projectRegistry'),
         provider,
     ) as unknown as ProjectRegistryContract
 }
@@ -124,7 +114,7 @@ export function getERC20TokenContract({
 }) {
     return new Contract(
         tokenAddress,
-        Token__factory.abi,
+        getContractAbi('erc20'),
         provider,
     ) as unknown as TokenContract
 }
@@ -137,8 +127,8 @@ export function getMarketplaceContract({
     provider?: Signer | Provider
 }) {
     return new Contract(
-        getMarketplaceAddress(chainId),
-        MarketplaceV4__factory.abi,
+        getContractAddress('marketplace', chainId),
+        getContractAbi('marketplace'),
         provider,
     ) as unknown as MarketplaceContract
 }
@@ -151,10 +141,12 @@ export async function getAllowance(
 ): Promise<bigint> {
     while (true) {
         try {
+            const provider = getPublicWeb3Provider(chainId)
+
             return await getERC20TokenContract({
                 tokenAddress,
-                provider: getPublicWeb3Provider(chainId),
-            }).allowance(account, getMarketplaceAddress(chainId))
+                provider,
+            }).allowance(account, getContractAddress('marketplace', chainId))
         } catch (e) {
             console.warn('Allowance check failed', e)
 

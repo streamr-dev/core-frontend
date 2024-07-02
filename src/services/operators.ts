@@ -1,19 +1,12 @@
 import { Contract, parseEther } from 'ethers'
-import {
-    ERC677,
-    ERC677ABI,
-    Operator,
-    OperatorFactory,
-    operatorABI,
-    operatorFactoryABI,
-} from 'network-contracts-ethers6'
+import { ERC677, Operator, OperatorFactory } from 'network-contracts-ethers6'
 import { DefaultGasLimitMultiplier } from '~/consts'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { postImage } from '~/services/images'
 import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
 import { Operation } from '~/shared/toasts/TransactionListToast'
 import { toBN, toBigInt } from '~/utils/bn'
-import { getChainConfig } from '~/utils/chains'
+import { getContractAbi, getContractAddress } from '~/utils/contracts'
 import networkPreflight from '~/utils/networkPreflight'
 import { toastedOperation, toastedOperations } from '~/utils/toastedOperation'
 
@@ -30,8 +23,6 @@ export async function createOperator(
 ): Promise<void> {
     const { cut, name, redundancyFactor, description, imageToUpload } = params
 
-    const chainConfig = getChainConfig(chainId)
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()
@@ -42,17 +33,9 @@ export async function createOperator(
         ? await postImage(chainId, imageToUpload)
         : undefined
 
-    const { OperatorFactory: factoryContractAddress } = chainConfig.contracts
-
-    if (!factoryContractAddress) {
-        throw new Error(
-            `No factory contract address provided for chain ${chainConfig.id}`,
-        )
-    }
-
     const factory = new Contract(
-        factoryContractAddress,
-        operatorFactoryABI,
+        getContractAddress('operatorFactory', chainId),
+        getContractAbi('operatorFactory'),
         signer,
     ) as unknown as OperatorFactory
 
@@ -64,46 +47,18 @@ export async function createOperator(
     }
 
     const poolTokenName = `StreamrOperator-${walletAddress.slice(-5)}`
+
     const operatorMetadata = JSON.stringify(metadata)
 
-    const { OperatorDefaultDelegationPolicy: operatorDefaultDelegationPolicyAddress } =
-        chainConfig.contracts
-
-    if (!operatorDefaultDelegationPolicyAddress) {
-        throw new Error(
-            `No OperatorDefaultDelegationPolicy address provided for chain ${chainConfig.id}`,
-        )
-    }
-
-    const {
-        OperatorDefaultExchangeRatePolicy: operatorDefaultExchangeRatePolicyAddress,
-    } = chainConfig.contracts
-
-    if (!operatorDefaultExchangeRatePolicyAddress) {
-        throw new Error(
-            `No OperatorDefaultExchangeRatePolicy address provided for chain ${chainConfig.id}`,
-        )
-    }
-
-    const {
-        OperatorDefaultUndelegationPolicy: operatorDefaultUndelegationPolicyAddress,
-    } = chainConfig.contracts
-
-    if (!operatorDefaultUndelegationPolicyAddress) {
-        throw new Error(
-            `No OperatorDefaultUndelegationPolicy address provided for chain ${chainConfig.id}`,
-        )
-    }
-
     const policies: [string, string, string] = [
-        operatorDefaultDelegationPolicyAddress,
-        operatorDefaultExchangeRatePolicyAddress,
-        operatorDefaultUndelegationPolicyAddress,
+        getContractAddress('operatorDefaultDelegationPolicy', chainId),
+        getContractAddress('operatorDefaultExchangeRatePolicy', chainId),
+        getContractAddress('operatorDefaultUndelegationPolicy', chainId),
     ]
 
     const operatorsCutFraction = parseEther(cut.toString()) / 100n
 
-    const policiesParams: [number, number, number] = [0, 0, 0]
+    const policyParams: [number, number, number] = [0, 0, 0]
 
     await toastedOperation('Operator deployment', async () => {
         const tx = await factory.deployOperator(
@@ -111,8 +66,9 @@ export async function createOperator(
             poolTokenName,
             operatorMetadata,
             policies,
-            policiesParams,
+            policyParams,
         )
+
         const receipt = await tx.wait()
 
         if (receipt?.blockNumber) {
@@ -173,7 +129,7 @@ export async function updateOperator(
 
             const operatorContract = new Contract(
                 operator.id,
-                operatorABI,
+                getContractAbi('operator'),
                 await getSigner(),
             ) as unknown as Operator
 
@@ -199,7 +155,7 @@ export async function updateOperator(
 
             const operatorContract = new Contract(
                 operator.id,
-                operatorABI,
+                getContractAbi('operator'),
                 await getSigner(),
             ) as unknown as Operator
 
@@ -236,23 +192,13 @@ export async function delegateToOperator(
     amount: bigint,
     options: DelegateToOperatorOptions = {},
 ): Promise<void> {
-    const chainConfig = getChainConfig(chainId)
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
-    const { DATA: dataTokenContractAddress } = chainConfig.contracts
-
-    if (!dataTokenContractAddress) {
-        throw new Error(
-            `No DATA token contract address provided for chain ${chainConfig.id}`,
-        )
-    }
-
     const contract = new Contract(
-        dataTokenContractAddress,
-        ERC677ABI,
+        getContractAddress('data', chainId),
+        getContractAbi('erc677'),
         signer,
     ) as unknown as ERC677
 
@@ -279,7 +225,7 @@ export async function undelegateFromOperator(
 
     const operatorContract = new Contract(
         operatorId,
-        operatorABI,
+        getContractAbi('operator'),
         signer,
     ) as unknown as Operator
 
@@ -303,7 +249,7 @@ export async function getOperatorDelegationAmount(
 
     const operatorContract = new Contract(
         operatorId,
-        operatorABI,
+        getContractAbi('operator'),
         provider,
     ) as unknown as Operator
 
@@ -329,7 +275,7 @@ export async function setOperatorNodeAddresses(
 
     const operatorContract = new Contract(
         operatorId,
-        operatorABI,
+        getContractAbi('operator'),
         signer,
     ) as unknown as Operator
 
@@ -371,7 +317,7 @@ export async function addOperatorControllerAddress(
 
     const operatorContract = new Contract(
         operatorId,
-        operatorABI,
+        getContractAbi('operator'),
         signer,
     ) as unknown as Operator
 
@@ -418,7 +364,7 @@ export async function removeOperatorControllerAddress(
 
     const operatorContract = new Contract(
         operatorId,
-        operatorABI,
+        getContractAbi('operator'),
         signer,
     ) as unknown as Operator
 
@@ -456,7 +402,7 @@ export async function processOperatorUndelegationQueue(
     const signer = await getSigner()
     const operatorContract = new Contract(
         operatorId,
-        operatorABI,
+        getContractAbi('operator'),
         signer,
     ) as unknown as Operator
 
