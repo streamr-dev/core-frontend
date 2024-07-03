@@ -274,10 +274,16 @@ function UndelegateFundsModal({
                 {isTooEarlyToUndelegate && (
                     <Alert
                         type="error"
-                        title={`You can not undelegate because your minimum delegation period
-                        is still active. It will expire on ${moment(
-                            earliestUndelegationTimestamp * 1000,
-                        ).format('YYYY-MM-DD HH:mm')}.`}
+                        title={
+                            <>
+                                You can not undelegate because your minimum delegation
+                                period is still active. It will expire on{' '}
+                                {moment(earliestUndelegationTimestamp * 1000).format(
+                                    'YYYY-MM-DD HH:mm',
+                                )}
+                                .
+                            </>
+                        }
                     />
                 )}
             </Footer>
