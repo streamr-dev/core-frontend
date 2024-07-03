@@ -97,9 +97,12 @@ export const OperatorActionBar: FunctionComponent<{
                     e,
                 )
             }
+
+            return null
         },
     })
-    const { data: canUndelegate = false } = canUndelegateQuery
+
+    const canUndelegate = !!canUndelegateQuery.data
 
     const { metadata } = operator
 
