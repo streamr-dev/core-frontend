@@ -11,7 +11,7 @@ import useIsMounted from '~/shared/hooks/useIsMounted'
 import { COLORS, LIGHT, MEDIUM } from '~/shared/utils/styled'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
 import { formatChainName } from '~/utils'
-import { toBN, toFloat } from '~/utils/bn'
+import { toFloat } from '~/utils/bn'
 import { getChainConfig } from '~/utils/chains'
 import { RejectionReason } from '~/utils/exceptions'
 import { convertPrice } from '~/utils/price'
@@ -205,7 +205,7 @@ export default function AccessPeriodModal({
 
     const disabled = total === 0n
 
-    const totalInUSD = toBN(total).multipliedBy(usdRate)
+    const totalInUSD = toFloat(total, tokenDecimals).multipliedBy(usdRate)
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -262,7 +262,7 @@ export default function AccessPeriodModal({
             >
                 <PeriodContainer>
                     <Text
-                        value={length}
+                        value={rawLength}
                         onChange={(e: any) => {
                             setRawLength(e.target.value)
                         }}
