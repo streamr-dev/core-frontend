@@ -464,17 +464,23 @@ const usePurchaseStore = create<Store>((set, get) => {
                                         )
 
                                         try {
+                                            const contract = getMarketplaceContract({
+                                                chainId: selectedChainId,
+                                                provider,
+                                            })
+
                                             /**
                                              * The following is the actual buying call emitted into the
                                              * network. Note that the gas limit is dynamic and depends
                                              * on the number of streams associated with the project.
                                              */
-                                            const tx = await getMarketplaceContract({
-                                                chainId: selectedChainId,
-                                                provider,
-                                            }).buy(projectId, seconds, {
-                                                gasLimit: 2e5 + streams.length * 1e5,
-                                            })
+                                            const tx = await contract.buy(
+                                                projectId,
+                                                seconds,
+                                                {
+                                                    gasLimit: 2e5 + streams.length * 1e5,
+                                                },
+                                            )
 
                                             /**
                                              * Once we receive the transaction hash we can safely close the Confirm
