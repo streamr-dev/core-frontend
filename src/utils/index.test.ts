@@ -1,5 +1,5 @@
 import { BNish } from './bn'
-import * as utils from '.'
+import * as utils from './index'
 
 jest.mock('~/hooks/operators', () => ({
     __esModule: true,
