@@ -1,4 +1,3 @@
-import DataUnionClient, { DataUnion } from '@dataunions/client'
 import { hexToNumber } from 'web3-utils'
 import {
     GetDataUnionsOwnedByDocument,
@@ -10,6 +9,7 @@ import { getDataUnionGraphClient } from '~/getters/getGraphClient'
 import { getWalletAccount, getWalletProvider } from '~/shared/stores/wallet'
 import { TheGraph } from '~/shared/types'
 import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 
 export async function getDataUnionsOwnedByInChain(
     account: string,
@@ -34,6 +34,10 @@ export async function getDataUnionsOwnedByInChain(
     }))
 }
 
+type DataUnionClient = any
+
+type DataUnion = any
+
 export async function getDataUnionClient(chainId: number): Promise<DataUnionClient> {
     const provider: any = await getWalletProvider()
 
@@ -42,14 +46,6 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
     const { dataUnionJoinServerUrl: joinServerUrl } = getChainConfigExtension(chainId)
 
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
-
-    const factoryAddress = config.contracts.DataUnionFactory
-
-    if (!factoryAddress) {
-        throw new Error(
-            `No contract address for DataUnionFactory found for chain ${chainId}`,
-        )
-    }
 
     const providerChainId = hexToNumber(provider.chainId)
 
@@ -63,6 +59,10 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
 
     const isInCorrectChainAndUnlocked = isProviderInCorrectChain
 
+    /**
+     * Data unions client has to be brought to ethers v6.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const clientConfig = getClientConfig(chainId, {
         auth: {
             // If MetaMask is in right chain, use it to enable signing
@@ -82,7 +82,7 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
             ],
         },
         dataUnion: {
-            factoryAddress,
+            factoryAddress: getContractAddress('dataUnionFactory', chainId),
         },
         ...(joinServerUrl
             ? {
@@ -91,7 +91,7 @@ export async function getDataUnionClient(chainId: number): Promise<DataUnionClie
             : {}),
     })
 
-    return new (await require('@dataunions/client')).DataUnionClient(clientConfig)
+    throw new Error('Not implemented')
 }
 
 export async function getDataUnion(

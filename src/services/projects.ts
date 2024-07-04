@@ -1,19 +1,3 @@
-import { toaster } from 'toasterhea'
-import { getSigner, getWalletAccount } from '~/shared/stores/wallet'
-import { getProjectRegistryContract } from '~/getters'
-import networkPreflight from '~/utils/networkPreflight'
-import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
-import { BN, toBN } from '~/utils/bn'
-import { ProjectType, TheGraph } from '~/shared/types'
-import { isMessagedObject } from '~/utils/exceptions'
-import { errorToast } from '~/utils/toast'
-import { truncate } from '~/shared/utils/text'
-import { PublishableProjectPayload } from '~/types/projects'
-import { getTokenInfo } from '~/hooks/useTokenInfo'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { Layer } from '~/utils/Layer'
-import { pricePerSecondFromTimeUnit } from '~/marketplace/utils/price'
-import { ParsedProject } from '~/parsers/ProjectParser'
 import {
     GetProjectsByTextDocument,
     GetProjectsByTextQuery,
@@ -23,99 +7,78 @@ import {
     GetProjectsQueryVariables,
     Project_Filter,
 } from '~/generated/gql/network'
+import { getProjectRegistryContract } from '~/getters'
 import { getGraphClient } from '~/getters/getGraphClient'
+import { deployDataUnion } from '~/marketplace/modules/dataUnion/services'
+import { ParsedProject } from '~/parsers/ProjectParser'
+import { getSigner, getWalletAccount } from '~/shared/stores/wallet'
+import { ProjectType, TheGraph } from '~/shared/types'
+import { truncate } from '~/shared/utils/text'
+import { timeUnits } from '~/shared/utils/timeUnit'
+import { WritablePaymentDetail } from '~/types'
+import { PublishableProjectPayload } from '~/types/projects'
+import { toBN } from '~/utils/bn'
+import { isMessagedObject } from '~/utils/exceptions'
+import networkPreflight from '~/utils/networkPreflight'
+import { convertPrice } from '~/utils/price'
+import { errorToast } from '~/utils/toast'
 import { postImage } from './images'
 
 /**
- * @todo Let's shake off the unnecessary types.
+ * @deprecated Use the `ParsedProject` (see `ProjectParser`) instead.
  */
-
-export type TheGraphPaymentDetails = {
-    domainId: string
-    beneficiary: string
-    pricingTokenAddress: string
-    pricePerSecond: string
-}
-
-export type ProjectPermissions = {
-    canBuy: boolean
-    canDelete: boolean
-    canEdit: boolean
-    canGrant: boolean
-}
-
-export type TheGraphPermission = ProjectPermissions & {
-    userAddress: string
-}
-
-export type TheGraphPurchase = {
-    subscriber: string
-    subscriptionSeconds: string
-    price: string
-    fee: string
-}
-
 export type TheGraphProject = {
     id: string
-    paymentDetails: TheGraphPaymentDetails[]
+    paymentDetails: (WritablePaymentDetail<string> & {
+        domainId: string
+    })[]
     minimumSubscriptionSeconds: string
-    metadata: SmartContractProjectMetadata
+    metadata: {
+        name: string
+        description: string
+        imageIpfsCid: string | null | undefined
+        creator: string
+        termsOfUse:
+            | {
+                  commercialUse: boolean
+                  redistribution: boolean
+                  reselling: boolean
+                  storage: boolean
+                  termsName: string | null | undefined
+                  termsUrl: string | null | undefined
+              }
+            | undefined
+        contactDetails:
+            | {
+                  url?: string | null | undefined
+                  email?: string | null | undefined
+                  twitter?: string | null | undefined
+                  telegram?: string | null | undefined
+                  reddit?: string | null | undefined
+                  linkedIn?: string | null | undefined
+              }
+            | undefined
+        isDataUnion?: boolean
+    }
     version: number | null
     streams: string[]
-    permissions: TheGraphPermission[]
+    permissions: {
+        canBuy: boolean
+        canDelete: boolean
+        canEdit: boolean
+        canGrant: boolean
+        userAddress: string
+    }[]
     createdAt: string
     updatedAt: string
-    purchases: TheGraphPurchase[]
+    purchases: {
+        subscriber: string
+        subscriptionSeconds: string
+        price: string
+        fee: string
+    }[]
     purchasesCount: number
     isDataUnion: boolean
-}
-
-export type PaymentDetails = {
-    chainId: number
-    beneficiaryAddress: string
-    pricePerSecond: BN
-    pricingTokenAddress: string
-}
-
-export type SmartContractProjectMetadata = {
-    name: string
-    description: string
-    imageIpfsCid: string | null | undefined
-    creator: string
-    termsOfUse:
-        | {
-              commercialUse: boolean
-              redistribution: boolean
-              reselling: boolean
-              storage: boolean
-              termsName: string | null | undefined
-              termsUrl: string | null | undefined
-          }
-        | undefined
-    contactDetails:
-        | {
-              url?: string | null | undefined
-              email?: string | null | undefined
-              twitter?: string | null | undefined
-              telegram?: string | null | undefined
-              reddit?: string | null | undefined
-              linkedIn?: string | null | undefined
-          }
-        | undefined
-    isDataUnion?: boolean
-}
-
-export type SmartContractProject = {
-    id: string
-    paymentDetails: PaymentDetails[]
-    minimumSubscriptionInSeconds: number
-    metadata: string
-    chainId: number
-    streams: string[]
-}
-
-export interface SmartContractProjectCreate extends SmartContractProject {
-    isPublicPurchasable: boolean
 }
 
 const mapProject = (project: any): TheGraphProject => {
@@ -299,11 +262,7 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
 
     const domainIds: number[] = []
 
-    const paymentDetails: {
-        beneficiary: string
-        pricingTokenAddress: string
-        pricePerSecond: string
-    }[] = []
+    const paymentDetails: WritablePaymentDetail[] = []
 
     const wallet = (await getWalletAccount()) || ''
 
@@ -313,7 +272,7 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
             chainId: domainId,
             enabled,
             price,
-            pricePerSecond: initialPricePerSecond,
+            pricePerSecond: currentPricePerSecond,
             pricingTokenAddress,
             timeUnit,
         } = salePoints[i]
@@ -331,50 +290,24 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
             beneficiaryAddress || (payload.type === ProjectType.PaidData ? wallet : '')
 
         const pricePerSecond = await (async () => {
-            if (initialPricePerSecond) {
+            if (currentPricePerSecond != null) {
                 /**
                  * In the current implementation we disallow price changes, so
                  * if initial `pricePerSecond` is defined we reuse it.
                  */
-                return initialPricePerSecond
+
+                return currentPricePerSecond
             }
 
-            if (price === '0') {
+            if (!price) {
                 /**
-                 * 0 tokens per time unit constitues 0 per second. No need
-                 * to fetch decimals.
+                 * 0 (or undefined amount of) tokens per time unit constitues 0 per
+                 * second. No need to fetch decimals.
                  */
-                return '0'
+                return 0n
             }
 
-            while (true) {
-                try {
-                    const decimals = (await getTokenInfo(pricingTokenAddress, domainId))
-                        .decimals
-
-                    return pricePerSecondFromTimeUnit(
-                        price,
-                        timeUnit,
-                        decimals,
-                    ).toString()
-                } catch (e) {
-                    try {
-                        await toaster(Toast, Layer.Toast).pop({
-                            title: 'Warning',
-                            type: ToastType.Warning,
-                            desc: `Failed to fetch decimals for ${truncate(
-                                pricingTokenAddress,
-                            )}. Would you like to try again?`,
-                            okLabel: 'Yes',
-                            cancelLabel: 'No',
-                        })
-
-                        continue
-                    } catch (_) {
-                        throw e
-                    }
-                }
-            }
+            return convertPrice([price, timeUnit], timeUnits.second)
         })()
 
         domainIds.push(domainId)
@@ -400,37 +333,39 @@ export async function getPublishableProjectProperties(project: ParsedProject) {
     }
 }
 
+interface CreateProjectOptions {
+    domainIds: number[]
+    isPublicPurchasable: boolean
+    metadata: string
+    minimumSubscriptionSeconds?: number
+    paymentDetails: WritablePaymentDetail[]
+    streams: string[]
+}
+
 export async function createProject(
     chainId: number,
     projectId: string,
-    {
+    options: CreateProjectOptions,
+) {
+    const {
         domainIds,
         isPublicPurchasable,
         metadata,
         minimumSubscriptionSeconds = 0,
         paymentDetails,
         streams,
-    }: {
-        domainIds: number[]
-        isPublicPurchasable: boolean
-        metadata: string
-        minimumSubscriptionSeconds?: number
-        paymentDetails: {
-            beneficiary: string
-            pricingTokenAddress: string
-            pricePerSecond: string
-        }[]
-        streams: string[]
-    },
-) {
+    } = options
+
     await networkPreflight(chainId)
 
-    const provider = await getSigner()
+    const signer = await getSigner()
 
-    const tx = await getProjectRegistryContract({
+    const contract = getProjectRegistryContract({
         chainId,
-        provider,
-    }).createProject(
+        provider: signer,
+    })
+
+    const tx = await contract.createProject(
         projectId,
         domainIds,
         paymentDetails,
@@ -443,32 +378,34 @@ export async function createProject(
     await tx.wait()
 }
 
+interface UpdateProjectOptions {
+    domainIds: number[]
+    metadata: string
+    minimumSubscriptionSeconds?: number
+    paymentDetails: WritablePaymentDetail[]
+    streams: string[]
+}
+
 export async function updateProject(
     chainId: number,
     projectId: string,
-    {
+    options: UpdateProjectOptions,
+) {
+    const {
         domainIds,
         metadata,
         minimumSubscriptionSeconds = 0,
         paymentDetails,
         streams,
-    }: {
-        domainIds: number[]
-        metadata: string
-        minimumSubscriptionSeconds?: number
-        paymentDetails: {
-            beneficiary: string
-            pricingTokenAddress: string
-            pricePerSecond: string
-        }[]
-        streams: string[]
-    },
-) {
+    } = options
+
     await networkPreflight(chainId)
 
-    const provider = await getSigner()
+    const signer = await getSigner()
 
-    const tx = await getProjectRegistryContract({ chainId, provider }).updateProject(
+    const contract = getProjectRegistryContract({ chainId, provider: signer })
+
+    const tx = await contract.updateProject(
         projectId,
         domainIds,
         paymentDetails,
@@ -483,13 +420,15 @@ export async function updateProject(
 export async function deleteProject(chainId: number, projectId: string) {
     await networkPreflight(chainId)
 
-    const provider = await getSigner()
+    const signer = await getSigner()
+
+    const contract = getProjectRegistryContract({
+        chainId,
+        provider: signer,
+    })
 
     try {
-        const tx = await getProjectRegistryContract({
-            chainId,
-            provider,
-        }).deleteProject(projectId)
+        const tx = await contract.deleteProject(projectId)
 
         await tx.wait()
     } catch (e) {

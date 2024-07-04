@@ -1,17 +1,18 @@
 import React, { ComponentProps, useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { isAddress } from 'web3-validator'
-import SvgIcon from '~/shared/components/SvgIcon'
-import { getDataAddress } from '~/marketplace/utils/web3'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
-import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import { Button } from '~/components/Button'
 import { SelectField2 } from '~/marketplace/components/SelectField2'
+import SvgIcon from '~/shared/components/SvgIcon'
+import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import { SalePoint } from '~/shared/types'
-import useTokenInfo, { getCachedTokenInfo, getTokenInfo } from '~/hooks/useTokenInfo'
+import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { TimeUnit, timeUnits } from '~/shared/utils/timeUnit'
-import { errorToast } from '~/utils/toast'
 import { usePersistProjectCallback } from '~/stores/projectDraft'
+import { toBigInt, toFloat } from '~/utils/bn'
+import { getContractAddress } from '~/utils/contracts'
+import { errorToast } from '~/utils/toast'
+import { getCachedTokenInfo, getTokenInfo, useTokenInfo } from '~/utils/tokens'
 
 const TimeUnitOptions = Object.values(timeUnits).map((unit: TimeUnit) => ({
     label: `Per ${unit}`,
@@ -34,9 +35,26 @@ export default function SalePointTokenSelector({
 }) {
     const { pricingTokenAddress: tokenAddress, chainId, price } = salePoint
 
-    const dataTokenAddress = getDataAddress(chainId).toLowerCase()
+    const dataTokenAddress = getContractAddress('data', chainId).toLowerCase()
 
     const [useDataToken, setUseDataToken] = useState(tokenAddress === dataTokenAddress)
+
+    const tokenInfo = useTokenInfo(tokenAddress, chainId)
+
+    const isLoadingTokenInfo = typeof tokenInfo === 'undefined'
+
+    const { symbol: tokenSymbol, decimals = 18n } = tokenInfo || {}
+
+    const [rawPrice, setRawPrice] = useState(
+        price == null ? '' : toFloat(price, decimals).toString(),
+    )
+
+    useEffect(
+        function setRawPriceFromUpstream() {
+            setRawPrice(price == null ? '' : toFloat(price, decimals).toString())
+        },
+        [price, decimals],
+    )
 
     const [customTokenAddress, setCustomTokenAddress] = useState(
         useDataToken ? '' : tokenAddress,
@@ -52,12 +70,6 @@ export default function SalePointTokenSelector({
         }
     }, [tokenAddress, dataTokenAddress])
 
-    const tokenInfo = useTokenInfo(tokenAddress, chainId)
-
-    const isLoadingTokenInfo = typeof tokenInfo === 'undefined'
-
-    const { symbol: tokenSymbol } = tokenInfo || {}
-
     const isCustomTokenInfoCached = isTokenInfoCached(customTokenAddress, chainId)
 
     const canFetchTokenInfo =
@@ -67,6 +79,22 @@ export default function SalePointTokenSelector({
         !isLoadingTokenInfo
 
     const persist = usePersistProjectCallback()
+
+    function commitNewPrice(value: string) {
+        if (!value) {
+            onSalePointChange?.({
+                ...salePoint,
+                price: undefined,
+            })
+
+            return
+        }
+
+        onSalePointChange?.({
+            ...salePoint,
+            price: toBigInt(value || 0, decimals),
+        })
+    }
 
     return (
         <Root>
@@ -186,17 +214,19 @@ export default function SalePointTokenSelector({
                         className="price-input"
                         placeholder="Set your price"
                         onChange={(e) => {
-                            onSalePointChange?.({
-                                ...salePoint,
-                                price: e.target.value,
-                            })
+                            setRawPrice(e.target.value)
                         }}
                         onKeyDown={({ key }) => {
                             if (key === 'Enter') {
+                                commitNewPrice(rawPrice)
+
                                 persist()
                             }
                         }}
-                        value={price}
+                        onBlur={() => {
+                            commitNewPrice(rawPrice)
+                        }}
+                        value={rawPrice}
                         disabled={disabled || !tokenInfo}
                     />
                     {tokenSymbol && <TokenSymbol>{tokenSymbol}</TokenSymbol>}
@@ -215,7 +245,7 @@ export default function SalePointTokenSelector({
 
                             onSalePointChange?.({
                                 ...salePoint,
-                                timeUnit,
+                                timeUnit: timeUnit as TimeUnit,
                             })
                         }}
                         disabled={disabled || !tokenInfo}

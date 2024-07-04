@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { randomHex } from 'web3-utils'
-import { toaster } from 'toasterhea'
 import styled, { css } from 'styled-components'
+import { toaster } from 'toasterhea'
+import { randomHex } from 'web3-utils'
 import { ZodError, z } from 'zod'
-import {
-    RejectionReason,
-    isRejectionReason,
-    isTransactionRejection,
-} from '~/utils/exceptions'
+import { Alert } from '~/components/Alert'
+import { Button } from '~/components/Button'
+import CropImageModal from '~/components/CropImageModal/CropImageModal'
+import { Hint } from '~/components/Hint'
+import { BehindIndexError } from '~/errors/BehindIndexError'
+import { getParsedOperatorByOwnerAddress } from '~/getters'
 import FormModal, {
     ErrorLabel,
     FieldWrap,
@@ -15,26 +16,25 @@ import FormModal, {
     Section,
     SectionHeadline,
     TextAppendix,
+    TextInput,
     TextareaCounter,
     TextareaInput,
-    TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
-import AvatarImage from '~/shared/components/AvatarImage'
-import { COLORS, TABLET } from '~/shared/utils/styled'
-import { Button } from '~/components/Button'
-import SvgIcon from '~/shared/components/SvgIcon'
-import CropImageModal from '~/components/CropImageModal/CropImageModal'
-import { Layer } from '~/utils/Layer'
-import { Alert } from '~/components/Alert'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { sameBN, sleep, waitForIndexedBlock } from '~/utils'
 import { createOperator, updateOperator } from '~/services/operators'
+import AvatarImage from '~/shared/components/AvatarImage'
+import SvgIcon from '~/shared/components/SvgIcon'
+import Label from '~/shared/components/Ui/Label'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { getParsedOperatorByOwnerAddress } from '~/getters'
-import { Hint } from '~/components/Hint'
-import { BehindIndexError } from '~/errors/BehindIndexError'
+import { COLORS, TABLET } from '~/shared/utils/styled'
+import { sleep, waitForIndexedBlock } from '~/utils'
+import { Layer } from '~/utils/Layer'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     chainId: number
@@ -107,11 +107,9 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
         imageToUpload: !!nextData.imageToUpload,
         name: currentData.name !== nextData.name,
         description: currentData.description !== nextData.description,
-        redundancyFactor: !sameBN(
-            currentData.redundancyFactor || 0,
-            nextData.redundancyFactor || 0,
-        ),
-        cut: !sameBN(currentData.cut || 0, nextData.cut || 0),
+        redundancyFactor:
+            Number(currentData.redundancyFactor) !== Number(nextData.redundancyFactor),
+        cut: Number(currentData.cut) !== Number(nextData.cut),
     }
 
     const dirty = Object.values(changelog).some(Boolean)

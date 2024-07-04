@@ -2,6 +2,7 @@ import { UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { StreamIdCell } from '~/components/Table'
+import { Minute } from '~/consts'
 import {
     GetStreamsResult,
     StreamStats,
@@ -9,11 +10,10 @@ import {
     getStreamsFromIndexer,
     isIndexerColumn,
 } from '~/hooks/streams'
-import { Route as R, routeOptions } from '~/utils/routes'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { useCurrentChainId } from '~/utils/chains'
 import { OrderDirection } from '~/types'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -189,7 +189,7 @@ function StreamStatsLoader({ onStats, page }: StreamStatsLoaderProps) {
 
             return {}
         },
-        staleTime: 5 * 60000,
+        staleTime: 5 * Minute,
     })
 
     const onStatsRef = useRef(onStats)

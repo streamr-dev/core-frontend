@@ -1,31 +1,30 @@
-import React, { useMemo, useState } from 'react'
-import moment from 'moment'
-import styled from 'styled-components'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
+import moment from 'moment'
+import React, { useMemo, useState } from 'react'
+import styled from 'styled-components'
 import { toaster } from 'toasterhea'
+import { Alert } from '~/components/Alert'
+import { Decimals } from '~/components/Decimals'
+import { StreamIdCell } from '~/components/Table'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import FormModal, {
     FormModalProps,
     FormModalRoot,
     SectionHeadline,
 } from '~/modals/FormModal'
-import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { BN } from '~/utils/bn'
-import { fromAtto } from '~/marketplace/utils/math'
-import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import { Alert } from '~/components/Alert'
-import { Radio } from '~/shared/components/Radio'
-import { abbr, waitForIndexedBlock } from '~/utils'
-import { Layer } from '~/utils/Layer'
 import { ParsedOperator } from '~/parsers/OperatorParser'
-import { StreamIdCell } from '~/components/Table'
 import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { Radio } from '~/shared/components/Radio'
+import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
+import { waitForIndexedBlock } from '~/utils'
+import { Layer } from '~/utils/Layer'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 
 type OperatorStake = ParsedOperator['stakes'][0]
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
-    amount: BN
+    amount: bigint
     chainId: number
     onResolve?: (sponsorshipId: string) => void
     operator: ParsedOperator
@@ -33,13 +32,13 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 
 function getOptimalStake(
     stakes: OperatorStake[],
-    requestedAmount: BN,
+    requestedAmount: bigint,
 ): OperatorStake | undefined {
     return (
         stakes.find(
             (s) =>
                 isStakedLongEnough(s.joinTimestamp, s.minimumStakingPeriodSeconds) &&
-                s.amountWei.isGreaterThanOrEqualTo(requestedAmount),
+                s.amountWei >= requestedAmount,
         ) || stakes[0]
     )
 }
@@ -52,7 +51,7 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
     const [busy, setBusy] = useState(false)
 
     const stakes = useMemo(
-        () => [...operator.stakes].sort((a, b) => b.amountWei.comparedTo(a.amountWei)),
+        () => [...operator.stakes].sort((a, b) => (b.amountWei > a.amountWei ? -1 : 1)),
         [operator],
     )
 
@@ -73,9 +72,11 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
         )
 
     const isPartialPayout =
-        !!selectedSponsorship && selectedSponsorship.amountWei.isLessThan(amount)
+        !!selectedSponsorship && selectedSponsorship.amountWei < amount
 
     const canSubmit = !!selectedSponsorshipId
+
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     return (
         <ForceUndelegateFormModal
@@ -141,9 +142,13 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
                                 displayName: 'Amount',
                                 valueMapper: (element) => (
                                     <WarningCell>
-                                        {abbr(fromAtto(element.amountWei))}{' '}
-                                        <SponsorshipPaymentTokenName />
-                                        {element.amountWei.isLessThan(amount) && (
+                                        <Decimals
+                                            abbr
+                                            amount={element.amountWei}
+                                            decimals={decimals}
+                                            tooltip
+                                        />
+                                        {element.amountWei < amount && (
                                             <Tooltip content={<p>Partial payout</p>}>
                                                 <TooltipIconWrap $color="#ff5c00">
                                                     <JiraFailedBuildStatusIcon label="Error" />

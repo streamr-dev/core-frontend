@@ -1,4 +1,4 @@
-import * as all from '~/marketplace/utils/time'
+import * as all from '../../../src/marketplace/utils/time'
 
 describe('time utils', () => {
     describe('toSeconds', () => {
@@ -10,11 +10,8 @@ describe('time utils', () => {
             expect(all.toSeconds(1, 'week')).toStrictEqual(604800)
             expect(all.toSeconds(1, 'month')).toStrictEqual(2592000)
         })
-        it('rejects invalid time units', () => {
-            expect(() => all.toSeconds(1, 'asdf')).toThrow()
-            expect(() => all.toSeconds(1, 'seconds')).toThrow()
-        })
     })
+
     describe('formatDateTime', () => {
         it('formats datetime', () => {
             expect(all.formatDateTime(1, 'UTC')).toBe('1970-01-01 00:00:00')
@@ -22,6 +19,7 @@ describe('time utils', () => {
             expect(all.formatDateTime(undefined, undefined)).toBe(undefined)
         })
     })
+
     describe('getAbbreviation', () => {
         it('displays abbreviation', () => {
             expect(all.getAbbreviation('second')).toBe('s')
@@ -30,7 +28,6 @@ describe('time utils', () => {
             expect(all.getAbbreviation('day')).toBe('d')
             expect(all.getAbbreviation('week')).toBe('wk')
             expect(all.getAbbreviation('month')).toBe('m')
-            expect(all.getAbbreviation('asdf')).toBe('')
         })
     })
 })

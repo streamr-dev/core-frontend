@@ -1,6 +1,6 @@
-import { ChainConnectionInfo, StreamrClientConfig } from '@streamr/sdk'
-import formatConfigUrl from '~/utils/formatConfigUrl'
-import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import { StreamrClientConfig } from '@streamr/sdk'
+import { getChainConfig } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 import { getGraphUrl } from './getGraphClient'
 
 export default function getClientConfig(
@@ -23,39 +23,17 @@ export default function getClientConfig(
     }
 
     config.contracts = {
+        ethereumNetwork: {
+            chainId,
+        },
+        rpcs: chainConfig.rpcEndpoints,
+        streamRegistryChainAddress: getContractAddress('streamRegistry', chainId),
+        streamStorageRegistryChainAddress: getContractAddress('streamStorage', chainId),
         theGraphUrl: getGraphUrl(chainId),
-        streamRegistryChainAddress: chainConfig.contracts.StreamRegistry,
-        streamStorageRegistryChainAddress: chainConfig.contracts.StreamStorageRegistry,
-    }
-
-    if (chainConfig.rpcEndpoints) {
-        config.contracts.streamRegistryChainRPCs = formatRpc({
-            chainId: chainConfig.id,
-            rpcs: chainConfig.rpcEndpoints,
-        })
     }
 
     return {
         ...config,
         ...mods,
-    }
-}
-
-interface Rpc {
-    chainId: number
-    rpcs: { readonly url: string }[]
-}
-
-function formatRpc({ chainId, rpcs, ...rest }: Rpc): ChainConnectionInfo {
-    const { dockerHost } = getChainConfigExtension(chainId)
-
-    return {
-        ...rest,
-        chainId,
-        rpcs: rpcs.map(({ url }) => ({
-            url: formatConfigUrl(url, {
-                dockerHost,
-            }),
-        })),
     }
 }

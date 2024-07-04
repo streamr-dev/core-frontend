@@ -66,6 +66,14 @@ module.exports = {
         ],
         "@typescript-eslint/no-namespace": "off",
         "no-underscore-dangle": "off",
+        "@typescript-eslint/ban-types": [
+            "error",
+            {
+                "types": {
+                    "{}": false,
+                },
+            },
+        ],
     },
     overrides: [
         {

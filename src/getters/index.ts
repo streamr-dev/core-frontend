@@ -1,94 +1,91 @@
-import { BigNumber, Contract, Signer, providers } from 'ethers'
+import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
+import { Contract, Provider, Signer } from 'ethers'
+import moment, { Moment } from 'moment'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import {
-    marketplaceV4ABI as marketplaceAbi,
-    projectRegistryV1ABI as projectRegistryAbi,
-    ProjectRegistryV1 as ProjectRegistryContract,
-    MarketplaceV4 as MarketplaceContract,
-} from '@streamr/hub-contracts'
-import moment, { Moment } from 'moment'
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
-import { Token as TokenContract } from '~/generated/types'
-import { getMarketplaceAddress } from '~/marketplace/utils/web3'
-import Toast, { ToastType } from '~/shared/toasts/Toast'
-import { Layer } from '~/utils/Layer'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { ProjectType } from '~/shared/types'
-import tokenAbi from '~/shared/web3/abis/token.json'
 import { address0 } from '~/consts'
-import {
-    GetSponsorshipByIdQuery,
-    GetSponsorshipByIdDocument,
-    GetAllSponsorshipsQuery,
-    GetAllSponsorshipsDocument,
-    GetAllSponsorshipsQueryVariables,
-    GetSponsorshipByIdQueryVariables,
-    GetSponsorshipsByCreatorQuery,
-    GetSponsorshipsByCreatorQueryVariables,
-    GetSponsorshipsByCreatorDocument,
-    GetAllOperatorsQuery,
-    GetAllOperatorsQueryVariables,
-    GetAllOperatorsDocument,
-    GetOperatorByIdQuery,
-    GetOperatorByIdQueryVariables,
-    GetOperatorByIdDocument,
-    GetOperatorsByDelegationQuery,
-    GetOperatorsByDelegationQueryVariables,
-    GetOperatorsByDelegationDocument,
-    GetOperatorsByOwnerOrControllerAddressQuery,
-    GetOperatorsByOwnerOrControllerAddressQueryVariables,
-    GetOperatorsByOwnerOrControllerAddressDocument,
-    SearchOperatorsByMetadataQuery,
-    SearchOperatorsByMetadataQueryVariables,
-    SearchOperatorsByMetadataDocument,
-    GetOperatorsByDelegationAndIdQuery,
-    GetOperatorsByDelegationAndIdDocument,
-    GetOperatorsByDelegationAndIdQueryVariables,
-    GetOperatorsByDelegationAndMetadataQuery,
-    GetOperatorsByDelegationAndMetadataQueryVariables,
-    GetOperatorsByDelegationAndMetadataDocument,
-    GetStreamByIdQuery,
-    GetStreamByIdQueryVariables,
-    GetStreamByIdDocument,
-    Operator,
-    GetOperatorDailyBucketsQuery,
-    GetOperatorDailyBucketsDocument,
-    GetOperatorDailyBucketsQueryVariables,
-    GetSponsorshipDailyBucketsQuery,
-    GetSponsorshipDailyBucketsQueryVariables,
-    GetSponsorshipDailyBucketsDocument,
-    OrderDirection,
-    Operator_OrderBy,
-    Sponsorship_OrderBy,
-    GetDelegatorDailyBucketsQuery,
-    GetDelegatorDailyBucketsQueryVariables,
-    GetDelegatorDailyBucketsDocument,
-    Sponsorship,
-    GetSponsorshipByStreamIdQuery,
-    GetSponsorshipByStreamIdQueryVariables,
-    GetSponsorshipByStreamIdDocument,
-    GetNetworkStatsQuery,
-    GetNetworkStatsQueryVariables,
-    GetNetworkStatsDocument,
-    GetOperatorByOwnerAddressQuery,
-    GetOperatorByOwnerAddressQueryVariables,
-    GetOperatorByOwnerAddressDocument,
-    Sponsorship_Filter,
-} from '~/generated/gql/network'
-import { getGraphClient } from '~/getters/getGraphClient'
-import { ChartPeriod } from '~/types'
-import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
-import { BN, toBN } from '~/utils/bn'
-import { errorToast } from '~/utils/toast'
-import { parseSponsorship } from '~/parsers/SponsorshipParser'
+import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
 import {
     GetEnsDomainsForAccountDocument,
     GetEnsDomainsForAccountQuery,
     GetEnsDomainsForAccountQueryVariables,
 } from '~/generated/gql/ens'
-import { prehandleBehindBlockError } from '~/errors/BehindIndexError'
-import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import {
+    GetAllOperatorsDocument,
+    GetAllOperatorsQuery,
+    GetAllOperatorsQueryVariables,
+    GetAllSponsorshipsDocument,
+    GetAllSponsorshipsQuery,
+    GetAllSponsorshipsQueryVariables,
+    GetDelegatorDailyBucketsDocument,
+    GetDelegatorDailyBucketsQuery,
+    GetDelegatorDailyBucketsQueryVariables,
+    GetNetworkStatsDocument,
+    GetNetworkStatsQuery,
+    GetNetworkStatsQueryVariables,
+    GetOperatorByIdDocument,
+    GetOperatorByIdQuery,
+    GetOperatorByIdQueryVariables,
+    GetOperatorByOwnerAddressDocument,
+    GetOperatorByOwnerAddressQuery,
+    GetOperatorByOwnerAddressQueryVariables,
+    GetOperatorDailyBucketsDocument,
+    GetOperatorDailyBucketsQuery,
+    GetOperatorDailyBucketsQueryVariables,
+    GetOperatorsByDelegationAndIdDocument,
+    GetOperatorsByDelegationAndIdQuery,
+    GetOperatorsByDelegationAndIdQueryVariables,
+    GetOperatorsByDelegationAndMetadataDocument,
+    GetOperatorsByDelegationAndMetadataQuery,
+    GetOperatorsByDelegationAndMetadataQueryVariables,
+    GetOperatorsByDelegationDocument,
+    GetOperatorsByDelegationQuery,
+    GetOperatorsByDelegationQueryVariables,
+    GetOperatorsByOwnerOrControllerAddressDocument,
+    GetOperatorsByOwnerOrControllerAddressQuery,
+    GetOperatorsByOwnerOrControllerAddressQueryVariables,
+    GetSponsorshipByIdDocument,
+    GetSponsorshipByIdQuery,
+    GetSponsorshipByIdQueryVariables,
+    GetSponsorshipByStreamIdDocument,
+    GetSponsorshipByStreamIdQuery,
+    GetSponsorshipByStreamIdQueryVariables,
+    GetSponsorshipDailyBucketsDocument,
+    GetSponsorshipDailyBucketsQuery,
+    GetSponsorshipDailyBucketsQueryVariables,
+    GetSponsorshipsByCreatorDocument,
+    GetSponsorshipsByCreatorQuery,
+    GetSponsorshipsByCreatorQueryVariables,
+    GetStreamByIdDocument,
+    GetStreamByIdQuery,
+    GetStreamByIdQueryVariables,
+    Operator,
+    Operator_OrderBy,
+    OrderDirection,
+    SearchOperatorsByMetadataDocument,
+    SearchOperatorsByMetadataQuery,
+    SearchOperatorsByMetadataQueryVariables,
+    Sponsorship,
+    Sponsorship_Filter,
+    Sponsorship_OrderBy,
+} from '~/generated/gql/network'
+import {
+    MarketplaceV4 as MarketplaceContract,
+    ProjectRegistryV1 as ProjectRegistryContract,
+} from '~/generated/types/hub'
+import { Token as TokenContract } from '~/generated/types/local'
+import { getGraphClient } from '~/getters/getGraphClient'
+import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
+import { parseSponsorship } from '~/parsers/SponsorshipParser'
+import Toast, { ToastType } from '~/shared/toasts/Toast'
+import { ProjectType } from '~/shared/types'
+import { ChartPeriod } from '~/types'
+import { Layer } from '~/utils/Layer'
+import { BN, toBN, toBigInt } from '~/utils/bn'
+import { getChainConfigExtension } from '~/utils/chains'
+import { getContractAbi, getContractAddress } from '~/utils/contracts'
+import { getPublicProvider } from '~/utils/providers'
+import { errorToast } from '~/utils/toast'
 
 const DEFAULT_OPERATOR_ORDER_BY = Operator_OrderBy.Id
 const DEFAULT_SPONSORSHIP_ORDER_BY = Sponsorship_OrderBy.Id
@@ -99,21 +96,13 @@ export function getProjectRegistryContract({
     provider,
 }: {
     chainId: number
-    provider?: Signer | providers.Provider
+    provider?: Signer | Provider
 }) {
-    const { contracts } = getChainConfig(chainId)
-
-    const { ProjectRegistryV1: contractAddress } = contracts
-
-    if (!contractAddress) {
-        throw new Error(`No ProjectRegistry contract address found for chain ${chainId}`)
-    }
-
     return new Contract(
-        contractAddress,
-        projectRegistryAbi,
+        getContractAddress('projectRegistry', chainId),
+        getContractAbi('projectRegistry'),
         provider,
-    ) as ProjectRegistryContract
+    ) as unknown as ProjectRegistryContract
 }
 
 export function getERC20TokenContract({
@@ -121,9 +110,13 @@ export function getERC20TokenContract({
     provider,
 }: {
     tokenAddress: string
-    provider?: Signer | providers.Provider
+    provider?: Signer | Provider
 }) {
-    return new Contract(tokenAddress, tokenAbi, provider) as TokenContract
+    return new Contract(
+        tokenAddress,
+        getContractAbi('erc20'),
+        provider,
+    ) as unknown as TokenContract
 }
 
 export function getMarketplaceContract({
@@ -131,13 +124,13 @@ export function getMarketplaceContract({
     provider,
 }: {
     chainId: number
-    provider?: Signer | providers.Provider
+    provider?: Signer | Provider
 }) {
     return new Contract(
-        getMarketplaceAddress(chainId),
-        marketplaceAbi,
+        getContractAddress('marketplace', chainId),
+        getContractAbi('marketplace'),
         provider,
-    ) as MarketplaceContract
+    ) as unknown as MarketplaceContract
 }
 
 export async function getAllowance(
@@ -145,13 +138,15 @@ export async function getAllowance(
     tokenAddress: string,
     account: string,
     { recover = false }: { recover?: boolean } = {},
-): Promise<BigNumber> {
+): Promise<bigint> {
     while (true) {
         try {
+            const provider = await getPublicProvider(chainId)
+
             return await getERC20TokenContract({
                 tokenAddress,
-                provider: getPublicWeb3Provider(chainId),
-            }).allowance(account, getMarketplaceAddress(chainId))
+                provider,
+            }).allowance(account, getContractAddress('marketplace', chainId))
         } catch (e) {
             console.warn('Allowance check failed', e)
 
@@ -195,9 +190,11 @@ export async function getProjectPermissions(
         }
     }
 
+    const provider = await getPublicProvider(chainId)
+
     const response = await getProjectRegistryContract({
         chainId,
-        provider: getPublicWeb3Provider(chainId),
+        provider,
     }).getPermission(projectId, account)
 
     const [canBuy = false, canDelete = false, canEdit = false, canGrant = false] = z
@@ -734,6 +731,7 @@ export async function getParsedOperatorsByOwnerOrControllerAddress(
     }
 
     const result: ParsedOperator[] = []
+
     queryResult.map((operator) => {
         try {
             const parsedOperator = parseOperator(operator, { chainId })
@@ -848,7 +846,7 @@ export async function getParsedOperators<
 export function getSpotApy<
     T extends Pick<ParsedOperator, 'valueWithoutEarnings' | 'stakes'>,
 >({ valueWithoutEarnings, stakes }: T): number {
-    if (valueWithoutEarnings.isEqualTo(0)) {
+    if (valueWithoutEarnings === 0n) {
         return 0
     }
 
@@ -867,7 +865,7 @@ export function getSpotApy<
                 return sum
             }
 
-            return sum.plus(amountWei.multipliedBy(spotAPY))
+            return sum.plus(toBN(amountWei).multipliedBy(spotAPY))
         },
         toBN(0),
     )
@@ -876,7 +874,7 @@ export function getSpotApy<
         return 0
     }
 
-    return yearlyIncome.dividedBy(valueWithoutEarnings).toNumber()
+    return yearlyIncome.dividedBy(toBN(valueWithoutEarnings)).toNumber()
 }
 
 /**
@@ -885,19 +883,19 @@ export function getSpotApy<
 export function getDelegatedAmountForWallet(
     address: string,
     { delegations }: ParsedOperator,
-): BN {
+): bigint {
     const addr = address.toLowerCase()
 
     return (
         delegations.find(({ delegator }) => delegator.toLowerCase() === addr)?.amount ||
-        toBN(0)
+        0n
     )
 }
 
 /**
  * Sums amounts delegated to given operator by its owner.
  */
-export function getSelfDelegatedAmount(operator: ParsedOperator) {
+export function getSelfDelegatedAmount(operator: ParsedOperator): bigint {
     return getDelegatedAmountForWallet(operator.owner, operator)
 }
 
@@ -908,44 +906,44 @@ export function getSelfDelegatedAmount(operator: ParsedOperator) {
 export function getDelegationFractionForWallet(
     address: string,
     operator: ParsedOperator,
-    { offset = toBN(0) }: { offset?: BN } = {},
-) {
-    const total = operator.valueWithoutEarnings.plus(offset)
+    { offset = 0n }: { offset?: bigint } = {},
+): BN {
+    const total = operator.valueWithoutEarnings + offset
 
-    if (total.isEqualTo(0)) {
+    if (total === 0n) {
         return toBN(0)
     }
 
-    return getDelegatedAmountForWallet(address, operator).dividedBy(total)
+    return toBN(getDelegatedAmountForWallet(address, operator)).dividedBy(toBN(total))
 }
 
 /**
  * Calculates the amount of DATA needed to payout undelegation queue in full.
  */
-export function calculateUndelegationQueueSize(operator: ParsedOperator): BN {
-    const lookup: Record<string, BN> = {}
+export function calculateUndelegationQueueSize(operator: ParsedOperator): bigint {
+    const lookup: Record<string, bigint> = {}
 
     // Sum up queue by addresses
     for (let i = 0; i < operator.queueEntries.length; i++) {
         const element = operator.queueEntries[i]
 
         if (lookup[element.delegator] == null) {
-            lookup[element.delegator] = toBN(0)
+            lookup[element.delegator] = 0n
         }
 
-        lookup[element.delegator] = lookup[element.delegator].plus(element.amount)
+        lookup[element.delegator] = lookup[element.delegator] + element.amount
     }
 
     // Go through addresses and make sure we cap to max delegation
     for (const address of Object.keys(lookup)) {
-        lookup[address] = BN.min(
+        lookup[address] = ((a, b) => (a < b ? a : b))(
             lookup[address],
             getDelegatedAmountForWallet(address, operator),
         )
     }
 
     // Return total sum of all addresses
-    return Object.values(lookup).reduce((a, b) => a.plus(b), toBN(0))
+    return Object.values(lookup).reduce((sum, b) => sum + b, 0n)
 }
 
 /**
@@ -954,8 +952,8 @@ export function calculateUndelegationQueueSize(operator: ParsedOperator): BN {
  */
 export function getSelfDelegationFraction(
     operator: ParsedOperator,
-    { offset = toBN(0) }: { offset?: BN } = {},
-) {
+    { offset = 0n }: { offset?: bigint } = {},
+): BN {
     return getDelegationFractionForWallet(operator.owner, operator, { offset })
 }
 
@@ -988,7 +986,7 @@ function parseNetworkStats(stats: GetNetworkStatsQuery) {
     try {
         return z
             .object({
-                totalStake: z.string().transform(toBN),
+                totalStake: z.string().transform((v) => toBigInt(v)),
                 sponsorshipsCount: z.number(),
                 operatorsCount: z.number(),
             })
@@ -1195,19 +1193,6 @@ export async function getENSDomainsForWallet(
         .map(({ name }) => (!!name && /\.eth$/.test(name) ? name : null))
         .sort()
         .filter(Boolean) as string[]
-}
-
-const blockExplorerUrls = Object.freeze({
-    100: 'https:/gnosisscan.io',
-    137: 'https://polygonscan.com',
-    80002: 'https://amoy.polygonscan.com',
-})
-
-/**
- * Returns a block explorer URL for a given chain id.
- */
-export function getBlockExplorerUrl(chainId: number): string | undefined {
-    return blockExplorerUrls[chainId] || undefined
 }
 
 /**

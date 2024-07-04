@@ -1,4 +1,4 @@
-import { providers } from 'ethers'
+import { TransactionReceipt } from 'ethers'
 import EventEmitter from 'events'
 import TransactionError from '~/shared/errors/TransactionError'
 export default class Transaction {
@@ -8,7 +8,7 @@ export default class Transaction {
         this.emitter.on('transactionHash', cb)
         return this
     }
-    onTransactionComplete(cb: (arg0: providers.TransactionReceipt) => void): Transaction {
+    onTransactionComplete(cb: (arg0: TransactionReceipt) => void): Transaction {
         this.emitter.on('receipt', cb)
         return this
     }

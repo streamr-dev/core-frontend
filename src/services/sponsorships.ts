@@ -1,131 +1,123 @@
-import { ERC677ABI, ERC677, Operator, operatorABI } from '@streamr/network-contracts'
-import { BigNumber, Contract, Event } from 'ethers'
-import { defaultAbiCoder } from 'ethers/lib/utils'
-import networkPreflight from '~/utils/networkPreflight'
-import { getPublicWeb3Provider, getSigner } from '~/shared/stores/wallet'
-import { BN, BNish, toBN } from '~/utils/bn'
-import { toastedOperation } from '~/utils/toastedOperation'
+import { AbiCoder, Contract, EventLog } from 'ethers'
+import { ERC677, Operator } from 'network-contracts-ethers6'
+import { DayInSeconds, DefaultGasLimitMultiplier } from '~/consts'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
-import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import { getParsedSponsorshipById } from '~/getters'
-import { toDecimals } from '~/marketplace/utils/math'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
-import { getChainConfig, getChainConfigExtension } from '~/utils/chains'
+import { getSigner } from '~/shared/stores/wallet'
+import { toBN, toBigInt } from '~/utils/bn'
+import { getContractAbi, getContractAddress } from '~/utils/contracts'
+import networkPreflight from '~/utils/networkPreflight'
+import { getPublicProvider } from '~/utils/providers'
+import { toastedOperation } from '~/utils/toastedOperation'
+
+interface CreateSponsorshipOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?(blockNumber: number): void | Promise<void>
+}
 
 export async function createSponsorship(
     chainId: number,
     formData: CreateSponsorshipForm,
-    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+    options: CreateSponsorshipOptions = {},
 ): Promise<string> {
-    const { decimals } = await getSponsorshipTokenInfo(chainId)
+    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
 
-    const minOperatorCount = Number(formData.minNumberOfOperators)
-    const maxOperatorCount = formData.maxNumberOfOperators
-        ? String(formData.maxNumberOfOperators)
-        : undefined
-    // seconds
-    const minimumStakeTime = toBN(formData.minStakeDuration)
-        .multipliedBy(86400)
-        .toString()
-    // tokens per second
-    const payoutRate = toBN(formData.payoutRate)
-        .dividedBy(86400)
-        .multipliedBy(toBN(10).pow(toBN(decimals)))
-        .toString()
-    // wei
-    const initialFunding = toBN(formData.initialAmount)
-        .multipliedBy(toBN(10).pow(toBN(decimals)))
-        .toString()
-    const streamId = formData.streamId
+    const {
+        dailyPayoutRate,
+        initialAmount,
+        maxNumberOfOperators,
+        minNumberOfOperators,
+        minStakeDuration,
+        streamId,
+    } = formData
 
-    const chainConfig = getChainConfig(chainId)
+    const payoutRatePerSecond = toBigInt(toBN(dailyPayoutRate).dividedBy(DayInSeconds))
 
-    const { sponsorshipPaymentToken: paymentTokenSymbolFromConfig } =
-        getChainConfigExtension(chainId)
+    const minStakeDurationInSeconds = minStakeDuration * DayInSeconds
 
-    await networkPreflight(chainId)
-
-    const policies = [
-        chainConfig.contracts.SponsorshipStakeWeightedAllocationPolicy,
-        chainConfig.contracts.SponsorshipDefaultLeavePolicy,
-        chainConfig.contracts.SponsorshipVoteKickPolicy,
+    const policies: [string, string | 0][] = [
+        [
+            getContractAddress('sponsorshipStakeWeightedAllocationPolicy', chainId),
+            `${payoutRatePerSecond}`,
+        ],
+        [
+            getContractAddress('sponsorshipDefaultLeavePolicy', chainId),
+            `${minStakeDurationInSeconds}`,
+        ],
+        [getContractAddress('sponsorshipVoteKickPolicy', chainId), 0],
     ]
 
-    // No params for SponsorshipVoteKickPolicy, so just pass 0 for that one
-    const policyParams = [payoutRate, minimumStakeTime, 0]
-
-    if (maxOperatorCount) {
-        policies.push(chainConfig.contracts.SponsorshipMaxOperatorsJoinPolicy)
-        policyParams.push(maxOperatorCount)
+    if (maxNumberOfOperators !== undefined) {
+        policies.push([
+            getContractAddress('sponsorshipMaxOperatorsJoinPolicy', chainId),
+            `${maxNumberOfOperators}`,
+        ])
     }
+
+    await networkPreflight(chainId)
 
     return new Promise<string>((resolve, reject) => {
         void (async () => {
             try {
                 await toastedOperation('Sponsorship deployment', async () => {
-                    const data = defaultAbiCoder.encode(
+                    const data = AbiCoder.defaultAbiCoder().encode(
                         ['uint32', 'string', 'string', 'address[]', 'uint[]'],
                         [
-                            minOperatorCount,
+                            minNumberOfOperators,
                             streamId,
                             JSON.stringify({}), // metadata
-                            policies,
-                            policyParams,
+                            policies.map(([policy]) => policy),
+                            policies.map(([, param]) => param),
                         ],
                     )
 
                     const signer = await getSigner()
 
                     const token = new Contract(
-                        chainConfig.contracts[paymentTokenSymbolFromConfig],
-                        ERC677ABI,
+                        getContractAddress('sponsorshipPaymentToken', chainId),
+                        getContractAbi('erc677'),
                         signer,
-                    ) as ERC677
+                    ) as unknown as ERC677
 
-                    const sponsorshipFactoryAddress =
-                        chainConfig.contracts['SponsorshipFactory']
-
-                    if (!sponsorshipFactoryAddress) {
-                        throw new Error('Missing sponsorship factory address')
-                    }
-
-                    const gasLimitEstimate = await token.estimateGas.transferAndCall(
-                        sponsorshipFactoryAddress,
-                        initialFunding.toString(),
+                    const estimatedGasLimit = await token.transferAndCall.estimateGas(
+                        getContractAddress('sponsorshipFactory', chainId),
+                        initialAmount,
                         data,
                     )
-                    const increasedGasLimit = BigNumber.from(
-                        toBN(gasLimitEstimate)
-                            .multipliedBy(1.5)
-                            .precision(1, BN.ROUND_UP)
-                            .toString(),
+
+                    const gasLimit = toBigInt(
+                        toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
                     )
 
                     const sponsorshipDeployTx = await token.transferAndCall(
-                        sponsorshipFactoryAddress,
-                        initialFunding.toString(),
+                        getContractAddress('sponsorshipFactory', chainId),
+                        initialAmount,
                         data,
                         {
-                            gasLimit: increasedGasLimit,
+                            gasLimit,
                         },
                     )
 
-                    const { events = [], blockNumber } = await sponsorshipDeployTx.wait()
+                    const receipt = await sponsorshipDeployTx.wait()
 
                     /**
                      * 2nd transfer is the transfer from the sponsorship factory to the newly
                      * deployed sponsorship contract.
                      */
-                    const [, initialFundingTransfer]: (Event | undefined)[] =
-                        events.filter((e) => e.event === 'Transfer') || []
+                    const [, transfer = undefined] = (receipt?.logs.filter(
+                        (item) => 'eventName' in item && item.eventName === 'Transfer',
+                    ) || []) as EventLog[]
 
-                    const sponsorshipId = initialFundingTransfer.args?.to
+                    const sponsorshipId = transfer?.args.to
 
                     if (typeof sponsorshipId !== 'string') {
                         throw new Error('Sponsorship deployment failed')
                     }
 
-                    await options.onBlockNumber?.(blockNumber)
+                    if (receipt?.blockNumber) {
+                        await onBlockNumber?.(receipt.blockNumber)
+                    }
 
                     resolve(sponsorshipId)
                 })
@@ -136,99 +128,130 @@ export async function createSponsorship(
     })
 }
 
+interface FundSponsorshipOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?(blockNumber: number): void | Promise<void>
+}
+
 export async function fundSponsorship(
     chainId: number,
     sponsorshipId: string,
-    amount: BNish,
-    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+    amount: bigint,
+    options: FundSponsorshipOptions = {},
 ): Promise<void> {
-    const chainConfig = getChainConfig(chainId)
-
-    const { sponsorshipPaymentToken: paymentTokenSymbolFromConfig } =
-        getChainConfigExtension(chainId)
+    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
 
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
     const contract = new Contract(
-        chainConfig.contracts[paymentTokenSymbolFromConfig],
-        ERC677ABI,
+        getContractAddress('sponsorshipPaymentToken', chainId),
+        getContractAbi('erc677'),
         signer,
-    ) as ERC677
+    ) as unknown as ERC677
 
     await toastedOperation('Sponsorship funding', async () => {
-        const tx = await contract.transferAndCall(
+        const estimatedGasLimit = await contract.transferAndCall.estimateGas(
             sponsorshipId,
-            toBN(amount).toString(),
+            amount,
             '0x',
         )
 
-        const { blockNumber } = await tx.wait()
+        const gasLimit = toBigInt(
+            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
+        )
 
-        await options.onBlockNumber?.(blockNumber)
+        const tx = await contract.transferAndCall(sponsorshipId, amount, '0x', {
+            gasLimit,
+        })
+
+        const receipt = await tx.wait()
+
+        if (receipt?.blockNumber) {
+            await onBlockNumber?.(receipt.blockNumber)
+        }
     })
+}
+
+interface StakeOnSponsorshipOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?(blockNumber: number): void | Promise<void>
+    toastLabel?: string
 }
 
 export async function stakeOnSponsorship(
     chainId: number,
     sponsorshipId: string,
-    amountWei: string,
+    amount: bigint,
     operatorAddress: string,
-    options: {
-        toastLabel?: string
-        onBlockNumber?: (blockNumber: number) => void | Promise<void>
-        gasLimitMultiplier?: number
-    } = {},
+    options: StakeOnSponsorshipOptions = {},
 ): Promise<void> {
     await networkPreflight(chainId)
 
     const {
         toastLabel = 'Stake on sponsorship',
         onBlockNumber,
-        gasLimitMultiplier = 1.5,
+        gasLimitMultiplier = DefaultGasLimitMultiplier,
     } = options
 
     await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
-        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+        const contract = new Contract(
+            operatorAddress,
+            getContractAbi('operator'),
+            signer,
+        ) as unknown as Operator
 
-        const gasLimit = toBN(await contract.estimateGas.stake(sponsorshipId, amountWei))
-            .multipliedBy(gasLimitMultiplier)
-            .precision(1, BN.ROUND_UP)
-            .toString()
+        const estimatedGasLimit = await contract.stake.estimateGas(sponsorshipId, amount)
 
-        const tx = await contract.stake(sponsorshipId, amountWei, {
+        const gasLimit = toBigInt(
+            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
+        )
+
+        const tx = await contract.stake(sponsorshipId, amount, {
             gasLimit,
         })
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await onBlockNumber?.(receipt.blockNumber)
+        }
 
-        // Update uncollected earnings because the rate of change
-        // will change along with stake amount
+        /**
+         * @todo The following rate updating logic does not belong here! Move
+         * it outside and call after `stakeOnSponsorship` (this util) calls.
+         */
+
+        /**
+         * Update uncollected earnings because the rate of change will change
+         * along with stake amount.
+         */
         const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
+
         await updateEarnings(chainId, operatorAddress)
     })
+}
+
+interface ReduceStakeOnSponsorshipOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?(blockNumber: number): void | Promise<void>
+    toastLabel?: string
 }
 
 export async function reduceStakeOnSponsorship(
     chainId: number,
     sponsorshipId: string,
-    targetAmountWei: string,
+    targetAmount: bigint,
     operatorAddress: string,
-    options: {
-        toastLabel?: string
-        onBlockNumber?: (blockNumber: number) => void | Promise<void>
-        gasLimitMultiplier?: number
-    } = {},
+    options: ReduceStakeOnSponsorshipOptions = {},
 ): Promise<void> {
     const {
         toastLabel = 'Reduce stake on sponsorship',
         onBlockNumber,
-        gasLimitMultiplier = 1.5,
+        gasLimitMultiplier = DefaultGasLimitMultiplier,
     } = options
 
     await networkPreflight(chainId)
@@ -236,86 +259,125 @@ export async function reduceStakeOnSponsorship(
     await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
 
-        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+        const contract = new Contract(
+            operatorAddress,
+            getContractAbi('operator'),
+            signer,
+        ) as unknown as Operator
 
-        const gasLimit = toBN(
-            await contract.estimateGas.reduceStakeTo(sponsorshipId, targetAmountWei),
+        const estimatedGasLimit = await contract.reduceStakeTo.estimateGas(
+            sponsorshipId,
+            targetAmount,
         )
-            .multipliedBy(gasLimitMultiplier)
-            .precision(1, BN.ROUND_UP)
-            .toString()
 
-        const tx = await contract.reduceStakeTo(sponsorshipId, targetAmountWei, {
+        const gasLimit = toBigInt(
+            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
+        )
+
+        const tx = await contract.reduceStakeTo(sponsorshipId, targetAmount, {
             gasLimit,
         })
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await onBlockNumber?.(receipt.blockNumber)
+        }
 
-        // Update uncollected earnings because the rate of change
-        // will change along with stake amount
+        /**
+         * @todo The following rate updating logic does not belong here! Move
+         * it outside and call after `reduceStakeOnSponsorship` (this util) calls.
+         */
+
+        /**
+         * Update uncollected earnings because the rate of change will change
+         * along with stake amount.
+         */
         const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
+
         await updateEarnings(chainId, operatorAddress)
     })
+}
+
+interface ForceUnstakeFromSponsorshipOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?(blockNumber: number): void | Promise<void>
 }
 
 export async function forceUnstakeFromSponsorship(
     chainId: number,
     sponsorshipId: string,
     operatorAddress: string,
-    options: {
-        onBlockNumber?: (blockNumber: number) => void | Promise<void>
-        gasLimitMultiplier?: number
-    } = {},
+    options: ForceUnstakeFromSponsorshipOptions = {},
 ): Promise<void> {
-    const { onBlockNumber, gasLimitMultiplier = 1.5 } = options
+    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
 
     await networkPreflight(chainId)
 
     await toastedOperation('Force unstake from sponsorship', async () => {
         const signer = await getSigner()
 
-        const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
-
-        const gasLimit = toBN(
-            await contract.estimateGas.forceUnstake(sponsorshipId, 1000000),
-        )
-            .multipliedBy(gasLimitMultiplier)
-            .precision(1, BN.ROUND_UP)
-            .toString()
+        const contract = new Contract(
+            operatorAddress,
+            getContractAbi('operator'),
+            signer,
+        ) as unknown as Operator
 
         /**
-         * @jtakalai asked to put a big value in the second parameter. Value big enough
-         * to pay out the whole queue after unstaking.
+         * @todo What is `maxQueuePayoutIterations`? Ask @jtakalai for details.
          */
-        const tx = await contract.forceUnstake(sponsorshipId, 1000000, {
+        const maxQueuePayoutIterations = 1000000
+
+        const estimatedGasLimit = await contract.forceUnstake.estimateGas(
+            sponsorshipId,
+            maxQueuePayoutIterations,
+        )
+
+        const gasLimit = toBigInt(
+            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
+        )
+
+        const tx = await contract.forceUnstake(sponsorshipId, maxQueuePayoutIterations, {
             gasLimit,
         })
 
-        const { blockNumber } = await tx.wait()
+        const receipt = await tx.wait()
 
-        await onBlockNumber?.(blockNumber)
+        if (receipt?.blockNumber) {
+            await onBlockNumber?.(receipt.blockNumber)
+        }
 
-        // Update uncollected earnings because the rate of change
-        // will change along with stake amount
+        /**
+         * @todo The following rate updating logic does not belong here! Move
+         * it outside and call after `forceUnstakeFromSponsorship` (this util) calls.
+         */
+
+        /**
+         * Update uncollected earnings because the rate of change will change
+         * along with stake amount.
+         */
         const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
+
         await updateEarnings(chainId, operatorAddress)
     })
 }
 
 export interface SponsorshipEarnings {
-    uncollectedEarnings: BN
-    rateOfChangePerSec: BN | undefined
+    uncollectedEarnings: bigint
+    changePerSecond: bigint
 }
 
 export async function getEarningsForSponsorships(
     chainId: number,
     operatorAddress: string,
 ): Promise<Record<string, SponsorshipEarnings>> {
-    const provider = getPublicWeb3Provider(chainId)
+    const provider = await getPublicProvider(chainId)
 
-    const contract = new Contract(operatorAddress, operatorABI, provider) as Operator
+    const contract = new Contract(
+        operatorAddress,
+        getContractAbi('operator'),
+        provider,
+    ) as unknown as Operator
 
     const { addresses, earnings } = await contract.getSponsorshipsAndEarnings()
 
@@ -324,66 +386,99 @@ export async function getEarningsForSponsorships(
     for (let i = 0; i < addresses.length; i++) {
         const sponsorshipId = addresses[i].toLowerCase()
 
-        const graphSponsorship = await getParsedSponsorshipById(chainId, sponsorshipId)
+        const sponsorship = await getParsedSponsorshipById(chainId, sponsorshipId)
 
-        const myStake = graphSponsorship?.stakes.find(
-            (s) => s.operatorId.toLowerCase() === operatorAddress.toLowerCase(),
-        )?.amount
+        if (!sponsorship) {
+            result[sponsorshipId] = {
+                uncollectedEarnings: earnings[i],
+                changePerSecond: 0n,
+            }
 
-        const totalStake = graphSponsorship?.totalStake
-
-        let totalPayoutPerSec: BN | undefined = toDecimals(
-            graphSponsorship?.payoutPerDay.dividedBy(24 * 60 * 60) ?? BN(0),
-            18,
-        )
-
-        const isSponsorshipPaying =
-            graphSponsorship?.isRunning &&
-            graphSponsorship.remainingBalance.isGreaterThan(0)
-        if (!isSponsorshipPaying) {
-            totalPayoutPerSec = undefined
+            continue
         }
 
-        const myEarningsChangePerSec =
-            totalPayoutPerSec != null &&
-            myStake != null &&
-            totalStake != null &&
-            myStake.isGreaterThan(0) &&
-            totalStake.isGreaterThan(0)
-                ? myStake.dividedBy(totalStake).multipliedBy(totalPayoutPerSec)
-                : undefined
+        const myStake =
+            sponsorship.stakes.find(
+                (s) => s.operatorId.toLowerCase() === operatorAddress.toLowerCase(),
+            )?.amountWei || 0n
+
+        const { totalStakedWei, payoutPerSec, isRunning, remainingBalanceWei } =
+            sponsorship
+
+        const isSponsorshipPaying = isRunning && remainingBalanceWei > 0n
+
+        const totalPayoutPerSecond = isSponsorshipPaying ? payoutPerSec : 0n
+
+        const myPayoutPerSecond =
+            totalStakedWei > 0n
+                ? toBigInt(
+                      toBN(myStake)
+                          .dividedBy(toBN(totalStakedWei))
+                          .multipliedBy(toBN(totalPayoutPerSecond)),
+                  )
+                : 0n
 
         result[sponsorshipId] = {
-            uncollectedEarnings: toBN(earnings[i]),
-            rateOfChangePerSec: myEarningsChangePerSec,
+            uncollectedEarnings: earnings[i],
+            changePerSecond: myPayoutPerSecond,
         }
     }
 
     return result
 }
 
+interface CollectEarningsOptions {
+    gasLimitMultiplier?: number
+    onBlockNumber?(blockNumber: number): void | Promise<void>
+}
+
 export async function collectEarnings(
     chainId: number,
     sponsorshipId: string,
     operatorAddress: string,
-    options: { onBlockNumber?: (blockNumber: number) => void | Promise<void> } = {},
+    options: CollectEarningsOptions = {},
 ): Promise<void> {
+    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
+
     await networkPreflight(chainId)
 
     const signer = await getSigner()
 
-    const contract = new Contract(operatorAddress, operatorABI, signer) as Operator
+    const contract = new Contract(
+        operatorAddress,
+        getContractAbi('operator'),
+        signer,
+    ) as unknown as Operator
 
     await toastedOperation('Collect earnings', async () => {
-        const tx = await contract.withdrawEarningsFromSponsorships([sponsorshipId])
+        const estimatedGasLimit =
+            await contract.withdrawEarningsFromSponsorships.estimateGas([sponsorshipId])
 
-        const { blockNumber } = await tx.wait()
+        const gasLimit = toBigInt(
+            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
+        )
 
-        await options.onBlockNumber?.(blockNumber)
+        const tx = await contract.withdrawEarningsFromSponsorships([sponsorshipId], {
+            gasLimit,
+        })
 
-        // Update uncollected earnings because the rate of change
-        // will change along with stake amount
+        const receipt = await tx.wait()
+
+        if (receipt?.blockNumber) {
+            await onBlockNumber?.(receipt.blockNumber)
+        }
+
+        /**
+         * @todo The following rate updating logic does not belong here! Move
+         * it outside and call after `collectEarnings` (this util) calls.
+         */
+
+        /**
+         * Update uncollected earnings because the rate of change will change
+         * along with stake amount.
+         */
         const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
+
         await updateEarnings(chainId, operatorAddress)
     })
 }

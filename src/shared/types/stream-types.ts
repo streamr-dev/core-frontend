@@ -5,9 +5,8 @@ export type StreamField = {
     id?: string
 }
 export type StreamFieldList = Array<StreamField>
-export type StreamId = string
 export type Stream = {
-    id: StreamId
+    id: string
     name: string
     description: string | null | undefined
     config: {
@@ -28,4 +27,4 @@ export type Stream = {
     requireEncryptedData: boolean
 }
 export type StreamList = Array<Stream>
-export type StreamEntities = Record<StreamId, Stream>
+export type StreamEntities = Record<string, Stream>

@@ -1,4 +1,5 @@
-import { Analytics } from '~/analytics'
+import { Analytics } from '../../src/analytics'
+
 describe('analytics', () => {
     let analytics
     beforeEach(() => {

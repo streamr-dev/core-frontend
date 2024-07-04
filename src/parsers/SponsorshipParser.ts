@@ -1,15 +1,13 @@
 import { z } from 'zod'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
-import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
-import { fromDecimals } from '~/marketplace/utils/math'
-import { BN, toBN } from '~/utils/bn'
+import { toBigInt } from '~/utils/bn'
 import {
     OperatorMetadataPreparser,
     parseOperatorMetadata,
 } from './OperatorMetadataParser'
 
 const SponsorshipParser = z.object({
-    cumulativeSponsoring: z.string(), // wei
+    cumulativeSponsoring: z.string().transform((v) => toBigInt(v)),
     id: z.string(),
     isRunning: z.boolean(),
     minOperators: z.number(),
@@ -22,7 +20,7 @@ const SponsorshipParser = z.object({
     projectedInsolvency: z
         .union([z.string(), z.null()])
         .transform((v) => (v == null ? null : Number(v))),
-    remainingWei: z.string().transform(toBN),
+    remainingWei: z.string().transform((v) => toBigInt(v)),
     remainingWeiUpdateTimestamp: z.coerce.number(),
     spotAPY: z.coerce.number(),
     stream: z.union([
@@ -38,8 +36,8 @@ const SponsorshipParser = z.object({
                     id: z.string(),
                     metadataJsonString: OperatorMetadataPreparser,
                 }),
-                amountWei: z.string(), // wei
-                lockedWei: z.string().transform(toBN),
+                amountWei: z.string().transform((v) => toBigInt(v)),
+                lockedWei: z.string().transform((v) => toBigInt(v)),
                 joinTimestamp: z.coerce.number(),
             })
             .transform(
@@ -53,8 +51,8 @@ const SponsorshipParser = z.object({
                 }),
             ),
     ),
-    totalPayoutWeiPerSec: z.string(),
-    totalStakedWei: z.string(),
+    totalPayoutWeiPerSec: z.string().transform((v) => toBigInt(v)),
+    totalStakedWei: z.string().transform((v) => toBigInt(v)),
 })
 
 interface ParseSponsorshipOptions {
@@ -66,58 +64,43 @@ export function parseSponsorship(value: unknown, options: ParseSponsorshipOption
 
     return SponsorshipParser.transform(
         async ({
-            cumulativeSponsoring: cumulativeSponsoringWei,
             projectedInsolvency: projectedInsolvencyAt,
             remainingWei,
             remainingWeiUpdateTimestamp,
             stakes,
             stream,
             totalPayoutWeiPerSec,
-            totalStakedWei,
             isRunning,
             ...rest
         }) => {
-            const { decimals } = await getSponsorshipTokenInfo(chainId)
-
             const minimumStakeWei = await getConfigValueFromChain(
                 chainId,
                 'minimumStakeWei',
             )
 
-            const timeCorrectedRemainingBalance = remainingWei.isGreaterThan(0)
-                ? fromDecimals(
-                      remainingWei.minus(
-                          toBN(
-                              Date.now() / 1000 - remainingWeiUpdateTimestamp,
-                          ).multipliedBy(totalPayoutWeiPerSec),
-                      ),
-                      decimals,
-                  )
-                : toBN(0)
+            const timeCorrectedRemainingBalance = ((value) => (value < 0n ? 0n : value))(
+                remainingWei -
+                    toBigInt(Date.now() / 1000 - remainingWeiUpdateTimestamp) *
+                        totalPayoutWeiPerSec,
+            )
 
             return {
                 ...rest,
-                cumulativeSponsoring: fromDecimals(cumulativeSponsoringWei, decimals),
-                minimumStake: fromDecimals(minimumStakeWei, decimals),
-                payoutPerSec: fromDecimals(toBN(totalPayoutWeiPerSec), decimals),
-                payoutPerDay: fromDecimals(
-                    toBN(totalPayoutWeiPerSec).multipliedBy(86400),
-                    decimals,
-                ).dp(3, BN.ROUND_HALF_UP),
+                minimumStakeWei,
+                payoutPerSec: totalPayoutWeiPerSec,
+                payoutPerDay: totalPayoutWeiPerSec * 86400n,
                 projectedInsolvencyAt,
-                remainingBalance: fromDecimals(remainingWei, decimals),
+                remainingBalanceWei: remainingWei,
                 remainingWeiUpdateTimestamp,
                 timeCorrectedRemainingBalance:
-                    timeCorrectedRemainingBalance.isGreaterThan(0) && isRunning
+                    timeCorrectedRemainingBalance > 0n && isRunning
                         ? timeCorrectedRemainingBalance
-                        : fromDecimals(remainingWei, decimals),
-                stakes: stakes.map(({ amountWei, metadata, ...stake }) => ({
+                        : remainingWei,
+                stakes: stakes.map(({ metadata, ...stake }) => ({
                     ...stake,
-                    amount: fromDecimals(amountWei, decimals),
                     metadata: parseOperatorMetadata(metadata, { chainId }),
                 })),
                 streamId: stream?.id,
-                totalStake: fromDecimals(totalStakedWei, decimals),
                 isRunning,
             }
         },

@@ -1,21 +1,21 @@
 {
-  "compilerOptions": {
-    "outDir": "./dist/",
-    "noImplicitAny": false,
-    "module": "ES2020",
-    "target": "es2017",
-    "jsx": "react",
-    "strict": true,
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "lib": ["dom", "esnext"],
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "baseUrl": "./",
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
-  }
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "noImplicitAny": false,
+        "module": "ES2020",
+        "target": "ES2020",
+        "jsx": "react",
+        "strict": true,
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "lib": ["dom", "esnext"],
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "baseUrl": "./",
+        "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    }
 }

@@ -7,13 +7,12 @@ import styled, { css } from 'styled-components'
 import { z } from 'zod'
 import { StreamDescription } from '~/components/StreamDescription'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { getChainConfigExtension } from '~/utils/chains'
 import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { getStreamGptApiUrl } from '~/utils'
-import { BN } from '~/utils/bn'
+import { getChainConfigExtension } from '~/utils/chains'
 import { getSponsorshipStakeForOperator } from '~/utils/sponsorships'
 import Spinner from './Spinner'
 import { OperatorAvatar } from './avatars'
@@ -72,7 +71,10 @@ const OperatorIdCellRoot = styled.div`
 function DeletedStreamIdCell() {
     return (
         <StreamInfoCell>
-            <StreamIdWrap as="em">(deleted stream)</StreamIdWrap>
+            <StreamAvatarWrap />
+            <StreamInfoCellOuter>
+                <StreamIdWrap as="em">(deleted stream)</StreamIdWrap>
+            </StreamInfoCellOuter>
         </StreamInfoCell>
     )
 }
@@ -210,7 +212,7 @@ export function FundedUntilCell({
     remainingBalance,
 }: {
     projectedInsolvencyAt: number | null
-    remainingBalance: BN
+    remainingBalance: bigint
 }) {
     const value =
         projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
@@ -222,7 +224,7 @@ export function FundedUntilCell({
             ) : (
                 <>{value.format('YYYY-MM-DD')}</>
             )}
-            {remainingBalance.isLessThanOrEqualTo(0) && (
+            {remainingBalance <= 0n && (
                 <Tooltip content="Sponsorship expired">
                     <TooltipIconWrap
                         $color="#ff5c00"

@@ -1,12 +1,11 @@
-import { z } from 'zod'
 import { isAddress } from 'web3-validator'
-import { ProjectType } from '~/shared/types'
-import { formatChainName } from '~/utils'
-import { toBN } from '~/utils/bn'
-import { getDataAddress } from '~/marketplace/utils/web3'
+import { z } from 'zod'
 import { address0 } from '~/consts'
+import { ProjectType, SalePoint } from '~/shared/types'
 import { timeUnits } from '~/shared/utils/timeUnit'
+import { formatChainName } from '~/utils'
 import { getCurrentChain } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 
 function getFormattedChainNameFromContext({ path: [, chainName] }: z.RefinementCtx) {
     if (typeof chainName !== 'string' || !chainName) {
@@ -23,8 +22,8 @@ export const SalePointsPayload = z.record(
             beneficiaryAddress: z.string().trim(),
             chainId: z.number(),
             enabled: z.boolean(),
-            price: z.string().trim(),
-            pricePerSecond: z.string().trim(),
+            price: z.bigint().gte(0n).or(z.undefined()),
+            pricePerSecond: z.bigint().gte(0n).or(z.undefined()),
             pricingTokenAddress: z.string().trim(),
             readOnly: z.boolean(),
             timeUnit: z.union([
@@ -41,7 +40,7 @@ export const SalePointsPayload = z.record(
                 return
             }
 
-            if (!price) {
+            if (price == null) {
                 return void ctx.addIssue({
                     code: z.ZodIssueCode.custom,
                     message: `Price ${getFormattedChainNameFromContext(ctx)} is missing`,
@@ -49,7 +48,7 @@ export const SalePointsPayload = z.record(
                 })
             }
 
-            if (toBN(price).isGreaterThan(0) || beneficiaryAddress === address0) {
+            if (price > 0n || beneficiaryAddress === address0) {
                 return
             }
 
@@ -200,12 +199,12 @@ export const OpenDataPayload = z.object({
                 beneficiaryAddress: address0,
                 chainId,
                 enabled: true,
-                price: '0',
-                pricePerSecond: '0',
-                pricingTokenAddress: getDataAddress(chainId),
+                price: 0n,
+                pricePerSecond: 0n,
+                pricingTokenAddress: getContractAddress('data', chainId),
                 readOnly: true,
                 timeUnit: timeUnits.second,
-            },
+            } satisfies SalePoint,
         }
     }),
 })

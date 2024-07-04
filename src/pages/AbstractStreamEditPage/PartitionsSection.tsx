@@ -1,5 +1,5 @@
-import React from 'react'
 import { StreamPermission } from '@streamr/sdk'
+import React from 'react'
 import styled from 'styled-components'
 import { z } from 'zod'
 import { Advanced } from '~/shared/components/StatusLabel'
@@ -65,7 +65,7 @@ export function PartitionsSection({ disabled: disabledProp = false }) {
 
 const PartitionRange = {
     Min: 1,
-    Max: 99,
+    Max: 100,
 }
 
 const Partitions = styled.div`

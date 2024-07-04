@@ -1,18 +1,22 @@
 import { Contract } from 'ethers'
-import { StreamrConfig, streamrConfigABI } from '@streamr/network-contracts'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
-import { ConfigKey } from '~/types'
-import { getChainConfig } from '~/utils/chains'
+import { StreamrConfig } from 'network-contracts-ethers6'
+import { Minute } from '~/consts'
+import { ChainConfigKey } from '~/types'
+import { getContractAbi, getContractAddress } from '~/utils/contracts'
+import { getPublicProvider } from '~/utils/providers'
 
 const cache: Record<
     number,
-    Partial<Record<ConfigKey, { updatedAt: number; value: unknown }>> | undefined
+    Partial<Record<ChainConfigKey, { updatedAt: number; value: unknown }>> | undefined
 > = {}
 
-const TTL = 60 * 60 * 1000 // 1h
+const TTL = 60 * Minute
 
+/**
+ * @todo Refactor to use `fetchQuery` for cache.
+ */
 export async function getConfigValueFromChain<
-    T extends ConfigKey,
+    T extends ChainConfigKey,
     U extends Awaited<ReturnType<StreamrConfig[T]>>,
 >(chainId: number, key: T): Promise<U> {
     const { updatedAt = 0, value } = cache[chainId]?.[key] || {}
@@ -21,23 +25,13 @@ export async function getConfigValueFromChain<
         return value as U
     }
 
-    const chain = getChainConfig(chainId)
-
-    const provider = getPublicWeb3Provider(chainId)
-
-    const { StreamrConfig: contractAddress } = chain.contracts
-
-    if (!contractAddress) {
-        throw new Error(
-            `StreamrConfig contract address is required for chain ${chain.id}`,
-        )
-    }
+    const provider = await getPublicProvider(chainId)
 
     const contract = new Contract(
-        contractAddress,
-        streamrConfigABI,
+        getContractAddress('config', chainId),
+        getContractAbi('config'),
         provider,
-    ) as StreamrConfig
+    ) as unknown as StreamrConfig
 
     const result = (await contract[key]()) as U
 

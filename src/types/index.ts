@@ -1,8 +1,7 @@
-import { MessageID } from '@streamr/sdk'
 import { config as configs } from '@streamr/config'
+import { MessageID } from '@streamr/sdk'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { TheGraph } from '~/shared/types'
-import { BN } from '~/utils/bn'
 
 export interface ProjectFilter {
     search: string
@@ -15,11 +14,11 @@ export interface ProjectFilter {
  */
 export interface Delegation extends ParsedOperator {
     apy: number
-    myShare: BN
+    myShare: bigint
 }
 
 export interface DelegationsStats {
-    value: BN
+    value: bigint
     minApy: number
     maxApy: number
     numOfOperators: number
@@ -43,7 +42,7 @@ export interface XY {
     y: number
 }
 
-export type ConfigKey =
+export type ChainConfigKey =
     | 'maxPenaltyPeriodSeconds'
     | 'minimumStakeWei'
     | 'minimumSelfDelegationFraction'
@@ -65,7 +64,7 @@ export interface Chain {
     id: number
     theGraphUrl?: string
     rpcEndpoints: { url: string }[]
-    contracts: Partial<Record<ContractAddressKey, string>>
+    contracts: Partial<Record<ContractAddressKey | (string & {}), string>>
     entryPoints?: {
         nodeId: string
         websocket: {
@@ -87,4 +86,17 @@ export interface DataPoint {
         messageId: MessageID
         timestamp: number
     }
+}
+
+export interface WritablePaymentDetail<P = bigint> {
+    beneficiary: string
+    pricingTokenAddress: string
+    pricePerSecond: P
+}
+
+export type FundingEvent = {
+    id: string
+    amount: bigint
+    sponsor: string
+    date: string
 }

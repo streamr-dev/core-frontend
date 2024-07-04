@@ -1,28 +1,28 @@
-import React, { ReactNode } from 'react'
 import { UseInfiniteQueryResult } from '@tanstack/react-query'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { useOperatorForWalletQuery } from '~/hooks/operators'
+import React, { ReactNode } from 'react'
+import { Decimals, SponsorshipDecimals } from '~/components/Decimals'
 import { LoadMoreButton } from '~/components/LoadMore'
-import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
-import {
-    useEditSponsorshipFunding,
-    useFundSponsorshipCallback,
-    useJoinSponsorshipAsOperator,
-} from '~/hooks/sponsorships'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import {
     FundedUntilCell,
     NumberOfOperatorsCell,
     SponsorshipApyCell,
     StreamIdCell,
 } from '~/components/Table'
-import { abbr } from '~/utils'
-import { useCurrentChainId } from '~/utils/chains'
+import { useOperatorForWalletQuery } from '~/hooks/operators'
+import {
+    useEditSponsorshipFunding,
+    useFundSponsorshipCallback,
+    useJoinSponsorshipAsOperator,
+    useSponsorshipTokenInfo,
+} from '~/hooks/sponsorships'
+import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
+import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection } from '~/types'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 
 interface Props {
     noDataFirstLine?: ReactNode
@@ -59,6 +59,8 @@ export function QueriedSponsorshipsTable({
 
     const editSponsorshipFunding = useEditSponsorshipFunding()
 
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
+
     return (
         <>
             <ScrollTableCore
@@ -91,7 +93,13 @@ export function QueriedSponsorshipsTable({
                                 /day
                             </>
                         ),
-                        valueMapper: (element) => abbr(element.payoutPerDay),
+                        valueMapper: (element) => (
+                            <Decimals
+                                abbr
+                                amount={element.payoutPerDay}
+                                decimals={decimals}
+                            />
+                        ),
                         align: 'start',
                         isSticky: hideStreamId,
                         key: 'payoutPerDay',
@@ -100,7 +108,11 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Funds',
                         valueMapper: (element) => (
-                            <>{abbr(element.timeCorrectedRemainingBalance)}</>
+                            <Decimals
+                                abbr
+                                amount={element.timeCorrectedRemainingBalance}
+                                decimals={decimals}
+                            />
                         ),
                         align: 'start',
                         isSticky: false,
@@ -123,9 +135,7 @@ export function QueriedSponsorshipsTable({
                     {
                         displayName: 'Staked',
                         valueMapper: (element) => (
-                            <>
-                                {abbr(element.totalStake)} <SponsorshipPaymentTokenName />
-                            </>
+                            <SponsorshipDecimals abbr amount={element.totalStakedWei} />
                         ),
                         align: 'end',
                         isSticky: false,
@@ -150,7 +160,7 @@ export function QueriedSponsorshipsTable({
                         valueMapper: (element) => (
                             <FundedUntilCell
                                 projectedInsolvencyAt={element.projectedInsolvencyAt}
-                                remainingBalance={element.remainingBalance}
+                                remainingBalance={element.remainingBalanceWei}
                             />
                         ),
                         align: 'start',

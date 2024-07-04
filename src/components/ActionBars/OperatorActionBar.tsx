@@ -1,17 +1,22 @@
-import React, { FunctionComponent, useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
+import { useQuery } from '@tanstack/react-query'
+import React, { FunctionComponent, useMemo } from 'react'
+import { AboutOperator } from '~/components/ActionBars/AboutOperator'
+import {
+    ActionBarButton,
+    ActionBarButtonCaret,
+    ActionBarButtonInnerBody,
+    ActionBarWalletDisplay,
+} from '~/components/ActionBars/ActionBarButton'
 import { Button } from '~/components/Button'
-import SvgIcon from '~/shared/components/SvgIcon'
-import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { fromAtto } from '~/marketplace/utils/math'
-import { useWalletAccount } from '~/shared/stores/wallet'
+import { SponsorshipDecimals } from '~/components/Decimals'
+import { Hint } from '~/components/Hint'
+import { Separator } from '~/components/Separator'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
 import Spinner from '~/components/Spinner'
-import { Separator } from '~/components/Separator'
 import StatGrid, { StatCell } from '~/components/StatGrid'
+import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
-import { ParsedOperator } from '~/parsers/OperatorParser'
 import {
     useDelegateFunds,
     useIsDelegatingFundsToOperator,
@@ -19,21 +24,14 @@ import {
     useUndelegateFunds,
 } from '~/hooks/operators'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { getOperatorDelegationAmount } from '~/services/operators'
+import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { PencilIcon } from '~/icons'
-import { abbr } from '~/utils'
-import {
-    ActionBarButton,
-    ActionBarButtonCaret,
-    ActionBarButtonInnerBody,
-    ActionBarWalletDisplay,
-} from '~/components/ActionBars/ActionBarButton'
-import { AboutOperator } from '~/components/ActionBars/AboutOperator'
-import { Hint } from '~/components/Hint'
-import { useCurrentChainId } from '~/utils/chains'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { getOperatorDelegationAmount } from '~/services/operators'
+import SvgIcon from '~/shared/components/SvgIcon'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
 import { OperatorAvatar } from '../avatars'
 import { AbstractActionBar, Pad } from './AbstractActionBar'
@@ -51,9 +49,10 @@ export const OperatorActionBar: FunctionComponent<{
 
     const canEdit = !!walletAddress && walletAddress == operator.owner
 
-    const ownerDelegationPercentage = useMemo(() => {
-        return getSelfDelegationFraction(operator).multipliedBy(100)
-    }, [operator])
+    const ownerDelegationPercentage = useMemo(
+        () => getSelfDelegationFraction(operator).multipliedBy(100),
+        [operator],
+    )
 
     const isDelegatingFunds = useIsDelegatingFundsToOperator(operator.id, walletAddress)
 
@@ -84,12 +83,12 @@ export const OperatorActionBar: FunctionComponent<{
                 }
 
                 return (
-                    await getOperatorDelegationAmount(
+                    (await getOperatorDelegationAmount(
                         currentChainId,
                         operator.id,
                         walletAddress,
-                    )
-                ).isGreaterThan(0)
+                    )) > 0n
+                )
             } catch (e) {
                 console.warn(
                     'Failed to load delegation amount',
@@ -98,9 +97,12 @@ export const OperatorActionBar: FunctionComponent<{
                     e,
                 )
             }
+
+            return null
         },
     })
-    const { data: canUndelegate = false } = canUndelegateQuery
+
+    const canUndelegate = !!canUndelegateQuery.data
 
     const { metadata } = operator
 
@@ -188,7 +190,7 @@ export const OperatorActionBar: FunctionComponent<{
                                 label="Total stake"
                                 tip={
                                     <>
-                                        {operator.valueWithoutEarnings.isZero() ? (
+                                        {operator.valueWithoutEarnings === 0n ? (
                                             <Tooltip
                                                 content={
                                                     <p>
@@ -220,8 +222,10 @@ export const OperatorActionBar: FunctionComponent<{
                                 }
                             >
                                 <div>
-                                    {abbr(fromAtto(operator.valueWithoutEarnings))}{' '}
-                                    <SponsorshipPaymentTokenName />
+                                    <SponsorshipDecimals
+                                        abbr
+                                        amount={operator.valueWithoutEarnings}
+                                    />
                                 </div>
                             </StatCell>
                             <StatCell
@@ -236,8 +240,10 @@ export const OperatorActionBar: FunctionComponent<{
                                     </Hint>
                                 }
                             >
-                                {abbr(fromAtto(operator.totalStakeInSponsorshipsWei))}{' '}
-                                <SponsorshipPaymentTokenName />
+                                <SponsorshipDecimals
+                                    abbr
+                                    amount={operator.totalStakeInSponsorshipsWei}
+                                />
                             </StatCell>
                             <StatCell
                                 label="Owner's stake"
@@ -280,7 +286,7 @@ export const OperatorActionBar: FunctionComponent<{
                                     </Hint>
                                 }
                             >
-                                {operator.metadata?.redundancyFactor?.toString() || '1'}
+                                {operator.metadata.redundancyFactor || 1}
                             </StatCell>
                         </StatGrid>
                     </Pad>
@@ -334,14 +340,13 @@ export const OperatorActionBar: FunctionComponent<{
                                     </Hint>
                                 }
                             >
-                                {abbr(
-                                    fromAtto(
-                                        operator.cumulativeProfitsWei.plus(
-                                            operator.cumulativeOperatorsCutWei,
-                                        ),
-                                    ),
-                                )}{' '}
-                                <SponsorshipPaymentTokenName />
+                                <SponsorshipDecimals
+                                    abbr
+                                    amount={
+                                        operator.cumulativeProfitsWei +
+                                        operator.cumulativeOperatorsCutWei
+                                    }
+                                />
                             </StatCell>
                             <StatCell
                                 label="Live nodes"

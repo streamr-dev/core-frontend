@@ -1,15 +1,14 @@
-import { z } from 'zod'
-import { produce } from 'immer'
 import detectProvider from '@metamask/detect-provider'
-import { create } from 'zustand'
-import { providers } from 'ethers'
 import { MetaMaskInpageProvider } from '@metamask/providers'
+import { BrowserProvider } from 'ethers'
+import { produce } from 'immer'
 import { isAddress } from 'web3-validator'
+import { z } from 'zod'
+import { create } from 'zustand'
 import { getENSDomainsForWallet } from '~/getters'
 import { connectModal } from '~/modals/ConnectModal'
-import { isRejectionReason, isMessagedObject } from '~/utils/exceptions'
 import { Break } from '~/utils/errors'
-import { getChainConfig } from '~/utils/chains'
+import { isMessagedObject, isRejectionReason } from '~/utils/exceptions'
 
 interface MetaMaskProvider extends MetaMaskInpageProvider {
     providers?: MetaMaskProvider[]
@@ -54,7 +53,7 @@ export function getWalletProvider() {
 export async function getWalletWeb3Provider() {
     const provider = await getWalletProvider()
 
-    return new providers.Web3Provider(provider as any)
+    return new BrowserProvider(provider as any)
 }
 
 export async function getSigner() {
@@ -64,7 +63,7 @@ export async function getSigner() {
         try {
             const provider = await getWalletWeb3Provider()
 
-            const signer = provider.getSigner()
+            const signer = await provider.getSigner()
 
             await signer.getAddress()
 
@@ -159,21 +158,6 @@ export async function getWalletAccount({
     })
 
     return promise
-}
-
-/**
- * @todo Move to getters/index.
- */
-export function getPublicWeb3Provider(chainId: number) {
-    const config = getChainConfig(chainId)
-
-    const httpEntry = config.rpcEndpoints.find(({ url }) => url.startsWith('http'))
-
-    if (!httpEntry) {
-        throw new Error(`No rpcEndpoints configured for chainId "${chainId}"`)
-    }
-
-    return new providers.JsonRpcProvider(httpEntry.url)
 }
 
 interface WalletStore {

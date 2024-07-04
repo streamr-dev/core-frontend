@@ -1,5 +1,6 @@
 import moxios from 'moxios'
-import * as all from '~/shared/utils/api'
+import * as all from '../../../src/shared/utils/api'
+
 describe('api utils', () => {
     beforeEach(() => {
         moxios.install()

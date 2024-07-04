@@ -12,7 +12,6 @@ import {
 import { operatorModal } from '~/modals/OperatorModal'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
-import { getPublicWeb3Provider } from '~/shared/stores/wallet'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
 import getNativeTokenName from '~/shared/utils/nativeToken'
@@ -20,6 +19,7 @@ import { requirePositiveBalance } from '~/shared/utils/requirePositiveBalance'
 import { Layer } from '~/utils/Layer'
 import { onIndexedBlock } from '~/utils/blocks'
 import { BNish, toBN } from '~/utils/bn'
+import { getPublicProvider } from '~/utils/providers'
 
 /**
  * Gas money checker.
@@ -84,7 +84,7 @@ export async function waitForPurchasePropagation(
     account: string,
     { attempts = 30 }: { attempts?: number } = {},
 ) {
-    const provider = getPublicWeb3Provider(chainId)
+    const provider = await getPublicProvider(chainId)
 
     const contract = getProjectRegistryContract({ chainId, provider })
 
@@ -202,7 +202,9 @@ export function abbr(value: BNish, options: AbbrOptions = {}) {
     const { fractionalLength = defaultFractionLength, stripFractionalZeros = true } =
         options
 
-    const v = toBN(value)
+    const v = toBN(value).dp(
+        typeof fractionalLength === 'number' ? Math.max(0, fractionalLength) + 1 : 10,
+    )
 
     if (!v.isFinite()) {
         console.warn('Invalid value', v.toString())
@@ -244,13 +246,6 @@ export function abbr(value: BNish, options: AbbrOptions = {}) {
     }
 
     return `${sign}${integral}${frac && `.${frac}`}${SiSymbol[size]}`
-}
-
-/**
- * Compares 2 BigNumberish values.
- */
-export function sameBN(a: BNish, b: BNish) {
-    return toBN(a).isEqualTo(toBN(b))
 }
 
 /**

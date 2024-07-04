@@ -1,20 +1,19 @@
-import React, { ReactNode, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle'
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
-import { useOperatorByIdQuery } from '~/hooks/operators'
-import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { toAtto } from '~/marketplace/utils/math'
-import { getNativeTokenBalance } from '~/marketplace/utils/web3'
-import { toBN } from '~/utils/bn'
-import Spinner from '~/components/Spinner'
-import { Separator } from '~/components/Separator'
-import { TABLET } from '~/shared/utils/styled'
-import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { useOperatorReachability } from '~/shared/stores/operatorReachability'
-import { useIsWaitingForBlockNumber } from '~/stores/blockNumberDependencies'
+import React, { ReactNode, useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { Hint, IconWrap } from '~/components/Hint'
+import { Separator } from '~/components/Separator'
+import Spinner from '~/components/Spinner'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { useOperatorByIdQuery } from '~/hooks/operators'
+import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
+import { useOperatorReachability } from '~/shared/stores/operatorReachability'
+import { TABLET } from '~/shared/utils/styled'
+import { useIsWaitingForBlockNumber } from '~/stores/blockNumberDependencies'
+import { getBalance } from '~/utils/balance'
+import { toBigInt } from '~/utils/bn'
 import { useCurrentChainId } from '~/utils/chains'
 
 export function OperatorChecklist({ operatorId }: { operatorId: string | undefined }) {
@@ -165,15 +164,17 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
 
             try {
                 for (const { address: nodeAddress } of operator.nodes) {
-                    const balance = toBN(
-                        await getNativeTokenBalance(nodeAddress, currentChainId),
-                    )
+                    const balance = await getBalance({
+                        chainId: currentChainId,
+                        tokenAddress: 'native',
+                        walletAddress: nodeAddress,
+                    })
 
                     if (!mounted) {
                         return
                     }
 
-                    if (balance.isLessThan(toAtto(0.1))) {
+                    if (balance < toBigInt(0.1, 18n)) {
                         throw new InsufficientFundsError()
                     }
                 }
@@ -218,7 +219,7 @@ function useOperatorChecklist(operatorId: string | undefined): OperatorChecklist
         }
     }
 
-    const funded = operator.valueWithoutEarnings.isGreaterThan(0)
+    const funded = operator.valueWithoutEarnings > 0n
 
     if (stale) {
         return {

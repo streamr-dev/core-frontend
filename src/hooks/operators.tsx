@@ -1,8 +1,9 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import React, { useCallback, useEffect, useState } from 'react'
-import { z } from 'zod'
 import { toaster } from 'toasterhea'
 import { isAddress } from 'web3-validator'
+import { z } from 'zod'
+import { Minute } from '~/consts'
 import { Operator, Operator_OrderBy, OrderDirection } from '~/generated/gql/network'
 import {
     getAllOperators,
@@ -11,37 +12,37 @@ import {
     getOperatorsByDelegation,
     getOperatorsByDelegationAndId,
     getOperatorsByDelegationAndMetadata,
-    getParsedOperatorsByOwnerOrControllerAddress,
     getParsedOperators,
+    getParsedOperatorsByOwnerOrControllerAddress,
     getSpotApy,
     searchOperatorsByMetadata,
 } from '~/getters'
-import { getQueryClient, waitForIndexedBlock } from '~/utils'
-import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
-import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
-import { Delegation, DelegationsStats } from '~/types'
-import { BN, toBN } from '~/utils/bn'
-import { errorToast, successToast } from '~/utils/toast'
+import { confirm } from '~/getters/confirm'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
+import { useRequestedBlockNumber } from '~/hooks'
+import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
-import { Layer } from '~/utils/Layer'
-import { getBalance } from '~/getters/getBalance'
+import { forceUndelegateModal } from '~/modals/ForceUndelegateModal'
+import { undelegateFundsModal } from '~/modals/UndelegateFundsModal'
+import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
 import {
     getOperatorDelegationAmount,
     processOperatorUndelegationQueue,
 } from '~/services/operators'
+import { collectEarnings } from '~/services/sponsorships'
+import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
+import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
+import { getSigner } from '~/shared/stores/wallet'
+import { truncate } from '~/shared/utils/text'
+import { Delegation, DelegationsStats } from '~/types'
+import { getQueryClient, waitForIndexedBlock } from '~/utils'
+import { Layer } from '~/utils/Layer'
+import { getBalance } from '~/utils/balance'
+import { useCurrentChainId } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
 import { Break, FlagBusy } from '~/utils/errors'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
-import UndelegateFundsModal from '~/modals/UndelegateFundsModal'
-import { confirm } from '~/getters/confirm'
-import { collectEarnings } from '~/services/sponsorships'
-import { truncate } from '~/shared/utils/text'
-import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
-import { forceUndelegateModal } from '~/modals/ForceUndelegateModal'
-import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
-import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
-import { getSigner } from '~/shared/stores/wallet'
-import { getChainConfigExtension, useCurrentChainId } from '~/utils/chains'
-import { useRequestedBlockNumber } from '~/hooks'
+import { errorToast, successToast } from '~/utils/toast'
 
 export function useOperatorForWalletQuery(address = '') {
     const currentChainId = useCurrentChainId()
@@ -115,7 +116,7 @@ export function useOperatorByIdQuery(operatorId = '') {
         },
         keepPreviousData: true,
         retry: false,
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
     })
 }
 
@@ -221,7 +222,7 @@ export function useDelegationsStats(address = '') {
 
             if (!operators.length) {
                 return void setStats({
-                    value: toBN(0),
+                    value: 0n,
                     minApy: 0,
                     maxApy: 0,
                     numOfOperators: 0,
@@ -238,10 +239,7 @@ export function useDelegationsStats(address = '') {
                 maxApy = Math.max(maxApy, apy)
             })
 
-            const value = operators.reduce(
-                (sum, { myShare }) => sum.plus(myShare),
-                toBN(0),
-            )
+            const value = operators.reduce((sum, { myShare }) => sum + myShare, 0n)
 
             setStats({
                 value,
@@ -355,7 +353,7 @@ export function useDelegationsForWalletQuery({
         getNextPageParam: ({ skip, elements }) => {
             return elements.length === pageSize ? skip + pageSize : undefined
         },
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
         keepPreviousData: true,
     })
 }
@@ -435,7 +433,7 @@ export function useAllOperatorsQuery({
         getNextPageParam: ({ skip, elements }) => {
             return elements.length === batchSize ? skip + batchSize : undefined
         },
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
         keepPreviousData: true,
     })
 }
@@ -478,16 +476,14 @@ export function useDelegateFunds() {
                         await withFlag(
                             flagKey('isDelegatingFunds', operator.id, wallet),
                             async () => {
-                                const { sponsorshipPaymentToken: paymentTokenSymbol } =
-                                    getChainConfigExtension(chainId)
-
-                                const balance = await getBalance(
-                                    wallet,
-                                    paymentTokenSymbol,
-                                    {
+                                const balance = await getBalance({
+                                    chainId,
+                                    tokenAddress: getContractAddress(
+                                        'sponsorshipPaymentToken',
                                         chainId,
-                                    },
-                                )
+                                    ),
+                                    walletAddress: wallet,
+                                })
 
                                 const delegatedTotal = await getOperatorDelegationAmount(
                                     chainId,
@@ -534,8 +530,6 @@ export function useIsUndelegatingFundsToOperator(
     return useIsFlagged(flagKey('isUndelegatingFunds', operatorId || '', wallet || ''))
 }
 
-const undelegateFundsModal = toaster(UndelegateFundsModal, Layer.Modal)
-
 /**
  * Triggers funds undelegation and raises an associated flag for the
  * duration of the process.
@@ -565,16 +559,14 @@ export function useUndelegateFunds() {
                         await withFlag(
                             flagKey('isUndelegatingFunds', operator.id, wallet),
                             async () => {
-                                const { sponsorshipPaymentToken: paymentTokenSymbol } =
-                                    getChainConfigExtension(chainId)
-
-                                const balance = await getBalance(
-                                    wallet,
-                                    paymentTokenSymbol,
-                                    {
+                                const balance = await getBalance({
+                                    chainId,
+                                    tokenAddress: getContractAddress(
+                                        'sponsorshipPaymentToken',
                                         chainId,
-                                    },
-                                )
+                                    ),
+                                    walletAddress: wallet,
+                                })
 
                                 const delegatedTotal = await getOperatorDelegationAmount(
                                     chainId,
@@ -700,7 +692,7 @@ export function useCollectEarnings() {
  * Returns a callback that takes the user through force-undelegation process.
  */
 export function useForceUndelegate() {
-    return useCallback((chainId: number, operator: ParsedOperator, amount: BN) => {
+    return useCallback((chainId: number, operator: ParsedOperator, amount: bigint) => {
         void (async () => {
             try {
                 const wallet = await (await getSigner()).getAddress()

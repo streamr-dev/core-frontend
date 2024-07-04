@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import Checkbox from '~/shared/components/Checkbox'
+import Checkbox from '../../../../src/shared/components/Checkbox'
+
 describe('Checkbox', () => {
     let container
     beforeEach(() => {

@@ -1,10 +1,17 @@
-import React, { useReducer, useState } from 'react'
+import React, { useState } from 'react'
 import { toaster } from 'toasterhea'
+import { SponsorshipDecimals } from '~/components/Decimals'
+import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
+import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
+import { StreamIdDropdown } from '~/components/StreamIdDropdown'
+import { DayInSeconds } from '~/consts'
 import {
-    RejectionReason,
-    isRejectionReason,
-    isTransactionRejection,
-} from '~/utils/exceptions'
+    CreateSponsorshipForm,
+    MinNumberOfOperatorsParser,
+    isValidCreateSponsorshipForm,
+} from '~/forms/createSponsorshipForm'
+import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import FormModal, {
     ErrorLabel,
     ErrorWrap,
@@ -19,25 +26,20 @@ import FormModal, {
     TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import Label from '~/shared/components/Ui/Label'
-import { BN, toBN } from '~/utils/bn'
-import {
-    CreateSponsorshipForm,
-    MinNumberOfOperatorsParser,
-} from '~/forms/createSponsorshipForm'
-import { useConfigValueFromChain, useMediaQuery } from '~/hooks'
-import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
-import { toDecimals } from '~/marketplace/utils/math'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { createSponsorship } from '~/services/sponsorships'
-import { waitForIndexedBlock } from '~/utils'
-import { StreamIdDropdown } from '~/components/StreamIdDropdown'
 import { checkIfStreamExists } from '~/services/streams'
-import { errorToast } from '~/utils/toast'
+import Label from '~/shared/components/Ui/Label'
 import Toast from '~/shared/toasts/Toast'
+import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import { SponsorshipDisclaimer } from '~/components/SponsorshipDisclaimer'
-import { Abbr } from '~/components/Abbr'
+import { toBigInt } from '~/utils/bn'
+import {
+    RejectionReason,
+    isRejectionReason,
+    isTransactionRejection,
+} from '~/utils/exceptions'
+import { getSponsorshipExtensionInDays } from '~/utils/sponsorships'
+import { errorToast } from '~/utils/toast'
 
 interface ResolveProps {
     blockNumber: number
@@ -46,7 +48,7 @@ interface ResolveProps {
 }
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
-    balance: BN
+    balance: bigint
     chainId: number
     streamId?: string
     onResolve?: (props: ResolveProps) => void
@@ -54,21 +56,10 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
 
 const streamNotFoundToaster = toaster(Toast, Layer.Toast)
 
-function getDefaultFormData(streamId = ''): CreateSponsorshipForm {
-    return {
-        streamId: streamId,
-        initialAmount: '',
-        payoutRate: '',
-        minStakeDuration: 0,
-        minNumberOfOperators: 1,
-        maxNumberOfOperators: undefined,
-    }
-}
-
 function CreateSponsorshipModal({
-    balance: balanceProp,
+    balance,
     chainId,
-    streamId: streamIdProp,
+    streamId: streamIdProp = '',
     onResolve,
     ...props
 }: Props) {
@@ -76,80 +67,73 @@ function CreateSponsorshipModal({
 
     const [confirmState, setConfirmState] = useState(false)
 
-    const { decimals = 18 } = useSponsorshipTokenInfo() || {}
+    const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
-    const balance = toDecimals(balanceProp, decimals)
+    const [streamId, setStreamId] = useState(streamIdProp)
 
-    const defaultFormData = getDefaultFormData(streamIdProp)
+    const [rawInitialAmount, setRawInitialAmount] = useState('')
 
-    const [formData, setRawProperties] = useReducer<
-        (
-            state: CreateSponsorshipForm,
-            change: Partial<CreateSponsorshipForm>,
-        ) => CreateSponsorshipForm
-    >(
-        (state, change) => ({
-            ...state,
-            ...change,
-        }),
-        defaultFormData,
-    )
+    const initialAmount = toBigInt(rawInitialAmount || 0, decimals)
 
-    const {
-        initialAmount,
+    const [rawDailyPayoutRate, setRawDailyPayoutRate] = useState('')
+
+    const dailyPayoutRate = toBigInt(rawDailyPayoutRate || 0, decimals)
+
+    const [rawMinStakeDurationInDays, setRawMinStakeDurationInDays] = useState('')
+
+    const minStakeDuration = Math.max(0, Number(rawMinStakeDurationInDays) || 0)
+
+    const [rawMinNumberOfOperators, setRawMinNumberOfOperators] = useState('1')
+
+    const minNumberOfOperators = Math.max(0, Number(rawMinNumberOfOperators) || 0)
+
+    const [rawMaxNumberOfOperators, setRawMaxNumberOfOperators] = useState('')
+
+    const maxNumberOfOperators =
+        rawMaxNumberOfOperators === ''
+            ? undefined
+            : Math.max(0, Number(setRawMaxNumberOfOperators) || 0)
+
+    const backdropDismissable =
+        streamId === streamIdProp &&
+        initialAmount !== 0n &&
+        dailyPayoutRate !== 0n &&
+        minStakeDuration === 0 &&
+        minNumberOfOperators === 1 &&
+        maxNumberOfOperators !== undefined
+
+    const extensionInDays = getSponsorshipExtensionInDays(initialAmount, dailyPayoutRate)
+
+    const insufficientFunds = initialAmount > balance
+
+    const invalidOperatorNumberRange =
+        maxNumberOfOperators !== undefined && minNumberOfOperators > maxNumberOfOperators
+
+    const tooLowOperatorCount =
+        !MinNumberOfOperatorsParser.safeParse(minNumberOfOperators).success
+
+    const formData: CreateSponsorshipForm = {
         streamId,
-        payoutRate,
+        initialAmount,
+        dailyPayoutRate,
         minStakeDuration,
         minNumberOfOperators,
         maxNumberOfOperators,
-    } = formData
-
-    const initialAmountBN = toDecimals(initialAmount || '0', decimals)
-
-    const payoutRateBN = toDecimals(payoutRate || '0', decimals)
-
-    const backdropDismissable =
-        streamId === defaultFormData.streamId &&
-        toBN(initialAmount || '0').toString() ===
-            toBN(defaultFormData.initialAmount || '0').toString() &&
-        toBN(payoutRate || '0').toString() ===
-            toBN(defaultFormData.payoutRate || '0').toString() &&
-        minStakeDuration === defaultFormData.minStakeDuration &&
-        minNumberOfOperators === defaultFormData.minNumberOfOperators &&
-        maxNumberOfOperators === defaultFormData.maxNumberOfOperators
-
-    const extensionInDays =
-        payoutRateBN.isGreaterThan(0) && initialAmountBN.isGreaterThanOrEqualTo(0)
-            ? initialAmountBN.dividedBy(payoutRateBN).toNumber()
-            : 0
-
-    const insufficientFunds = initialAmountBN.isGreaterThan(balance)
-
-    const invalidOperatorNumberRange =
-        typeof formData.maxNumberOfOperators !== 'undefined' &&
-        formData.minNumberOfOperators > formData.maxNumberOfOperators
-
-    const tooLowOperatorCount = !MinNumberOfOperatorsParser.safeParse(
-        formData.minNumberOfOperators,
-    ).success
+    }
 
     const canSubmit =
-        CreateSponsorshipForm.safeParse(formData).success &&
-        !insufficientFunds &&
-        confirmState
+        !insufficientFunds && confirmState && isValidCreateSponsorshipForm(formData)
 
     const invalidMinStakeDuration =
-        !!initialAmount && !!payoutRate && extensionInDays < minStakeDuration
+        initialAmount > 0n && dailyPayoutRate > 0n && extensionInDays < minStakeDuration
 
-    const maxPenaltyPeriodSeconds = useConfigValueFromChain('maxPenaltyPeriodSeconds')
-
-    const maxPenaltyPeriod =
-        typeof maxPenaltyPeriodSeconds === 'undefined'
-            ? void 0
-            : toBN(maxPenaltyPeriodSeconds).dividedBy(86400).toNumber()
+    const maxPenaltyPeriodInDays = useConfigValueFromChain(
+        'maxPenaltyPeriodSeconds',
+        (value) => Number(value) * DayInSeconds,
+    )
 
     const tooLongMinStakeDuration =
-        !!maxPenaltyPeriod && minStakeDuration > maxPenaltyPeriod
+        !!maxPenaltyPeriodInDays && minStakeDuration > maxPenaltyPeriodInDays
 
     const limitedSpace = useMediaQuery('screen and (max-width: 460px)')
 
@@ -171,7 +155,7 @@ function CreateSponsorshipModal({
                 setBusy(true)
 
                 try {
-                    if (!(await checkIfStreamExists(chainId, formData.streamId))) {
+                    if (!(await checkIfStreamExists(chainId, streamId))) {
                         errorToast(
                             { title: 'Stream does not exist' },
                             streamNotFoundToaster,
@@ -223,10 +207,8 @@ function CreateSponsorshipModal({
                         placeholder="Type to select a stream"
                         disabled={busy}
                         readOnly={!!streamIdProp}
-                        onChange={(streamId) => {
-                            setRawProperties({
-                                streamId,
-                            })
+                        onChange={(value) => {
+                            setStreamId(value)
                         }}
                         value={streamId}
                     />
@@ -243,17 +225,15 @@ function CreateSponsorshipModal({
                         <TextInput
                             name="initialAmount"
                             autoFocus={!!streamIdProp}
-                            onChange={({ target }) =>
-                                void setRawProperties({
-                                    initialAmount: target.value,
-                                })
-                            }
+                            onChange={(e) => {
+                                setRawInitialAmount(e.target.value)
+                            }}
                             placeholder="0"
                             readOnly={busy}
                             type="number"
                             min={0}
                             step="any"
-                            value={initialAmount || ''}
+                            value={rawInitialAmount}
                         />
                         <TextAppendix>
                             <SponsorshipPaymentTokenName />
@@ -263,14 +243,11 @@ function CreateSponsorshipModal({
                         <p>
                             Wallet balance:{' '}
                             <strong>
-                                {limitedSpace ? (
-                                    <Abbr>{balanceProp}</Abbr>
-                                ) : (
-                                    <>
-                                        {balanceProp.toString()}{' '}
-                                        <SponsorshipPaymentTokenName />
-                                    </>
-                                )}
+                                <SponsorshipDecimals
+                                    abbr={limitedSpace}
+                                    amount={balance}
+                                    tooltip={limitedSpace}
+                                />
                             </strong>
                         </p>
                     </Hint>
@@ -280,17 +257,15 @@ function CreateSponsorshipModal({
                     <FieldWrap>
                         <TextInput
                             name="payoutRate"
-                            onChange={({ target }) =>
-                                void setRawProperties({
-                                    payoutRate: target.value,
-                                })
-                            }
+                            onChange={(e) => {
+                                setRawDailyPayoutRate(e.target.value)
+                            }}
                             placeholder="0"
                             readOnly={busy}
                             type="number"
                             min={0}
                             step="any"
-                            value={payoutRate || ''}
+                            value={rawDailyPayoutRate}
                         />
                         <TextAppendix>
                             <SponsorshipPaymentTokenName />
@@ -316,7 +291,7 @@ function CreateSponsorshipModal({
                             )}
                             {tooLongMinStakeDuration && (
                                 <ErrorLabel>
-                                    Max amount: {maxPenaltyPeriod} days
+                                    Max amount: {maxPenaltyPeriodInDays} days
                                 </ErrorLabel>
                             )}
                         </ErrorWrap>
@@ -326,22 +301,14 @@ function CreateSponsorshipModal({
                     >
                         <TextInput
                             name="minStakeDuration"
-                            onChange={({ target }) =>
-                                void setRawProperties({
-                                    minStakeDuration: target.value
-                                        ? Number(target.value)
-                                        : undefined,
-                                })
-                            }
+                            onChange={(e) => {
+                                setRawMinStakeDurationInDays(e.target.value)
+                            }}
                             placeholder="0"
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={
-                                typeof minStakeDuration !== 'undefined'
-                                    ? minStakeDuration
-                                    : ''
-                            }
+                            value={rawMinStakeDurationInDays}
                         />
                         <TextAppendix>Days</TextAppendix>
                     </FieldWrap>
@@ -353,22 +320,14 @@ function CreateSponsorshipModal({
                     >
                         <TextInput
                             name="minNumberOfOperators"
-                            onChange={({ target }) =>
-                                void setRawProperties({
-                                    minNumberOfOperators: target.value
-                                        ? Number(target.value)
-                                        : undefined,
-                                })
-                            }
+                            onChange={(e) => {
+                                setRawMinNumberOfOperators(e.target.value)
+                            }}
                             placeholder="0"
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={
-                                typeof minNumberOfOperators !== 'undefined'
-                                    ? minNumberOfOperators
-                                    : ''
-                            }
+                            value={rawMinNumberOfOperators}
                         />
                         <TextAppendix>
                             <span>Operators</span>
@@ -380,22 +339,14 @@ function CreateSponsorshipModal({
                     <FieldWrap $invalid={invalidOperatorNumberRange}>
                         <TextInput
                             name="maxNumberOfOperators"
-                            onChange={({ target }) =>
-                                void setRawProperties({
-                                    maxNumberOfOperators: target.value
-                                        ? Number(target.value)
-                                        : undefined,
-                                })
-                            }
+                            onChange={(e) => {
+                                setRawMaxNumberOfOperators(e.target.value)
+                            }}
                             placeholder="Leave blank if you don't want to set a limit"
                             readOnly={busy}
                             type="number"
                             min={0}
-                            value={
-                                typeof maxNumberOfOperators !== 'undefined'
-                                    ? maxNumberOfOperators
-                                    : ''
-                            }
+                            value={rawMaxNumberOfOperators}
                         />
                         <TextAppendix>Operators</TextAppendix>
                     </FieldWrap>

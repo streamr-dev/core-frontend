@@ -1,47 +1,49 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
+import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
+import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
+import { Decimals, SponsorshipDecimals } from '~/components/Decimals'
 import { NetworkHelmet } from '~/components/Helmet'
 import Layout, { LayoutColumn } from '~/components/Layout'
-import { NoData } from '~/shared/components/NoData'
-import LoadingIndicator from '~/shared/components/LoadingIndicator'
-import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
-import { truncate } from '~/shared/utils/text'
-import {
-    formatLongDate,
-    formatShortDate,
-} from '~/shared/components/TimeSeriesGraph/chartUtils'
-import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
-import { SponsorshipActionBar } from '~/components/ActionBars/SponsorshipActionBar'
-import { useSponsorshipFundingHistoryQuery } from '~/hooks/useSponsorshipFundingHistoryQuery'
-import { ChartPeriod } from '~/types'
+import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import NetworkPageSegment, {
-    SegmentGrid,
     Pad,
+    SegmentGrid,
     TitleBar,
 } from '~/components/NetworkPageSegment'
-import NetworkChartDisplay from '~/components/NetworkChartDisplay'
-import { ChartPeriodTabs } from '~/components/ChartPeriodTabs'
-import Tabs, { Tab } from '~/shared/components/Tabs'
-import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
-import {
-    useSponsorshipByIdQuery,
-    useSponsorshipDailyBucketsQuery,
-    useSponsorshipTokenInfo,
-} from '~/hooks/sponsorships'
-import { OperatorIdCell } from '~/components/Table'
-import { abbr } from '~/utils'
-import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
 import Spinner from '~/components/Spinner'
+import { OperatorIdCell } from '~/components/Table'
 import {
     useInitialBehindIndexError,
     useLatestBehindBlockError,
     useRefetchQueryBehindIndexEffect,
 } from '~/hooks'
-import { BehindBlockErrorDisplay } from '~/components/BehindBlockErrorDisplay'
-import { Route as R, routeOptions } from '~/utils/routes'
+import {
+    useSponsorshipByIdQuery,
+    useSponsorshipDailyBucketsQuery,
+    useSponsorshipTokenInfo,
+} from '~/hooks/sponsorships'
+import { useSponsorshipFundingHistoryQuery } from '~/hooks/useSponsorshipFundingHistoryQuery'
+import LoadingIndicator from '~/shared/components/LoadingIndicator'
+import { NoData } from '~/shared/components/NoData'
+import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
+import { NoDataWrap } from '~/shared/components/ScrollTable/ScrollTable.styles'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { NetworkChart } from '~/shared/components/TimeSeriesGraph'
+import {
+    formatLongDate,
+    formatShortDate,
+} from '~/shared/components/TimeSeriesGraph/chartUtils'
+import { COLORS, LAPTOP, TABLET } from '~/shared/utils/styled'
+import { truncate } from '~/shared/utils/text'
+import { ChartPeriod } from '~/types'
+import { abbr } from '~/utils'
 import { useCurrentChainFullName, useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
+
+const EmptyArray = []
 
 export const SingleSponsorshipPage = () => {
     const sponsorshipId = useParams().id || ''
@@ -61,7 +63,8 @@ export const SingleSponsorshipPage = () => {
 
     const sponsorship = sponsorshipQuery.data || null
 
-    const tokenSymbol = useSponsorshipTokenInfo()?.symbol || 'DATA'
+    const { symbol: tokenSymbol = 'DATA', decimals = 18n } =
+        useSponsorshipTokenInfo() || {}
 
     const [selectedDataSource, setSelectedDataSource] = useState<
         'amountStaked' | 'numberOfOperators' | 'apy'
@@ -142,6 +145,13 @@ export const SingleSponsorshipPage = () => {
     ) : null
 
     const chainName = useCurrentChainSymbolicName()
+
+    const rawFundingEvents = fundingEventsQuery.data?.pages || EmptyArray
+
+    const fundingEvents = useMemo(
+        () => rawFundingEvents.map((page) => page.events).flat() || EmptyArray,
+        [rawFundingEvents],
+    )
 
     return (
         <Layout>
@@ -265,7 +275,13 @@ export const SingleSponsorshipPage = () => {
                                                             }
                                                         />
                                                     </div>
-                                                    <strong>{abbr(stake.amount)}</strong>
+                                                    <strong>
+                                                        <Decimals
+                                                            abbr
+                                                            amount={stake.amountWei}
+                                                            decimals={decimals}
+                                                        />
+                                                    </strong>
                                                 </Link>
                                             </OperatorListItem>
                                         ))}
@@ -287,11 +303,7 @@ export const SingleSponsorshipPage = () => {
                             <ScrollTable
                                 hasMoreResults={fundingEventsQuery.hasNextPage}
                                 onLoadMore={() => fundingEventsQuery.fetchNextPage()}
-                                elements={
-                                    fundingEventsQuery.data?.pages
-                                        .map((page) => page.events)
-                                        .flat() || []
-                                }
+                                elements={fundingEvents}
                                 isLoading={
                                     fundingEventsQuery.isLoading ||
                                     fundingEventsQuery.isFetching
@@ -299,17 +311,18 @@ export const SingleSponsorshipPage = () => {
                                 columns={[
                                     {
                                         displayName: 'Date',
-                                        valueMapper: (element: any) => element.date,
+                                        valueMapper: (element) => element.date,
                                         align: 'start',
                                         isSticky: true,
                                         key: 'date',
                                     },
                                     {
                                         displayName: 'Amount',
-                                        valueMapper: (element: any) => (
-                                            <>
-                                                {abbr(element.amount)} {tokenSymbol}
-                                            </>
+                                        valueMapper: (element) => (
+                                            <SponsorshipDecimals
+                                                abbr
+                                                amount={element.amount}
+                                            />
                                         ),
                                         align: 'start',
                                         isSticky: false,
@@ -317,7 +330,7 @@ export const SingleSponsorshipPage = () => {
                                     },
                                     {
                                         displayName: 'Sponsor',
-                                        valueMapper: (element: any) =>
+                                        valueMapper: (element) =>
                                             truncate(element.sponsor),
                                         align: 'start',
                                         isSticky: false,

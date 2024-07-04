@@ -1,18 +1,17 @@
-import { TimeUnit } from '~/shared/utils/timeUnit'
 import { GetProjectQuery } from '~/generated/gql/network'
+import { TimeUnit } from '~/shared/utils/timeUnit'
 
 export enum ProjectType {
     OpenData = 'OPEN_DATA',
     PaidData = 'PAID_DATA',
     DataUnion = 'DATA_UNION',
 }
-
 export interface SalePoint {
     beneficiaryAddress: string
     chainId: number
     enabled: boolean
-    price: string
-    pricePerSecond: string
+    price: bigint | undefined
+    pricePerSecond: bigint | undefined
     pricingTokenAddress: string
     readOnly: boolean
     timeUnit: TimeUnit

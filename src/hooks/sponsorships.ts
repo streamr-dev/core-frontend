@@ -1,5 +1,7 @@
-import { useCallback } from 'react'
 import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
+import { useCallback } from 'react'
+import { SponsorshipFilters } from '~/components/SponsorshipFilterButton'
+import { Minute } from '~/consts'
 import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
 import {
     getAllSponsorships,
@@ -7,35 +9,31 @@ import {
     getSponsorshipsByCreator,
     getSponsorshipsByStreamId,
 } from '~/getters'
-import { ParsedSponsorship, parseSponsorship } from '~/parsers/SponsorshipParser'
-import { errorToast } from '~/utils/toast'
-import useTokenInfo from '~/hooks/useTokenInfo'
-import { ChartPeriod } from '~/types'
-import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
-import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { isRejectionReason } from '~/utils/exceptions'
-import { FlagBusy } from '~/utils/errors'
-import { joinSponsorshipModal } from '~/modals/JoinSponsorshipModal'
-import { createSponsorshipModal } from '~/modals/CreateSponsorshipModal'
-import { getBalanceForSponsorship } from '~/utils/sponsorships'
-import { getQueryClient } from '~/utils'
-import { getSigner, useWalletAccount } from '~/shared/stores/wallet'
-import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
-import { fundSponsorshipModal } from '~/modals/FundSponsorshipModal'
 import { getSponsorshipStats } from '~/getters/getSponsorshipStats'
-import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorshipFundingHistoryQuery'
+import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import {
     invalidateActiveOperatorByIdQueries,
     useOperatorForWalletQuery,
 } from '~/hooks/operators'
+import { invalidateSponsorshipFundingHistoryQueries } from '~/hooks/useSponsorshipFundingHistoryQuery'
+import { createSponsorshipModal } from '~/modals/CreateSponsorshipModal'
 import { editStakeModal } from '~/modals/EditStakeModal'
-import {
-    getChainConfigExtension,
-    useCurrentChain,
-    useCurrentChainId,
-} from '~/utils/chains'
-import { SponsorshipFilters } from '~/components/SponsorshipFilterButton'
+import { fundSponsorshipModal } from '~/modals/FundSponsorshipModal'
+import { joinSponsorshipModal } from '~/modals/JoinSponsorshipModal'
+import { ParsedOperator } from '~/parsers/OperatorParser'
+import { ParsedSponsorship, parseSponsorship } from '~/parsers/SponsorshipParser'
+import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
+import { getSigner, useWalletAccount } from '~/shared/stores/wallet'
+import { ChartPeriod } from '~/types'
+import { getQueryClient } from '~/utils'
+import { getBalance } from '~/utils/balance'
+import { useCurrentChainId } from '~/utils/chains'
+import { getContractAddress } from '~/utils/contracts'
+import { FlagBusy } from '~/utils/errors'
+import { isRejectionReason } from '~/utils/exceptions'
+import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
+import { errorToast } from '~/utils/toast'
+import { useTokenInfo } from '~/utils/tokens'
 import { useRequestedBlockNumber } from '.'
 
 function getDefaultQueryParams(pageSize: number) {
@@ -43,7 +41,7 @@ function getDefaultQueryParams(pageSize: number) {
         getNextPageParam: ({ sponsorships, skip }) => {
             return sponsorships.length === pageSize ? skip + pageSize : undefined
         },
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: Minute,
         keepPreviousData: true,
     }
 }
@@ -319,11 +317,9 @@ function invalidateSponsorshipsByStreamIdQueries(
 }
 
 export function useSponsorshipTokenInfo() {
-    const { contracts, id: chainId } = useCurrentChain()
+    const chainId = useCurrentChainId()
 
-    const { sponsorshipPaymentToken } = getChainConfigExtension(chainId)
-
-    return useTokenInfo(contracts[sponsorshipPaymentToken], chainId)
+    return useTokenInfo(getContractAddress('sponsorshipPaymentToken', chainId), chainId)
 }
 
 export function useIsCreatingSponsorshipForWallet(wallet: string | undefined) {
@@ -352,10 +348,14 @@ export function useCreateSponsorship() {
                         await withFlag(
                             flagKey('isCreatingSponsorship', wallet),
                             async () => {
-                                const balance = await getBalanceForSponsorship(
+                                const balance = await getBalance({
                                     chainId,
-                                    wallet,
-                                )
+                                    tokenAddress: getContractAddress(
+                                        'sponsorshipPaymentToken',
+                                        chainId,
+                                    ),
+                                    walletAddress: wallet,
+                                })
 
                                 const { sponsorshipId, streamId, blockNumber } =
                                     await createSponsorshipModal.pop({
@@ -483,13 +483,19 @@ export function useFundSponsorshipCallback() {
                             async () => {
                                 await getSponsorshipTokenInfo(chainId)
 
+                                const balance = await getBalance({
+                                    chainId,
+                                    tokenAddress: getContractAddress(
+                                        'sponsorshipPaymentToken',
+                                        chainId,
+                                    ),
+                                    walletAddress: wallet,
+                                })
+
                                 await fundSponsorshipModal.pop({
                                     chainId,
                                     sponsorship,
-                                    balance: await getBalanceForSponsorship(
-                                        chainId,
-                                        wallet,
-                                    ),
+                                    balance,
                                 })
 
                                 invalidateSponsorshipQueries(
@@ -653,7 +659,7 @@ export function useEditSponsorshipFunding() {
                                  */
                                 await getSponsorshipTokenInfo(chainId)
 
-                                const leavePenaltyWei = await getSponsorshipLeavePenalty(
+                                const leavePenalty = await getSponsorshipLeavePenalty(
                                     chainId,
                                     sponsorship.id,
                                     operator.id,
@@ -663,7 +669,7 @@ export function useEditSponsorshipFunding() {
                                     chainId,
                                     operator,
                                     sponsorship,
-                                    leavePenaltyWei,
+                                    leavePenalty,
                                 })
 
                                 invalidateSponsorshipQueries(

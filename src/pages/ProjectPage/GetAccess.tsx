@@ -1,21 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
-import FormattedPaymentRate from '~/components/FormattedPaymentRate'
-import { formatChainName } from '~/utils'
 import { Button } from '~/components/Button'
-import ProjectPng from '~/shared/assets/images/project.png'
-import { MEDIUM } from '~/shared/utils/styled'
-import { timeUnits } from '~/shared/utils/timeUnit'
-import { ProjectType, SalePoint } from '~/shared/types'
+import FormattedPaymentRate from '~/components/FormattedPaymentRate'
 import { getProjectTypeName } from '~/getters'
+import { isAbandonment } from '~/modals/ProjectModal'
+import ProjectPng from '~/shared/assets/images/project.png'
 import {
     useIsProjectBeingPurchased,
     usePurchaseCallback,
 } from '~/shared/stores/purchases'
-import { errorToast } from '~/utils/toast'
-import { isAbandonment } from '~/modals/ProjectModal'
-import { toBN } from '~/utils/bn'
+import { ProjectType, SalePoint } from '~/shared/types'
+import { MEDIUM } from '~/shared/utils/styled'
+import { timeUnits } from '~/shared/utils/timeUnit'
+import { formatChainName } from '~/utils'
 import { getChainConfig, useCurrentChainId } from '~/utils/chains'
+import { errorToast } from '~/utils/toast'
 
 const GetAccessContainer = styled.div`
     display: flex;
@@ -85,7 +84,7 @@ export default function GetAccess({
                     <br />
                     <strong>
                         <FormattedPaymentRate
-                            amount={toBN(pricePerSecond)}
+                            amount={pricePerSecond}
                             chainId={chainId}
                             pricingTokenAddress={pricingTokenAddress}
                             timeUnit={timeUnits.hour}
