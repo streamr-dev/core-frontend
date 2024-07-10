@@ -1,5 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
+import { Hint } from '~/components/Hint'
 import { Tick } from '~/shared/components/Checkbox'
 import Spinner from '~/components/Spinner'
 import { StreamDraft } from '~/stores/streamDraft'
@@ -9,6 +10,7 @@ type Props = {
     className?: string
     disabled: boolean
     children: React.ReactNode
+    thirdPartyLink?: string
 }
 
 function UnstyledStorageNodeItem({
@@ -16,6 +18,7 @@ function UnstyledStorageNodeItem({
     className,
     disabled = false,
     children,
+    thirdPartyLink,
 }: Props) {
     const active = !!StreamDraft.useEntity({ hot: true })?.storage[address]
 
@@ -50,6 +53,12 @@ function UnstyledStorageNodeItem({
             disabled={disabled}
         >
             <div>{children}</div>
+            {thirdPartyLink && (
+                <Hint>
+                    <p>Third-party Storage Provider</p>
+                    <p><a href={thirdPartyLink} target='_blank' rel="noreferrer">Learn more</a></p>
+                </Hint>
+            )}
             {!disabled && (
                 <Tick
                     $checked={active}
