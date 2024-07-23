@@ -20,12 +20,12 @@ function UnstyledStorageNodeList({ className, disabled = false }: Props) {
                 {disabled ? 'Storage nodes' : 'Choose storage nodes (one or more)'}
             </Label>
             <ul data-test-hook="Storage nodes">
-                {storageNodes.map(({ address, name, thirdPartyLink }) => (
+                {storageNodes.map(({ address, name, thirdPartyUrl }) => (
                     <li key={address}>
                         <StorageNodeItem
                             address={address.toLowerCase()}
                             disabled={disabled}
-                            thirdPartyLink={thirdPartyLink}
+                            thirdPartyUrl={thirdPartyUrl}
                         >
                             {name}
                         </StorageNodeItem>

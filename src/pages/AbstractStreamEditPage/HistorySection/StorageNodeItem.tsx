@@ -10,7 +10,7 @@ type Props = {
     className?: string
     disabled: boolean
     children: React.ReactNode
-    thirdPartyLink?: string
+    thirdPartyUrl?: string
 }
 
 function UnstyledStorageNodeItem({
@@ -18,7 +18,7 @@ function UnstyledStorageNodeItem({
     className,
     disabled = false,
     children,
-    thirdPartyLink,
+    thirdPartyUrl,
 }: Props) {
     const active = !!StreamDraft.useEntity({ hot: true })?.storage[address]
 
@@ -53,10 +53,10 @@ function UnstyledStorageNodeItem({
             disabled={disabled}
         >
             <div>{children}</div>
-            {thirdPartyLink && (
+            {thirdPartyUrl && (
                 <Hint>
                     <p>Third-party Storage Provider</p>
-                    <p><a href={thirdPartyLink} target='_blank' rel="noreferrer">Learn more</a></p>
+                    <p><a href={thirdPartyUrl} target='_blank' rel="noreferrer">Learn more</a></p>
                 </Hint>
             )}
             {!disabled && (

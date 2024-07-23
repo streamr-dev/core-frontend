@@ -38,7 +38,7 @@ const ChainConfigExtension = z.object({
             z.object({
                 name: z.string(),
                 address: z.string().refine(isAddress, 'Invalid storage node address'),
-                thirdPartyLink: z.string().optional(),
+                thirdPartyUrl: z.string().optional(),
             }),
         )
         .optional()
