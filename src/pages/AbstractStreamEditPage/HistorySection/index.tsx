@@ -1,16 +1,24 @@
-import React from 'react'
 import { StreamPermission } from '@streamr/sdk'
+import React from 'react'
 import styled from 'styled-components'
 import Label from '~/shared/components/Ui/Label'
 import TextInput from '~/shared/components/Ui/Text/StyledInput'
 import { useCurrentStreamAbility } from '~/shared/stores/streamAbilities'
 import { StreamDraft, getEmptyStreamEntity } from '~/stores/streamDraft'
+import { Route as R } from '~/utils/routes'
 import Section from '../Section'
 import StorageNodeList from './StorageNodeList'
 
-const Desc = styled.p`
-    /* @TODO: Isn't it the same as for PartitionsSection? -> normalize. */
+const Desc = styled.div`
     margin-bottom: 3.125rem;
+
+    > p {
+        margin: 0;
+    }
+
+    > p + p {
+        margin-top: 0.5em;
+    }
 `
 
 interface Props {
@@ -37,9 +45,22 @@ export function HistorySection({ disabled: disabledProp = false }: Props) {
     return (
         <Section title="Data storage">
             <Desc>
-                Enable storage to retain historical data in one or more geographic
-                locations of your choice. You can also choose how long to store your
-                stream&apos;s historical data before auto-deletion.
+                <p>
+                    Enable data storage on your streams to retain historical messages and
+                    access them later via a resend. Choose your storage provider and set
+                    the duration for storing data before it is marked for deletion.
+                </p>
+                <p>
+                    For more details, see the{' '}
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={R.docs('/usage/streams/store-and-retrieve')}
+                    >
+                        docs
+                    </a>
+                    .
+                </p>
             </Desc>
             <StorageNodeList disabled={disabled} />
             <Label htmlFor="storageAmount">Store historical data for (days)</Label>

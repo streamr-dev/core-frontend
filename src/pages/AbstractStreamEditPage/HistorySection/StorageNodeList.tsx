@@ -44,5 +44,9 @@ const StorageNodes = styled(UnstyledStorageNodeList)`
         margin: 0;
         padding: 0;
     }
+
+    ul > li + li {
+        margin-top: 6px;
+    }
 `
 export default StorageNodes
