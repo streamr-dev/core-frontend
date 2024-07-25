@@ -334,23 +334,6 @@ function CreateSponsorshipModal({
                         </TextAppendix>
                     </FieldWrap>
                 </Section>
-                <Section>
-                    <Label $wrap>Maximum number of operators</Label>
-                    <FieldWrap $invalid={invalidOperatorNumberRange}>
-                        <TextInput
-                            name="maxNumberOfOperators"
-                            onChange={(e) => {
-                                setRawMaxNumberOfOperators(e.target.value)
-                            }}
-                            placeholder="Leave blank if you don't want to set a limit"
-                            readOnly={busy}
-                            type="number"
-                            min={0}
-                            value={rawMaxNumberOfOperators}
-                        />
-                        <TextAppendix>Operators</TextAppendix>
-                    </FieldWrap>
-                </Section>
             </Group>
             <SponsorshipDisclaimer
                 checkboxState={confirmState}
