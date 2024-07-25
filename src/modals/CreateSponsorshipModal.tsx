@@ -87,27 +87,16 @@ function CreateSponsorshipModal({
 
     const minNumberOfOperators = Math.max(0, Number(rawMinNumberOfOperators) || 0)
 
-    const [rawMaxNumberOfOperators, setRawMaxNumberOfOperators] = useState('')
-
-    const maxNumberOfOperators =
-        rawMaxNumberOfOperators === ''
-            ? undefined
-            : Math.max(0, Number(setRawMaxNumberOfOperators) || 0)
-
     const backdropDismissable =
         streamId === streamIdProp &&
         initialAmount !== 0n &&
         dailyPayoutRate !== 0n &&
         minStakeDuration === 0 &&
-        minNumberOfOperators === 1 &&
-        maxNumberOfOperators !== undefined
+        minNumberOfOperators === 1
 
     const extensionInDays = getSponsorshipExtensionInDays(initialAmount, dailyPayoutRate)
 
     const insufficientFunds = initialAmount > balance
-
-    const invalidOperatorNumberRange =
-        maxNumberOfOperators !== undefined && minNumberOfOperators > maxNumberOfOperators
 
     const tooLowOperatorCount =
         !MinNumberOfOperatorsParser.safeParse(minNumberOfOperators).success
@@ -118,7 +107,6 @@ function CreateSponsorshipModal({
         dailyPayoutRate,
         minStakeDuration,
         minNumberOfOperators,
-        maxNumberOfOperators,
     }
 
     const canSubmit =
@@ -315,9 +303,7 @@ function CreateSponsorshipModal({
                 </Section>
                 <Section>
                     <Label $wrap>Minimum number of operators to start payout</Label>
-                    <FieldWrap
-                        $invalid={invalidOperatorNumberRange || tooLowOperatorCount}
-                    >
+                    <FieldWrap $invalid={tooLowOperatorCount}>
                         <TextInput
                             name="minNumberOfOperators"
                             onChange={(e) => {
@@ -332,23 +318,6 @@ function CreateSponsorshipModal({
                         <TextAppendix>
                             <span>Operators</span>
                         </TextAppendix>
-                    </FieldWrap>
-                </Section>
-                <Section>
-                    <Label $wrap>Maximum number of operators</Label>
-                    <FieldWrap $invalid={invalidOperatorNumberRange}>
-                        <TextInput
-                            name="maxNumberOfOperators"
-                            onChange={(e) => {
-                                setRawMaxNumberOfOperators(e.target.value)
-                            }}
-                            placeholder="Leave blank if you don't want to set a limit"
-                            readOnly={busy}
-                            type="number"
-                            min={0}
-                            value={rawMaxNumberOfOperators}
-                        />
-                        <TextAppendix>Operators</TextAppendix>
                     </FieldWrap>
                 </Section>
             </Group>
