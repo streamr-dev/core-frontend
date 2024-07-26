@@ -1,10 +1,10 @@
-import { AbiCoder, Contract, EventLog } from 'ethers'
+import { AbiCoder, Contract, ContractTransactionReceipt, EventLog } from 'ethers'
 import { ERC677, Operator } from 'network-contracts-ethers6'
 import { DayInSeconds } from '~/consts'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { getParsedSponsorshipById } from '~/getters'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
-import { getSigner } from '~/shared/stores/wallet'
+import { getSigner, getWalletWeb3Provider } from '~/shared/stores/wallet'
 import { toBigInt, toBN } from '~/utils/bn'
 import { getContractAbi, getContractAddress } from '~/utils/contracts'
 import networkPreflight from '~/utils/networkPreflight'
@@ -66,6 +66,8 @@ export async function createSponsorship(
                         ],
                     )
 
+                    const provider = await getWalletWeb3Provider()
+
                     const signer = await getSigner()
 
                     const token = new Contract(
@@ -80,7 +82,18 @@ export async function createSponsorship(
                             initialAmount,
                             data,
                         ],
-                        onReceipt: async (receipt) => {
+                        onReceipt: async (rawReceipt) => {
+                            /**
+                             * ContractTransactionReceipt converts some logs (Log) into
+                             * event logs (EventLog) – something we need later on to detect
+                             * transfer events.
+                             */
+                            const receipt = new ContractTransactionReceipt(
+                                token.interface,
+                                provider,
+                                rawReceipt,
+                            )
+
                             /**
                              * 2nd transfer is the transfer from the sponsorship factory to the newly
                              * deployed sponsorship contract.
