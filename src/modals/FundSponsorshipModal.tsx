@@ -137,7 +137,7 @@ function FundSponsorshipModal({
 
                 try {
                     await fundSponsorship(chainId, sponsorship.id, amount, {
-                        onBlockNumber: (blockNumber) =>
+                        onReceipt: ({ blockNumber }) =>
                             waitForIndexedBlock(chainId, blockNumber),
                     })
 

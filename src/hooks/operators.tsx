@@ -649,7 +649,7 @@ export function useCollectEarnings() {
                     }
 
                     await collectEarnings(chainId, sponsorshipId, operatorId, {
-                        onBlockNumber: (blockNumber) =>
+                        onReceipt: ({ blockNumber }) =>
                             waitForIndexedBlock(chainId, blockNumber),
                     })
 
@@ -729,7 +729,7 @@ export function useProcessUndelegationQueue() {
         void (async () => {
             try {
                 await processOperatorUndelegationQueue(chainId, operatorId, {
-                    onBlockNumber: () => {
+                    onReceipt: () => {
                         // Refresh operator to update queue entries
                         invalidateActiveOperatorByIdQueries(chainId, operatorId)
                     },

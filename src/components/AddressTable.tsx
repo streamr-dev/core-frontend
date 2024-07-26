@@ -345,7 +345,7 @@ export function useSubmitNodeAddressesCallback(): [SubmitNodeAddressesCallback, 
 
             try {
                 await setOperatorNodeAddresses(chainId, operatorId, addresses, {
-                    onBlockNumber(blockNumber) {
+                    onReceipt: ({ blockNumber }) => {
                         onSuccess?.(blockNumber)
                     },
                 })
@@ -404,13 +404,13 @@ export function useSubmitControllerAddressesCallback(): [
             try {
                 if (addNew) {
                     await addOperatorControllerAddress(chainId, operatorId, address, {
-                        onBlockNumber(blockNumber) {
+                        onReceipt: ({ blockNumber }) => {
                             onSuccess?.(blockNumber)
                         },
                     })
                 } else {
                     await removeOperatorControllerAddress(chainId, operatorId, address, {
-                        onBlockNumber(blockNumber) {
+                        onReceipt: ({ blockNumber }) => {
                             onSuccess?.(blockNumber)
                         },
                     })

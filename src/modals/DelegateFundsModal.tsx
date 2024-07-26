@@ -152,7 +152,7 @@ export default function DelegateFundsModal({
 
                 try {
                     await delegateToOperator(chainId, operator.id, value, {
-                        onBlockNumber: (blockNumber) =>
+                        onReceipt: ({ blockNumber }) =>
                             waitForIndexedBlock(chainId, blockNumber),
                     })
 

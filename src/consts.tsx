@@ -44,5 +44,3 @@ export const StreamGptApiUrl = process.env.STREAM_GPT_API_URL
 export const Minute = 60000
 
 export const DayInSeconds = 86400
-
-export const DefaultGasLimitMultiplier = 1.5

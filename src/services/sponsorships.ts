@@ -1,28 +1,22 @@
 import { AbiCoder, Contract, EventLog } from 'ethers'
 import { ERC677, Operator } from 'network-contracts-ethers6'
-import { DayInSeconds, DefaultGasLimitMultiplier } from '~/consts'
+import { DayInSeconds } from '~/consts'
 import { CreateSponsorshipForm } from '~/forms/createSponsorshipForm'
 import { getParsedSponsorshipById } from '~/getters'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
 import { getSigner } from '~/shared/stores/wallet'
-import { toBN, toBigInt } from '~/utils/bn'
+import { toBigInt, toBN } from '~/utils/bn'
 import { getContractAbi, getContractAddress } from '~/utils/contracts'
 import networkPreflight from '~/utils/networkPreflight'
 import { getPublicProvider } from '~/utils/providers'
 import { toastedOperation } from '~/utils/toastedOperation'
-
-interface CreateSponsorshipOptions {
-    gasLimitMultiplier?: number
-    onBlockNumber?(blockNumber: number): void | Promise<void>
-}
+import { call, CallableOptions } from '~/utils/tx'
 
 export async function createSponsorship(
     chainId: number,
     formData: CreateSponsorshipForm,
-    options: CreateSponsorshipOptions = {},
+    { onReceipt }: CallableOptions = {},
 ): Promise<string> {
-    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
-
     const {
         dailyPayoutRate,
         initialAmount,
@@ -80,46 +74,33 @@ export async function createSponsorship(
                         signer,
                     ) as unknown as ERC677
 
-                    const estimatedGasLimit = await token.transferAndCall.estimateGas(
-                        getContractAddress('sponsorshipFactory', chainId),
-                        initialAmount,
-                        data,
-                    )
+                    await call(token, 'transferAndCall', {
+                        args: [
+                            getContractAddress('sponsorshipFactory', chainId),
+                            initialAmount,
+                            data,
+                        ],
+                        onReceipt: async (receipt) => {
+                            /**
+                             * 2nd transfer is the transfer from the sponsorship factory to the newly
+                             * deployed sponsorship contract.
+                             */
+                            const [, transfer = undefined] = (receipt.logs.filter(
+                                (item) =>
+                                    'eventName' in item && item.eventName === 'Transfer',
+                            ) || []) as EventLog[]
 
-                    const gasLimit = toBigInt(
-                        toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
-                    )
+                            const sponsorshipId = transfer?.args.to
 
-                    const sponsorshipDeployTx = await token.transferAndCall(
-                        getContractAddress('sponsorshipFactory', chainId),
-                        initialAmount,
-                        data,
-                        {
-                            gasLimit,
+                            if (typeof sponsorshipId !== 'string') {
+                                throw new Error('Sponsorship deployment failed')
+                            }
+
+                            await onReceipt?.(receipt)
+
+                            resolve(sponsorshipId)
                         },
-                    )
-
-                    const receipt = await sponsorshipDeployTx.wait()
-
-                    /**
-                     * 2nd transfer is the transfer from the sponsorship factory to the newly
-                     * deployed sponsorship contract.
-                     */
-                    const [, transfer = undefined] = (receipt?.logs.filter(
-                        (item) => 'eventName' in item && item.eventName === 'Transfer',
-                    ) || []) as EventLog[]
-
-                    const sponsorshipId = transfer?.args.to
-
-                    if (typeof sponsorshipId !== 'string') {
-                        throw new Error('Sponsorship deployment failed')
-                    }
-
-                    if (receipt?.blockNumber) {
-                        await onBlockNumber?.(receipt.blockNumber)
-                    }
-
-                    resolve(sponsorshipId)
+                    })
                 })
             } catch (e) {
                 reject(e)
@@ -128,19 +109,12 @@ export async function createSponsorship(
     })
 }
 
-interface FundSponsorshipOptions {
-    gasLimitMultiplier?: number
-    onBlockNumber?(blockNumber: number): void | Promise<void>
-}
-
 export async function fundSponsorship(
     chainId: number,
     sponsorshipId: string,
     amount: bigint,
-    options: FundSponsorshipOptions = {},
+    { onReceipt }: CallableOptions = {},
 ): Promise<void> {
-    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()
@@ -152,31 +126,14 @@ export async function fundSponsorship(
     ) as unknown as ERC677
 
     await toastedOperation('Sponsorship funding', async () => {
-        const estimatedGasLimit = await contract.transferAndCall.estimateGas(
-            sponsorshipId,
-            amount,
-            '0x',
-        )
-
-        const gasLimit = toBigInt(
-            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
-        )
-
-        const tx = await contract.transferAndCall(sponsorshipId, amount, '0x', {
-            gasLimit,
+        await call(contract, 'transferAndCall', {
+            args: [sponsorshipId, amount, '0x'],
+            onReceipt,
         })
-
-        const receipt = await tx.wait()
-
-        if (receipt?.blockNumber) {
-            await onBlockNumber?.(receipt.blockNumber)
-        }
     })
 }
 
-interface StakeOnSponsorshipOptions {
-    gasLimitMultiplier?: number
-    onBlockNumber?(blockNumber: number): void | Promise<void>
+interface StakeOnSponsorshipOptions extends CallableOptions {
     toastLabel?: string
 }
 
@@ -189,11 +146,7 @@ export async function stakeOnSponsorship(
 ): Promise<void> {
     await networkPreflight(chainId)
 
-    const {
-        toastLabel = 'Stake on sponsorship',
-        onBlockNumber,
-        gasLimitMultiplier = DefaultGasLimitMultiplier,
-    } = options
+    const { toastLabel = 'Stake on sponsorship', onReceipt } = options
 
     await toastedOperation(toastLabel, async () => {
         const signer = await getSigner()
@@ -204,21 +157,10 @@ export async function stakeOnSponsorship(
             signer,
         ) as unknown as Operator
 
-        const estimatedGasLimit = await contract.stake.estimateGas(sponsorshipId, amount)
-
-        const gasLimit = toBigInt(
-            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
-        )
-
-        const tx = await contract.stake(sponsorshipId, amount, {
-            gasLimit,
+        await call(contract, 'stake', {
+            args: [sponsorshipId, amount],
+            onReceipt,
         })
-
-        const receipt = await tx.wait()
-
-        if (receipt?.blockNumber) {
-            await onBlockNumber?.(receipt.blockNumber)
-        }
 
         /**
          * @todo The following rate updating logic does not belong here! Move
@@ -235,9 +177,7 @@ export async function stakeOnSponsorship(
     })
 }
 
-interface ReduceStakeOnSponsorshipOptions {
-    gasLimitMultiplier?: number
-    onBlockNumber?(blockNumber: number): void | Promise<void>
+interface ReduceStakeOnSponsorshipOptions extends CallableOptions {
     toastLabel?: string
 }
 
@@ -248,11 +188,7 @@ export async function reduceStakeOnSponsorship(
     operatorAddress: string,
     options: ReduceStakeOnSponsorshipOptions = {},
 ): Promise<void> {
-    const {
-        toastLabel = 'Reduce stake on sponsorship',
-        onBlockNumber,
-        gasLimitMultiplier = DefaultGasLimitMultiplier,
-    } = options
+    const { toastLabel = 'Reduce stake on sponsorship', onReceipt } = options
 
     await networkPreflight(chainId)
 
@@ -265,24 +201,10 @@ export async function reduceStakeOnSponsorship(
             signer,
         ) as unknown as Operator
 
-        const estimatedGasLimit = await contract.reduceStakeTo.estimateGas(
-            sponsorshipId,
-            targetAmount,
-        )
-
-        const gasLimit = toBigInt(
-            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
-        )
-
-        const tx = await contract.reduceStakeTo(sponsorshipId, targetAmount, {
-            gasLimit,
+        await call(contract, 'reduceStakeTo', {
+            args: [sponsorshipId, targetAmount],
+            onReceipt,
         })
-
-        const receipt = await tx.wait()
-
-        if (receipt?.blockNumber) {
-            await onBlockNumber?.(receipt.blockNumber)
-        }
 
         /**
          * @todo The following rate updating logic does not belong here! Move
@@ -299,19 +221,12 @@ export async function reduceStakeOnSponsorship(
     })
 }
 
-interface ForceUnstakeFromSponsorshipOptions {
-    gasLimitMultiplier?: number
-    onBlockNumber?(blockNumber: number): void | Promise<void>
-}
-
 export async function forceUnstakeFromSponsorship(
     chainId: number,
     sponsorshipId: string,
     operatorAddress: string,
-    options: ForceUnstakeFromSponsorshipOptions = {},
+    { onReceipt }: CallableOptions = {},
 ): Promise<void> {
-    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
-
     await networkPreflight(chainId)
 
     await toastedOperation('Force unstake from sponsorship', async () => {
@@ -328,24 +243,10 @@ export async function forceUnstakeFromSponsorship(
          */
         const maxQueuePayoutIterations = 1000000
 
-        const estimatedGasLimit = await contract.forceUnstake.estimateGas(
-            sponsorshipId,
-            maxQueuePayoutIterations,
-        )
-
-        const gasLimit = toBigInt(
-            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
-        )
-
-        const tx = await contract.forceUnstake(sponsorshipId, maxQueuePayoutIterations, {
-            gasLimit,
+        await call(contract, 'forceUnstake', {
+            args: [sponsorshipId, maxQueuePayoutIterations],
+            onReceipt,
         })
-
-        const receipt = await tx.wait()
-
-        if (receipt?.blockNumber) {
-            await onBlockNumber?.(receipt.blockNumber)
-        }
 
         /**
          * @todo The following rate updating logic does not belong here! Move
@@ -427,19 +328,12 @@ export async function getEarningsForSponsorships(
     return result
 }
 
-interface CollectEarningsOptions {
-    gasLimitMultiplier?: number
-    onBlockNumber?(blockNumber: number): void | Promise<void>
-}
-
 export async function collectEarnings(
     chainId: number,
     sponsorshipId: string,
     operatorAddress: string,
-    options: CollectEarningsOptions = {},
+    { onReceipt }: CallableOptions = {},
 ): Promise<void> {
-    const { onBlockNumber, gasLimitMultiplier = DefaultGasLimitMultiplier } = options
-
     await networkPreflight(chainId)
 
     const signer = await getSigner()
@@ -451,22 +345,10 @@ export async function collectEarnings(
     ) as unknown as Operator
 
     await toastedOperation('Collect earnings', async () => {
-        const estimatedGasLimit =
-            await contract.withdrawEarningsFromSponsorships.estimateGas([sponsorshipId])
-
-        const gasLimit = toBigInt(
-            toBN(estimatedGasLimit).multipliedBy(gasLimitMultiplier),
-        )
-
-        const tx = await contract.withdrawEarningsFromSponsorships([sponsorshipId], {
-            gasLimit,
+        await call(contract, 'withdrawEarningsFromSponsorships', {
+            args: [[sponsorshipId]],
+            onReceipt,
         })
-
-        const receipt = await tx.wait()
-
-        if (receipt?.blockNumber) {
-            await onBlockNumber?.(receipt.blockNumber)
-        }
 
         /**
          * @todo The following rate updating logic does not belong here! Move

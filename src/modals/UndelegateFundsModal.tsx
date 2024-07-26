@@ -143,7 +143,7 @@ function UndelegateFundsModal({
                               110763745230805656649802800132303954225n
                             : amount,
                         {
-                            onBlockNumber: (blockNumber) =>
+                            onReceipt: ({ blockNumber }) =>
                                 waitForIndexedBlock(chainId, blockNumber),
                         },
                     )
