@@ -163,7 +163,7 @@ function JoinSponsorshipModal({
                         amount,
                         operator.id,
                         {
-                            onBlockNumber: (blockNumber) =>
+                            onReceipt: ({ blockNumber }) =>
                                 waitForIndexedBlock(chainId, blockNumber),
                         },
                     )

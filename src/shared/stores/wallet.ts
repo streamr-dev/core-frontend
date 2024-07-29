@@ -1,6 +1,6 @@
 import detectProvider from '@metamask/detect-provider'
 import { MetaMaskInpageProvider } from '@metamask/providers'
-import { BrowserProvider } from 'ethers'
+import { BrowserProvider, Eip1193Provider } from 'ethers'
 import { produce } from 'immer'
 import { isAddress } from 'web3-validator'
 import { z } from 'zod'
@@ -51,9 +51,7 @@ export function getWalletProvider() {
 }
 
 export async function getWalletWeb3Provider() {
-    const provider = await getWalletProvider()
-
-    return new BrowserProvider(provider as any)
+    return new BrowserProvider((await getWalletProvider()) as Eip1193Provider)
 }
 
 export async function getSigner() {

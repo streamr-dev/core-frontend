@@ -155,7 +155,7 @@ function CreateSponsorshipModal({
                     let blockNumber = 0
 
                     const sponsorshipId = await createSponsorship(chainId, formData, {
-                        onBlockNumber: (blockNo) => {
+                        onReceipt: ({ blockNumber: blockNo }) => {
                             blockNumber = blockNo
 
                             return waitForIndexedBlock(chainId, blockNo)

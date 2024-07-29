@@ -26,6 +26,7 @@ import { getContractAddress } from '~/utils/contracts'
 import { RejectionReason, isTransactionRejection } from '~/utils/exceptions'
 import networkPreflight from '~/utils/networkPreflight'
 import { convertPrice } from '~/utils/price'
+import { call } from '~/utils/tx'
 import { TheGraph } from '../types'
 import { getSigner } from './wallet'
 
@@ -316,18 +317,20 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * itself can spend user's funds.
                                              */
 
-                                            const tx = await getERC20TokenContract({
+                                            const contract = getERC20TokenContract({
                                                 tokenAddress,
                                                 provider,
-                                            }).approve(
-                                                getContractAddress(
-                                                    'marketplace',
-                                                    selectedChainId,
-                                                ),
-                                                total,
-                                            )
+                                            })
 
-                                            await tx.wait()
+                                            await call(contract, 'approve', {
+                                                args: [
+                                                    getContractAddress(
+                                                        'marketplace',
+                                                        selectedChainId,
+                                                    ),
+                                                    total,
+                                                ],
+                                            })
 
                                             /**
                                              * Wallets do not force users to set the requested
@@ -474,13 +477,16 @@ const usePurchaseStore = create<Store>((set, get) => {
                                              * network. Note that the gas limit is dynamic and depends
                                              * on the number of streams associated with the project.
                                              */
-                                            const tx = await contract.buy(
-                                                projectId,
-                                                seconds,
-                                                {
-                                                    gasLimit: 2e5 + streams.length * 1e5,
-                                                },
-                                            )
+                                            const buyPromise = call(contract, 'buy', {
+                                                args: [
+                                                    projectId,
+                                                    seconds,
+                                                    {
+                                                        gasLimit:
+                                                            2e5 + streams.length * 1e5,
+                                                    },
+                                                ],
+                                            })
 
                                             /**
                                              * Once we receive the transaction hash we can safely close the Confirm
@@ -502,7 +508,7 @@ const usePurchaseStore = create<Store>((set, get) => {
                                                 }
                                             })
 
-                                            await tx.wait()
+                                            await buyPromise
 
                                             /**
                                              * `Buy` transaction is done and now we wait for the `Subscribe` event

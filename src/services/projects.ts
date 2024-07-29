@@ -22,6 +22,7 @@ import { isMessagedObject } from '~/utils/exceptions'
 import networkPreflight from '~/utils/networkPreflight'
 import { convertPrice } from '~/utils/price'
 import { errorToast } from '~/utils/toast'
+import { call } from '~/utils/tx'
 import { postImage } from './images'
 
 /**
@@ -365,17 +366,17 @@ export async function createProject(
         provider: signer,
     })
 
-    const tx = await contract.createProject(
-        projectId,
-        domainIds,
-        paymentDetails,
-        streams,
-        minimumSubscriptionSeconds,
-        isPublicPurchasable,
-        metadata,
-    )
-
-    await tx.wait()
+    await call(contract, 'createProject', {
+        args: [
+            projectId,
+            domainIds,
+            paymentDetails,
+            streams,
+            minimumSubscriptionSeconds,
+            isPublicPurchasable,
+            metadata,
+        ],
+    })
 }
 
 interface UpdateProjectOptions {
@@ -405,16 +406,16 @@ export async function updateProject(
 
     const contract = getProjectRegistryContract({ chainId, provider: signer })
 
-    const tx = await contract.updateProject(
-        projectId,
-        domainIds,
-        paymentDetails,
-        streams,
-        minimumSubscriptionSeconds,
-        metadata,
-    )
-
-    await tx.wait()
+    await call(contract, 'updateProject', {
+        args: [
+            projectId,
+            domainIds,
+            paymentDetails,
+            streams,
+            minimumSubscriptionSeconds,
+            metadata,
+        ],
+    })
 }
 
 export async function deleteProject(chainId: number, projectId: string) {
@@ -428,9 +429,9 @@ export async function deleteProject(chainId: number, projectId: string) {
     })
 
     try {
-        const tx = await contract.deleteProject(projectId)
-
-        await tx.wait()
+        await call(contract, 'deleteProject', {
+            args: [projectId],
+        })
     } catch (e) {
         if (isMessagedObject(e) && /error_projectDoesNotExist/.test(e.message)) {
             errorToast({

@@ -98,7 +98,7 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
                         selectedSponsorshipId,
                         operator.id,
                         {
-                            onBlockNumber: (blockNumber) =>
+                            onReceipt: ({ blockNumber }) =>
                                 waitForIndexedBlock(chainId, blockNumber),
                         },
                     )
