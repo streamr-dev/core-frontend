@@ -1,12 +1,11 @@
 import React, { ReactNode } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
-import Nav from '~/components/Nav'
+import { DisclaimerBar } from '~/components/DisclaimerBar'
 import Footer from '~/components/Footer'
+import Helmet from '~/components/Helmet'
+import Nav from '~/components/Nav'
 import useScrollToTop from '~/shared/hooks/useScrollToTop'
 import { MAX_BODY_WIDTH } from '~/shared/utils/styled'
-import Helmet from '~/components/Helmet'
-import { DisclaimerBar } from '~/components/DisclaimerBar'
-import { LivePreviewWarning } from '~/components/LivePreviewWarning'
 
 interface LayoutProps {
     children?: ReactNode
@@ -44,7 +43,6 @@ export default function Layout({
             <Root $bg={rootBackgroundColor}>
                 <Outer $bg={outerBackgroundColor}>
                     <DisclaimerBar />
-                    <LivePreviewWarning />
                     {nav}
                     <Inner $bg={innerBackgroundColor}>
                         {columnize ? <LayoutColumn>{children}</LayoutColumn> : children}
