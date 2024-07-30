@@ -1,0 +1,58 @@
+name: Deploy to DEV
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  deploy:
+    name: Build and deploy to DEV
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          npm ci
+      - name: Get version string from git tag name
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      - name: Print version string
+        run: echo ${{ steps.get_version.outputs.VERSION }}
+      - name: Build app with production environment variables
+        env:
+          NODE_ENV: production
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
+          PORT: 12345
+          PLATFORM_PUBLIC_PATH: https://hub.streamr.dev
+          GTM_ID: GTM-W9HTMKM
+          SENTRY_ENVIRONMENT: production
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+          SENTRY_ORG: streamr
+          SENTRY_PROJECT: hub
+          SENTRY_DSN: https://d8374218c009438e961ba15b07c7f893@o151964.ingest.sentry.io/4504950164946944
+          TEST_HOOKS: off
+          ENS_GRAPH_SCHEMA_PATH: ${{ secrets.ENS_GRAPH_SCHEMA_PATH }}
+        run: |
+          npm run build --if-present
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/. s3://eu-west-1-streamr-hub-dev --acl private
+      - name: Invalidate Cloudfront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DEV_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
