@@ -59,7 +59,7 @@ function tokenInfoQueryParams(
             return null
         },
         staleTime: Infinity,
-        cacheTime: Infinity,
+        gcTime: Infinity,
     } satisfies UseQueryOptions
 }
 
