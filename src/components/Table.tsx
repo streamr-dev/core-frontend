@@ -222,7 +222,9 @@ export function FundedUntilCell({
             {value == null || !value.isValid() ? (
                 <>N/A</>
             ) : (
-                <>{value.format('YYYY-MM-DD')}</>
+                <Tooltip content={value.format('YYYY-MM-DD, HH:mm')}>
+                    {value.format('YYYY-MM-DD')}
+                </Tooltip>
             )}
             {remainingBalance <= 0n && (
                 <Tooltip content="Sponsorship expired">
@@ -246,6 +248,7 @@ const Iconized = styled.div`
     display: grid;
     gap: 8px;
     grid-template-columns: auto auto;
+    line-height: normal;
 
     ${TooltipIconWrap} svg {
         width: 18px;
