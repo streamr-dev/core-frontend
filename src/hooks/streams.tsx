@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import uniqueId from 'lodash/uniqueId'
 import { Minute, address0 } from '~/consts'
 import {
@@ -288,7 +288,7 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
 
     const chainId = useCurrentChainId()
 
-    return useInfiniteQuery<GetStreamsResult>({
+    return useInfiniteQuery({
         queryKey: [
             'useStreamsQuery',
             chainId,
@@ -329,10 +329,11 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
                 streams,
             }
         },
+        initialPageParam: '0',
         getNextPageParam: ({ hasNextPage, nextPageParam }) =>
             hasNextPage ? nextPageParam : null,
         staleTime: Minute,
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
     })
 }
 

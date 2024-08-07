@@ -32,7 +32,7 @@ export function useProjectByIdQuery(projectId: string | undefined) {
             return result
         },
         staleTime: Infinity,
-        cacheTime: 0,
+        gcTime: 0,
         retry: false,
     })
 }

@@ -1,4 +1,4 @@
-import { UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
+import { InfiniteData, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { StreamIdCell } from '~/components/Table'
@@ -21,7 +21,7 @@ interface Props {
     onOrderChange?: (orderBy: StreamsOrderBy, orderDirection?: OrderDirection) => void
     orderBy?: StreamsOrderBy
     orderDirection?: OrderDirection
-    query: UseInfiniteQueryResult<GetStreamsResult, unknown>
+    query: UseInfiniteQueryResult<InfiniteData<GetStreamsResult>>
 }
 
 export function QueriedStreamsTable({

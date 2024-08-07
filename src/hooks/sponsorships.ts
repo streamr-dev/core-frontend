@@ -1,4 +1,4 @@
-import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { SponsorshipFilters } from '~/components/SponsorshipFilterButton'
 import { Minute } from '~/consts'
@@ -35,16 +35,6 @@ import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
 import { errorToast } from '~/utils/toast'
 import { useTokenInfo } from '~/utils/tokens'
 import { useRequestedBlockNumber } from '.'
-
-function getDefaultQueryParams(pageSize: number) {
-    return {
-        getNextPageParam: ({ sponsorships, skip }) => {
-            return sponsorships.length === pageSize ? skip + pageSize : undefined
-        },
-        staleTime: Minute,
-        keepPreviousData: true,
-    }
-}
 
 async function getSponsorshipsAndParse(
     chainId: number,
@@ -116,7 +106,7 @@ export function useSponsorshipsForCreatorQuery(
         orderBy?: string
         orderDirection?: 'asc' | 'desc'
     } = {},
-): UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }> {
+) {
     const currentChainId = useCurrentChainId()
 
     const creator = address?.toLowerCase() || ''
@@ -131,7 +121,7 @@ export function useSponsorshipsForCreatorQuery(
             orderBy,
             orderDirection,
         ],
-        async queryFn({ pageParam: skip = 0 }) {
+        async queryFn({ pageParam: skip }) {
             if (!creator) {
                 return {
                     skip,
@@ -157,7 +147,12 @@ export function useSponsorshipsForCreatorQuery(
                 sponsorships,
             }
         },
-        ...getDefaultQueryParams(pageSize),
+        initialPageParam: 0,
+        getNextPageParam: ({ sponsorships, skip }) => {
+            return sponsorships.length === pageSize ? skip + pageSize : null
+        },
+        staleTime: Minute,
+        placeholderData: keepPreviousData,
     })
 }
 
@@ -201,7 +196,7 @@ export function useAllSponsorshipsQuery({
             filters.noFunding,
             operator?.id,
         ],
-        async queryFn({ pageParam: skip = 0 }) {
+        async queryFn({ pageParam: skip }) {
             const sponsorships = await getSponsorshipsAndParse(
                 currentChainId,
                 () =>
@@ -226,7 +221,12 @@ export function useAllSponsorshipsQuery({
                 sponsorships,
             }
         },
-        ...getDefaultQueryParams(pageSize),
+        initialPageParam: 0,
+        getNextPageParam: ({ sponsorships, skip }) => {
+            return sponsorships.length === pageSize ? skip + pageSize : null
+        },
+        staleTime: Minute,
+        placeholderData: keepPreviousData,
     })
 }
 
@@ -281,7 +281,7 @@ export function useSponsorshipsByStreamIdQuery({
             orderBy,
             orderDirection,
         ],
-        async queryFn({ pageParam: skip = 0 }) {
+        async queryFn({ pageParam: skip }) {
             const sponsorships = await getSponsorshipsAndParse(
                 currentChainId,
                 () =>
@@ -301,7 +301,12 @@ export function useSponsorshipsByStreamIdQuery({
                 sponsorships,
             }
         },
-        ...getDefaultQueryParams(pageSize),
+        initialPageParam: 0,
+        getNextPageParam: ({ sponsorships, skip }) => {
+            return sponsorships.length === pageSize ? skip + pageSize : null
+        },
+        staleTime: Minute,
+        placeholderData: keepPreviousData,
     })
 }
 

@@ -1,4 +1,4 @@
-import { UseInfiniteQueryResult } from '@tanstack/react-query'
+import { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
@@ -190,7 +190,7 @@ export const OperatorsPage = () => {
 function DelegationsTable({
     query,
 }: {
-    query: UseInfiniteQueryResult<{ skip: number; elements: Delegation[] }>
+    query: UseInfiniteQueryResult<InfiniteData<{ skip: number; elements: Delegation[] }>>
 }) {
     // We want to hide delegations to broken operator contract version 1
     // as we cannot get rid of them otherwise
@@ -273,7 +273,9 @@ function OperatorsTable({
     orderDirection,
     onOrderChange,
 }: {
-    query: UseInfiniteQueryResult<{ skip: number; elements: ParsedOperator[] }>
+    query: UseInfiniteQueryResult<
+        InfiniteData<{ skip: number; elements: ParsedOperator[] }>
+    >
     orderBy?: string
     orderDirection?: OrderDirection
     onOrderChange: (columnKey: string) => void
