@@ -53,11 +53,14 @@ export function SponsorshipActionBar({
 
     const isPaying = isRunning && timeCorrectedRemainingBalance > 0n
 
-    const fundedUntil = useMemo(
+    const [fundedUntil, detailedFundedUntil] = useMemo(
         () =>
             projectedInsolvencyAt == null
-                ? null
-                : moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
+                ? [null, null]
+                : [
+                      moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
+                      moment(projectedInsolvencyAt * 1000).format('D MMM YYYY, HH:mm'),
+                  ],
         [projectedInsolvencyAt],
     )
 
@@ -117,7 +120,15 @@ export function SponsorshipActionBar({
                     {fundedUntil && (
                         <ActionBarButtonBody>
                             <div>
-                                Funded until: <strong>{fundedUntil}</strong>
+                                Funded until:{' '}
+                                <strong>
+                                    <Tooltip
+                                        anchorDisplay="inline"
+                                        content={detailedFundedUntil || ''}
+                                    >
+                                        {fundedUntil}
+                                    </Tooltip>
+                                </strong>
                             </div>
                         </ActionBarButtonBody>
                     )}
