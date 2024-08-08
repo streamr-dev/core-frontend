@@ -47,7 +47,6 @@ export default function SponsorshipsTable({ streamId }: Props) {
         <NetworkPageSegment
             title={
                 <TitleBar
-                    label={sponsorships.length || undefined}
                     aux={
                         sponsorships.length > 0 && (
                             <CreateButton
