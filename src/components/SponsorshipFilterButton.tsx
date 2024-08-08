@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import { SimpleDropdown, SimpleListDropdownMenu } from '~/components/SimpleDropdown'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -15,12 +15,19 @@ export const defaultFilters = {
 }
 
 interface Props {
-    onFilterChange: (filters: typeof defaultFilters) => void
+    filter?: SponsorshipFilters
+    onFilterChange: (filters: SponsorshipFilters) => void
 }
 
-export const SponsorshipFilterButton = ({ onFilterChange }: Props) => {
+export const SponsorshipFilterButton = ({
+    filter = defaultFilters,
+    onFilterChange,
+}: Props) => {
     return (
-        <SimpleDropdown menu={<Menu onFilterChange={onFilterChange} />} align="right">
+        <SimpleDropdown
+            menu={<Menu value={filter} onChange={onFilterChange} />}
+            align="right"
+        >
             {(toggle, isOpen) => (
                 <Button
                     type="button"
@@ -35,7 +42,14 @@ export const SponsorshipFilterButton = ({ onFilterChange }: Props) => {
     )
 }
 
-const ToggleOption = ({ id, label, value, onChange }) => {
+interface ToggleOptionProps {
+    id: string
+    label: string
+    value: boolean
+    onChange(value: boolean): void
+}
+
+const ToggleOption = ({ id, label, value, onChange }: ToggleOptionProps) => {
     return (
         <Option>
             <ToggleLabel htmlFor={id}>{label}</ToggleLabel>
@@ -44,24 +58,12 @@ const ToggleOption = ({ id, label, value, onChange }) => {
     )
 }
 
-const Menu = ({ onFilterChange }) => {
-    const [state, setState] = useState(defaultFilters)
+interface MenuProps {
+    value: SponsorshipFilters
+    onChange?(value: SponsorshipFilters): void
+}
 
-    const onChange = useCallback(
-        (id: string, value: boolean) => {
-            setState((prev) => {
-                const next = {
-                    ...prev,
-                    [id]: value,
-                }
-
-                onFilterChange(next)
-                return next
-            })
-        },
-        [onFilterChange],
-    )
-
+const Menu = ({ value, onChange }: MenuProps) => {
     return (
         <DropdownMenu>
             <Title>Showing</Title>
@@ -69,26 +71,34 @@ const Menu = ({ onFilterChange }) => {
                 <ToggleOption
                     id={'inactive'}
                     label="Inactive sponsorships"
-                    value={state.inactive}
-                    onChange={(val) => onChange('inactive', val)}
+                    value={value.inactive}
+                    onChange={(val) => {
+                        onChange?.({ ...value, inactive: val })
+                    }}
                 />
                 <ToggleOption
                     id={'noFunding'}
                     label="Without funding sponsorships"
-                    value={state.noFunding}
-                    onChange={(val) => onChange('noFunding', val)}
+                    value={value.noFunding}
+                    onChange={(val) => {
+                        onChange?.({ ...value, noFunding: val })
+                    }}
                 />
                 <ToggleOption
                     id={'expired'}
                     label="Expired funding sponsorships"
-                    value={state.expired}
-                    onChange={(val) => onChange('expired', val)}
+                    value={value.expired}
+                    onChange={(val) => {
+                        onChange?.({ ...value, expired: val })
+                    }}
                 />
                 <ToggleOption
                     id={'my'}
                     label="Sponsorships with my Operator"
-                    value={state.my}
-                    onChange={(val) => onChange('my', val)}
+                    value={value.my}
+                    onChange={(val) => {
+                        onChange?.({ ...value, my: val })
+                    }}
                 />
             </ToggleContainer>
         </DropdownMenu>

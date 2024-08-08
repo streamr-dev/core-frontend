@@ -100,16 +100,22 @@ export function useSponsorshipsForCreatorQuery(
         searchQuery,
         orderBy,
         orderDirection,
+        filters,
     }: {
         pageSize?: number
         searchQuery?: string
         orderBy?: string
         orderDirection?: 'asc' | 'desc'
+        filters?: SponsorshipFilters
     } = {},
 ) {
     const currentChainId = useCurrentChainId()
 
     const creator = address?.toLowerCase() || ''
+
+    const wallet = useWalletAccount()
+
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return useInfiniteQuery({
         queryKey: [
@@ -120,6 +126,11 @@ export function useSponsorshipsForCreatorQuery(
             searchQuery,
             orderBy,
             orderDirection,
+            filters?.expired,
+            filters?.inactive,
+            filters?.my,
+            filters?.noFunding,
+            operator?.id,
         ],
         async queryFn({ pageParam: skip }) {
             if (!creator) {
@@ -139,6 +150,10 @@ export function useSponsorshipsForCreatorQuery(
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
                         force: true,
+                        hasOperatorId: filters?.my ? operator?.id : undefined,
+                        includeExpiredFunding: !filters || filters.expired,
+                        includeInactive: !filters || filters.inactive,
+                        includeWithoutFunding: !filters || filters.noFunding,
                     }) as Promise<Sponsorship[]>,
             )
 
@@ -180,6 +195,7 @@ export function useAllSponsorshipsQuery({
     const currentChainId = useCurrentChainId()
 
     const wallet = useWalletAccount()
+
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return useInfiniteQuery({
@@ -264,13 +280,19 @@ export function useSponsorshipsByStreamIdQuery({
     streamId,
     orderBy,
     orderDirection,
+    filters,
 }: {
     pageSize?: number
     streamId: string
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
+    filters?: SponsorshipFilters
 }) {
     const currentChainId = useCurrentChainId()
+
+    const wallet = useWalletAccount()
+
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return useInfiniteQuery({
         queryKey: [
@@ -280,6 +302,11 @@ export function useSponsorshipsByStreamIdQuery({
             pageSize,
             orderBy,
             orderDirection,
+            filters?.expired,
+            filters?.inactive,
+            filters?.my,
+            filters?.noFunding,
+            operator?.id,
         ],
         async queryFn({ pageParam: skip }) {
             const sponsorships = await getSponsorshipsAndParse(
@@ -293,6 +320,10 @@ export function useSponsorshipsByStreamIdQuery({
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
                         force: true,
+                        hasOperatorId: filters?.my ? operator?.id : undefined,
+                        includeExpiredFunding: !filters || filters.expired,
+                        includeInactive: !filters || filters.inactive,
+                        includeWithoutFunding: !filters || filters.noFunding,
                     }) as Promise<Sponsorship[]>,
             )
 
