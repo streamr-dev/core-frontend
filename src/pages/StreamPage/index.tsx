@@ -168,7 +168,6 @@ export function StreamConnectPage() {
                                     <StreamConnect streams={[streamId]} />
                                 </Pad>
                             </ColoredBox>
-                            <SponsorshipsTable streamId={streamId} />
                         </SegmentGrid>
                         <RelatedProjects streamId={streamId} />
                     </Footerless>
