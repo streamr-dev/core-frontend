@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Button } from '~/components/Button'
 import NetworkPageSegment, { TitleBar } from '~/components/NetworkPageSegment'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import {
@@ -7,7 +8,6 @@ import {
     useSponsorshipsByStreamIdQuery,
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { Button } from '~/components/Button'
 import { NoData } from '~/shared/components/NoData'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useCurrentChainId } from '~/utils/chains'
