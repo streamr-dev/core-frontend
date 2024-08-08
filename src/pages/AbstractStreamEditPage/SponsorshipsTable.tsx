@@ -55,6 +55,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
 
     return (
         <NetworkPageSegment
+            foot={sponsorships.length > 0}
             title={
                 <TitleBar
                     aux={
