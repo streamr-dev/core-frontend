@@ -20,7 +20,13 @@ type Props = {
 const PAGE_SIZE = 5
 
 export default function SponsorshipsTable({ streamId }: Props) {
-    const { orderBy, orderDirection, setOrder } = useTableOrder()
+    const {
+        orderBy = 'remainingWei',
+        orderDirection = 'desc',
+        setOrder,
+    } = useTableOrder()
+
+    console.log(orderBy, orderDirection)
 
     const wallet = useWalletAccount()
 
