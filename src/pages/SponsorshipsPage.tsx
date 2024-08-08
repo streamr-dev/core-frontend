@@ -156,9 +156,8 @@ export const SponsorshipsPage = () => {
                                     )}
                                 </h2>
                                 <SponsorshipFilterButton
-                                    onFilterChange={(filters) => {
-                                        setFilters(filters)
-                                    }}
+                                    filter={filters}
+                                    onFilterChange={setFilters}
                                 />
                             </Title>
                         }
