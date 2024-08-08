@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-import Layout, { LayoutColumn } from '~/components/Layout'
-import { NetworkHelmet } from '~/components/Helmet'
-import Tabs, { Tab } from '~/shared/components/Tabs'
-import { Button } from '~/components/Button'
-import { useWalletAccount } from '~/shared/stores/wallet'
 import { NetworkActionBar } from '~/components/ActionBars/NetworkActionBar'
+import { Button } from '~/components/Button'
+import { NetworkHelmet } from '~/components/Helmet'
+import Layout, { LayoutColumn } from '~/components/Layout'
 import NetworkPageSegment, { SegmentGrid } from '~/components/NetworkPageSegment'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
+import {
+    SponsorshipFilterButton,
+    SponsorshipFilters,
+    defaultFilters,
+} from '~/components/SponsorshipFilterButton'
 import {
     useAllSponsorshipsQuery,
     useCreateSponsorship,
@@ -16,14 +19,14 @@ import {
     useSponsorshipsForCreatorQuery,
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { useCurrentChainFullName, useCurrentChainId } from '~/utils/chains'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { useWalletAccount } from '~/shared/stores/wallet'
 import {
-    SponsorshipFilterButton,
-    SponsorshipFilters,
-    defaultFilters,
-} from '~/components/SponsorshipFilterButton'
+    useCurrentChainFullName,
+    useCurrentChainId,
+    useCurrentChainSymbolicName,
+} from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { useCurrentChainSymbolicName } from '~/utils/chains'
 
 const PAGE_SIZE = 20
 
@@ -67,6 +70,7 @@ export const SponsorshipsPage = () => {
         searchQuery,
         orderBy,
         orderDirection,
+        filters,
     })
 
     const navigate = useNavigate()
