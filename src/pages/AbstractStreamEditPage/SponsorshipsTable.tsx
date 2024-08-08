@@ -56,7 +56,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
                         )
                     }
                 >
-                    Sponsorships
+                    Active Stream Sponsorships
                 </TitleBar>
             }
         >
