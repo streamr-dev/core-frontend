@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Button } from '~/components/Button'
 import NetworkPageSegment, { TitleBar } from '~/components/NetworkPageSegment'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
+import {
+    SponsorshipFilterButton,
+    SponsorshipFilters,
+} from '~/components/SponsorshipFilterButton'
 import {
     useCreateSponsorship,
     useSponsorshipsByStreamIdQuery,
@@ -20,13 +24,18 @@ type Props = {
 const PAGE_SIZE = 5
 
 export default function SponsorshipsTable({ streamId }: Props) {
+    const [filters, setFilters] = useState<SponsorshipFilters>({
+        expired: false,
+        inactive: false,
+        my: false,
+        noFunding: false,
+    })
+
     const {
         orderBy = 'remainingWei',
         orderDirection = 'desc',
         setOrder,
     } = useTableOrder()
-
-    console.log(orderBy, orderDirection)
 
     const wallet = useWalletAccount()
 
@@ -39,6 +48,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
         streamId,
         orderBy,
         orderDirection,
+        filters,
     })
 
     const sponsorships = query.data?.pages.map((page) => page.sponsorships).flat() || []
@@ -48,17 +58,28 @@ export default function SponsorshipsTable({ streamId }: Props) {
             title={
                 <TitleBar
                     aux={
-                        sponsorships.length > 0 && (
-                            <CreateButton
-                                type="button"
-                                onClick={() =>
-                                    createSponsorship(chainId, wallet, { streamId })
-                                }
-                                disabled={streamId == null || wallet == null}
-                            >
-                                Create
-                            </CreateButton>
-                        )
+                        <>
+                            {sponsorships.length > 0 && (
+                                <>
+                                    <CreateButton
+                                        type="button"
+                                        onClick={() =>
+                                            createSponsorship(chainId, wallet, {
+                                                streamId,
+                                            })
+                                        }
+                                        disabled={streamId == null || wallet == null}
+                                    >
+                                        Create
+                                    </CreateButton>
+                                    <Separator />
+                                </>
+                            )}
+                            <SponsorshipFilterButton
+                                filter={filters}
+                                onFilterChange={setFilters}
+                            />
+                        </>
                     }
                 >
                     Active Stream Sponsorships
@@ -118,4 +139,11 @@ const NoDataContainer = styled.div`
 const CreateButton = styled(Button)`
     width: fit-content;
     justify-self: center;
+`
+
+const Separator = styled.div`
+    width: 1px;
+    height: 1rem;
+    background: #f0f0f0;
+    margin: 0 8px;
 `
