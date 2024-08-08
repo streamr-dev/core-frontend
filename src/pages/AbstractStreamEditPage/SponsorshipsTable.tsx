@@ -97,7 +97,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
             ) : (
                 <NoDataContainer>
                     <NoData
-                        firstLine="This stream does not have any Sponsorships yet."
+                        firstLine="This stream does not have any Sponsorships matching your criteria yet."
                         secondLine={
                             <span>
                                 <a
