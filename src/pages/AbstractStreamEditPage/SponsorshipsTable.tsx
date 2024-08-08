@@ -70,7 +70,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
                                         }
                                         disabled={streamId == null || wallet == null}
                                     >
-                                        Create
+                                        Sponsor stream
                                     </CreateButton>
                                     <Separator />
                                 </>
@@ -123,7 +123,7 @@ export default function SponsorshipsTable({ streamId }: Props) {
                         }}
                         disabled={streamId == null || wallet == null}
                     >
-                        Create Sponsorship
+                        Sponsor stream
                     </CreateButton>
                 </NoDataContainer>
             )}
