@@ -1,13 +1,5 @@
 {
     "ignoreFiles": ["**/*.tsx", "coverage/**"],
     "plugins": ["stylelint-prettier"],
-    "extends": ["stylelint-config-streamr", "prettier", "stylelint-config-prettier"],
-    "rules": {
-        "unit-no-unknown": [
-            true,
-            {
-                "ignoreUnits": ["um"]
-            }
-        ]
-    }
+    "extends": ["stylelint-config-streamr", "prettier", "stylelint-config-prettier"]
 }
