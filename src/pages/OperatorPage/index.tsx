@@ -46,6 +46,7 @@ import {
 } from '~/hooks/operators'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import { UndelegationQueue } from '~/pages/OperatorPage/UndelegationQueue'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { NoData } from '~/shared/components/NoData'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -74,7 +75,6 @@ import {
 } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { errorToast } from '~/utils/toast'
-import { UndelegationQueue } from './UndelegationQueue'
 
 const defaultChartData = []
 
@@ -82,7 +82,7 @@ const defaultPersistedNodes = []
 
 const defaultPersistedControllers = []
 
-export const SingleOperatorPage = () => {
+export const OperatorPage = () => {
     const operatorId = useParams().id
 
     const operatorQuery = useOperatorByIdQuery(operatorId)
