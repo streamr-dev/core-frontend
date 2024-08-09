@@ -140,6 +140,8 @@ const ItemRoot = styled.button<{ $highlight?: boolean; $highlightOnFocus?: boole
     > div:first-child {
         flex-grow: 1;
         min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &[disabled] {
