@@ -45,5 +45,7 @@ export const COLORS = {
     alertSuccessBackground: '#E7F7E8',
 
     // New naming
-    Border: '#EFEFEF',
+    SecondaryText: '#868686',
+    Border: '#efefef',
+    Background: '#ffffff',
 } as const

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
-import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import SvgIcon from '~/shared/components/SvgIcon'
+import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 
 const horizontalPaddingMobile = '24px'
 const horizontalPaddingDesktop = '40px'

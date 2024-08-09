@@ -46,6 +46,7 @@ import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { LiveNodesTable } from '~/pages/OperatorPage/LiveNodesTable'
 import { OperatorActionBar } from '~/pages/OperatorPage/OperatorActionBar'
 import { OperatorChecklist } from '~/pages/OperatorPage/OperatorChecklist'
+import { OperatorSummary } from '~/pages/OperatorPage/OperatorSummary'
 import { UndelegationQueue } from '~/pages/OperatorPage/UndelegationQueue'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { NoData } from '~/shared/components/NoData'
@@ -354,6 +355,7 @@ export const OperatorPage = () => {
                             saveOperator(currentChainId, currentOperator)
                         }}
                     />
+                    <OperatorSummary operator={operator} />
                     {isOwner && (
                         <OperatorVersionNotice version={operator.contractVersion} />
                     )}
@@ -856,10 +858,6 @@ const DelegationCell = styled.div`
     }
 
     @media ${TABLET} {
-        ${StatCellLabel} {
-            line-height: 24px;
-        }
-
         ${StatCellContent} {
             font-size: 24px;
             line-height: 40px;
