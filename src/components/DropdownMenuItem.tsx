@@ -122,6 +122,7 @@ const ItemRoot = styled.button<{ $highlight?: boolean; $highlightOnFocus?: boole
     background: none;
     border: 0;
     display: flex;
+    gap: 8px;
     font-size: 14px;
     line-height: 1.5;
     padding: 8px 24px;
