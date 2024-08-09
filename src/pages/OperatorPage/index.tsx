@@ -4,7 +4,6 @@ import moment from 'moment'
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import {
     AddressItem,
     AddressTable,
@@ -18,14 +17,12 @@ import { SponsorshipDecimals } from '~/components/Decimals'
 import { NetworkHelmet } from '~/components/Helmet'
 import { Hint } from '~/components/Hint'
 import Layout, { LayoutColumn } from '~/components/Layout'
-import { LiveNodesTable } from '~/components/LiveNodesTable'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import NetworkPageSegment, {
     Pad,
     SegmentGrid,
     TitleBar,
 } from '~/components/NetworkPageSegment'
-import { OperatorChecklist } from '~/components/OperatorChecklist'
 import { Separator } from '~/components/Separator'
 import Spinner from '~/components/Spinner'
 import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
@@ -46,6 +43,9 @@ import {
 } from '~/hooks/operators'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import { LiveNodesTable } from '~/pages/OperatorPage/LiveNodesTable'
+import { OperatorActionBar } from '~/pages/OperatorPage/OperatorActionBar'
+import { OperatorChecklist } from '~/pages/OperatorPage/OperatorChecklist'
 import { UndelegationQueue } from '~/pages/OperatorPage/UndelegationQueue'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { NoData } from '~/shared/components/NoData'

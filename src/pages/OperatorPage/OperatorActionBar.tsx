@@ -1,7 +1,6 @@
 import JiraFailedBuildStatusIcon from '@atlaskit/icon/glyph/jira/failed-build-status'
 import { useQuery } from '@tanstack/react-query'
 import React, { FunctionComponent, useMemo } from 'react'
-import { AboutOperator } from '~/components/ActionBars/AboutOperator'
 import {
     ActionBarButton,
     ActionBarButtonCaret,
@@ -26,15 +25,16 @@ import {
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
 import { PencilIcon } from '~/icons'
+import { AboutOperator } from '~/pages/OperatorPage/AboutOperator'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { SponsorshipPaymentTokenName } from '../SponsorshipPaymentTokenName'
-import { OperatorAvatar } from '../avatars'
-import { AbstractActionBar, Pad } from './AbstractActionBar'
+import { AbstractActionBar, Pad } from '../../components/ActionBars/AbstractActionBar'
+import { SponsorshipPaymentTokenName } from '../../components/SponsorshipPaymentTokenName'
+import { OperatorAvatar } from '../../components/avatars'
 
 export const OperatorActionBar: FunctionComponent<{
     operator: ParsedOperator
