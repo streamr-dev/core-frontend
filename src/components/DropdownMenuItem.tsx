@@ -55,7 +55,7 @@ export function DropdownMenuItem({
                 }}
             >
                 <div>{children}</div>
-                <div>
+                <ReturnIconWrap>
                     <svg
                         width="20"
                         height="20"
@@ -84,7 +84,7 @@ export function DropdownMenuItem({
                             fill="black"
                         />
                     </svg>
-                </div>
+                </ReturnIconWrap>
             </ItemRoot>
         </li>
     )
@@ -105,6 +105,16 @@ function withPrevButton(el: HTMLElement, fn: (button: HTMLButtonElement | null) 
         ) as HTMLButtonElement | null,
     )
 }
+
+const ReturnIconWrap = styled.div`
+    opacity: 0;
+    transition: 100ms opacity;
+
+    > svg {
+        display: block;
+        border-radius: 4px;
+    }
+`
 
 const ItemRoot = styled.button<{ $highlight?: boolean; $highlightOnFocus?: boolean }>`
     align-items: center;
@@ -130,24 +140,14 @@ const ItemRoot = styled.button<{ $highlight?: boolean; $highlightOnFocus?: boole
         flex-grow: 1;
     }
 
-    > div:last-child {
-        opacity: 0;
-        transition: 100ms opacity;
-    }
-
     &[disabled] {
         background: none;
-    }
-
-    svg {
-        display: block;
-        border-radius: 4px;
     }
 
     ${({ $highlightOnFocus = false }) =>
         $highlightOnFocus &&
         css`
-            :focus > div:last-child {
+            :focus > ${ReturnIconWrap} {
                 opacity: 1;
             }
         `}
@@ -155,7 +155,7 @@ const ItemRoot = styled.button<{ $highlight?: boolean; $highlightOnFocus?: boole
     ${({ $highlight = false }) =>
         $highlight &&
         css`
-            > div:last-child {
+            > ${ReturnIconWrap} {
                 opacity: 1;
             }
         `}
