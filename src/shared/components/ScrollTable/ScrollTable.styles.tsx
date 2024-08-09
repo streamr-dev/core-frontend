@@ -44,7 +44,7 @@ export const ScrollTableHeaderCell = styled.div<{
     $pointer?: boolean
     $actionCell?: boolean
 }>`
-    border-bottom: 1.5px solid ${COLORS.separator};
+    border-bottom: 1.5px solid ${COLORS.Border};
     padding: 5px ${horizontalPaddingMobile};
     height: 80px;
     display: flex;

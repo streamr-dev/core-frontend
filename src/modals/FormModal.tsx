@@ -367,7 +367,7 @@ export const FieldWrap = styled.div<{
     }
 
     ${TextAppendix} {
-        border-left: 1px solid ${COLORS.separator};
+        border-left: 1px solid ${COLORS.Border};
     }
 
     ${({ $invalid = false }) =>

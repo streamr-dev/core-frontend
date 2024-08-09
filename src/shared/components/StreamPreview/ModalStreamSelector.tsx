@@ -50,9 +50,9 @@ const StreamsList = styled.ul`
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-top: 1px solid ${COLORS.separator};
+        border-top: 1px solid ${COLORS.Border};
         &:last-of-type {
-            border-bottom: 1px solid ${COLORS.separator};
+            border-bottom: 1px solid ${COLORS.Border};
         }
 
         &.active {

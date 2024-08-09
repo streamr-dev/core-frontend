@@ -366,14 +366,14 @@ const OperatorList = styled.ul`
     }
 
     li + li {
-        border-top: 1px solid ${COLORS.separator};
+        border-top: 1px solid ${COLORS.Border};
     }
 `
 
 const OperatorListHeader = styled.li`
     background: rgba(255, 255, 255, 0.9) !important;
     backdrop-filter: blur(8px);
-    box-shadow: 0 1px 0 ${COLORS.separator};
+    box-shadow: 0 1px 0 ${COLORS.Border};
     display: flex;
     padding: 16px 24px;
     position: sticky;

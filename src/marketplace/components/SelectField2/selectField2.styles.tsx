@@ -275,7 +275,7 @@ export const getWhiteControlStyles = (
     }
     if (isDisabled) {
         styleObject.cursor = 'not-allowed'
-        styleObject.border = `1px solid ${COLORS.separator}`
+        styleObject.border = `1px solid ${COLORS.Border}`
         styleObject.backgroundColor = 'white'
     }
     if (noShrink) {
