@@ -9,14 +9,8 @@ import {
     ActionBarWalletDisplay,
 } from '~/components/ActionBars/ActionBarButton'
 import { Button } from '~/components/Button'
-import { SponsorshipDecimals } from '~/components/Decimals'
-import { Hint } from '~/components/Hint'
-import { Separator } from '~/components/Separator'
 import { SimpleDropdown } from '~/components/SimpleDropdown'
-import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import StatGrid, { StatCell } from '~/components/StatGrid'
 import { Tooltip } from '~/components/Tooltip'
-import { DayInSeconds } from '~/consts'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import {
     useEditSponsorshipFunding,
@@ -35,7 +29,7 @@ import { truncate, truncateStreamName } from '~/shared/utils/text'
 import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
-import { AbstractActionBar, Pad } from './AbstractActionBar'
+import { AbstractActionBar } from './AbstractActionBar'
 
 export function SponsorshipActionBar({
     sponsorship,
@@ -63,8 +57,6 @@ export function SponsorshipActionBar({
                   ],
         [projectedInsolvencyAt],
     )
-
-    const minimumStakingDays = sponsorship.minimumStakingPeriodSeconds / DayInSeconds
 
     const fundSponsorship = useFundSponsorshipCallback()
 
@@ -173,109 +165,6 @@ export function SponsorshipActionBar({
                     >
                         Sponsor
                     </Button>
-                </>
-            }
-            summaryTitle="Sponsorship summary"
-            summary={
-                <>
-                    <Pad>
-                        <StatGrid>
-                            <StatCell
-                                label="Payout rate"
-                                tip={
-                                    <Hint>
-                                        <p>
-                                            The rate of <SponsorshipPaymentTokenName />{' '}
-                                            tokens that are distributed to Operators that
-                                            have staked on this Sponsorship.
-                                        </p>
-                                    </Hint>
-                                }
-                            >
-                                <SponsorshipDecimals
-                                    abbr
-                                    amount={sponsorship.payoutPerDay}
-                                    unitSuffix="/day"
-                                />
-                            </StatCell>
-                            <StatCell label="Remaining balance">
-                                <SponsorshipDecimals
-                                    abbr
-                                    amount={timeCorrectedRemainingBalance}
-                                />
-                            </StatCell>
-                            <StatCell
-                                label="Total staked"
-                                tip={
-                                    <Hint>
-                                        <p>
-                                            The total amount of{' '}
-                                            <SponsorshipPaymentTokenName /> tokens that
-                                            has been staked on this Sponsorship
-                                            by&nbsp;Operators.
-                                        </p>
-                                    </Hint>
-                                }
-                            >
-                                <SponsorshipDecimals
-                                    abbr
-                                    amount={sponsorship.totalStakedWei}
-                                />
-                            </StatCell>
-                        </StatGrid>
-                    </Pad>
-                    <Separator />
-                    <Pad>
-                        <StatGrid>
-                            <StatCell
-                                label="APY"
-                                tip={
-                                    <Hint>
-                                        <p>
-                                            The annualized yield that the staked Operators
-                                            are currently earning from this Sponsorship.
-                                        </p>
-                                    </Hint>
-                                }
-                            >
-                                {(sponsorship.spotAPY * 100).toFixed(0)}%
-                            </StatCell>
-                            <StatCell
-                                label="Total sponsored"
-                                tip={
-                                    <Hint>
-                                        <p>
-                                            The cumulative amount of{' '}
-                                            <SponsorshipPaymentTokenName /> tokens that
-                                            Sponsors have funded this Sponsorship with.
-                                        </p>
-                                    </Hint>
-                                }
-                            >
-                                <SponsorshipDecimals
-                                    abbr
-                                    amount={sponsorship.cumulativeSponsoring}
-                                />
-                            </StatCell>
-                            <StatCell
-                                label="Minimum stake duration"
-                                tip={
-                                    <Hint>
-                                        <p>
-                                            The minimum time that Operators must stay
-                                            staked in this Sponsorship before they are
-                                            able to fully unstake without a penalty. Stake
-                                            reduction is always allowed and only limited
-                                            by minimum&nbsp;stake.
-                                        </p>
-                                    </Hint>
-                                }
-                            >
-                                {minimumStakingDays.toFixed(0)} day
-                                {minimumStakingDays !== 1 && 's'}
-                            </StatCell>
-                        </StatGrid>
-                    </Pad>
                 </>
             }
         />

@@ -177,7 +177,7 @@ export const StreamPreview = styled(UnstyledStreamPreview)`
     background: #ffffff;
     color: #323232;
     font-size: 14px;
-    border-top: 1px solid ${COLORS.separator};
+    border-top: 1px solid ${COLORS.Border};
     height: 100%;
 
     ${Errors} {
