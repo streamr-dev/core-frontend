@@ -204,9 +204,10 @@ const OuterWrap = styled.div`
 
 const OperatorAvatarWrap = styled.div`
     flex-shrink: 0;
+    margin: 0 auto;
 
     @media ${SideImageMq} {
-        margin: 0 auto;
+        margin: 0;
         max-width: 348px;
         width: 30%;
     }
