@@ -105,6 +105,7 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                         xmlns="http://www.w3.org/2000/svg"
                                     >
                                         <path
+                                            // eslint-disable-next-line max-len
                                             d="M10 0.958009C4.47715 0.958009 -1.35705e-06 5.43516 -8.74228e-07 10.958C-3.91405e-07 16.4809 4.47715 20.958 10 20.958C15.5228 20.958 20 16.4809 20 10.958C20 5.43516 15.5228 0.958008 10 0.958009Z"
                                             fill="#525252"
                                         />

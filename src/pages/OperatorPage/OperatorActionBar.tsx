@@ -121,7 +121,8 @@ export function OperatorActionBar({ operator }: { operator: ParsedOperator }) {
                                     },
                                 })
                             }}
-                            disabled={!walletAddress || operator.contractVersion === 1} // Operator contract v1 has a bug so we need to disable delegation
+                            // Operator contract v1 has a bug so we need to disable delegation
+                            disabled={!walletAddress || operator.contractVersion === 1}
                             waiting={isDelegatingFunds}
                         >
                             {delegateLabel}
