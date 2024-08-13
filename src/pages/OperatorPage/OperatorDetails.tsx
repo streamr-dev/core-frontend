@@ -178,24 +178,37 @@ const OperatorDetailsRoot = styled.div`
     }
 `
 
+const SideImageMq = '(min-width: 660px)'
+
 const OuterWrap = styled.div`
-    display: flex;
-    gap: 40px;
     padding: 20px;
+    margin: 0 auto;
+
+    @media ${SideImageMq} {
+        display: flex;
+        gap: 20px;
+        max-width: none;
+    }
 
     @media ${TABLET} {
         padding: 24px;
+        gap: 24px;
     }
 
     @media ${DESKTOP} {
         padding: 40px;
+        gap: 40px;
     }
 `
 
 const OperatorAvatarWrap = styled.div`
     flex-shrink: 0;
-    max-width: 348px;
-    width: 30%;
+
+    @media ${SideImageMq} {
+        margin: 0 auto;
+        max-width: 348px;
+        width: 30%;
+    }
 
     > div {
         align-items: center;
@@ -217,7 +230,12 @@ const OperatorMetadataWrap = styled.div`
     display: flex;
     flex-direction: column;
     gap: 32px;
+    margin-top: 24px;
     min-width: 0;
+
+    @media ${SideImageMq} {
+        margin: 0;
+    }
 `
 
 const InnerWrap = styled.div<{ $noDesc?: boolean }>`
@@ -231,13 +249,14 @@ const InnerWrap = styled.div<{ $noDesc?: boolean }>`
         margin-bottom: 16px;
     }
 
-    h2 + div {
-        padding-right: 112px;
+    @media ${SideImageMq} {
+        h2 + div {
+            padding-right: 112px;
+        }
     }
 
     h2 {
         display: none;
-        margin: 0;
     }
 
     p {
