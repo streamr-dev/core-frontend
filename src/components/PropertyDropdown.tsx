@@ -1,4 +1,11 @@
-import React, { ComponentProps, ReactNode, useEffect, useRef, useState } from 'react'
+import React, {
+    AnchorHTMLAttributes,
+    ComponentProps,
+    ReactNode,
+    useEffect,
+    useRef,
+    useState,
+} from 'react'
 import styled, { css } from 'styled-components'
 import { Anchor } from '~/components/Anchor'
 import { Tooltip } from '~/components/Tooltip'
@@ -356,36 +363,6 @@ const ValidationError = styled.div`
     padding: 11px 0;
 `
 
-const Toggle = styled.button<{ $active?: boolean }>`
-    align-items: center;
-    appearance: none;
-    background-color: #ffffff;
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
-    display: flex;
-    border: 0;
-    border-radius: 4px;
-    height: 32px;
-    max-width: 100%;
-    min-width: 32px;
-    padding: 0 8px;
-    transition: 0.5s background-color;
-
-    :hover {
-        background-color: ${COLORS.secondaryLight};
-        transition-duration: 0.1s;
-    }
-
-    a& {
-        color: inherit;
-    }
-
-    ${({ $active = false }) =>
-        $active &&
-        css`
-            background-color: ${COLORS.secondaryLight};
-        `}
-`
-
 const IconWrap = styled.div`
     flex-shrink: 0;
     height: 16px;
@@ -401,6 +378,51 @@ const IconWrap = styled.div`
         background: currentColor;
         border-radius: 50%;
     }
+`
+
+const Toggle = styled.button<{ $active?: boolean; $dark?: boolean }>`
+    align-items: center;
+    appearance: none;
+    background-color: #ffffff;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
+    display: flex;
+    border: 0;
+    border-radius: 4px;
+    height: 32px;
+    max-width: 100%;
+    min-width: 32px;
+    padding: 0 8px;
+    transition: 0.5s background-color;
+
+    &:hover {
+        background-color: ${COLORS.secondaryLight};
+        transition-duration: 0.1s;
+    }
+
+    a& {
+        color: inherit !important;
+    }
+
+    ${({ $dark: dark = false }) =>
+        dark &&
+        css`
+            box-shadow: none;
+            background-color: #1c1c1c;
+
+            &:hover {
+                background-color: #1c1c1c;
+            }
+
+            ${IconWrap} {
+                color: ${COLORS.Text};
+            }
+        `}
+
+    ${({ $active = false }) =>
+        $active &&
+        css`
+            background-color: ${COLORS.secondaryLight};
+        `}
 `
 
 const Value = styled.div<{ $unset?: boolean }>`
@@ -429,3 +451,40 @@ export const PropertyDropdownList = styled.ul`
         min-width: 0;
     }
 `
+
+interface PropertyDisplayProps {
+    icon?: ReactNode
+    href: string
+    displayValue?: string
+}
+
+export function PropertyDisplay(props: PropertyDisplayProps) {
+    const { icon = <></>, href = '#', displayValue } = props
+
+    const toggleProps: Pick<
+        AnchorHTMLAttributes<HTMLAnchorElement>,
+        'target' | 'rel'
+    > = /^mailto:/.test(href)
+        ? {}
+        : {
+              rel: 'noopener noreferrer',
+              target: '_blank',
+          }
+
+    return (
+        <Toggle
+            {...toggleProps}
+            as="a"
+            href={href}
+            onClick={(e) => {
+                if (href === '#') {
+                    e.preventDefault()
+                }
+            }}
+            $dark
+        >
+            <IconWrap>{icon}</IconWrap>
+            {displayValue && <Value>{displayValue}</Value>}
+        </Toggle>
+    )
+}

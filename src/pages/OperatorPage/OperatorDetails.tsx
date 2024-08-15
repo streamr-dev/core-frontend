@@ -3,8 +3,10 @@ import styled, { css } from 'styled-components'
 import { Buttonesque } from '~/components/Button'
 import ColoredBox from '~/components/ColoredBox'
 import { CopyButton } from '~/components/CopyButton'
+import { DetailIcon } from '~/components/DetailDropdown'
 import { FallbackImage } from '~/components/FallbackImage'
 import { LayoutColumn } from '~/components/Layout'
+import { PropertyDisplay, PropertyDropdownList } from '~/components/PropertyDropdown'
 import { Separator } from '~/components/Separator'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { Tooltip } from '~/components/Tooltip'
@@ -51,6 +53,68 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                 <div>
                                     <p>{metadata.description}</p>
                                 </div>
+                                <PropertyDropdownList>
+                                    {metadata.url && (
+                                        <PropertyDisplay
+                                            icon={<DetailIcon name="web" />}
+                                            displayValue={metadata.url
+                                                .replace(/^https?:\/\//, '')
+                                                .replace(/\/+$/, '')}
+                                            href={metadata.url}
+                                        />
+                                    )}
+                                    {metadata.email && (
+                                        <PropertyDisplay
+                                            icon={<DetailIcon name="email" />}
+                                            displayValue={metadata.email}
+                                            href={`mailto:${metadata.email}`}
+                                        />
+                                    )}
+                                    {metadata.twitter && (
+                                        <PropertyDisplay
+                                            icon={
+                                                <DetailIcon
+                                                    name="twitter"
+                                                    $color="#1da1f2"
+                                                />
+                                            }
+                                            href={metadata.twitter}
+                                        />
+                                    )}
+                                    {metadata.telegram && (
+                                        <PropertyDisplay
+                                            icon={
+                                                <DetailIcon
+                                                    name="telegram"
+                                                    $color="#2aabee"
+                                                />
+                                            }
+                                            href={metadata.telegram}
+                                        />
+                                    )}
+                                    {metadata.reddit && (
+                                        <PropertyDisplay
+                                            icon={
+                                                <DetailIcon
+                                                    name="reddit"
+                                                    $color="#ff5700"
+                                                />
+                                            }
+                                            href={metadata.reddit}
+                                        />
+                                    )}
+                                    {metadata.linkedIn && (
+                                        <PropertyDisplay
+                                            icon={
+                                                <DetailIcon
+                                                    name="linkedin"
+                                                    $color="#0077b5"
+                                                />
+                                            }
+                                            href={metadata.linkedIn}
+                                        />
+                                    )}
+                                </PropertyDropdownList>
                             </InnerWrap>
                             <Addresses>
                                 <AddressDisplay
@@ -251,6 +315,10 @@ const InnerWrap = styled.div<{ $noDesc?: boolean }>`
         letter-spacing: 0.01em;
         line-height: 30px;
         margin-bottom: 16px;
+    }
+
+    ${PropertyDropdownList} {
+        margin-top: 16px;
     }
 
     @media ${SideImageMq} {
