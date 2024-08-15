@@ -69,7 +69,9 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                         <CtaWrap>
                             {canEdit && (
                                 <Buttonesque
-                                    onClick={() => saveOperator(chainId, operator)}
+                                    onClick={() => {
+                                        saveOperator(chainId, operator)
+                                    }}
                                     $css={css`
                                         --border: 1px solid currentColor;
                                         --borderRadius: 4px;
