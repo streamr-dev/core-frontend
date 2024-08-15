@@ -1,6 +1,7 @@
 import React, { ComponentProps, ReactNode, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Anchor } from '~/components/Anchor'
+import { Tooltip } from '~/components/Tooltip'
 import EnterIcon from '~/shared/assets/icons/enter.svg'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
@@ -38,6 +39,19 @@ export function PropertyDropdown({
 
     const displayValue = valuePlaceholder ? value || valuePlaceholder : null
 
+    const content = (
+        <Toggle
+            type="button"
+            onClick={() => {
+                setOpen(true)
+            }}
+            $active={open}
+        >
+            <IconWrap>{toggleIcon}</IconWrap>
+            {displayValue && <Value $unset={!value}>{displayValue}</Value>}
+        </Toggle>
+    )
+
     return (
         <Anchor
             component={PropertyPopover}
@@ -51,16 +65,11 @@ export function PropertyDropdown({
             }}
             translate={(r) => (r ? [r.x, r.y + r.height + window.scrollY] : [0, 0])}
         >
-            <Toggle
-                type="button"
-                onClick={() => {
-                    setOpen(true)
-                }}
-                $active={open}
-            >
-                <IconWrap>{toggleIcon}</IconWrap>
-                {displayValue && <Value $unset={!value}>{displayValue}</Value>}
-            </Toggle>
+            {value && !valuePlaceholder ? (
+                <Tooltip content={value}>{content}</Tooltip>
+            ) : (
+                content
+            )}
         </Anchor>
     )
 }
