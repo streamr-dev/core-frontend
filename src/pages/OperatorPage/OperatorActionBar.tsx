@@ -18,7 +18,7 @@ import {
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { COLORS, TABLET } from '~/shared/utils/styled'
+import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
 import { goBack } from '~/utils'
 import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
@@ -149,6 +149,15 @@ export function OperatorActionBar({ operator }: { operator: ParsedOperator }) {
 
 const OperatorActionBarRoot = styled.div`
     background: ${COLORS.Background};
+    padding-top: 32px;
+
+    @media ${TABLET} {
+        padding-top: 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding-top: 72px;
+    }
 `
 
 const Wrap0 = styled.div`
