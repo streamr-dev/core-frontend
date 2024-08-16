@@ -131,3 +131,13 @@ export const Web = ({ className }: Props) => (
         />
     </svg>
 )
+
+export const X = ({ className }: Props) => (
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className={className}>
+        {/* eslint-disable-next-line max-len */}
+        <path
+            fill="currentColor"
+            d="M18.88 1.16h3.68l-8.08 9.2 9.44 12.48h-7.408l-5.8-7.584-6.64 7.584H.392L8.952 13-.088 1.16h7.592l5.24 6.928zm-1.288 19.52h2.04L6.432 3.24H4.24z"
+        />
+    </svg>
+)

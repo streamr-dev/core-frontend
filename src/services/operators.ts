@@ -22,6 +22,7 @@ export async function createOperator(
         url: string
         email: string
         twitter: string
+        x: string
         telegram: string
         reddit: string
         linkedIn: string
@@ -37,6 +38,7 @@ export async function createOperator(
         url,
         email,
         twitter,
+        x,
         telegram,
         reddit,
         linkedIn,
@@ -66,6 +68,7 @@ export async function createOperator(
         url: url || undefined,
         email: email || undefined,
         twitter: twitter || undefined,
+        x: x || undefined,
         telegram: telegram || undefined,
         reddit: reddit || undefined,
         linkedIn: linkedIn || undefined,
@@ -111,6 +114,7 @@ export async function updateOperator(
         url: string
         email: string
         twitter: string
+        x: string
         telegram: string
         reddit: string
         linkedIn: string
@@ -126,6 +130,7 @@ export async function updateOperator(
         url,
         email,
         twitter,
+        x,
         telegram,
         reddit,
         linkedIn,
@@ -145,6 +150,7 @@ export async function updateOperator(
         url !== metadata.url ||
         email !== metadata.email ||
         twitter !== metadata.twitter ||
+        x !== metadata.x ||
         telegram !== metadata.telegram ||
         reddit !== metadata.reddit ||
         linkedIn !== metadata.linkedIn
@@ -216,6 +222,7 @@ export async function updateOperator(
                         url: url || undefined,
                         email: email || undefined,
                         twitter: twitter || undefined,
+                        x: x || undefined,
                         telegram: telegram || undefined,
                         reddit: reddit || undefined,
                         linkedIn: linkedIn || undefined,

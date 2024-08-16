@@ -41,6 +41,11 @@ export const OperatorMetadataPreparser = z
                 .url()
                 .optional()
                 .transform((v) => v || ''),
+            x: z
+                .string()
+                .url()
+                .optional()
+                .transform((v) => v || ''),
             telegram: z
                 .string()
                 .url()

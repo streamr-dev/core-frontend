@@ -57,6 +57,7 @@ interface Form {
     url: string
     email: string
     twitter: string
+    x: string
     telegram: string
     reddit: string
     linkedIn: string
@@ -72,6 +73,7 @@ function isFormKey(value: unknown): value is keyof Form {
         value === 'url' ||
         value === 'email' ||
         value === 'twitter' ||
+        value === 'x' ||
         value === 'telegram' ||
         value === 'reddit' ||
         value === 'linkedIn'
@@ -90,6 +92,7 @@ const Validator = z.object({
     url: z.union([z.literal(''), z.string().url()]),
     email: z.union([z.literal(''), z.string().email()]),
     twitter: z.union([z.literal(''), z.string().url()]),
+    x: z.union([z.literal(''), z.string().url()]),
     telegram: z.union([z.literal(''), z.string().url()]),
     reddit: z.union([z.literal(''), z.string().url()]),
     linkedIn: z.union([z.literal(''), z.string().url()]),
@@ -112,6 +115,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
             url: operator?.metadata.url || '',
             email: operator?.metadata.email || '',
             twitter: operator?.metadata.twitter || '',
+            x: operator?.metadata.x || '',
             telegram: operator?.metadata.telegram || '',
             reddit: operator?.metadata.reddit || '',
             linkedIn: operator?.metadata.linkedIn || '',
@@ -139,6 +143,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
         url: currentData.url !== nextData.url,
         email: currentData.email !== nextData.email,
         twitter: currentData.twitter !== nextData.twitter,
+        x: currentData.x !== nextData.x,
         telegram: currentData.telegram !== nextData.telegram,
         reddit: currentData.reddit !== nextData.reddit,
         linkedIn: currentData.linkedIn !== nextData.linkedIn,
@@ -487,6 +492,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                         />
                                     }
                                     value={nextData.twitter}
+                                />
+                            </li>
+                            <li>
+                                <PropertyDropdown
+                                    error={errors?.x}
+                                    onSubmit={(x) => {
+                                        updateNextData((c) => ({
+                                            ...c,
+                                            x,
+                                        }))
+                                    }}
+                                    submitLabel="Add X link"
+                                    title="Add X link"
+                                    toggleIcon={<DetailIcon name="xCom" />}
+                                    value={nextData.x}
                                 />
                             </li>
                             <li>

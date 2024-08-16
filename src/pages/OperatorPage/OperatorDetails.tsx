@@ -81,6 +81,17 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                             href={metadata.twitter}
                                         />
                                     )}
+                                    {metadata.x && (
+                                        <PropertyDisplay
+                                            icon={
+                                                <DetailIcon
+                                                    name="xCom"
+                                                    $color="#ffffff"
+                                                />
+                                            }
+                                            href={metadata.x}
+                                        />
+                                    )}
                                     {metadata.telegram && (
                                         <PropertyDisplay
                                             icon={
