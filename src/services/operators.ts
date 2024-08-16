@@ -19,10 +19,30 @@ export async function createOperator(
         imageToUpload?: File | undefined
         name: string
         redundancyFactor: number
+        url: string
+        email: string
+        twitter: string
+        x: string
+        telegram: string
+        reddit: string
+        linkedIn: string
     },
     { onReceipt }: CallableOptions = {},
 ): Promise<void> {
-    const { cut, name, redundancyFactor, description, imageToUpload } = params
+    const {
+        cut,
+        name,
+        redundancyFactor,
+        description,
+        imageToUpload,
+        url,
+        email,
+        twitter,
+        x,
+        telegram,
+        reddit,
+        linkedIn,
+    } = params
 
     await networkPreflight(chainId)
 
@@ -45,6 +65,13 @@ export async function createOperator(
         description,
         redundancyFactor,
         imageIpfsCid,
+        url: url || undefined,
+        email: email || undefined,
+        twitter: twitter || undefined,
+        x: x || undefined,
+        telegram: telegram || undefined,
+        reddit: reddit || undefined,
+        linkedIn: linkedIn || undefined,
     }
 
     const poolTokenName = `StreamrOperator-${walletAddress.slice(-5)}`
@@ -84,10 +111,30 @@ export async function updateOperator(
         description: string
         imageToUpload?: File
         cut: number
+        url: string
+        email: string
+        twitter: string
+        x: string
+        telegram: string
+        reddit: string
+        linkedIn: string
     },
     { onReceipt }: CallableOptions = {},
 ) {
-    const { name, redundancyFactor, description = '', imageToUpload, cut } = mods
+    const {
+        name,
+        redundancyFactor,
+        description = '',
+        imageToUpload,
+        cut,
+        url,
+        email,
+        twitter,
+        x,
+        telegram,
+        reddit,
+        linkedIn,
+    } = mods
 
     const { metadata } = operator
 
@@ -99,7 +146,14 @@ export async function updateOperator(
         !!imageToUpload ||
         name !== metadata.name ||
         description !== metadata.description ||
-        redundancyFactor !== metadata.redundancyFactor
+        redundancyFactor !== metadata.redundancyFactor ||
+        url !== metadata.url ||
+        email !== metadata.email ||
+        twitter !== metadata.twitter ||
+        x !== metadata.x ||
+        telegram !== metadata.telegram ||
+        reddit !== metadata.reddit ||
+        linkedIn !== metadata.linkedIn
 
     if (hasUpdateCutOperation) {
         operations.push({
@@ -165,6 +219,13 @@ export async function updateOperator(
                         description: description || undefined,
                         redundancyFactor,
                         imageIpfsCid,
+                        url: url || undefined,
+                        email: email || undefined,
+                        twitter: twitter || undefined,
+                        x: x || undefined,
+                        telegram: telegram || undefined,
+                        reddit: reddit || undefined,
+                        linkedIn: linkedIn || undefined,
                     }),
                 ],
                 onReceipt: async (receipt) => {

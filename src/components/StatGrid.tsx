@@ -103,7 +103,7 @@ const StatCellRoot = styled.div`
     @media ${TABLET} {
         border-radius: 16px;
         display: block;
-        padding: 32px 44px;
+        padding: 32px 40px;
 
         ${StatCellLabel} {
             margin-bottom: 10px;

@@ -1,6 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
 import ReactIdenticon from 'react-identicons'
+import styled from 'styled-components'
 
 const UnstyledIdenticon = ({ id, size, ...props }) => (
     <div {...props}>
@@ -24,4 +24,5 @@ const Identicon = styled(UnstyledIdenticon)`
 Identicon.defaultProps = {
     size: 80,
 }
+
 export default Identicon

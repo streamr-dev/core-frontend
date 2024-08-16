@@ -48,4 +48,5 @@ export const COLORS = {
     SecondaryText: '#868686',
     Border: '#efefef',
     Background: '#ffffff',
+    Text: '#323232',
 } as const

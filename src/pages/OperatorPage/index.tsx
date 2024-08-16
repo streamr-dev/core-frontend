@@ -46,6 +46,7 @@ import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { LiveNodesTable } from '~/pages/OperatorPage/LiveNodesTable'
 import { OperatorActionBar } from '~/pages/OperatorPage/OperatorActionBar'
 import { OperatorChecklist } from '~/pages/OperatorPage/OperatorChecklist'
+import { OperatorDetails } from '~/pages/OperatorPage/OperatorDetails'
 import { OperatorSummary } from '~/pages/OperatorPage/OperatorSummary'
 import { UndelegationQueue } from '~/pages/OperatorPage/UndelegationQueue'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
@@ -66,7 +67,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { ChartPeriod } from '~/types'
-import { abbr, saveOperator } from '~/utils'
+import { abbr } from '~/utils'
 import { onIndexedBlock } from '~/utils/blocks'
 import { toBN, toBigInt, toFloat } from '~/utils/bn'
 import {
@@ -349,12 +350,8 @@ export const OperatorPage = () => {
             <LoadingIndicator loading={isFetching} />
             {!!operator && (
                 <>
-                    <OperatorActionBar
-                        operator={operator}
-                        handleEdit={(currentOperator) => {
-                            saveOperator(currentChainId, currentOperator)
-                        }}
-                    />
+                    <OperatorActionBar operator={operator} />
+                    <OperatorDetails operator={operator} />
                     <OperatorSummary operator={operator} />
                     {isOwner && (
                         <OperatorVersionNotice version={operator.contractVersion} />

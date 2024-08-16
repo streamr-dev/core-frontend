@@ -1,37 +1,30 @@
 import { useQuery } from '@tanstack/react-query'
-import React, { FunctionComponent } from 'react'
+import React from 'react'
+import styled from 'styled-components'
 import {
-    ActionBarButton,
-    ActionBarButtonCaret,
-    ActionBarButtonInnerBody,
-    ActionBarWalletDisplay,
-} from '~/components/ActionBars/ActionBarButton'
+    NetworkActionBarBackButtonIcon,
+    NetworkActionBarBackLink,
+    NetworkActionBarTitle,
+} from '~/components/ActionBars/NetworkActionBar.styles'
+import { OperatorAvatar } from '~/components/avatars'
 import { Button } from '~/components/Button'
-import { SimpleDropdown } from '~/components/SimpleDropdown'
+import { LayoutColumn } from '~/components/Layout'
 import {
     useDelegateFunds,
     useIsDelegatingFundsToOperator,
     useIsUndelegatingFundsToOperator,
     useUndelegateFunds,
 } from '~/hooks/operators'
-import { PencilIcon } from '~/icons'
-import { AboutOperator } from '~/pages/OperatorPage/AboutOperator'
 import { ParsedOperator } from '~/parsers/OperatorParser'
 import { getOperatorDelegationAmount } from '~/services/operators'
-import SvgIcon from '~/shared/components/SvgIcon'
 import { useWalletAccount } from '~/shared/stores/wallet'
+import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
+import { goBack } from '~/utils'
 import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-import { AbstractActionBar } from '../../components/ActionBars/AbstractActionBar'
-import { OperatorAvatar } from '../../components/avatars'
 
-export const OperatorActionBar: FunctionComponent<{
-    operator: ParsedOperator
-    handleEdit: (operator: ParsedOperator) => void
-}> = ({ operator, handleEdit }) => {
+export function OperatorActionBar({ operator }: { operator: ParsedOperator }) {
     const walletAddress = useWalletAccount()
-
-    const canEdit = !!walletAddress && walletAddress == operator.owner
 
     const isDelegatingFunds = useIsDelegatingFundsToOperator(operator.id, walletAddress)
 
@@ -91,75 +84,107 @@ export const OperatorActionBar: FunctionComponent<{
             : ['Delegate', 'Undelegate']
 
     return (
-        <AbstractActionBar
-            fallbackBackButtonUrl={R.operators(routeOptions(chainName))}
-            title={
-                <>
-                    <OperatorAvatar
-                        imageUrl={metadata.imageUrl}
-                        operatorId={operator.id}
-                    />
-                    <span>{metadata.name || operator.id}</span>
-                </>
-            }
-            buttons={
-                <>
-                    {canEdit && (
-                        <ActionBarButton onClick={() => void handleEdit(operator)}>
-                            <strong>Edit Operator</strong>
-                            <PencilIcon />
-                        </ActionBarButton>
-                    )}
-                    <SimpleDropdown menu={<AboutOperator operator={operator} />}>
-                        {(toggle, isOpen) => (
-                            <ActionBarButton
-                                active={isOpen}
-                                onClick={() => void toggle((c) => !c)}
-                            >
-                                <ActionBarButtonInnerBody>
-                                    <SvgIcon name="page" />
-                                    <strong>About Operator</strong>
-                                </ActionBarButtonInnerBody>
-                                <ActionBarButtonCaret $invert={isOpen} />
-                            </ActionBarButton>
-                        )}
-                    </SimpleDropdown>
-                    <ActionBarWalletDisplay address={operator.id} label="Operator" />
-                </>
-            }
-            ctas={
-                <>
-                    <Button
-                        onClick={() => {
-                            delegateFunds({
-                                chainId: currentChainId,
-                                operator,
-                                wallet: walletAddress,
-                                onDone: () => {
-                                    canUndelegateQuery.refetch()
-                                },
-                            })
-                        }}
-                        disabled={!walletAddress || operator.contractVersion === 1} // Operator contract v1 has a bug so we need to disable delegation
-                        waiting={isDelegatingFunds}
-                    >
-                        {delegateLabel}
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            undelegateFunds({
-                                chainId: currentChainId,
-                                operator,
-                                wallet: walletAddress,
-                            })
-                        }}
-                        disabled={!canUndelegate}
-                        waiting={isUndelegatingFunds}
-                    >
-                        {undelegateLabel}
-                    </Button>
-                </>
-            }
-        />
+        <OperatorActionBarRoot>
+            {/* @todo Wrap it with LayoutColumn at a host level. */}
+            <LayoutColumn>
+                <OuterWrap>
+                    <Wrap0>
+                        <NetworkActionBarBackLink
+                            to={R.operators(routeOptions(chainName))}
+                            onClick={(e) => {
+                                goBack({
+                                    onBeforeNavigate() {
+                                        e.preventDefault()
+                                    },
+                                })
+                            }}
+                        >
+                            <NetworkActionBarBackButtonIcon name="backArrow" />
+                        </NetworkActionBarBackLink>
+                        <NetworkActionBarTitle>
+                            <OperatorAvatar
+                                imageUrl={metadata.imageUrl}
+                                operatorId={operator.id}
+                            />
+                            <span>{metadata.name || operator.id}</span>
+                        </NetworkActionBarTitle>
+                    </Wrap0>
+                    <Wrap1>
+                        <Button
+                            onClick={() => {
+                                delegateFunds({
+                                    chainId: currentChainId,
+                                    operator,
+                                    wallet: walletAddress,
+                                    onDone: () => {
+                                        canUndelegateQuery.refetch()
+                                    },
+                                })
+                            }}
+                            // Operator contract v1 has a bug so we need to disable delegation
+                            disabled={!walletAddress || operator.contractVersion === 1}
+                            waiting={isDelegatingFunds}
+                        >
+                            {delegateLabel}
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                undelegateFunds({
+                                    chainId: currentChainId,
+                                    operator,
+                                    wallet: walletAddress,
+                                })
+                            }}
+                            disabled={!canUndelegate}
+                            waiting={isUndelegatingFunds}
+                        >
+                            {undelegateLabel}
+                        </Button>
+                    </Wrap1>
+                </OuterWrap>
+            </LayoutColumn>
+        </OperatorActionBarRoot>
     )
 }
+
+const OperatorActionBarRoot = styled.div`
+    background: ${COLORS.Background};
+    padding-top: 32px;
+
+    @media ${TABLET} {
+        padding-top: 40px;
+    }
+
+    @media ${DESKTOP} {
+        padding-top: 72px;
+    }
+`
+
+const Wrap0 = styled.div`
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+`
+
+const Wrap1 = styled.div`
+    gap: 8px;
+`
+
+const OuterWrap = styled.div`
+    ${Wrap1} {
+        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-top: 20px;
+    }
+
+    @media ${TABLET} {
+        align-items: center;
+        display: flex;
+
+        ${Wrap1} {
+            display: flex;
+            margin-top: 0;
+        }
+    }
+`

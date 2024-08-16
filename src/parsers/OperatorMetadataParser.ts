@@ -26,6 +26,41 @@ export const OperatorMetadataPreparser = z
                 .transform((v) => v || ''),
             imageIpfsCid: z.string().optional(),
             redundancyFactor: z.coerce.number().optional(),
+            url: z
+                .string()
+                .url()
+                .optional()
+                .transform((v) => v || ''),
+            email: z
+                .string()
+                .email()
+                .optional()
+                .transform((v) => v || ''),
+            twitter: z
+                .string()
+                .url()
+                .optional()
+                .transform((v) => v || ''),
+            x: z
+                .string()
+                .url()
+                .optional()
+                .transform((v) => v || ''),
+            telegram: z
+                .string()
+                .url()
+                .optional()
+                .transform((v) => v || ''),
+            reddit: z
+                .string()
+                .url()
+                .optional()
+                .transform((v) => v || ''),
+            linkedIn: z
+                .string()
+                .url()
+                .optional()
+                .transform((v) => v || ''),
         }),
     )
 
