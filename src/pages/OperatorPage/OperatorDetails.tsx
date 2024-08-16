@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import { Buttonesque } from '~/components/Button'
 import ColoredBox from '~/components/ColoredBox'
@@ -123,7 +123,14 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                 />
                                 <Separator />
                                 <AddressDisplay
-                                    label={`Operator contract (v${operator.contractVersion})`}
+                                    label={
+                                        <>
+                                            <div>Operator contract</div>
+                                            <OperatorVersionBadge>
+                                                v{operator.contractVersion}
+                                            </OperatorVersionBadge>
+                                        </>
+                                    }
                                     value={operator.id}
                                 />
                             </Addresses>
@@ -380,8 +387,11 @@ const Addresses = styled.div`
 const AddressDisplayRoot = styled.div``
 
 const AddressDisplayLabel = styled.div`
+    align-items: center;
     color: #a3a3a3;
+    display: flex;
     font-size: 14px;
+    gap: 6px;
     letter-spacing: 0.01em;
     line-height: normal;
 `
@@ -397,7 +407,7 @@ const AddressDisplayValue = styled.div`
 `
 
 interface AddressDisplayProps {
-    label: string
+    label: ReactNode
     value: string
 }
 
@@ -412,3 +422,12 @@ function AddressDisplay({ label, value }: AddressDisplayProps) {
         </AddressDisplayRoot>
     )
 }
+
+const OperatorVersionBadge = styled.div`
+    background: #525252;
+    color: ${COLORS.Background};
+    font-size: 11px;
+    font-weight: ${MEDIUM};
+    padding: 1px 5px;
+    border-radius: 6px;
+`
