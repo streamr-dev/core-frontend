@@ -7,7 +7,7 @@ import React, {
     useState,
 } from 'react'
 import styled, { css } from 'styled-components'
-import { Anchor } from '~/components/Anchor'
+import { Anchor, useBoundingClientRect } from '~/components/Anchor'
 import { Tooltip } from '~/components/Tooltip'
 import EnterIcon from '~/shared/assets/icons/enter.svg'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -115,7 +115,7 @@ function PropertyPopover(props: PropertyPopoverProps) {
         [valueProp],
     )
 
-    const rootRef = useRef<HTMLFormElement>(null)
+    const bodyRef = useRef<HTMLFormElement>(null)
 
     const onDismissRef = useRef(onDismiss)
 
@@ -133,7 +133,7 @@ function PropertyPopover(props: PropertyPopoverProps) {
                 return
             }
 
-            if (rootRef.current?.contains(e.target) === true) {
+            if (bodyRef.current?.contains(e.target) === true) {
                 return
             }
 
@@ -147,94 +147,116 @@ function PropertyPopover(props: PropertyPopoverProps) {
         }
     }, [open])
 
+    const dx = useBoundingClientRect(bodyRef, (r) => {
+        if (!r || !open) {
+            return 0
+        }
+
+        return Math.min(0, document.documentElement.clientWidth - (x + r.width + 8))
+    })
+
     return (
         open && (
             <PropertyPopoverRoot
-                onSubmit={(e) => {
-                    e.preventDefault()
-
-                    e.stopPropagation()
-
-                    onSubmit?.(value)
-
-                    onDismiss?.()
-                }}
-                ref={rootRef}
-                onKeyDown={(e) => {
-                    if (e.key === 'Escape') {
-                        onDismiss?.()
-
-                        e.stopPropagation()
-                    }
-                }}
                 style={{
                     '--propertyDropdownX': `${x | 0}px`,
                     '--propertyDropdownY': `${y | 0}px`,
                 }}
             >
-                <Header>
-                    <Title>{title}</Title>
-                    {!required && <Optional>Optional</Optional>}
-                </Header>
-                <InputWrap>
-                    <Input
-                        disabled={disabled}
-                        autoFocus
-                        placeholder={placeholder}
-                        type="text"
-                        value={value}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Escape' && value !== valueProp) {
-                                setValue(valueProp)
+                <PropertyPopoverBody
+                    onSubmit={(e) => {
+                        e.preventDefault()
 
-                                setError(errorProp)
+                        e.stopPropagation()
 
-                                e.stopPropagation()
-                            }
-                        }}
-                        onChange={(e) => {
-                            setValue(e.target.value)
+                        onSubmit?.(value)
 
-                            setError('')
-                        }}
-                    />
-                    <EnterButton
-                        type="submit"
-                        $visible={!!value || !required}
-                        disabled={disabled}
-                    >
-                        <img src={EnterIcon} />
-                    </EnterButton>
-                </InputWrap>
-                {error ? (
-                    <ValidationError>{error}</ValidationError>
-                ) : (
-                    <Submit type="submit" disabled={disabled}>
-                        <PlusIcon />
-                        {submitLabel}
-                    </Submit>
-                )}
+                        onDismiss?.()
+                    }}
+                    ref={bodyRef}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                            onDismiss?.()
+
+                            e.stopPropagation()
+                        }
+                    }}
+                    style={{
+                        '--propertyDropdownDeltaX': `${dx}px`,
+                    }}
+                >
+                    <Header>
+                        <Title>{title}</Title>
+                        {!required && <Optional>Optional</Optional>}
+                    </Header>
+                    <InputWrap>
+                        <Input
+                            disabled={disabled}
+                            autoFocus
+                            placeholder={placeholder}
+                            type="text"
+                            value={value}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Escape' && value !== valueProp) {
+                                    setValue(valueProp)
+
+                                    setError(errorProp)
+
+                                    e.stopPropagation()
+                                }
+                            }}
+                            onChange={(e) => {
+                                setValue(e.target.value)
+
+                                setError('')
+                            }}
+                        />
+                        <EnterButton
+                            type="submit"
+                            $visible={!!value || !required}
+                            disabled={disabled}
+                        >
+                            <img src={EnterIcon} />
+                        </EnterButton>
+                    </InputWrap>
+                    {error ? (
+                        <ValidationError>{error}</ValidationError>
+                    ) : (
+                        <Submit type="submit" disabled={disabled}>
+                            <PlusIcon />
+                            {submitLabel}
+                        </Submit>
+                    )}
+                </PropertyPopoverBody>
             </PropertyPopoverRoot>
         )
     )
 }
 
-const PropertyPopoverRoot = styled.form`
+const PropertyPopoverRoot = styled.div`
     --propertyDropdownX: 0;
     --propertyDropdownY: 0;
+
+    height: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: translate(var(--propertyDropdownX), var(--propertyDropdownY))
+        translateY(8px);
+    width: 0;
+    z-index: 12;
+`
+
+const PropertyPopoverBody = styled.form`
+    --propertyDropdownDeltaX: 0;
 
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.05), 0 0 2px rgba(0, 0, 0, 0.25),
         0 4px 10px rgba(0, 0, 0, 0.1);
-    left: 0;
     padding: 16px;
-    position: absolute;
-    top: 0;
-    transform: translate(var(--propertyDropdownX), var(--propertyDropdownY))
-        translateY(8px);
+    transform: translateX(var(--propertyDropdownDeltaX));
     width: 320px;
-    z-index: 12;
 `
 
 const Header = styled.div`
