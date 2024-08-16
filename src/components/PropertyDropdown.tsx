@@ -112,7 +112,7 @@ function PropertyPopover(props: PropertyPopoverProps) {
         function syncValueWithUpstream() {
             setValue(valueProp)
         },
-        [valueProp],
+        [valueProp, open],
     )
 
     const bodyRef = useRef<HTMLFormElement>(null)
