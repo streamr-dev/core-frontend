@@ -2,13 +2,16 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
 import { randomHex } from 'web3-utils'
-import { ZodError, z } from 'zod'
+import { z } from 'zod'
 import { Alert } from '~/components/Alert'
 import { Button } from '~/components/Button'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
-import { DetailIcon } from '~/components/DetailDropdown'
 import { Hint } from '~/components/Hint'
-import { PropertyDropdown, PropertyDropdownList } from '~/components/PropertyDropdown'
+import {
+    PropertyDropdown,
+    PropertyDropdownList,
+    PropertyIcon,
+} from '~/components/PropertyDropdown'
 import { BehindIndexError } from '~/errors/BehindIndexError'
 import { getParsedOperatorByOwnerAddress } from '~/getters'
 import FormModal, {
@@ -61,23 +64,6 @@ interface Form {
     telegram: string
     reddit: string
     linkedIn: string
-}
-
-function isFormKey(value: unknown): value is keyof Form {
-    return (
-        value === 'cut' ||
-        value === 'description' ||
-        value === 'imageToUpload' ||
-        value === 'name' ||
-        value === 'redundancyFactor' ||
-        value === 'url' ||
-        value === 'email' ||
-        value === 'twitter' ||
-        value === 'x' ||
-        value === 'telegram' ||
-        value === 'reddit' ||
-        value === 'linkedIn'
-    )
 }
 
 const Validator = z.object({
@@ -159,38 +145,40 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
         (nextData.imageToUpload && URL.createObjectURL(nextData.imageToUpload)) ||
         operator?.metadata.imageUrl
 
-    const [finalData, errors]:
-        | [ReturnType<typeof Validator.parse>, null]
-        | [null, Partial<Record<keyof Form, string>>] = (() => {
+    const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({})
+
+    function resetError(key: keyof Form) {
+        setErrors(({ [key]: _, ...c }) => c)
+    }
+
+    function validate(fn: () => void) {
         try {
-            return [Validator.parse(nextData), null]
+            fn()
         } catch (e) {
-            if (!(e instanceof ZodError)) {
-                throw e
+            if (e instanceof z.ZodError) {
+                const newErrors = {}
+
+                e.issues.forEach(({ path, message }) => {
+                    newErrors[path.join('.')] = message
+                })
+
+                setErrors((existingErrors) => ({
+                    ...existingErrors,
+                    ...newErrors,
+                }))
             }
 
-            const result: Partial<Record<keyof Form, string>> = {}
-
-            e.issues.forEach(({ path: [key], message }) => {
-                if (!isFormKey(key)) {
-                    return void console.warn('Unresolved form issue', key, message)
-                }
-
-                if (!changelog[key]) {
-                    /**
-                     * Ignore fields that did not change.
-                     */
-                    return
-                }
-
-                if (!result[key]) {
-                    result[key] = message
-                }
-            })
-
-            return [null, result]
+            throw e
         }
-    })()
+    }
+
+    const finalData = useMemo(() => {
+        try {
+            return Validator.parse(nextData)
+        } catch (_) {
+            return null
+        }
+    }, [nextData])
 
     const walletAddress = useWalletAccount()
 
@@ -441,7 +429,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.url}
+                                    onChange={() => {
+                                        resetError('url')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('url')
+                                    }}
                                     onSubmit={(url) => {
+                                        resetError('url')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                url: true,
+                                            }).parse({ url })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             url,
@@ -450,7 +452,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     placeholder="https://siteinfo.com"
                                     submitLabel="Add site URL"
                                     title="Add a site URL"
-                                    toggleIcon={<DetailIcon name="web" />}
+                                    toggleIcon={<PropertyIcon name="web" />}
                                     value={nextData.url}
                                     valuePlaceholder="Site URL"
                                 />
@@ -458,7 +460,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.email}
+                                    onChange={() => {
+                                        resetError('email')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('email')
+                                    }}
                                     onSubmit={(email) => {
+                                        resetError('email')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                email: true,
+                                            }).parse({ email })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             email,
@@ -467,7 +483,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     placeholder="owner@example.com"
                                     submitLabel="Add contact email"
                                     title="Add a contact email"
-                                    toggleIcon={<DetailIcon name="email" />}
+                                    toggleIcon={<PropertyIcon name="email" />}
                                     value={nextData.email}
                                     valuePlaceholder="Contact email"
                                 />
@@ -475,7 +491,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.twitter}
+                                    onChange={() => {
+                                        resetError('twitter')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('twitter')
+                                    }}
                                     onSubmit={(twitter) => {
+                                        resetError('twitter')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                twitter: true,
+                                            }).parse({ twitter })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             twitter,
@@ -484,7 +514,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     submitLabel="Add Twitter link"
                                     title="Add Twitter link"
                                     toggleIcon={
-                                        <DetailIcon
+                                        <PropertyIcon
                                             name="twitter"
                                             $color={
                                                 nextData.twitter ? '#1da1f2' : undefined
@@ -497,7 +527,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.x}
+                                    onChange={() => {
+                                        resetError('x')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('x')
+                                    }}
                                     onSubmit={(x) => {
+                                        resetError('x')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                x: true,
+                                            }).parse({ x })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             x,
@@ -505,14 +549,28 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     }}
                                     submitLabel="Add X link"
                                     title="Add X link"
-                                    toggleIcon={<DetailIcon name="xCom" />}
+                                    toggleIcon={<PropertyIcon name="xCom" />}
                                     value={nextData.x}
                                 />
                             </li>
                             <li>
                                 <PropertyDropdown
                                     error={errors?.telegram}
+                                    onChange={() => {
+                                        resetError('telegram')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('telegram')
+                                    }}
                                     onSubmit={(telegram) => {
+                                        resetError('telegram')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                telegram: true,
+                                            }).parse({ telegram })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             telegram,
@@ -521,7 +579,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     submitLabel="Add Telegram link"
                                     title="Add Telegram link"
                                     toggleIcon={
-                                        <DetailIcon
+                                        <PropertyIcon
                                             name="telegram"
                                             $color={
                                                 nextData.telegram ? '#2aabee' : undefined
@@ -534,7 +592,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.reddit}
+                                    onChange={() => {
+                                        resetError('reddit')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('reddit')
+                                    }}
                                     onSubmit={(reddit) => {
+                                        resetError('reddit')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                reddit: true,
+                                            }).parse({ reddit })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             reddit,
@@ -543,7 +615,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     submitLabel="Add Reddit link"
                                     title="Add Reddit link"
                                     toggleIcon={
-                                        <DetailIcon
+                                        <PropertyIcon
                                             name="reddit"
                                             $color={
                                                 nextData.reddit ? '#ff5700' : undefined
@@ -556,7 +628,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.linkedIn}
+                                    onChange={() => {
+                                        resetError('linkedIn')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('linkedIn')
+                                    }}
                                     onSubmit={(linkedIn) => {
+                                        resetError('linkedIn')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                linkedIn: true,
+                                            }).parse({ linkedIn })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             linkedIn,
@@ -565,7 +651,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     submitLabel="Add LinkedIn link"
                                     title="Add LinkedIn link"
                                     toggleIcon={
-                                        <DetailIcon
+                                        <PropertyIcon
                                             name="linkedin"
                                             $color={
                                                 nextData.linkedIn ? '#0077b5' : undefined

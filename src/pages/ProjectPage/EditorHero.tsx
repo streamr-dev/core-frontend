@@ -1,21 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
-import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
-import { COLORS } from '~/shared/utils/styled'
-import RichTextEditor from '~/components/RichTextEditor'
-import DetailDropdown, {
-    DetailIcon,
-    List as DetailDropdownList,
-} from '~/components/DetailDropdown'
-import ProjectProperty from '~/components/ProjectProperty'
-import { getBase64ForFile } from '~/getters'
+import { z } from 'zod'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
-import { Layer } from '~/utils/Layer'
-import { OpenDataPayload } from '~/types/projects'
+import {
+    PropertyDropdown,
+    PropertyDropdownList,
+    PropertyIcon,
+} from '~/components/PropertyDropdown'
+import RichTextEditor from '~/components/RichTextEditor'
+import { getBase64ForFile } from '~/getters'
 import { getEmptyParsedProject } from '~/parsers/ProjectParser'
 import { ProjectType } from '~/shared/types'
-import CoverImage, { Wide, Root as CoverImageRoot } from './CoverImage'
+import { COLORS } from '~/shared/utils/styled'
+import { ProjectDraft, usePersistProjectCallback } from '~/stores/projectDraft'
+import { OpenDataPayload } from '~/types/projects'
+import { Layer } from '~/utils/Layer'
+import CoverImage, { Root as CoverImageRoot, Wide } from './CoverImage'
 
 const cropModal = toaster(CropImageModal, Layer.Modal)
 
@@ -47,6 +48,32 @@ export default function EditorHero() {
     }, [])
 
     const persist = usePersistProjectCallback()
+
+    function validate(fn: () => void) {
+        try {
+            fn()
+        } catch (e) {
+            if (e instanceof z.ZodError) {
+                const errors = {}
+
+                e.issues.forEach(({ path, message }) => {
+                    errors[path.join('.')] = message
+                })
+
+                setErrors((existingErrors) => {
+                    Object.assign(existingErrors, errors)
+                })
+            }
+
+            throw e
+        }
+    }
+
+    function resetError(key: string) {
+        setErrors((errors) => {
+            delete errors[key]
+        })
+    }
 
     return (
         <HeroContainer>
@@ -130,308 +157,261 @@ export default function EditorHero() {
                         }}
                     />
                 </Desc>
-                <DetailDropdownList>
+                <PropertyDropdownList>
                     <li>
-                        <DetailDropdown
-                            icon={<DetailIcon name="userFull" />}
+                        <PropertyDropdown
+                            disabled={busy}
+                            error={errors.creator}
+                            onChange={() => {
+                                resetError('creator')
+                            }}
+                            onDismiss={() => {
+                                resetError('creator')
+                            }}
+                            onSubmit={(value) => {
+                                resetError('creator')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        creator: true,
+                                    }).parse({
+                                        creator: value,
+                                    })
+                                })
+
+                                update((project) => {
+                                    project.creator = value
+                                })
+                            }}
+                            required
+                            submitLabel="Add creator's name"
+                            title="Please provide your name"
+                            toggleIcon={<PropertyIcon name="userFull" />}
                             value={creator}
                             valuePlaceholder="Creator's name"
-                            onClose={() => {
-                                setErrors((errors) => {
-                                    delete errors.creator
-                                })
-                            }}
-                        >
-                            {(close) => (
-                                <ProjectProperty
-                                    disabled={busy}
-                                    error={errors['creator']}
-                                    required
-                                    submitLabel="Add creator's name"
-                                    title="Please provide your name"
-                                    value={creator}
-                                    onSubmit={(newCreator) => {
-                                        OpenDataPayload.pick({
-                                            creator: true,
-                                        }).parse({
-                                            creator: newCreator,
-                                        })
-
-                                        setErrors((errors) => {
-                                            delete errors.creator
-                                        })
-
-                                        update((project) => {
-                                            project.creator = newCreator
-                                        })
-
-                                        close()
-                                    }}
-                                />
-                            )}
-                        </DetailDropdown>
+                        />
                     </li>
                     <li>
-                        <DetailDropdown
-                            icon={<DetailIcon name="web" />}
+                        <PropertyDropdown
+                            disabled={busy}
+                            error={errors['contact.url']}
+                            onChange={() => {
+                                resetError('contact.url')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.url')
+                            }}
+                            onSubmit={(value) => {
+                                resetError('contact.url')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { url: value },
+                                    })
+                                })
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: {
+                                            url: value,
+                                        },
+                                    })
+                                })
+
+                                update((project) => {
+                                    project.contact.url = value
+                                })
+                            }}
+                            submitLabel="Add site URL"
+                            title="Please add a site URL"
+                            toggleIcon={<PropertyIcon name="web" />}
                             value={contact.url}
                             valuePlaceholder="Site URL"
-                            onClose={() => {
-                                setErrors((errors) => {
-                                    delete errors['contact.url']
-                                })
-                            }}
-                        >
-                            {(close) => (
-                                <ProjectProperty
-                                    disabled={busy}
-                                    error={errors['contact.url']}
-                                    placeholder="https://siteinfo.com"
-                                    submitLabel="Add site URL"
-                                    title="Please add a site URL"
-                                    value={contact.url}
-                                    onSubmit={(url) => {
-                                        OpenDataPayload.pick({
-                                            contact: true,
-                                        }).parse({
-                                            contact: {
-                                                url,
-                                            },
-                                        })
-
-                                        setErrors((errors) => {
-                                            delete errors['contact.url']
-                                        })
-
-                                        update(({ contact }) => {
-                                            contact.url = url
-                                        })
-
-                                        close()
-                                    }}
-                                />
-                            )}
-                        </DetailDropdown>
+                            placeholder="https://siteinfo.com"
+                        />
                     </li>
                     <li>
-                        <DetailDropdown
-                            icon={<DetailIcon name="email" />}
+                        <PropertyDropdown
+                            disabled={busy}
+                            error={errors['contact.email']}
+                            onChange={() => {
+                                resetError('contact.email')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.email')
+                            }}
+                            onSubmit={(value) => {
+                                resetError('contact.email')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { email: value },
+                                    })
+                                })
+
+                                update((project) => {
+                                    project.contact.email = value
+                                })
+                            }}
+                            submitLabel="Add contact email"
+                            title="Please add a contact email"
+                            toggleIcon={<PropertyIcon name="email" />}
                             value={contact.email}
                             valuePlaceholder="Contact email"
-                            onClose={() => {
-                                setErrors((errors) => {
-                                    delete errors['contact.email']
-                                })
-                            }}
-                        >
-                            {(close) => (
-                                <ProjectProperty
-                                    disabled={busy}
-                                    error={errors['contact.email']}
-                                    placeholder="owner@example.com"
-                                    submitLabel="Add contact email"
-                                    title="Please add a contact email"
-                                    value={contact.email}
-                                    onSubmit={(email) => {
-                                        OpenDataPayload.pick({
-                                            contact: true,
-                                        }).parse({
-                                            contact: {
-                                                email,
-                                            },
-                                        })
-
-                                        setErrors((errors) => {
-                                            delete errors['contact.email']
-                                        })
-
-                                        update(({ contact }) => {
-                                            contact.email = email
-                                        })
-
-                                        close()
-                                    }}
-                                />
-                            )}
-                        </DetailDropdown>
+                            placeholder="owner@example.com"
+                        />
                     </li>
                     <li>
-                        <DetailDropdown
-                            icon={
-                                <DetailIcon
+                        <PropertyDropdown
+                            disabled={busy}
+                            error={errors['contact.twitter']}
+                            onChange={() => {
+                                resetError('contact.twitter')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.twitter')
+                            }}
+                            onSubmit={(value) => {
+                                resetError('contact.twitter')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { twitter: value },
+                                    })
+                                })
+
+                                update((project) => {
+                                    project.contact.twitter = value
+                                })
+                            }}
+                            submitLabel="Add Twitter link"
+                            title="Please add Twitter link"
+                            toggleIcon={
+                                <PropertyIcon
                                     name="twitter"
-                                    $color={contact.twitter ? '#1da1f2' : void 0}
+                                    $color={contact.twitter ? '#1da1f2' : undefined}
                                 />
                             }
-                            onClose={() => {
-                                setErrors((errors) => {
-                                    delete errors['contact.twitter']
-                                })
-                            }}
-                        >
-                            {(close) => (
-                                <ProjectProperty
-                                    disabled={busy}
-                                    error={errors['contact.twitter']}
-                                    submitLabel="Add Twitter link"
-                                    title="Please add Twitter link"
-                                    value={contact.twitter}
-                                    onSubmit={(twitter) => {
-                                        OpenDataPayload.pick({
-                                            contact: true,
-                                        }).parse({
-                                            contact: {
-                                                twitter,
-                                            },
-                                        })
-
-                                        setErrors((errors) => {
-                                            delete errors['contact.twitter']
-                                        })
-
-                                        update(({ contact }) => {
-                                            contact.twitter = twitter
-                                        })
-
-                                        close()
-                                    }}
-                                />
-                            )}
-                        </DetailDropdown>
+                            value={contact.twitter}
+                        />
                     </li>
                     <li>
-                        <DetailDropdown
-                            icon={
-                                <DetailIcon
+                        <PropertyDropdown
+                            disabled={busy}
+                            error={errors['contact.telegram']}
+                            onChange={() => {
+                                resetError('contact.telegram')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.telegram')
+                            }}
+                            onSubmit={(value) => {
+                                resetError('contact.telegram')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { telegram: value },
+                                    })
+                                })
+
+                                update((project) => {
+                                    project.contact.telegram = value
+                                })
+                            }}
+                            submitLabel="Add Telegram link"
+                            title="Please add Telegram link"
+                            toggleIcon={
+                                <PropertyIcon
                                     name="telegram"
                                     $color={contact.telegram ? '#2aabee' : void 0}
                                 />
                             }
-                            onClose={() => {
-                                setErrors((errors) => {
-                                    delete errors['contact.telegram']
-                                })
-                            }}
-                        >
-                            {(close) => (
-                                <ProjectProperty
-                                    disabled={busy}
-                                    error={errors['contact.telegram']}
-                                    submitLabel="Telegram link"
-                                    title="Please add Telegram link"
-                                    value={contact.telegram}
-                                    onSubmit={(telegram) => {
-                                        OpenDataPayload.pick({
-                                            contact: true,
-                                        }).parse({
-                                            contact: {
-                                                telegram,
-                                            },
-                                        })
-
-                                        setErrors((errors) => {
-                                            delete errors['contact.telegram']
-                                        })
-
-                                        update(({ contact }) => {
-                                            contact.telegram = telegram
-                                        })
-
-                                        close()
-                                    }}
-                                />
-                            )}
-                        </DetailDropdown>
+                            value={contact.telegram}
+                        />
                     </li>
                     <li>
-                        <DetailDropdown
-                            icon={
-                                <DetailIcon
+                        <PropertyDropdown
+                            disabled={busy}
+                            error={errors['contact.reddit']}
+                            onChange={() => {
+                                resetError('contact.reddit')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.reddit')
+                            }}
+                            onSubmit={(value) => {
+                                resetError('contact.reddit')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { reddit: value },
+                                    })
+                                })
+
+                                update((project) => {
+                                    project.contact.reddit = value
+                                })
+                            }}
+                            submitLabel="Add Reddit link"
+                            title="Please add Reddit link"
+                            toggleIcon={
+                                <PropertyIcon
                                     name="reddit"
                                     $color={contact.reddit ? '#ff5700' : void 0}
                                 />
                             }
-                            onClose={() => {
-                                setErrors((errors) => {
-                                    delete errors['contact.reddit']
-                                })
-                            }}
-                        >
-                            {(close) => (
-                                <ProjectProperty
-                                    disabled={busy}
-                                    error={errors['contact.reddit']}
-                                    submitLabel="Reddit link"
-                                    title="Please add Reddit link"
-                                    value={contact.reddit}
-                                    onSubmit={(reddit) => {
-                                        OpenDataPayload.pick({
-                                            contact: true,
-                                        }).parse({
-                                            contact: {
-                                                reddit,
-                                            },
-                                        })
-
-                                        setErrors((errors) => {
-                                            delete errors['contact.reddit']
-                                        })
-
-                                        update(({ contact }) => {
-                                            contact.reddit = reddit
-                                        })
-
-                                        close()
-                                    }}
-                                />
-                            )}
-                        </DetailDropdown>
+                            value={contact.reddit}
+                        />
                     </li>
                     <li>
-                        <DetailDropdown
-                            icon={
-                                <DetailIcon
+                        <PropertyDropdown
+                            disabled={busy}
+                            error={errors['contact.linkedIn']}
+                            onChange={() => {
+                                resetError('contact.linkedIn')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.linkedIn')
+                            }}
+                            onSubmit={(value) => {
+                                resetError('contact.linkedIn')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { linkedIn: value },
+                                    })
+                                })
+
+                                update((project) => {
+                                    project.contact.linkedIn = value
+                                })
+                            }}
+                            submitLabel="Add LinkedIn link"
+                            title="Please add LinkedIn link"
+                            toggleIcon={
+                                <PropertyIcon
                                     name="linkedin"
                                     $color={contact.linkedIn ? '#0077b5' : void 0}
                                 />
                             }
-                            onClose={() => {
-                                setErrors((errors) => {
-                                    delete errors['contact.linkedIn']
-                                })
-                            }}
-                        >
-                            {(close) => (
-                                <ProjectProperty
-                                    disabled={busy}
-                                    error={errors['contact.linkedIn']}
-                                    value={contact.linkedIn}
-                                    title="Please add LinkedIn link"
-                                    submitLabel="LinkedIn link"
-                                    onSubmit={(linkedIn) => {
-                                        OpenDataPayload.pick({
-                                            contact: true,
-                                        }).parse({
-                                            contact: {
-                                                linkedIn,
-                                            },
-                                        })
-
-                                        setErrors((errors) => {
-                                            delete errors['contact.linkedIn']
-                                        })
-
-                                        update(({ contact }) => {
-                                            contact.linkedIn = linkedIn
-                                        })
-
-                                        close()
-                                    }}
-                                />
-                            )}
-                        </DetailDropdown>
+                            value={contact.linkedIn}
+                        />
                     </li>
-                </DetailDropdownList>
+                </PropertyDropdownList>
             </DetailsWrap>
         </HeroContainer>
     )

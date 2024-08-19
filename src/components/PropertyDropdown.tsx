@@ -16,6 +16,7 @@ import { COLORS } from '~/shared/utils/styled'
 interface PassthroughProps {
     disabled?: boolean
     error?: string
+    onChange?(): void
     onSubmit?(value: string): void
     placeholder?: string
     required?: boolean
@@ -32,11 +33,13 @@ interface PropertyPopoverProps extends PassthroughProps {
 }
 
 interface PropertyDropdownProps extends PassthroughProps {
+    onDismiss?(): void
     valuePlaceholder?: string
     toggleIcon?: ReactNode
 }
 
 export function PropertyDropdown({
+    onDismiss,
     toggleIcon = <></>,
     value = '',
     valuePlaceholder = '',
@@ -51,6 +54,8 @@ export function PropertyDropdown({
             type="button"
             onClick={() => {
                 setOpen(true)
+
+                onDismiss?.()
             }}
             $active={open}
         >
@@ -84,7 +89,8 @@ export function PropertyDropdown({
 function PropertyPopover(props: PropertyPopoverProps) {
     const {
         disabled = false,
-        error: errorProp = '',
+        error = '',
+        onChange,
         onDismiss,
         onSubmit,
         open = false,
@@ -96,15 +102,6 @@ function PropertyPopover(props: PropertyPopoverProps) {
         x,
         y,
     } = props
-
-    const [error, setError] = useState(errorProp)
-
-    useEffect(
-        function setErrorFromUpstream() {
-            setError(errorProp)
-        },
-        [errorProp],
-    )
 
     const [value, setValue] = useState(valueProp)
 
@@ -169,7 +166,18 @@ function PropertyPopover(props: PropertyPopoverProps) {
 
                         e.stopPropagation()
 
-                        onSubmit?.(value)
+                        try {
+                            onSubmit?.(value)
+                        } catch (e) {
+                            /**
+                             * If `onSubmit` explodes we don't dismiss the dropdown. Devs can
+                             * do whatever they want with it. It's a feature. ;)
+                             */
+
+                            console.warn('Failed to submit property value', e)
+
+                            return
+                        }
 
                         onDismiss?.()
                     }}
@@ -200,7 +208,7 @@ function PropertyPopover(props: PropertyPopoverProps) {
                                 if (e.key === 'Escape' && value !== valueProp) {
                                     setValue(valueProp)
 
-                                    setError(errorProp)
+                                    onChange?.()
 
                                     e.stopPropagation()
                                 }
@@ -208,7 +216,7 @@ function PropertyPopover(props: PropertyPopoverProps) {
                             onChange={(e) => {
                                 setValue(e.target.value)
 
-                                setError('')
+                                onChange?.()
                             }}
                         />
                         <EnterButton
@@ -475,13 +483,14 @@ export const PropertyDropdownList = styled.ul`
 `
 
 interface PropertyDisplayProps {
-    icon?: ReactNode
-    href: string
+    dark?: boolean
     displayValue?: string
+    href: string
+    icon?: ReactNode
 }
 
 export function PropertyDisplay(props: PropertyDisplayProps) {
-    const { icon = <></>, href = '#', displayValue } = props
+    const { icon = <></>, href = '#', displayValue, dark = false } = props
 
     const toggleProps: Pick<
         AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -503,10 +512,15 @@ export function PropertyDisplay(props: PropertyDisplayProps) {
                     e.preventDefault()
                 }
             }}
-            $dark
+            $dark={dark}
         >
             <IconWrap>{icon}</IconWrap>
             {displayValue && <Value>{displayValue}</Value>}
         </Toggle>
     )
 }
+
+export const PropertyIcon = styled(SvgIcon)<{ $color?: string }>`
+    color: ${({ $color = 'currentColor' }) => $color};
+    transition: 350ms color;
+`

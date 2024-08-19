@@ -1,7 +1,11 @@
 import React from 'react'
 import Markdown from 'react-markdown'
 import styled from 'styled-components'
-import { DetailDisplay, DetailIcon, List } from '~/components/DetailDropdown'
+import {
+    PropertyDisplay,
+    PropertyDropdownList,
+    PropertyIcon,
+} from '~/components/PropertyDropdown'
 import {
     ProjectHeroContainer,
     ProjectHeroImage,
@@ -54,46 +58,48 @@ export default function ProjectHero2({
                 </Markdown>
             </MarkdownWrap>
             <ProjectHeroMetadataContainer>
-                <List>
+                <PropertyDropdownList>
                     {contact.url && (
-                        <DetailDisplay
-                            icon={<DetailIcon name="web" />}
-                            value={contact.url}
+                        <PropertyDisplay
+                            icon={<PropertyIcon name="web" />}
+                            displayValue={contact.url
+                                .replace(/^https?:\/\//, '')
+                                .replace(/\/+$/, '')}
                             href={contact.url}
                         />
                     )}
                     {contact.email && (
-                        <DetailDisplay
-                            icon={<DetailIcon name="email" />}
-                            value={contact.email}
+                        <PropertyDisplay
+                            icon={<PropertyIcon name="email" />}
+                            displayValue={contact.email}
                             href={`mailto:${contact.email}`}
                         />
                     )}
                     {contact.twitter && (
-                        <DetailDisplay
-                            icon={<DetailIcon name="twitter" $color="#1da1f2" />}
+                        <PropertyDisplay
+                            icon={<PropertyIcon name="twitter" $color="#1da1f2" />}
                             href={contact.twitter}
                         />
                     )}
                     {contact.telegram && (
-                        <DetailDisplay
-                            icon={<DetailIcon name="telegram" $color="#2aabee" />}
+                        <PropertyDisplay
+                            icon={<PropertyIcon name="telegram" $color="#2aabee" />}
                             href={contact.telegram}
                         />
                     )}
                     {contact.reddit && (
-                        <DetailDisplay
-                            icon={<DetailIcon name="reddit" $color="#ff5700" />}
+                        <PropertyDisplay
+                            icon={<PropertyIcon name="reddit" $color="#ff5700" />}
                             href={contact.reddit}
                         />
                     )}
                     {contact.linkedIn && (
-                        <DetailDisplay
-                            icon={<DetailIcon name="linkedin" $color="#0077b5" />}
+                        <PropertyDisplay
+                            icon={<PropertyIcon name="linkedin" $color="#0077b5" />}
                             href={contact.linkedIn}
                         />
                     )}
-                </List>
+                </PropertyDropdownList>
             </ProjectHeroMetadataContainer>
         </ProjectHeroContainer>
     )
