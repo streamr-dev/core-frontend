@@ -150,7 +150,7 @@ export type GetStreamsQueryVariables = Exact<{
 }>;
 
 
-export type GetStreamsQuery = { __typename?: 'Query', streams: { __typename?: 'Streams', cursor?: string | null, items: Array<{ __typename?: 'Stream', id: string, description?: string | null, peerCount: number, messagesPerSecond: number, subscriberCount?: number | null, publisherCount?: number | null }> } };
+export type GetStreamsQuery = { __typename?: 'Query', streams: { __typename?: 'Streams', cursor?: string | null, items: Array<{ __typename?: 'Stream', bytesPerSecond: number, description?: string | null, id: string, messagesPerSecond: number, peerCount: number, publisherCount?: number | null, subscriberCount?: number | null }> } };
 
 export type GetGlobalStreamsStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -170,12 +170,13 @@ export const GetStreamsDocument = gql`
     cursor: $cursor
   ) {
     items {
-      id
+      bytesPerSecond
       description
-      peerCount
+      id
       messagesPerSecond
-      subscriberCount
+      peerCount
       publisherCount
+      subscriberCount
     }
     cursor
   }

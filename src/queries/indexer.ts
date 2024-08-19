@@ -20,12 +20,13 @@ gql`
             cursor: $cursor
         ) {
             items {
-                id
+                bytesPerSecond
                 description
-                peerCount
+                id
                 messagesPerSecond
-                subscriberCount
+                peerCount
                 publisherCount
+                subscriberCount
             }
             cursor
         }
