@@ -66,23 +66,6 @@ interface Form {
     linkedIn: string
 }
 
-function isFormKey(value: unknown): value is keyof Form {
-    return (
-        value === 'cut' ||
-        value === 'description' ||
-        value === 'imageToUpload' ||
-        value === 'name' ||
-        value === 'redundancyFactor' ||
-        value === 'url' ||
-        value === 'email' ||
-        value === 'twitter' ||
-        value === 'x' ||
-        value === 'telegram' ||
-        value === 'reddit' ||
-        value === 'linkedIn'
-    )
-}
-
 const Validator = z.object({
     cut: z.coerce
         .number()

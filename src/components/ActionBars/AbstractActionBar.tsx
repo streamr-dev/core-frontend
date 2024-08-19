@@ -7,7 +7,6 @@ import {
     NetworkActionBarTitle,
 } from '~/components/ActionBars/NetworkActionBar.styles'
 import { Separator } from '~/components/Separator'
-import { TooltipIconWrap } from '~/components/Tooltip'
 import { COLORS, LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
 import { goBack } from '~/utils'
 
@@ -65,19 +64,6 @@ export function AbstractActionBar({
         </Root>
     )
 }
-
-export const Pad = styled.div`
-    padding: 20px 0;
-
-    ${TooltipIconWrap} svg {
-        height: 18px;
-        width: 18px;
-    }
-
-    @media ${TABLET} {
-        padding: 32px 40px;
-    }
-`
 
 const Root = styled.div`
     background: #fff;
