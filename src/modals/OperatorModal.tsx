@@ -6,9 +6,12 @@ import { ZodError, z } from 'zod'
 import { Alert } from '~/components/Alert'
 import { Button } from '~/components/Button'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
-import { DetailIcon } from '~/components/DetailDropdown'
 import { Hint } from '~/components/Hint'
-import { PropertyDropdown, PropertyDropdownList } from '~/components/PropertyDropdown'
+import {
+    PropertyDropdown,
+    PropertyDropdownList,
+    PropertyIcon,
+} from '~/components/PropertyDropdown'
 import { BehindIndexError } from '~/errors/BehindIndexError'
 import { getParsedOperatorByOwnerAddress } from '~/getters'
 import FormModal, {
@@ -450,7 +453,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     placeholder="https://siteinfo.com"
                                     submitLabel="Add site URL"
                                     title="Add a site URL"
-                                    toggleIcon={<DetailIcon name="web" />}
+                                    toggleIcon={<PropertyIcon name="web" />}
                                     value={nextData.url}
                                     valuePlaceholder="Site URL"
                                 />
@@ -467,7 +470,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     placeholder="owner@example.com"
                                     submitLabel="Add contact email"
                                     title="Add a contact email"
-                                    toggleIcon={<DetailIcon name="email" />}
+                                    toggleIcon={<PropertyIcon name="email" />}
                                     value={nextData.email}
                                     valuePlaceholder="Contact email"
                                 />
@@ -484,7 +487,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     submitLabel="Add Twitter link"
                                     title="Add Twitter link"
                                     toggleIcon={
-                                        <DetailIcon
+                                        <PropertyIcon
                                             name="twitter"
                                             $color={
                                                 nextData.twitter ? '#1da1f2' : undefined
@@ -505,7 +508,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     }}
                                     submitLabel="Add X link"
                                     title="Add X link"
-                                    toggleIcon={<DetailIcon name="xCom" />}
+                                    toggleIcon={<PropertyIcon name="xCom" />}
                                     value={nextData.x}
                                 />
                             </li>
@@ -521,7 +524,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     submitLabel="Add Telegram link"
                                     title="Add Telegram link"
                                     toggleIcon={
-                                        <DetailIcon
+                                        <PropertyIcon
                                             name="telegram"
                                             $color={
                                                 nextData.telegram ? '#2aabee' : undefined
@@ -543,7 +546,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     submitLabel="Add Reddit link"
                                     title="Add Reddit link"
                                     toggleIcon={
-                                        <DetailIcon
+                                        <PropertyIcon
                                             name="reddit"
                                             $color={
                                                 nextData.reddit ? '#ff5700' : undefined
@@ -565,7 +568,7 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                     submitLabel="Add LinkedIn link"
                                     title="Add LinkedIn link"
                                     toggleIcon={
-                                        <DetailIcon
+                                        <PropertyIcon
                                             name="linkedin"
                                             $color={
                                                 nextData.linkedIn ? '#0077b5' : undefined

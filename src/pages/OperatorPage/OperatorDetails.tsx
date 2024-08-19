@@ -3,10 +3,13 @@ import styled, { css } from 'styled-components'
 import { Buttonesque } from '~/components/Button'
 import ColoredBox from '~/components/ColoredBox'
 import { CopyButton } from '~/components/CopyButton'
-import { DetailIcon } from '~/components/DetailDropdown'
 import { FallbackImage } from '~/components/FallbackImage'
 import { LayoutColumn } from '~/components/Layout'
-import { PropertyDisplay, PropertyDropdownList } from '~/components/PropertyDropdown'
+import {
+    PropertyDisplay,
+    PropertyDropdownList,
+    PropertyIcon,
+} from '~/components/PropertyDropdown'
 import { Separator } from '~/components/Separator'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { Tooltip } from '~/components/Tooltip'
@@ -56,7 +59,8 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                 <PropertyDropdownList>
                                     {metadata.url && (
                                         <PropertyDisplay
-                                            icon={<DetailIcon name="web" />}
+                                            dark
+                                            icon={<PropertyIcon name="web" />}
                                             displayValue={metadata.url
                                                 .replace(/^https?:\/\//, '')
                                                 .replace(/\/+$/, '')}
@@ -65,15 +69,17 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                     )}
                                     {metadata.email && (
                                         <PropertyDisplay
-                                            icon={<DetailIcon name="email" />}
+                                            dark
+                                            icon={<PropertyIcon name="email" />}
                                             displayValue={metadata.email}
                                             href={`mailto:${metadata.email}`}
                                         />
                                     )}
                                     {metadata.twitter && (
                                         <PropertyDisplay
+                                            dark
                                             icon={
-                                                <DetailIcon
+                                                <PropertyIcon
                                                     name="twitter"
                                                     $color="#1da1f2"
                                                 />
@@ -83,8 +89,9 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                     )}
                                     {metadata.x && (
                                         <PropertyDisplay
+                                            dark
                                             icon={
-                                                <DetailIcon
+                                                <PropertyIcon
                                                     name="xCom"
                                                     $color="#ffffff"
                                                 />
@@ -94,8 +101,9 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                     )}
                                     {metadata.telegram && (
                                         <PropertyDisplay
+                                            dark
                                             icon={
-                                                <DetailIcon
+                                                <PropertyIcon
                                                     name="telegram"
                                                     $color="#2aabee"
                                                 />
@@ -105,8 +113,9 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                     )}
                                     {metadata.reddit && (
                                         <PropertyDisplay
+                                            dark
                                             icon={
-                                                <DetailIcon
+                                                <PropertyIcon
                                                     name="reddit"
                                                     $color="#ff5700"
                                                 />
@@ -116,8 +125,9 @@ export function OperatorDetails({ operator }: OperatorDetailsProps) {
                                     )}
                                     {metadata.linkedIn && (
                                         <PropertyDisplay
+                                            dark
                                             icon={
-                                                <DetailIcon
+                                                <PropertyIcon
                                                     name="linkedin"
                                                     $color="#0077b5"
                                                 />
