@@ -414,9 +414,11 @@ export function useGlobalStreamStatsQuery() {
                     query: GetGlobalStreamsStatsDocument,
                 })
 
-                const { messagesPerSecond, streamCount } = result.data.summary
+                const { bytesPerSecond, messagesPerSecond, streamCount } =
+                    result.data.summary
 
                 return {
+                    bytesPerSecond,
                     messagesPerSecond,
                     streamCount,
                 }

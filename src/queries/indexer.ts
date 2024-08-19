@@ -33,8 +33,9 @@ gql`
 
     query getGlobalStreamsStats {
         summary {
-            streamCount
+            bytesPerSecond
             messagesPerSecond
+            streamCount
         }
     }
 `
