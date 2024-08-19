@@ -20,12 +20,13 @@ gql`
             cursor: $cursor
         ) {
             items {
-                id
+                bytesPerSecond
                 description
-                peerCount
+                id
                 messagesPerSecond
-                subscriberCount
+                peerCount
                 publisherCount
+                subscriberCount
             }
             cursor
         }
@@ -33,8 +34,9 @@ gql`
 
     query getGlobalStreamsStats {
         summary {
-            streamCount
+            bytesPerSecond
             messagesPerSecond
+            streamCount
         }
     }
 `

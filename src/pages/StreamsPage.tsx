@@ -21,12 +21,12 @@ import {
     useStreamsQuery,
 } from '~/hooks/streams'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { Route as R, routeOptions } from '~/utils/routes'
 import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, TABLET } from '~/shared/utils/styled'
 import { useCurrentChainFullName, useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
 
 export function StreamsPage() {
     const [search, setSearch] = useState('')
@@ -72,12 +72,14 @@ export function StreamsPage() {
     const globalStreamCount =
         tab === StreamsTabOption.All && globalStats ? globalStats.streamCount : undefined
 
-    const globalMps =
+    const [globalMps, globalBps] =
         tab === StreamsTabOption.All && globalStats
-            ? globalStats.messagesPerSecond
-            : undefined
+            ? [globalStats.messagesPerSecond, globalStats.bytesPerSecond]
+            : [undefined, undefined]
 
     const chainFullName = useCurrentChainFullName()
+
+    const [throughputMode, setThroughputMode] = useState<'bps' | 'mps'>('bps')
 
     return (
         <Layout pageTitle="Streams">
@@ -126,12 +128,44 @@ export function StreamsPage() {
                             <TitleBar
                                 label={globalStreamCount}
                                 aux={
-                                    globalMps != null && (
-                                        <MessagesPerSecondDisplay>
-                                            Total msg/s{' '}
-                                            <strong>{Math.floor(globalMps)}</strong>
-                                        </MessagesPerSecondDisplay>
-                                    )
+                                    <>
+                                        {throughputMode === 'mps' &&
+                                            typeof globalMps === 'number' && (
+                                                <ThroughputDisplay
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (
+                                                            typeof globalBps === 'number'
+                                                        ) {
+                                                            setThroughputMode('bps')
+                                                        }
+                                                    }}
+                                                >
+                                                    <span>Throughput</span>
+                                                    <strong>
+                                                        {Math.floor(globalMps)} msg/s
+                                                    </strong>
+                                                </ThroughputDisplay>
+                                            )}
+                                        {throughputMode === 'bps' &&
+                                            typeof globalBps === 'number' && (
+                                                <ThroughputDisplay
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (
+                                                            typeof globalMps === 'number'
+                                                        ) {
+                                                            setThroughputMode('mps')
+                                                        }
+                                                    }}
+                                                >
+                                                    <span>Throughput</span>
+                                                    <strong>
+                                                        {formatBytes(globalBps)}
+                                                    </strong>
+                                                </ThroughputDisplay>
+                                            )}
+                                    </>
                                 }
                             >
                                 {tab === StreamsTabOption.Your
@@ -154,15 +188,55 @@ export function StreamsPage() {
     )
 }
 
-const MessagesPerSecondDisplay = styled.div`
+function formatBytes(value: number) {
+    if (value > 1048576) {
+        return `${(value / 1048576).toFixed(3)} MB/s`
+    }
+
+    if (value > 1024) {
+        return `${(value / 1024).toFixed(2)} KB/s`
+    }
+
+    return `${value} B/s`
+}
+
+const LabelledThroughputDisplayMq = '(min-width: 430px)'
+
+const VisibleThroughputDisplayMq = '(min-width: 400px)'
+
+const ThroughputDisplay = styled.button`
+    appearance: none;
+    border: 0;
     align-items: center;
     background: ${COLORS.secondary};
     border-radius: 16px;
-    display: flex;
+    display: none;
     font-size: 14px;
-    gap: 4px;
+    gap: 0.4em;
     height: 32px;
+    min-width: 0;
     padding: 0 12px;
+
+    span {
+        display: none;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    strong {
+        white-space: nowrap;
+    }
+
+    @media ${VisibleThroughputDisplayMq} {
+        display: flex;
+    }
+
+    @media ${LabelledThroughputDisplayMq} {
+        span {
+            display: inline;
+        }
+    }
 `
 
 const CreateStreamButtonWrap = styled.div`
