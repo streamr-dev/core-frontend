@@ -16,6 +16,7 @@ import { COLORS } from '~/shared/utils/styled'
 interface PassthroughProps {
     disabled?: boolean
     error?: string
+    onChange?(): void
     onSubmit?(value: string): void
     placeholder?: string
     required?: boolean
@@ -85,15 +86,11 @@ export function PropertyDropdown({
     )
 }
 
-/**
- * @here We have to make sure we manage errors outside. Operator modal needs a container
- * for its errors. There should not be any error state here.
- */
-
 function PropertyPopover(props: PropertyPopoverProps) {
     const {
         disabled = false,
-        error: errorProp = '',
+        error = '',
+        onChange,
         onDismiss,
         onSubmit,
         open = false,
@@ -105,15 +102,6 @@ function PropertyPopover(props: PropertyPopoverProps) {
         x,
         y,
     } = props
-
-    const [error, setError] = useState(errorProp)
-
-    useEffect(
-        function setErrorFromUpstream() {
-            setError(errorProp)
-        },
-        [errorProp, open],
-    )
 
     const [value, setValue] = useState(valueProp)
 
@@ -220,7 +208,7 @@ function PropertyPopover(props: PropertyPopoverProps) {
                                 if (e.key === 'Escape' && value !== valueProp) {
                                     setValue(valueProp)
 
-                                    setError(errorProp)
+                                    onChange?.()
 
                                     e.stopPropagation()
                                 }
@@ -228,7 +216,7 @@ function PropertyPopover(props: PropertyPopoverProps) {
                             onChange={(e) => {
                                 setValue(e.target.value)
 
-                                setError('')
+                                onChange?.()
                             }}
                         />
                         <EnterButton

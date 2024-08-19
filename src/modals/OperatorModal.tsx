@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
 import { randomHex } from 'web3-utils'
-import { ZodError, z } from 'zod'
+import { z } from 'zod'
 import { Alert } from '~/components/Alert'
 import { Button } from '~/components/Button'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
@@ -162,38 +162,40 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
         (nextData.imageToUpload && URL.createObjectURL(nextData.imageToUpload)) ||
         operator?.metadata.imageUrl
 
-    const [finalData, errors]:
-        | [ReturnType<typeof Validator.parse>, null]
-        | [null, Partial<Record<keyof Form, string>>] = (() => {
+    const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({})
+
+    function resetError(key: keyof Form) {
+        setErrors(({ [key]: _, ...c }) => c)
+    }
+
+    function validate(fn: () => void) {
         try {
-            return [Validator.parse(nextData), null]
+            fn()
         } catch (e) {
-            if (!(e instanceof ZodError)) {
-                throw e
+            if (e instanceof z.ZodError) {
+                const newErrors = {}
+
+                e.issues.forEach(({ path, message }) => {
+                    newErrors[path.join('.')] = message
+                })
+
+                setErrors((existingErrors) => ({
+                    ...existingErrors,
+                    ...newErrors,
+                }))
             }
 
-            const result: Partial<Record<keyof Form, string>> = {}
-
-            e.issues.forEach(({ path: [key], message }) => {
-                if (!isFormKey(key)) {
-                    return void console.warn('Unresolved form issue', key, message)
-                }
-
-                if (!changelog[key]) {
-                    /**
-                     * Ignore fields that did not change.
-                     */
-                    return
-                }
-
-                if (!result[key]) {
-                    result[key] = message
-                }
-            })
-
-            return [null, result]
+            throw e
         }
-    })()
+    }
+
+    const finalData = useMemo(() => {
+        try {
+            return Validator.parse(nextData)
+        } catch (_) {
+            return null
+        }
+    }, [nextData])
 
     const walletAddress = useWalletAccount()
 
@@ -444,7 +446,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.url}
+                                    onChange={() => {
+                                        resetError('url')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('url')
+                                    }}
                                     onSubmit={(url) => {
+                                        resetError('url')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                url: true,
+                                            }).parse({ url })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             url,
@@ -461,7 +477,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.email}
+                                    onChange={() => {
+                                        resetError('email')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('email')
+                                    }}
                                     onSubmit={(email) => {
+                                        resetError('email')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                email: true,
+                                            }).parse({ email })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             email,
@@ -478,7 +508,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.twitter}
+                                    onChange={() => {
+                                        resetError('twitter')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('twitter')
+                                    }}
                                     onSubmit={(twitter) => {
+                                        resetError('twitter')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                twitter: true,
+                                            }).parse({ twitter })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             twitter,
@@ -500,7 +544,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.x}
+                                    onChange={() => {
+                                        resetError('x')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('x')
+                                    }}
                                     onSubmit={(x) => {
+                                        resetError('x')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                x: true,
+                                            }).parse({ x })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             x,
@@ -515,7 +573,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.telegram}
+                                    onChange={() => {
+                                        resetError('telegram')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('telegram')
+                                    }}
                                     onSubmit={(telegram) => {
+                                        resetError('telegram')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                telegram: true,
+                                            }).parse({ telegram })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             telegram,
@@ -537,7 +609,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.reddit}
+                                    onChange={() => {
+                                        resetError('reddit')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('reddit')
+                                    }}
                                     onSubmit={(reddit) => {
+                                        resetError('reddit')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                reddit: true,
+                                            }).parse({ reddit })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             reddit,
@@ -559,7 +645,21 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                             <li>
                                 <PropertyDropdown
                                     error={errors?.linkedIn}
+                                    onChange={() => {
+                                        resetError('linkedIn')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('linkedIn')
+                                    }}
                                     onSubmit={(linkedIn) => {
+                                        resetError('linkedIn')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                linkedIn: true,
+                                            }).parse({ linkedIn })
+                                        })
+
                                         updateNextData((c) => ({
                                             ...c,
                                             linkedIn,

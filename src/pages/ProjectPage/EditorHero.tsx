@@ -69,6 +69,12 @@ export default function EditorHero() {
         }
     }
 
+    function resetError(key: string) {
+        setErrors((errors) => {
+            delete errors[key]
+        })
+    }
+
     return (
         <HeroContainer>
             <ImageWrap>
@@ -156,15 +162,14 @@ export default function EditorHero() {
                         <PropertyDropdown
                             disabled={busy}
                             error={errors.creator}
+                            onChange={() => {
+                                resetError('creator')
+                            }}
                             onDismiss={() => {
-                                setErrors((errors) => {
-                                    delete errors.creator
-                                })
+                                resetError('creator')
                             }}
                             onSubmit={(value) => {
-                                setErrors((errors) => {
-                                    delete errors.creator
-                                })
+                                resetError('creator')
 
                                 validate(() => {
                                     OpenDataPayload.pick({
@@ -190,14 +195,21 @@ export default function EditorHero() {
                         <PropertyDropdown
                             disabled={busy}
                             error={errors['contact.url']}
+                            onChange={() => {
+                                resetError('contact.url')
+                            }}
                             onDismiss={() => {
-                                setErrors((errors) => {
-                                    delete errors['contact.url']
-                                })
+                                resetError('contact.url')
                             }}
                             onSubmit={(value) => {
-                                setErrors((errors) => {
-                                    delete errors['contact.url']
+                                resetError('contact.url')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { url: value },
+                                    })
                                 })
 
                                 validate(() => {
@@ -226,7 +238,23 @@ export default function EditorHero() {
                         <PropertyDropdown
                             disabled={busy}
                             error={errors['contact.email']}
+                            onChange={() => {
+                                resetError('contact.email')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.email')
+                            }}
                             onSubmit={(value) => {
+                                resetError('contact.email')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { email: value },
+                                    })
+                                })
+
                                 update((project) => {
                                     project.contact.email = value
                                 })
@@ -243,7 +271,23 @@ export default function EditorHero() {
                         <PropertyDropdown
                             disabled={busy}
                             error={errors['contact.twitter']}
+                            onChange={() => {
+                                resetError('contact.twitter')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.twitter')
+                            }}
                             onSubmit={(value) => {
+                                resetError('contact.twitter')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { twitter: value },
+                                    })
+                                })
+
                                 update((project) => {
                                     project.contact.twitter = value
                                 })
@@ -263,7 +307,23 @@ export default function EditorHero() {
                         <PropertyDropdown
                             disabled={busy}
                             error={errors['contact.telegram']}
+                            onChange={() => {
+                                resetError('contact.telegram')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.telegram')
+                            }}
                             onSubmit={(value) => {
+                                resetError('contact.telegram')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { telegram: value },
+                                    })
+                                })
+
                                 update((project) => {
                                     project.contact.telegram = value
                                 })
@@ -283,7 +343,23 @@ export default function EditorHero() {
                         <PropertyDropdown
                             disabled={busy}
                             error={errors['contact.reddit']}
+                            onChange={() => {
+                                resetError('contact.reddit')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.reddit')
+                            }}
                             onSubmit={(value) => {
+                                resetError('contact.reddit')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { reddit: value },
+                                    })
+                                })
+
                                 update((project) => {
                                     project.contact.reddit = value
                                 })
@@ -303,7 +379,23 @@ export default function EditorHero() {
                         <PropertyDropdown
                             disabled={busy}
                             error={errors['contact.linkedIn']}
+                            onChange={() => {
+                                resetError('contact.linkedIn')
+                            }}
+                            onDismiss={() => {
+                                resetError('contact.linkedIn')
+                            }}
                             onSubmit={(value) => {
+                                resetError('contact.linkedIn')
+
+                                validate(() => {
+                                    OpenDataPayload.pick({
+                                        contact: true,
+                                    }).parse({
+                                        contact: { linkedIn: value },
+                                    })
+                                })
+
                                 update((project) => {
                                     project.contact.linkedIn = value
                                 })
