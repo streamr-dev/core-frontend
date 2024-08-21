@@ -141,7 +141,7 @@ export function StreamsPage() {
                                                         }
                                                     }}
                                                 >
-                                                    <span>Throughput</span>
+                                                    <span>Data rate</span>
                                                     <strong>
                                                         {Math.floor(globalMps)} msg/s
                                                     </strong>
@@ -159,7 +159,7 @@ export function StreamsPage() {
                                                         }
                                                     }}
                                                 >
-                                                    <span>Throughput</span>
+                                                    <span>Data rate</span>
                                                     <strong>
                                                         {formatBytes(globalBps)}
                                                     </strong>
