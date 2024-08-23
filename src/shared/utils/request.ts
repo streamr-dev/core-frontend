@@ -2,8 +2,6 @@ import axios from 'axios'
 import merge from 'lodash/merge'
 import RequestError from '~/shared/errors/RequestError'
 
-const getData = ({ data }: { data: any }): any => data
-
 export type RequestParams = {
     url: string
     method?: 'get' | 'post' | 'put' | 'delete'
@@ -32,9 +30,7 @@ export default async function request({
     const requestOptions = merge(defaultOptions, options)
 
     try {
-        const res = await axios.request({ ...requestOptions, url, method, data })
-
-        return getData(res)
+        return (await axios.request({ ...requestOptions, url, method, data })).data
     } catch (e) {
         throw new RequestError(e)
     }
