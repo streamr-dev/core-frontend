@@ -10,13 +10,15 @@ export type RequestParams = {
     data?: any
     options?: Record<string, any>
 }
-export default function request({
+export default async function request({
     url,
     options,
     method = 'get',
     data = null,
 }: RequestParams): Promise<any> {
-    const defaultOptions: { headers: { [key: string]: string } } = {
+    const defaultOptions: {
+        headers: Partial<Record<'Content-Type' | (string & {}), string>>
+    } = {
         headers: {},
     }
 
@@ -27,12 +29,13 @@ export default function request({
         }
     }
 
-    // Merge options with defaults
     const requestOptions = merge(defaultOptions, options)
-    return axios
-        .request({ ...requestOptions, url, method, data })
-        .then((res) => getData(res))
-        .catch((res: any) => {
-            throw new RequestError(res)
-        })
+
+    try {
+        const res = await axios.request({ ...requestOptions, url, method, data })
+
+        return getData(res)
+    } catch (e) {
+        throw new RequestError(e)
+    }
 }
