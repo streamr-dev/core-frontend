@@ -13,7 +13,7 @@ const cssProcessor = require('clean-css')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
-const SentryPlugin = require('@sentry/webpack-plugin')
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const createStyledComponentsTransformer =
@@ -273,15 +273,19 @@ module.exports = {
                   ],
         )
         .concat(
-            process.env.SENTRY_DSN
+            process.env.SENTRY_AUTH_TOKEN
                 ? [
-                      new SentryPlugin({
+                      sentryWebpackPlugin({
                           include: dist,
                           validate: true,
+                          org: process.env.SENTRY_ORG || 'streamr',
+                          project: process.env.SENTRY_PROJECT || 'hub',
+                          authToken: process.env.SENTRY_AUTH_TOKEN,
                           ignore: [
                               '.cache',
                               '.DS_STORE',
                               '.env',
+                              '.envrc',
                               '.storybook',
                               'bin',
                               'coverage',

@@ -39,7 +39,6 @@ import Globals from '~/shared/components/Globals'
 import StreamrClientProvider from '~/shared/components/StreamrClientProvider'
 import { Provider as ModalProvider } from '~/shared/contexts/ModalApi'
 import { Provider as ModalPortalProvider } from '~/shared/contexts/ModalPortal'
-import Analytics from '~/shared/utils/Analytics'
 import { getQueryClient } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { Route as R } from '~/utils/routes'
@@ -48,7 +47,6 @@ import ProjectEditorPage from './pages/ProjectPage/ProjectEditorPage'
 
 const App = () => (
     <Root>
-        <Analytics />
         <Globals />
         <Routes>
             <Route errorElement={<GenericErrorPage />}>
