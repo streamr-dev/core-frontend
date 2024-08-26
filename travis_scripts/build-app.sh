@@ -10,5 +10,4 @@ echo $PLATFORM_PUBLIC_PATH
 echo $GTM_ID
 echo $STORYBOOK_BASE_PATH
 echo $SENTRY_DSN
-echo $LOGROCKET_SLUG
 npm run build
