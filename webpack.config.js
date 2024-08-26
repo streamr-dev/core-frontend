@@ -6,7 +6,6 @@ const WebpackNotifierPlugin = require('webpack-notifier')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const ImageminPlugin = require('imagemin-webpack-plugin').default
-const StyleLintPlugin = require('stylelint-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const DeadCodePlugin = require('webpack-deadcode-plugin')
@@ -154,9 +153,6 @@ module.exports = {
             // both options are optional
             filename: !isProduction() ? '[name].css' : '[name].[contenthash:8].css',
             chunkFilename: !isProduction() ? '[id].css' : '[id].[contenthash:8].css',
-        }),
-        new StyleLintPlugin({
-            files: ['**/*.css', '**/*.(p|s)css'],
         }),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),
