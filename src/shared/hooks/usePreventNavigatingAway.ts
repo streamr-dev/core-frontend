@@ -1,6 +1,6 @@
 import { produce } from 'immer'
-import { useEffect, useCallback, useReducer } from 'react'
 import uniqueId from 'lodash/uniqueId'
+import { useCallback, useEffect, useReducer } from 'react'
 import { create } from 'zustand'
 import { history } from '~/consts'
 
@@ -95,7 +95,7 @@ export default function usePreventNavigatingAway({
 function patchBeforeUnload() {
     /**
      * `history` forces in its own `beforeunload` event handler which makes the user
-     * always having to confirm a leave. Here we disable it the hackiest if ways.
+     * always having to confirm a leave. Here we disable it in the hackiest of ways.
      *
      * We overwrite `Window#addEventListener` and `Window#removeEventListener` to make
      * them ignore "unauthorized" `beforeunload` and introduce `hub_beforeunload` event,
