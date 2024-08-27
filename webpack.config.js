@@ -6,7 +6,6 @@ const WebpackNotifierPlugin = require('webpack-notifier')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const ImageminPlugin = require('imagemin-webpack-plugin').default
-const StyleLintPlugin = require('stylelint-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const DeadCodePlugin = require('webpack-deadcode-plugin')
@@ -14,7 +13,7 @@ const cssProcessor = require('clean-css')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
-const SentryPlugin = require('@sentry/webpack-plugin')
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const createStyledComponentsTransformer =
@@ -155,9 +154,6 @@ module.exports = {
             filename: !isProduction() ? '[name].css' : '[name].[contenthash:8].css',
             chunkFilename: !isProduction() ? '[id].css' : '[id].[contenthash:8].css',
         }),
-        new StyleLintPlugin({
-            files: ['**/*.css', '**/*.(p|s)css'],
-        }),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),
             GIT_BRANCH: gitRevisionPlugin.branch(),
@@ -277,15 +273,19 @@ module.exports = {
                   ],
         )
         .concat(
-            process.env.SENTRY_DSN
+            process.env.SENTRY_AUTH_TOKEN
                 ? [
-                      new SentryPlugin({
+                      sentryWebpackPlugin({
                           include: dist,
                           validate: true,
+                          org: process.env.SENTRY_ORG || 'streamr',
+                          project: process.env.SENTRY_PROJECT || 'hub',
+                          authToken: process.env.SENTRY_AUTH_TOKEN,
                           ignore: [
                               '.cache',
                               '.DS_STORE',
                               '.env',
+                              '.envrc',
                               '.storybook',
                               'bin',
                               'coverage',

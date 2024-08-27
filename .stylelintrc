@@ -1,13 +1,9 @@
 {
-    "ignoreFiles": ["**/*.tsx", "coverage/**"],
-    "plugins": ["stylelint-prettier"],
-    "extends": ["stylelint-config-streamr", "prettier", "stylelint-config-prettier"],
+    "extends": [
+        "stylelint-config-standard"
+    ],
+    "customSyntax": "postcss-styled-syntax",
     "rules": {
-        "unit-no-unknown": [
-            true,
-            {
-                "ignoreUnits": ["um"]
-            }
-        ]
+        "rule-empty-line-before": "always"
     }
 }

@@ -45,7 +45,7 @@ export function Decimals({
             anchorDisplay="inline"
             content={
                 <>
-                    {humanAmount}
+                    {humanAmount.toString()}
                     {unit != null ? <>&nbsp;{unit}</> : <></>}
                 </>
             }

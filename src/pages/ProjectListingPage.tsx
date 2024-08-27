@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
 import isEqual from 'lodash/isEqual'
 import React, { useReducer } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -46,7 +46,7 @@ export default function ProjectListingPage() {
 
     const query = useInfiniteQuery({
         queryKey: ['projects', currentChainId, owner, filter.search, filter.type],
-        queryFn({ pageParam: page }) {
+        queryFn({ pageParam: skip }) {
             const { search, type: projectType } = filter
 
             const params = {
@@ -54,7 +54,7 @@ export default function ProjectListingPage() {
                 first: PageSize,
                 owner,
                 projectType,
-                skip: page,
+                skip,
             }
 
             if (search) {
@@ -63,11 +63,12 @@ export default function ProjectListingPage() {
 
             return getProjects(params)
         },
+        initialPageParam: 0,
         getNextPageParam(lastPage, pages) {
             return lastPage.hasNextPage ? pages.flatMap((p) => p.projects).length : null
         },
         staleTime: Minute,
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
     })
 
     const noOwnProjects = !!owner && !filter.search && !filter.type
@@ -88,7 +89,7 @@ export default function ProjectListingPage() {
                     projects={query.data?.pages.flatMap((d) => d.projects) ?? []}
                     currentUserAddress={account}
                     error={query.error}
-                    isFetching={query.status === 'loading'}
+                    isFetching={query.status === 'pending'}
                     loadProducts={() => void query.fetchNextPage()}
                     hasMoreSearchResults={query.hasNextPage}
                     noOwnProjects={noOwnProjects}

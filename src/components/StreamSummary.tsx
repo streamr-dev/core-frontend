@@ -275,7 +275,7 @@ const Tags = styled.div`
 `
 
 const Tag = styled.div`
-    background: ${COLORS.separator};
+    background: ${COLORS.Border};
     border-radius: 4px;
     font-size: 12px;
     font-weight: 500;
@@ -345,7 +345,7 @@ const IFrameWrap = styled.div`
 `
 
 const StreamSummarySectionRoot = styled.div`
-    border: 1px solid ${COLORS.separator};
+    border: 1px solid ${COLORS.Border};
     border-radius: 16px;
     color: ${COLORS.primaryLight};
     overflow: hidden;

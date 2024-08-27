@@ -18,7 +18,13 @@ export type Scalars = {
   BigInt: { input: any; output: any; }
   Bytes: { input: any; output: any; }
   Int8: { input: any; output: any; }
+  Timestamp: { input: any; output: any; }
 };
+
+export enum Aggregation_Interval {
+  Day = 'day',
+  Hour = 'hour'
+}
 
 export type BlockChangedFilter = {
   number_gte: Scalars['Int']['input'];
@@ -2692,7 +2698,8 @@ export type Query = {
   operatorDailyBuckets: Array<OperatorDailyBucket>;
   operators: Array<Operator>;
   project?: Maybe<Project>;
-  projectPaymentDetails: Array<ProjectPaymentDetails>;
+  projectPaymentDetails?: Maybe<ProjectPaymentDetails>;
+  projectPaymentDetails_collection: Array<ProjectPaymentDetails>;
   projectPermission?: Maybe<ProjectPermission>;
   projectPermissions: Array<ProjectPermission>;
   projectPurchase?: Maybe<ProjectPurchase>;
@@ -2885,6 +2892,13 @@ export type QueryProjectArgs = {
 
 
 export type QueryProjectPaymentDetailsArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryProjectPaymentDetails_CollectionArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<ProjectPaymentDetails_OrderBy>;
@@ -4470,7 +4484,8 @@ export type Subscription = {
   operatorDailyBuckets: Array<OperatorDailyBucket>;
   operators: Array<Operator>;
   project?: Maybe<Project>;
-  projectPaymentDetails: Array<ProjectPaymentDetails>;
+  projectPaymentDetails?: Maybe<ProjectPaymentDetails>;
+  projectPaymentDetails_collection: Array<ProjectPaymentDetails>;
   projectPermission?: Maybe<ProjectPermission>;
   projectPermissions: Array<ProjectPermission>;
   projectPurchase?: Maybe<ProjectPurchase>;
@@ -4662,6 +4677,13 @@ export type SubscriptionProjectArgs = {
 
 
 export type SubscriptionProjectPaymentDetailsArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID']['input'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionProjectPaymentDetails_CollectionArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<ProjectPaymentDetails_OrderBy>;
@@ -5088,6 +5110,8 @@ export type _Block_ = {
   hash?: Maybe<Scalars['Bytes']['output']>;
   /** The block number */
   number: Scalars['Int']['output'];
+  /** The hash of the parent block */
+  parentHash?: Maybe<Scalars['Bytes']['output']>;
   /** Integer representation of the timestamp stored in blocks for the chain */
   timestamp?: Maybe<Scalars['Int']['output']>;
 };
@@ -5225,6 +5249,7 @@ export type GetSponsorshipsByCreatorQueryVariables = Exact<{
   creator: Scalars['String']['input'];
   orderBy?: InputMaybe<Sponsorship_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
+  whereFilters?: InputMaybe<Sponsorship_Filter>;
 }>;
 
 
@@ -5244,6 +5269,7 @@ export type GetSponsorshipByStreamIdQueryVariables = Exact<{
   orderBy?: InputMaybe<Sponsorship_OrderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   streamId: Scalars['String']['input'];
+  whereFilters?: InputMaybe<Sponsorship_Filter>;
 }>;
 
 
@@ -5664,11 +5690,11 @@ export const GetAllSponsorshipsDocument = gql`
     ${SponsorshipFieldsFragmentDoc}`;
 export type GetAllSponsorshipsQueryResult = Apollo.QueryResult<GetAllSponsorshipsQuery, GetAllSponsorshipsQueryVariables>;
 export const GetSponsorshipsByCreatorDocument = gql`
-    query getSponsorshipsByCreator($first: Int, $skip: Int, $searchQuery: String!, $id: ID!, $creator: String!, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection) {
+    query getSponsorshipsByCreator($first: Int, $skip: Int, $searchQuery: String!, $id: ID!, $creator: String!, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection, $whereFilters: Sponsorship_filter) {
   sponsorships(
     first: $first
     skip: $skip
-    where: {and: [{creator: $creator}, {or: [{stream_contains_nocase: $searchQuery}, {id: $id}, {stakes_: {operator_contains_nocase: $searchQuery}}]}]}
+    where: {and: [$whereFilters, {creator: $creator}, {or: [{stream_contains_nocase: $searchQuery}, {id: $id}, {stakes_: {operator_contains_nocase: $searchQuery}}]}]}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {
@@ -5686,11 +5712,11 @@ export const GetSponsorshipByIdDocument = gql`
     ${SponsorshipFieldsFragmentDoc}`;
 export type GetSponsorshipByIdQueryResult = Apollo.QueryResult<GetSponsorshipByIdQuery, GetSponsorshipByIdQueryVariables>;
 export const GetSponsorshipByStreamIdDocument = gql`
-    query getSponsorshipByStreamId($first: Int, $skip: Int, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection, $streamId: String!) {
+    query getSponsorshipByStreamId($first: Int, $skip: Int, $orderBy: Sponsorship_orderBy, $orderDirection: OrderDirection, $streamId: String!, $whereFilters: Sponsorship_filter) {
   sponsorships(
     first: $first
     skip: $skip
-    where: {stream_contains_nocase: $streamId}
+    where: {and: [$whereFilters, {stream_contains_nocase: $streamId}]}
     orderBy: $orderBy
     orderDirection: $orderDirection
   ) {

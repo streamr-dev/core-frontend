@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import React, { useCallback, useEffect, useState } from 'react'
 import { toaster } from 'toasterhea'
 import { isAddress } from 'web3-validator'
@@ -114,7 +114,7 @@ export function useOperatorByIdQuery(operatorId = '') {
 
             return null
         },
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
         retry: false,
         staleTime: Minute,
     })
@@ -292,7 +292,7 @@ export function useDelegationsForWalletQuery({
             searchQuery,
             pageSize,
         ],
-        async queryFn({ pageParam: skip = 0 }) {
+        async queryFn({ pageParam: skip }) {
             const elements: Delegation[] = await getParsedOperators(
                 () => {
                     const params = {
@@ -350,11 +350,12 @@ export function useDelegationsForWalletQuery({
                 elements,
             }
         },
+        initialPageParam: 0,
         getNextPageParam: ({ skip, elements }) => {
-            return elements.length === pageSize ? skip + pageSize : undefined
+            return elements.length === pageSize ? skip + pageSize : null
         },
         staleTime: Minute,
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
     })
 }
 
@@ -389,7 +390,7 @@ export function useAllOperatorsQuery({
             orderBy,
             orderDirection,
         ],
-        async queryFn({ pageParam: skip = 0 }) {
+        async queryFn({ pageParam: skip }) {
             const elements = await getParsedOperators(
                 () => {
                     const params = {
@@ -430,11 +431,12 @@ export function useAllOperatorsQuery({
                 elements,
             }
         },
+        initialPageParam: 0,
         getNextPageParam: ({ skip, elements }) => {
-            return elements.length === batchSize ? skip + batchSize : undefined
+            return elements.length === batchSize ? skip + batchSize : null
         },
         staleTime: Minute,
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
     })
 }
 

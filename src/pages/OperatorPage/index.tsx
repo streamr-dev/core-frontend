@@ -4,7 +4,6 @@ import moment from 'moment'
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { OperatorActionBar } from '~/components/ActionBars/OperatorActionBar'
 import {
     AddressItem,
     AddressTable,
@@ -18,14 +17,12 @@ import { SponsorshipDecimals } from '~/components/Decimals'
 import { NetworkHelmet } from '~/components/Helmet'
 import { Hint } from '~/components/Hint'
 import Layout, { LayoutColumn } from '~/components/Layout'
-import { LiveNodesTable } from '~/components/LiveNodesTable'
 import NetworkChartDisplay from '~/components/NetworkChartDisplay'
 import NetworkPageSegment, {
     Pad,
     SegmentGrid,
     TitleBar,
 } from '~/components/NetworkPageSegment'
-import { OperatorChecklist } from '~/components/OperatorChecklist'
 import { Separator } from '~/components/Separator'
 import Spinner from '~/components/Spinner'
 import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
@@ -46,6 +43,12 @@ import {
 } from '~/hooks/operators'
 import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
+import { LiveNodesTable } from '~/pages/OperatorPage/LiveNodesTable'
+import { OperatorActionBar } from '~/pages/OperatorPage/OperatorActionBar'
+import { OperatorChecklist } from '~/pages/OperatorPage/OperatorChecklist'
+import { OperatorDetails } from '~/pages/OperatorPage/OperatorDetails'
+import { OperatorSummary } from '~/pages/OperatorPage/OperatorSummary'
+import { UndelegationQueue } from '~/pages/OperatorPage/UndelegationQueue'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { NoData } from '~/shared/components/NoData'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -64,7 +67,7 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
 import { ChartPeriod } from '~/types'
-import { abbr, saveOperator } from '~/utils'
+import { abbr } from '~/utils'
 import { onIndexedBlock } from '~/utils/blocks'
 import { toBN, toBigInt, toFloat } from '~/utils/bn'
 import {
@@ -74,7 +77,6 @@ import {
 } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { errorToast } from '~/utils/toast'
-import { UndelegationQueue } from './UndelegationQueue'
 
 const defaultChartData = []
 
@@ -82,7 +84,7 @@ const defaultPersistedNodes = []
 
 const defaultPersistedControllers = []
 
-export const SingleOperatorPage = () => {
+export const OperatorPage = () => {
     const operatorId = useParams().id
 
     const operatorQuery = useOperatorByIdQuery(operatorId)
@@ -348,12 +350,9 @@ export const SingleOperatorPage = () => {
             <LoadingIndicator loading={isFetching} />
             {!!operator && (
                 <>
-                    <OperatorActionBar
-                        operator={operator}
-                        handleEdit={(currentOperator) => {
-                            saveOperator(currentChainId, currentOperator)
-                        }}
-                    />
+                    <OperatorActionBar operator={operator} />
+                    <OperatorDetails operator={operator} />
+                    <OperatorSummary operator={operator} />
                     {isOwner && (
                         <OperatorVersionNotice version={operator.contractVersion} />
                     )}
@@ -856,10 +855,6 @@ const DelegationCell = styled.div`
     }
 
     @media ${TABLET} {
-        ${StatCellLabel} {
-            line-height: 24px;
-        }
-
         ${StatCellContent} {
             font-size: 24px;
             line-height: 40px;

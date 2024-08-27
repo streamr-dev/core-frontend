@@ -1,4 +1,4 @@
-import { useInfiniteQuery, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { SponsorshipFilters } from '~/components/SponsorshipFilterButton'
 import { Minute } from '~/consts'
@@ -35,16 +35,6 @@ import { getSponsorshipLeavePenalty } from '~/utils/sponsorships'
 import { errorToast } from '~/utils/toast'
 import { useTokenInfo } from '~/utils/tokens'
 import { useRequestedBlockNumber } from '.'
-
-function getDefaultQueryParams(pageSize: number) {
-    return {
-        getNextPageParam: ({ sponsorships, skip }) => {
-            return sponsorships.length === pageSize ? skip + pageSize : undefined
-        },
-        staleTime: Minute,
-        keepPreviousData: true,
-    }
-}
 
 async function getSponsorshipsAndParse(
     chainId: number,
@@ -110,16 +100,22 @@ export function useSponsorshipsForCreatorQuery(
         searchQuery,
         orderBy,
         orderDirection,
+        filters,
     }: {
         pageSize?: number
         searchQuery?: string
         orderBy?: string
         orderDirection?: 'asc' | 'desc'
+        filters?: SponsorshipFilters
     } = {},
-): UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }> {
+) {
     const currentChainId = useCurrentChainId()
 
     const creator = address?.toLowerCase() || ''
+
+    const wallet = useWalletAccount()
+
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return useInfiniteQuery({
         queryKey: [
@@ -130,8 +126,13 @@ export function useSponsorshipsForCreatorQuery(
             searchQuery,
             orderBy,
             orderDirection,
+            filters?.expired,
+            filters?.inactive,
+            filters?.my,
+            filters?.noFunding,
+            operator?.id,
         ],
-        async queryFn({ pageParam: skip = 0 }) {
+        async queryFn({ pageParam: skip }) {
             if (!creator) {
                 return {
                     skip,
@@ -149,6 +150,10 @@ export function useSponsorshipsForCreatorQuery(
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
                         force: true,
+                        hasOperatorId: filters?.my ? operator?.id : undefined,
+                        includeExpiredFunding: !filters || filters.expired,
+                        includeInactive: !filters || filters.inactive,
+                        includeWithoutFunding: !filters || filters.noFunding,
                     }) as Promise<Sponsorship[]>,
             )
 
@@ -157,7 +162,12 @@ export function useSponsorshipsForCreatorQuery(
                 sponsorships,
             }
         },
-        ...getDefaultQueryParams(pageSize),
+        initialPageParam: 0,
+        getNextPageParam: ({ sponsorships, skip }) => {
+            return sponsorships.length === pageSize ? skip + pageSize : null
+        },
+        staleTime: Minute,
+        placeholderData: keepPreviousData,
     })
 }
 
@@ -185,6 +195,7 @@ export function useAllSponsorshipsQuery({
     const currentChainId = useCurrentChainId()
 
     const wallet = useWalletAccount()
+
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return useInfiniteQuery({
@@ -201,7 +212,7 @@ export function useAllSponsorshipsQuery({
             filters.noFunding,
             operator?.id,
         ],
-        async queryFn({ pageParam: skip = 0 }) {
+        async queryFn({ pageParam: skip }) {
             const sponsorships = await getSponsorshipsAndParse(
                 currentChainId,
                 () =>
@@ -226,7 +237,12 @@ export function useAllSponsorshipsQuery({
                 sponsorships,
             }
         },
-        ...getDefaultQueryParams(pageSize),
+        initialPageParam: 0,
+        getNextPageParam: ({ sponsorships, skip }) => {
+            return sponsorships.length === pageSize ? skip + pageSize : null
+        },
+        staleTime: Minute,
+        placeholderData: keepPreviousData,
     })
 }
 
@@ -264,13 +280,19 @@ export function useSponsorshipsByStreamIdQuery({
     streamId,
     orderBy,
     orderDirection,
+    filters,
 }: {
     pageSize?: number
     streamId: string
     orderBy?: string
     orderDirection?: 'asc' | 'desc'
+    filters?: SponsorshipFilters
 }) {
     const currentChainId = useCurrentChainId()
+
+    const wallet = useWalletAccount()
+
+    const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     return useInfiniteQuery({
         queryKey: [
@@ -280,8 +302,13 @@ export function useSponsorshipsByStreamIdQuery({
             pageSize,
             orderBy,
             orderDirection,
+            filters?.expired,
+            filters?.inactive,
+            filters?.my,
+            filters?.noFunding,
+            operator?.id,
         ],
-        async queryFn({ pageParam: skip = 0 }) {
+        async queryFn({ pageParam: skip }) {
             const sponsorships = await getSponsorshipsAndParse(
                 currentChainId,
                 () =>
@@ -293,6 +320,10 @@ export function useSponsorshipsByStreamIdQuery({
                         orderBy: mapSponsorshipOrder(orderBy),
                         orderDirection: orderDirection as OrderDirection,
                         force: true,
+                        hasOperatorId: filters?.my ? operator?.id : undefined,
+                        includeExpiredFunding: !filters || filters.expired,
+                        includeInactive: !filters || filters.inactive,
+                        includeWithoutFunding: !filters || filters.noFunding,
                     }) as Promise<Sponsorship[]>,
             )
 
@@ -301,7 +332,12 @@ export function useSponsorshipsByStreamIdQuery({
                 sponsorships,
             }
         },
-        ...getDefaultQueryParams(pageSize),
+        initialPageParam: 0,
+        getNextPageParam: ({ sponsorships, skip }) => {
+            return sponsorships.length === pageSize ? skip + pageSize : null
+        },
+        staleTime: Minute,
+        placeholderData: keepPreviousData,
     })
 }
 

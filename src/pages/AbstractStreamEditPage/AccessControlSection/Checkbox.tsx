@@ -9,7 +9,7 @@ type LabelProps = {
 }
 
 const Label = styled.label<LabelProps>`
-    border: 1px solid ${COLORS.separator};
+    border: 1px solid ${COLORS.Border};
     border-radius: 4px;
     display: grid;
     grid-template-columns: 1fr auto;

@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSponsoringEvents } from '~/getters/getSponsoringEvents'
-import { useCurrentChainId } from '~/utils/chains'
 import { getQueryClient } from '~/utils'
+import { useCurrentChainId } from '~/utils/chains'
 import { errorToast } from '~/utils/toast'
 
 const FUNDING_HISTORY_PAGE_SIZE = 10
@@ -57,10 +57,11 @@ export const useSponsorshipFundingHistoryQuery = (
                 }
             }
         },
+        initialPageParam: 0,
         getNextPageParam: (lastPage) => {
             return lastPage.events.length === pageSize
                 ? lastPage.skippedElements + pageSize
-                : undefined
+                : null
         },
     })
 }

@@ -1,23 +1,22 @@
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
-import { goBack } from '~/utils'
-import { COLORS, LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
-import { Separator } from '~/components/Separator'
-import { TooltipIconWrap } from '~/components/Tooltip'
 import {
     NetworkActionBarBackButtonIcon,
     NetworkActionBarBackLink,
     NetworkActionBarStatsTitle,
     NetworkActionBarTitle,
 } from '~/components/ActionBars/NetworkActionBar.styles'
+import { Separator } from '~/components/Separator'
+import { COLORS, LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
+import { goBack } from '~/utils'
 
 interface AbstractActionBarProps {
     fallbackBackButtonUrl: string
     title: ReactNode
     buttons?: ReactNode
     ctas?: ReactNode
-    summaryTitle: ReactNode
-    summary: ReactNode
+    summaryTitle?: ReactNode
+    summary?: ReactNode
 }
 
 export function AbstractActionBar({
@@ -50,26 +49,21 @@ export function AbstractActionBar({
                     <Buttons>{buttons}</Buttons>
                     <Ctas>{ctas}</Ctas>
                 </ActionsOuterWrap>
-                <NetworkActionBarStatsTitle>{summaryTitle}</NetworkActionBarStatsTitle>
-                <Separator />
-                {summary}
+                {summary && (
+                    <>
+                        {summaryTitle && (
+                            <NetworkActionBarStatsTitle>
+                                {summaryTitle}
+                            </NetworkActionBarStatsTitle>
+                        )}
+                        <Separator />
+                        {summary}
+                    </>
+                )}
             </OuterWrap>
         </Root>
     )
 }
-
-export const Pad = styled.div`
-    padding: 20px 0;
-
-    ${TooltipIconWrap} svg {
-        height: 18px;
-        width: 18px;
-    }
-
-    @media ${TABLET} {
-        padding: 32px 40px;
-    }
-`
 
 const Root = styled.div`
     background: #fff;
