@@ -53,7 +53,7 @@ jobs:
           aws-region: eu-west-1
       - name: Deploy to S3
         run: |
-          aws s3 sync dist/. s3://eu-west-1-streamr-hub-dev --acl private
+          aws s3 sync dist/. s3://hub.strearm.dev --acl private
       - name: Invalidate Cloudfront cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DEV_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
