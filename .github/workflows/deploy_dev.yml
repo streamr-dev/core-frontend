@@ -32,7 +32,7 @@ jobs:
       - name: Build app with production environment variables
         env:
           NODE_ENV: production
-          VERSION: ${{ steps.get_version.outputs.VERSION }}
+          VERSION: staging
           PORT: 12345
           PLATFORM_PUBLIC_PATH: https://hub.streamr.dev
           GTM_ID: GTM-W9HTMKM
