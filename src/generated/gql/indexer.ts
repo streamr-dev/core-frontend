@@ -24,6 +24,13 @@ export type Location = {
   longitude: Scalars['Float']['output'];
 };
 
+export type Message = {
+  __typename?: 'Message';
+  /** JSON string if contentType is JSON, otherwise base64-encoded binary content */
+  content: Scalars['String']['output'];
+  contentType: Scalars['String']['output'];
+};
+
 export type Neighbor = {
   __typename?: 'Neighbor';
   nodeId1: Scalars['String']['output'];
@@ -59,6 +66,7 @@ export type Query = {
   __typename?: 'Query';
   neighbors: Neighbors;
   nodes: Nodes;
+  sampleMessage?: Maybe<Message>;
   streams: Streams;
   summary: Summary;
 };
@@ -81,6 +89,11 @@ export type QueryNodesArgs = {
 };
 
 
+export type QuerySampleMessageArgs = {
+  stream: Scalars['String']['input'];
+};
+
+
 export type QueryStreamsArgs = {
   cursor?: InputMaybe<Scalars['String']['input']>;
   ids?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -93,6 +106,7 @@ export type QueryStreamsArgs = {
 
 export type Stream = {
   __typename?: 'Stream';
+  bytesPerSecond: Scalars['Float']['output'];
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['String']['output'];
   messagesPerSecond: Scalars['Float']['output'];
@@ -102,6 +116,7 @@ export type Stream = {
 };
 
 export enum StreamOrderBy {
+  BytesPerSecond = 'BYTES_PER_SECOND',
   Description = 'DESCRIPTION',
   Id = 'ID',
   MessagesPerSecond = 'MESSAGES_PER_SECOND',
@@ -118,6 +133,7 @@ export type Streams = {
 
 export type Summary = {
   __typename?: 'Summary';
+  bytesPerSecond: Scalars['Float']['output'];
   messagesPerSecond: Scalars['Float']['output'];
   nodeCount: Scalars['Int']['output'];
   streamCount: Scalars['Int']['output'];
@@ -134,12 +150,12 @@ export type GetStreamsQueryVariables = Exact<{
 }>;
 
 
-export type GetStreamsQuery = { __typename?: 'Query', streams: { __typename?: 'Streams', cursor?: string | null, items: Array<{ __typename?: 'Stream', id: string, description?: string | null, peerCount: number, messagesPerSecond: number, subscriberCount?: number | null, publisherCount?: number | null }> } };
+export type GetStreamsQuery = { __typename?: 'Query', streams: { __typename?: 'Streams', cursor?: string | null, items: Array<{ __typename?: 'Stream', bytesPerSecond: number, description?: string | null, id: string, messagesPerSecond: number, peerCount: number, publisherCount?: number | null, subscriberCount?: number | null }> } };
 
 export type GetGlobalStreamsStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetGlobalStreamsStatsQuery = { __typename?: 'Query', summary: { __typename?: 'Summary', streamCount: number, messagesPerSecond: number } };
+export type GetGlobalStreamsStatsQuery = { __typename?: 'Query', summary: { __typename?: 'Summary', bytesPerSecond: number, messagesPerSecond: number, streamCount: number } };
 
 
 export const GetStreamsDocument = gql`
@@ -154,12 +170,13 @@ export const GetStreamsDocument = gql`
     cursor: $cursor
   ) {
     items {
-      id
+      bytesPerSecond
       description
-      peerCount
+      id
       messagesPerSecond
-      subscriberCount
+      peerCount
       publisherCount
+      subscriberCount
     }
     cursor
   }
@@ -169,8 +186,9 @@ export type GetStreamsQueryResult = Apollo.QueryResult<GetStreamsQuery, GetStrea
 export const GetGlobalStreamsStatsDocument = gql`
     query getGlobalStreamsStats {
   summary {
-    streamCount
+    bytesPerSecond
     messagesPerSecond
+    streamCount
   }
 }
     `;

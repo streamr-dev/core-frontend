@@ -12,7 +12,7 @@ import { RejectionReason, isMessagedObject } from '~/utils/exceptions'
 import FormModal, { FormModalProps } from './FormModal'
 
 const Separator = styled.div`
-    border-bottom: 1px solid ${COLORS.separator};
+    border-bottom: 1px solid ${COLORS.Border};
     margin: 24px 0;
 
     @media ${TABLET} {

@@ -16,7 +16,7 @@ import NetworkPageSegment, {
 } from '~/components/NetworkPageSegment'
 import { QueriedSponsorshipsTable } from '~/components/QueriedSponsorshipsTable'
 import { Separator } from '~/components/Separator'
-import StatGrid, { StatCell } from '~/components/StatGrid'
+import { StatCell, StatGrid } from '~/components/StatGrid'
 import { OperatorIdCell } from '~/components/Table'
 import WalletPass from '~/components/WalletPass'
 import { OperatorDailyBucket } from '~/generated/gql/network'

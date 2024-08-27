@@ -387,7 +387,7 @@ const StreamConnectText = styled.p`
 `
 
 const StreamConnectLightNodeSnippetContainer = styled.div`
-    border: 1px solid ${COLORS.separator};
+    border: 1px solid ${COLORS.Border};
     background-color: white;
     margin-top: 30px;
     max-width: calc(100vw - 100px);
@@ -396,7 +396,7 @@ const StreamConnectLightNodeSnippetContainer = styled.div`
     }
 `
 const StreamConnectSnippetCopyContainer = styled.div`
-    border: 1px solid ${COLORS.separator};
+    border: 1px solid ${COLORS.Border};
     border-top: none;
     background-color: white;
     padding: 16px;

@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/browser'
 import { RewriteFrames } from '@sentry/integrations'
-import LogRocket from 'logrocket'
 import { getEnvironmentConfig } from './getters/getEnvironmentConfig'
 
 type ErrorService = {
@@ -114,43 +113,6 @@ if (process.env.SENTRY_DSN) {
 
                 scope.setLevel('warning')
                 Sentry.captureException(error)
-            })
-        },
-    })
-}
-
-// empty the request body for these paths
-const urlBlackList = ['/api/v2/login/password']
-
-const { LOGROCKET_SLUG = '' } = process.env
-
-if (LOGROCKET_SLUG) {
-    analytics.register({
-        id: 'LogRocket',
-        init: () => {
-            LogRocket.init(LOGROCKET_SLUG, {
-                network: {
-                    requestSanitizer: (request: any) => {
-                        const requestUrl = request.url.toLowerCase()
-
-                        // if the url contains one of the blacklisted paths
-                        if (
-                            urlBlackList.some(
-                                (search) => requestUrl.indexOf(search) !== -1,
-                            )
-                        ) {
-                            // scrub out the body
-                            request.body = null
-                        }
-
-                        return request
-                    },
-                },
-            })
-        },
-        reportError: (error: Error, extra: Record<string, any> = {}) => {
-            LogRocket.captureException(error, {
-                extra,
             })
         },
     })

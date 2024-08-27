@@ -83,7 +83,7 @@ const Point = styled.div`
 `
 
 export function useBoundingClientRect<T>(
-    ref: RefObject<HTMLDivElement>,
+    ref: RefObject<Element>,
     translate: (rect: DOMRect | undefined) => T,
 ): T {
     return JSON.parse(
