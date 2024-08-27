@@ -1,4 +1,4 @@
-import { UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
+import { InfiniteData, UseInfiniteQueryResult, useQuery } from '@tanstack/react-query'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { LoadMoreButton } from '~/components/LoadMore'
 import { StreamIdCell } from '~/components/Table'
@@ -21,7 +21,7 @@ interface Props {
     onOrderChange?: (orderBy: StreamsOrderBy, orderDirection?: OrderDirection) => void
     orderBy?: StreamsOrderBy
     orderDirection?: OrderDirection
-    query: UseInfiniteQueryResult<GetStreamsResult, unknown>
+    query: UseInfiniteQueryResult<InfiniteData<GetStreamsResult>>
 }
 
 export function QueriedStreamsTable({
@@ -116,6 +116,15 @@ export function QueriedStreamsTable({
                         }) => mps ?? '-',
                     },
                     {
+                        key: 'bps',
+                        displayName: 'KB/s',
+                        sortable: true,
+                        valueMapper: ({
+                            id,
+                            bytesPerSecond: bps = streamStats[id]?.bytesPerSecond,
+                        }) => (bps == null ? '-' : (bps / 1024).toFixed(2)),
+                    },
+                    {
                         key: 'access',
                         displayName: 'Access',
                         valueMapper: ({ subscriberCount }) =>
@@ -175,8 +184,14 @@ function StreamStatsLoader({ onStats, page }: StreamStatsLoaderProps) {
 
                 const stats: Partial<Record<string, StreamStats>> = {}
 
-                for (const { id, messagesPerSecond, peerCount } of streams) {
+                for (const {
+                    bytesPerSecond,
+                    id,
+                    messagesPerSecond,
+                    peerCount,
+                } of streams) {
                     stats[id] = {
+                        bytesPerSecond,
                         messagesPerSecond,
                         peerCount,
                     }

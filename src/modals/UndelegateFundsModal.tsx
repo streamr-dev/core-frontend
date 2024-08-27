@@ -56,21 +56,24 @@ function UndelegateFundsModal({
 
     const isOwner = wallet?.toLowerCase() === operator.owner.toLowerCase()
 
-    const [title, submitLabel, amountLabel, totalLabel, subtitlePartial] = isOwner
-        ? [
-              'Withdraw from Operator',
-              'Withdraw',
-              'Amount to unstake',
-              'Amount currently staked on Operator',
-              'you wish to unstake from your Operator',
-          ]
-        : [
-              'Undelegate from Operator',
-              'Undelegate',
-              'Amount to undelegate',
-              'Amount currently delegated to Operator',
-              'to undelegate from the selected Operator',
-          ]
+    const [title, submitLabel, amountLabel, totalLabel, subtitlePartial, pastAction] =
+        isOwner
+            ? [
+                  'Withdraw from Operator',
+                  'Withdraw',
+                  'Amount to unstake',
+                  'Amount currently staked on Operator',
+                  'you wish to unstake from your Operator',
+                  'withdrawn',
+              ]
+            : [
+                  'Undelegate from Operator',
+                  'Undelegate',
+                  'Amount to undelegate',
+                  'Amount currently delegated to Operator',
+                  'to undelegate from the selected Operator',
+                  'undelegated',
+              ]
 
     const [rawAmount, setRawAmount] = useState('')
 
@@ -236,8 +239,8 @@ function UndelegateFundsModal({
                         type="notice"
                         title={
                             <>
-                                <SponsorshipDecimals amount={amount} /> will be
-                                undelegated immediately
+                                <SponsorshipDecimals amount={amount} /> will be{' '}
+                                {pastAction} immediately
                             </>
                         }
                     />

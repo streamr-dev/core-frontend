@@ -50,6 +50,7 @@ const Header = styled.div`
         font-weight: ${MEDIUM};
         line-height: 30px;
         margin: 0;
+        white-space: nowrap;
     }
 `
 
@@ -86,7 +87,7 @@ export function TitleBar({ children, label, aux = <></> }: TitleBarProps) {
                 <h2>{children}</h2>
                 {label != null && <TitleBarLabel>{label}</TitleBarLabel>}
             </Lhs>
-            {<Rhs>{aux}</Rhs>}
+            <Rhs>{aux}</Rhs>
         </TitleBarRoot>
     )
 }
@@ -119,8 +120,9 @@ const Rhs = styled.div`
     align-items: center;
     display: flex;
     gap: 8px;
+    min-width: 0;
 
-    :empty {
+    &:empty {
         display: none;
     }
 `

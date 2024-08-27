@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import uniqueId from 'lodash/uniqueId'
 import { Minute, address0 } from '~/consts'
 import {
@@ -35,7 +35,7 @@ export function isStreamsTabOption(value: unknown): value is StreamsTabOption {
     return value === StreamsTabOption.All || value === StreamsTabOption.Your
 }
 
-export type StreamsOrderBy = 'id' | 'mps' | 'peerCount'
+export type StreamsOrderBy = 'id' | 'mps' | 'peerCount' | 'bps'
 
 export interface UseStreamsQueryOptions {
     orderBy: StreamsOrderBy
@@ -58,6 +58,7 @@ interface GetStreamsOptions {
 }
 
 export interface StreamStats {
+    bytesPerSecond: number | undefined
     messagesPerSecond: number | undefined
     peerCount: number | undefined
 }
@@ -157,6 +158,8 @@ export async function getStreamsFromIndexer(
                     ? IndexerOrderBy.MessagesPerSecond
                     : orderBy === 'peerCount'
                     ? IndexerOrderBy.PeerCount
+                    : orderBy === 'bps'
+                    ? IndexerOrderBy.BytesPerSecond
                     : undefined,
             orderDirection:
                 orderDirection === 'asc'
@@ -170,14 +173,17 @@ export async function getStreamsFromIndexer(
         },
     })
 
-    const streams = result.items.map(({ id, messagesPerSecond, peerCount, ...s }) => ({
-        description: s.description || '',
-        id,
-        messagesPerSecond,
-        peerCount,
-        publisherCount: s.publisherCount || undefined,
-        subscriberCount: s.subscriberCount || undefined,
-    }))
+    const streams = result.items.map(
+        ({ id, bytesPerSecond, messagesPerSecond, peerCount, ...s }) => ({
+            bytesPerSecond,
+            description: s.description || '',
+            id,
+            messagesPerSecond,
+            peerCount,
+            publisherCount: s.publisherCount || undefined,
+            subscriberCount: s.subscriberCount || undefined,
+        }),
+    )
 
     return {
         hasNextPage: result.cursor != null,
@@ -263,6 +269,7 @@ async function getStreamsFromGraph(
         )
 
         return {
+            bytesPerSecond: undefined,
             description: getDescription(s),
             id: s.id,
             messagesPerSecond: undefined,
@@ -288,7 +295,7 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
 
     const chainId = useCurrentChainId()
 
-    return useInfiniteQuery<GetStreamsResult>({
+    return useInfiniteQuery({
         queryKey: [
             'useStreamsQuery',
             chainId,
@@ -329,10 +336,11 @@ export function useStreamsQuery(options: UseStreamsQueryOptions) {
                 streams,
             }
         },
+        initialPageParam: '0',
         getNextPageParam: ({ hasNextPage, nextPageParam }) =>
             hasNextPage ? nextPageParam : null,
         staleTime: Minute,
-        keepPreviousData: true,
+        placeholderData: keepPreviousData,
     })
 }
 
@@ -341,7 +349,7 @@ export function isIndexerColumn(chainId: number, orderBy: StreamsOrderBy) {
         return false
     }
 
-    return orderBy === 'mps' || orderBy === 'peerCount'
+    return orderBy === 'mps' || orderBy === 'peerCount' || orderBy === 'bps'
 }
 
 interface GetStatsFromPermissionsResult {
@@ -413,9 +421,11 @@ export function useGlobalStreamStatsQuery() {
                     query: GetGlobalStreamsStatsDocument,
                 })
 
-                const { messagesPerSecond, streamCount } = result.data.summary
+                const { bytesPerSecond, messagesPerSecond, streamCount } =
+                    result.data.summary
 
                 return {
+                    bytesPerSecond,
                     messagesPerSecond,
                     streamCount,
                 }

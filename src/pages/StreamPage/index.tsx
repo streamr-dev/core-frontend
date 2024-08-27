@@ -45,8 +45,8 @@ import {
     usePersistStreamDraft,
     useStreamEntityQuery,
 } from '~/stores/streamDraft'
-import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
 import { AccessControlSection } from '../AbstractStreamEditPage/AccessControlSection'
 import CreateProjectHint from '../AbstractStreamEditPage/CreateProjectHint'
 import DeleteSection from '../AbstractStreamEditPage/DeleteSection'
@@ -168,7 +168,6 @@ export function StreamConnectPage() {
                                     <StreamConnect streams={[streamId]} />
                                 </Pad>
                             </ColoredBox>
-                            <SponsorshipsTable streamId={streamId} />
                         </SegmentGrid>
                         <RelatedProjects streamId={streamId} />
                     </Footerless>

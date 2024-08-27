@@ -1,9 +1,9 @@
-import styled, { css } from 'styled-components'
 import { components, CSSObjectWithLabel } from 'react-select'
+import styled, { css } from 'styled-components'
+import BlackCheckmarkIcon from '~/shared/assets/icons/checkmark-black.svg'
+import CheckmarkIcon from '~/shared/assets/icons/checkmark.svg'
 import SvgIcon, { SvgIconProps } from '~/shared/components/SvgIcon'
 import { COLORS } from '~/shared/utils/styled'
-import CheckmarkIcon from '~/shared/assets/icons/checkmark.svg'
-import BlackCheckmarkIcon from '~/shared/assets/icons/checkmark-black.svg'
 
 const transitionTime = 150
 
@@ -275,7 +275,7 @@ export const getWhiteControlStyles = (
     }
     if (isDisabled) {
         styleObject.cursor = 'not-allowed'
-        styleObject.border = `1px solid ${COLORS.separator}`
+        styleObject.border = `1px solid ${COLORS.Border}`
         styleObject.backgroundColor = 'white'
     }
     if (noShrink) {

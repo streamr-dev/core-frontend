@@ -55,7 +55,7 @@ export function DropdownMenuItem({
                 }}
             >
                 <div>{children}</div>
-                <div>
+                <ReturnIconWrap>
                     <svg
                         width="20"
                         height="20"
@@ -84,7 +84,7 @@ export function DropdownMenuItem({
                             fill="black"
                         />
                     </svg>
-                </div>
+                </ReturnIconWrap>
             </ItemRoot>
         </li>
     )
@@ -106,12 +106,23 @@ function withPrevButton(el: HTMLElement, fn: (button: HTMLButtonElement | null) 
     )
 }
 
+const ReturnIconWrap = styled.div`
+    opacity: 0;
+    transition: 100ms opacity;
+
+    > svg {
+        display: block;
+        border-radius: 4px;
+    }
+`
+
 const ItemRoot = styled.button<{ $highlight?: boolean; $highlightOnFocus?: boolean }>`
     align-items: center;
     appearance: none;
     background: none;
     border: 0;
     display: flex;
+    gap: 8px;
     font-size: 14px;
     line-height: 1.5;
     padding: 8px 24px;
@@ -128,26 +139,19 @@ const ItemRoot = styled.button<{ $highlight?: boolean; $highlightOnFocus?: boole
 
     > div:first-child {
         flex-grow: 1;
-    }
-
-    > div:last-child {
-        opacity: 0;
-        transition: 100ms opacity;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &[disabled] {
         background: none;
     }
 
-    svg {
-        display: block;
-        border-radius: 4px;
-    }
-
     ${({ $highlightOnFocus = false }) =>
         $highlightOnFocus &&
         css`
-            :focus > div:last-child {
+            :focus > ${ReturnIconWrap} {
                 opacity: 1;
             }
         `}
@@ -155,7 +159,7 @@ const ItemRoot = styled.button<{ $highlight?: boolean; $highlightOnFocus?: boole
     ${({ $highlight = false }) =>
         $highlight &&
         css`
-            > div:last-child {
+            > ${ReturnIconWrap} {
                 opacity: 1;
             }
         `}

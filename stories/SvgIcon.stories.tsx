@@ -64,7 +64,7 @@ export const IconWrapper = styled.div`
 export const IconInner = styled.div`
     border-radius: 2px;
     box-sizing: content-box;
-    border: 1px solid #aaaaaa;
+    border: 1px solid #aaa;
     margin-right: 1em;
     padding: 0.5em;
     min-height: 1em;

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
-import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import SvgIcon from '~/shared/components/SvgIcon'
+import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
 
 const horizontalPaddingMobile = '24px'
 const horizontalPaddingDesktop = '40px'
@@ -44,7 +44,7 @@ export const ScrollTableHeaderCell = styled.div<{
     $pointer?: boolean
     $actionCell?: boolean
 }>`
-    border-bottom: 1.5px solid ${COLORS.separator};
+    border-bottom: 1.5px solid ${COLORS.Border};
     padding: 5px ${horizontalPaddingMobile};
     height: 80px;
     display: flex;

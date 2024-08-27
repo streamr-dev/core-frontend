@@ -1,42 +1,30 @@
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
-import { COLORS, MEDIUM, TABLET } from '~/shared/utils/styled'
-import { Separator } from './Separator'
+import { COLORS, DESKTOP, MEDIUM, TABLET } from '~/shared/utils/styled'
 
-export default function StatGrid({ children }: { children?: ReactNode }) {
-    return (
-        <StatGridRoot $count={React.Children.count(children)}>
-            {React.Children.map(children, (child, index) => (
-                <>
-                    {index ? <Separator /> : null}
-                    {child}
-                </>
-            ))}
-        </StatGridRoot>
-    )
-}
-
-function template({ $count }: { $count: number }) {
-    return [...Array($count)].map(() => '1fr').join(' auto ')
-}
-
-const StatGridRoot = styled.div<{ $count: number }>`
-    ${Separator} {
-        margin: 20px 0;
-    }
+export const StatGrid = styled.div<{
+    children?: ReactNode
+    $desktopColumnCount?: number
+}>`
+    align-items: center;
+    display: grid;
+    gap: 20px;
 
     @media ${TABLET} {
-        align-items: center;
-        gap: 24px;
-        display: grid;
-        grid-template-columns: ${template};
+        gap: 16px;
+        grid-template-columns: repeat(
+            ${({ children }) => Math.min(3, Math.max(1, React.Children.count(children)))},
+            1fr
+        );
+    }
 
-        ${Separator} {
-            height: auto;
-            margin: 0;
-            min-height: 88px;
-            width: 1px;
-        }
+    @media ${DESKTOP} {
+        gap: 24px;
+        grid-template-columns: repeat(
+            ${({ children, $desktopColumnCount: maxColumns = 4 }) =>
+                Math.min(maxColumns, Math.max(1, React.Children.count(children)))},
+            1fr
+        );
     }
 `
 
@@ -61,11 +49,13 @@ export function StatCell({
 }
 
 export const StatCellLabel = styled.div`
-    align-items: center;
     color: #868686;
-    display: flex;
     font-size: 14px;
     line-height: 24px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `
 
 export const StatCellContent = styled.div`
@@ -99,15 +89,21 @@ const TipWrap = styled.div`
 
 const StatCellRoot = styled.div`
     align-items: center;
+    border: 1px solid ${COLORS.Border};
+    border-radius: 12px;
     display: flex;
+    gap: 8px;
     min-width: 0;
+    padding: 16px 20px;
 
     ${StatCellLabel} {
         flex-grow: 1;
     }
 
     @media ${TABLET} {
+        border-radius: 16px;
         display: block;
+        padding: 32px 40px;
 
         ${StatCellLabel} {
             margin-bottom: 10px;
