@@ -1,4 +1,4 @@
-import { UseInfiniteQueryResult } from '@tanstack/react-query'
+import { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query'
 import React, { ReactNode } from 'react'
 import { Decimals, SponsorshipDecimals } from '~/components/Decimals'
 import { LoadMoreButton } from '~/components/LoadMore'
@@ -30,7 +30,9 @@ interface Props {
     orderBy?: string
     orderDirection?: OrderDirection
     onOrderChange?: (columnKey: string) => void
-    query: UseInfiniteQueryResult<{ skip: number; sponsorships: ParsedSponsorship[] }>
+    query: UseInfiniteQueryResult<
+        InfiniteData<{ skip: number; sponsorships: ParsedSponsorship[] }>
+    >
     hideStreamId?: boolean
 }
 

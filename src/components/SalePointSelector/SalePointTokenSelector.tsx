@@ -348,7 +348,7 @@ const TokenSymbol = styled.span`
     top: 0;
     height: 100%;
     font-size: 14px;
-    border-left: 1px solid ${COLORS.separator};
+    border-left: 1px solid ${COLORS.Border};
     padding-left: 12px;
     color: ${COLORS.primaryLight};
     display: flex;

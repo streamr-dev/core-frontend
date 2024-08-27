@@ -89,7 +89,7 @@ const Title = styled.div<{ $isOpen: boolean }>`
     grid-template-columns: auto 1fr auto;
     gap: 8px;
     align-items: center;
-    border-bottom: ${({ $isOpen }) => ($isOpen ? '1px' : '0px')} solid ${COLORS.separator};
+    border-bottom: ${({ $isOpen }) => ($isOpen ? '1px' : '0px')} solid ${COLORS.Border};
     height: 72px;
     padding: 21px;
 

@@ -95,7 +95,7 @@ const Lhs = styled(Side)`
     ${Row} {
         display: grid;
         grid-template-columns: auto 1fr;
-        border-bottom: 1px solid ${COLORS.separator};
+        border-bottom: 1px solid ${COLORS.Border};
     }
 
     ${Inner} {
@@ -144,7 +144,7 @@ const Rhs = styled(Side)`
 `
 
 const ToolbarContainer = styled.div`
-    border-bottom: 1px solid ${COLORS.separator};
+    border-bottom: 1px solid ${COLORS.Border};
 `
 
 const tz = moment.tz.guess()

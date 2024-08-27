@@ -26,6 +26,7 @@ import {
     useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
 import { useSponsorshipFundingHistoryQuery } from '~/hooks/useSponsorshipFundingHistoryQuery'
+import { SponsorshipSummary } from '~/pages/SponsorshipPage/SponsorshipSummary'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { NoData } from '~/shared/components/NoData'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -157,7 +158,12 @@ export const SingleSponsorshipPage = () => {
         <Layout>
             <NetworkHelmet title="Sponsorship" />
             <LoadingIndicator loading={isFetching} />
-            {!!sponsorship && <SponsorshipActionBar sponsorship={sponsorship} />}
+            {!!sponsorship && (
+                <>
+                    <SponsorshipActionBar sponsorship={sponsorship} />
+                    <SponsorshipSummary sponsorship={sponsorship} />
+                </>
+            )}
             <LayoutColumn>
                 {sponsorship == null ? (
                     placeholder
@@ -366,14 +372,14 @@ const OperatorList = styled.ul`
     }
 
     li + li {
-        border-top: 1px solid ${COLORS.separator};
+        border-top: 1px solid ${COLORS.Border};
     }
 `
 
 const OperatorListHeader = styled.li`
     background: rgba(255, 255, 255, 0.9) !important;
     backdrop-filter: blur(8px);
-    box-shadow: 0 1px 0 ${COLORS.separator};
+    box-shadow: 0 1px 0 ${COLORS.Border};
     display: flex;
     padding: 16px 24px;
     position: sticky;

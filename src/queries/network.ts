@@ -258,12 +258,14 @@ gql`
         $creator: String!
         $orderBy: Sponsorship_orderBy
         $orderDirection: OrderDirection
+        $whereFilters: Sponsorship_filter
     ) {
         sponsorships(
             first: $first
             skip: $skip
             where: {
                 and: [
+                    $whereFilters
                     { creator: $creator }
                     {
                         or: [
@@ -293,11 +295,12 @@ gql`
         $orderBy: Sponsorship_orderBy
         $orderDirection: OrderDirection
         $streamId: String!
+        $whereFilters: Sponsorship_filter
     ) {
         sponsorships(
             first: $first
             skip: $skip
-            where: { stream_contains_nocase: $streamId }
+            where: { and: [$whereFilters, { stream_contains_nocase: $streamId }] }
             orderBy: $orderBy
             orderDirection: $orderDirection
         ) {

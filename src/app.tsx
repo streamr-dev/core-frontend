@@ -10,6 +10,7 @@ import { HubRouter } from '~/consts'
 import GenericErrorPage from '~/pages/GenericErrorPage'
 import { NetworkOverviewPage } from '~/pages/NetworkOverviewPage'
 import NotFoundPage from '~/pages/NotFoundPage'
+import { OperatorPage } from '~/pages/OperatorPage'
 import { OperatorsPage } from '~/pages/OperatorsPage'
 import ProjectListingPage from '~/pages/ProjectListingPage'
 import {
@@ -22,7 +23,6 @@ import {
     ProjectOverviewPage,
     ProjectTabbedPage,
 } from '~/pages/ProjectPage'
-import { SingleOperatorPage } from '~/pages/SingleOperatorPage'
 import { SingleSponsorshipPage } from '~/pages/SingleSponsorshipPage'
 import { SponsorshipsPage } from '~/pages/SponsorshipsPage'
 import {
@@ -39,16 +39,14 @@ import Globals from '~/shared/components/Globals'
 import StreamrClientProvider from '~/shared/components/StreamrClientProvider'
 import { Provider as ModalProvider } from '~/shared/contexts/ModalApi'
 import { Provider as ModalPortalProvider } from '~/shared/contexts/ModalPortal'
-import Analytics from '~/shared/utils/Analytics'
 import { getQueryClient } from '~/utils'
 import { Layer } from '~/utils/Layer'
-import '~/utils/setupSnippets'
 import { Route as R } from '~/utils/routes'
+import '~/utils/setupSnippets'
 import ProjectEditorPage from './pages/ProjectPage/ProjectEditorPage'
 
 const App = () => (
     <Root>
-        <Analytics />
         <Globals />
         <Routes>
             <Route errorElement={<GenericErrorPage />}>
@@ -127,7 +125,7 @@ const App = () => (
                     />
                     <Route path="operators">
                         <Route index element={<OperatorsPage />} />
-                        <Route path=":id" element={<SingleOperatorPage />} />
+                        <Route path=":id" element={<OperatorPage />} />
                     </Route>
                     <Route path="sponsorships">
                         <Route index element={<SponsorshipsPage />} />

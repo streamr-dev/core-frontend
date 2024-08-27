@@ -324,6 +324,10 @@ export async function getSponsorshipsByStreamId({
     orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
     orderDirection = DEFAULT_ORDER_DIRECTION,
     force = false,
+    includeInactive = false,
+    includeWithoutFunding = false,
+    includeExpiredFunding = false,
+    hasOperatorId,
 }: {
     chainId: number
     first?: number
@@ -332,7 +336,26 @@ export async function getSponsorshipsByStreamId({
     orderBy?: Sponsorship_OrderBy
     orderDirection?: OrderDirection
     force?: boolean
+    includeInactive?: boolean
+    includeWithoutFunding?: boolean
+    includeExpiredFunding?: boolean
+    hasOperatorId?: string
 }): Promise<GetSponsorshipByStreamIdQuery['sponsorships']> {
+    const whereFilters: Sponsorship_Filter = {}
+
+    if (!includeInactive) {
+        whereFilters.isRunning = true
+    }
+    if (!includeWithoutFunding) {
+        whereFilters.remainingWei_gt = 0
+    }
+    if (!includeExpiredFunding) {
+        whereFilters.projectedInsolvency_gt = Math.floor(Date.now() / 1000)
+    }
+    if (hasOperatorId != null) {
+        whereFilters.stakes_ = { operator_contains_nocase: hasOperatorId }
+    }
+
     const {
         data: { sponsorships },
     } = await getGraphClient(chainId).query<
@@ -346,6 +369,7 @@ export async function getSponsorshipsByStreamId({
             streamId,
             orderBy,
             orderDirection,
+            whereFilters,
         },
         fetchPolicy: force ? 'network-only' : void 0,
     })
@@ -409,6 +433,10 @@ export async function getSponsorshipsByCreator(
         orderBy = DEFAULT_SPONSORSHIP_ORDER_BY,
         orderDirection = DEFAULT_ORDER_DIRECTION,
         force = false,
+        includeInactive = false,
+        includeWithoutFunding = false,
+        includeExpiredFunding = false,
+        hasOperatorId,
     }: {
         first?: number
         skip?: number
@@ -416,8 +444,27 @@ export async function getSponsorshipsByCreator(
         orderBy?: Sponsorship_OrderBy
         orderDirection?: OrderDirection
         force?: boolean
+        includeInactive?: boolean
+        includeWithoutFunding?: boolean
+        includeExpiredFunding?: boolean
+        hasOperatorId?: string
     } = {},
 ): Promise<GetSponsorshipsByCreatorQuery['sponsorships']> {
+    const whereFilters: Sponsorship_Filter = {}
+
+    if (!includeInactive) {
+        whereFilters.isRunning = true
+    }
+    if (!includeWithoutFunding) {
+        whereFilters.remainingWei_gt = 0
+    }
+    if (!includeExpiredFunding) {
+        whereFilters.projectedInsolvency_gt = Math.floor(Date.now() / 1000)
+    }
+    if (hasOperatorId != null) {
+        whereFilters.stakes_ = { operator_contains_nocase: hasOperatorId }
+    }
+
     const {
         data: { sponsorships },
     } = await getGraphClient(chainId).query<
@@ -433,6 +480,7 @@ export async function getSponsorshipsByCreator(
             creator,
             orderBy,
             orderDirection,
+            whereFilters,
         },
         fetchPolicy: force ? 'network-only' : void 0,
     })

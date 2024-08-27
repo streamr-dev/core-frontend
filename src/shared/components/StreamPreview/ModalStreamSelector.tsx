@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useCallback } from 'react'
 import styled from 'styled-components'
-import useModal, { ModalApi } from '~/shared/hooks/useModal'
-import ModalPortal from '~/shared/components/ModalPortal'
-import ModalDialog from '~/shared/components/ModalDialog'
-import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { Button } from '~/components/Button'
+import ModalDialog from '~/shared/components/ModalDialog'
+import ModalPortal from '~/shared/components/ModalPortal'
+import useModal, { ModalApi } from '~/shared/hooks/useModal'
+import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncateStreamName } from '~/shared/utils/text'
 import SvgIcon from '../SvgIcon'
 
@@ -50,9 +50,9 @@ const StreamsList = styled.ul`
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-top: 1px solid ${COLORS.separator};
+        border-top: 1px solid ${COLORS.Border};
         &:last-of-type {
-            border-bottom: 1px solid ${COLORS.separator};
+            border-bottom: 1px solid ${COLORS.Border};
         }
 
         &.active {

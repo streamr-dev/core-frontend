@@ -129,7 +129,7 @@ export function useStreamEntityQuery() {
             }
         },
         staleTime: Infinity,
-        cacheTime: 0,
+        gcTime: 0,
     })
 }
 

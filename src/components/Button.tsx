@@ -434,3 +434,75 @@ const Spinner = styled(PrestyledSpinner)`
     height: 16px;
     margin-left: 0.5rem;
 `
+
+/**
+ * @todo Create a better button out of the `Button` and `Buttonesque` components.
+ * The latter one was brought to existance because extending `Button`
+ * is expensive maintenance-wise.
+ */
+export const Buttonesque = styled.button<{ $css?: ReturnType<typeof css> }>`
+    -webkit-font-smoothing: subpixel-antialiased;
+    align-items: center;
+    backface-visibility: hidden;
+    background-color: var(--backgroundColor, transparent);
+    border: var(--border, 0);
+    border-radius: var(--borderRadius, 8px);
+    color: var(--color, inherit);
+    cursor: pointer;
+    display: inline-flex;
+    font: var(--sans);
+    font-size: var(--fontSize, 12px);
+    font-weight: var(--fontWeight, var(--medium));
+    height: var(--height, 32px);
+    justify-content: center;
+    letter-spacing: 0;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    transform: translate3d(0, 0, 0);
+    transition: 200ms ease-in-out;
+    transition-property: border-color, background-color, color, transform;
+    user-select: none;
+    white-space: nowrap;
+
+    &,
+    &:active,
+    &:visited,
+    &:hover,
+    &:focus {
+        text-decoration: none;
+        outline: none;
+    }
+
+    &:hover,
+    &:focus {
+        transition-duration: 5ms;
+        transform: scale(1.05) translate3d(0, 0, 0);
+    }
+
+    &:active {
+        transform: scale(0.95) translate3d(0, 0, 0);
+    }
+
+    * {
+        width: 100%;
+    }
+
+    &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: scale(1) translate3d(0, 0, 0);
+    }
+
+    &:hover,
+    &:focus {
+        background-color: var(
+            --hoverBackgroundColor,
+            var(--backgroundColor, transparent)
+        );
+        border: var(--hoverBorder, var(--border, 0));
+        color: var(--hoverColor, var(--color, inherit));
+    }
+
+    ${(props) => props.$css};
+`

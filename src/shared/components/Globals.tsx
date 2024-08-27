@@ -5,6 +5,7 @@ import usePreventNavigatingAway, {
 } from '~/shared/hooks/usePreventNavigatingAway'
 import { useIsAnyPurchaseInProgress } from '~/shared/stores/purchases'
 import { StreamDraft } from '~/stores/streamDraft'
+import { useSetSentryScopeEffect } from '~/utils/sentry'
 
 export default function Globals() {
     const isAnyDraftBeingPersisted = StreamDraft.useIsAnyDraftBeingPersisted()
@@ -27,6 +28,8 @@ export default function Globals() {
     useBlockHistoryEffect()
 
     useInfoToastEffect()
+
+    useSetSentryScopeEffect()
 
     return null
 }

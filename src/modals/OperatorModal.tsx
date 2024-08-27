@@ -2,11 +2,16 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { toaster } from 'toasterhea'
 import { randomHex } from 'web3-utils'
-import { ZodError, z } from 'zod'
+import { z } from 'zod'
 import { Alert } from '~/components/Alert'
 import { Button } from '~/components/Button'
 import CropImageModal from '~/components/CropImageModal/CropImageModal'
 import { Hint } from '~/components/Hint'
+import {
+    PropertyDropdown,
+    PropertyDropdownList,
+    PropertyIcon,
+} from '~/components/PropertyDropdown'
 import { BehindIndexError } from '~/errors/BehindIndexError'
 import { getParsedOperatorByOwnerAddress } from '~/getters'
 import FormModal, {
@@ -52,16 +57,13 @@ interface Form {
     imageToUpload: File | undefined
     name: string
     redundancyFactor: string
-}
-
-function isFormKey(value: unknown): value is keyof Form {
-    return (
-        value === 'cut' ||
-        value === 'description' ||
-        value === 'imageToUpload' ||
-        value === 'name' ||
-        value === 'redundancyFactor'
-    )
+    url: string
+    email: string
+    twitter: string
+    x: string
+    telegram: string
+    reddit: string
+    linkedIn: string
 }
 
 const Validator = z.object({
@@ -73,6 +75,13 @@ const Validator = z.object({
     imageToUpload: z.instanceof(File).optional(),
     name: z.string().trim().min(1, 'Name is required'),
     redundancyFactor: z.coerce.number().min(1, 'Value must be greater or equal to 1'),
+    url: z.union([z.literal(''), z.string().url()]),
+    email: z.union([z.literal(''), z.string().email()]),
+    twitter: z.union([z.literal(''), z.string().url()]),
+    x: z.union([z.literal(''), z.string().url()]),
+    telegram: z.union([z.literal(''), z.string().url()]),
+    reddit: z.union([z.literal(''), z.string().url()]),
+    linkedIn: z.union([z.literal(''), z.string().url()]),
 })
 
 function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Props) {
@@ -89,6 +98,13 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
             imageToUpload: undefined,
             name: operator?.metadata.name || '',
             redundancyFactor: operator?.metadata.redundancyFactor?.toString() || '2',
+            url: operator?.metadata.url || '',
+            email: operator?.metadata.email || '',
+            twitter: operator?.metadata.twitter || '',
+            x: operator?.metadata.x || '',
+            telegram: operator?.metadata.telegram || '',
+            reddit: operator?.metadata.reddit || '',
+            linkedIn: operator?.metadata.linkedIn || '',
         }),
         [operator],
     )
@@ -110,6 +126,13 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
         redundancyFactor:
             Number(currentData.redundancyFactor) !== Number(nextData.redundancyFactor),
         cut: Number(currentData.cut) !== Number(nextData.cut),
+        url: currentData.url !== nextData.url,
+        email: currentData.email !== nextData.email,
+        twitter: currentData.twitter !== nextData.twitter,
+        x: currentData.x !== nextData.x,
+        telegram: currentData.telegram !== nextData.telegram,
+        reddit: currentData.reddit !== nextData.reddit,
+        linkedIn: currentData.linkedIn !== nextData.linkedIn,
     }
 
     const dirty = Object.values(changelog).some(Boolean)
@@ -122,38 +145,40 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
         (nextData.imageToUpload && URL.createObjectURL(nextData.imageToUpload)) ||
         operator?.metadata.imageUrl
 
-    const [finalData, errors]:
-        | [ReturnType<typeof Validator.parse>, null]
-        | [null, Partial<Record<keyof Form, string>>] = (() => {
+    const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({})
+
+    function resetError(key: keyof Form) {
+        setErrors(({ [key]: _, ...c }) => c)
+    }
+
+    function validate(fn: () => void) {
         try {
-            return [Validator.parse(nextData), null]
+            fn()
         } catch (e) {
-            if (!(e instanceof ZodError)) {
-                throw e
+            if (e instanceof z.ZodError) {
+                const newErrors = {}
+
+                e.issues.forEach(({ path, message }) => {
+                    newErrors[path.join('.')] = message
+                })
+
+                setErrors((existingErrors) => ({
+                    ...existingErrors,
+                    ...newErrors,
+                }))
             }
 
-            const result: Partial<Record<keyof Form, string>> = {}
-
-            e.issues.forEach(({ path: [key], message }) => {
-                if (!isFormKey(key)) {
-                    return void console.warn('Unresolved form issue', key, message)
-                }
-
-                if (!changelog[key]) {
-                    /**
-                     * Ignore fields that did not change.
-                     */
-                    return
-                }
-
-                if (!result[key]) {
-                    result[key] = message
-                }
-            })
-
-            return [null, result]
+            throw e
         }
-    })()
+    }
+
+    const finalData = useMemo(() => {
+        try {
+            return Validator.parse(nextData)
+        } catch (_) {
+            return null
+        }
+    }, [nextData])
 
     const walletAddress = useWalletAccount()
 
@@ -400,6 +425,243 @@ function OperatorModal({ onResolve, onReject, operator, chainId, ...props }: Pro
                                 {nextData.description.length}/{DescriptionLengthLimit}
                             </TextareaCounter>
                         </FieldWrap>
+                        <PropertyDropdownList>
+                            <li>
+                                <PropertyDropdown
+                                    error={errors?.url}
+                                    onChange={() => {
+                                        resetError('url')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('url')
+                                    }}
+                                    onSubmit={(url) => {
+                                        resetError('url')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                url: true,
+                                            }).parse({ url })
+                                        })
+
+                                        updateNextData((c) => ({
+                                            ...c,
+                                            url,
+                                        }))
+                                    }}
+                                    placeholder="https://siteinfo.com"
+                                    submitLabel="Add site URL"
+                                    title="Add a site URL"
+                                    toggleIcon={<PropertyIcon name="web" />}
+                                    value={nextData.url}
+                                    valuePlaceholder="Site URL"
+                                />
+                            </li>
+                            <li>
+                                <PropertyDropdown
+                                    error={errors?.email}
+                                    onChange={() => {
+                                        resetError('email')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('email')
+                                    }}
+                                    onSubmit={(email) => {
+                                        resetError('email')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                email: true,
+                                            }).parse({ email })
+                                        })
+
+                                        updateNextData((c) => ({
+                                            ...c,
+                                            email,
+                                        }))
+                                    }}
+                                    placeholder="owner@example.com"
+                                    submitLabel="Add contact email"
+                                    title="Add a contact email"
+                                    toggleIcon={<PropertyIcon name="email" />}
+                                    value={nextData.email}
+                                    valuePlaceholder="Contact email"
+                                />
+                            </li>
+                            <li>
+                                <PropertyDropdown
+                                    error={errors?.twitter}
+                                    onChange={() => {
+                                        resetError('twitter')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('twitter')
+                                    }}
+                                    onSubmit={(twitter) => {
+                                        resetError('twitter')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                twitter: true,
+                                            }).parse({ twitter })
+                                        })
+
+                                        updateNextData((c) => ({
+                                            ...c,
+                                            twitter,
+                                        }))
+                                    }}
+                                    submitLabel="Add Twitter link"
+                                    title="Add Twitter link"
+                                    toggleIcon={
+                                        <PropertyIcon
+                                            name="twitter"
+                                            $color={
+                                                nextData.twitter ? '#1da1f2' : undefined
+                                            }
+                                        />
+                                    }
+                                    value={nextData.twitter}
+                                />
+                            </li>
+                            <li>
+                                <PropertyDropdown
+                                    error={errors?.x}
+                                    onChange={() => {
+                                        resetError('x')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('x')
+                                    }}
+                                    onSubmit={(x) => {
+                                        resetError('x')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                x: true,
+                                            }).parse({ x })
+                                        })
+
+                                        updateNextData((c) => ({
+                                            ...c,
+                                            x,
+                                        }))
+                                    }}
+                                    submitLabel="Add X link"
+                                    title="Add X link"
+                                    toggleIcon={<PropertyIcon name="xCom" />}
+                                    value={nextData.x}
+                                />
+                            </li>
+                            <li>
+                                <PropertyDropdown
+                                    error={errors?.telegram}
+                                    onChange={() => {
+                                        resetError('telegram')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('telegram')
+                                    }}
+                                    onSubmit={(telegram) => {
+                                        resetError('telegram')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                telegram: true,
+                                            }).parse({ telegram })
+                                        })
+
+                                        updateNextData((c) => ({
+                                            ...c,
+                                            telegram,
+                                        }))
+                                    }}
+                                    submitLabel="Add Telegram link"
+                                    title="Add Telegram link"
+                                    toggleIcon={
+                                        <PropertyIcon
+                                            name="telegram"
+                                            $color={
+                                                nextData.telegram ? '#2aabee' : undefined
+                                            }
+                                        />
+                                    }
+                                    value={nextData.telegram}
+                                />
+                            </li>
+                            <li>
+                                <PropertyDropdown
+                                    error={errors?.reddit}
+                                    onChange={() => {
+                                        resetError('reddit')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('reddit')
+                                    }}
+                                    onSubmit={(reddit) => {
+                                        resetError('reddit')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                reddit: true,
+                                            }).parse({ reddit })
+                                        })
+
+                                        updateNextData((c) => ({
+                                            ...c,
+                                            reddit,
+                                        }))
+                                    }}
+                                    submitLabel="Add Reddit link"
+                                    title="Add Reddit link"
+                                    toggleIcon={
+                                        <PropertyIcon
+                                            name="reddit"
+                                            $color={
+                                                nextData.reddit ? '#ff5700' : undefined
+                                            }
+                                        />
+                                    }
+                                    value={nextData.reddit}
+                                />
+                            </li>
+                            <li>
+                                <PropertyDropdown
+                                    error={errors?.linkedIn}
+                                    onChange={() => {
+                                        resetError('linkedIn')
+                                    }}
+                                    onDismiss={() => {
+                                        resetError('linkedIn')
+                                    }}
+                                    onSubmit={(linkedIn) => {
+                                        resetError('linkedIn')
+
+                                        validate(() => {
+                                            Validator.pick({
+                                                linkedIn: true,
+                                            }).parse({ linkedIn })
+                                        })
+
+                                        updateNextData((c) => ({
+                                            ...c,
+                                            linkedIn,
+                                        }))
+                                    }}
+                                    submitLabel="Add LinkedIn link"
+                                    title="Add LinkedIn link"
+                                    toggleIcon={
+                                        <PropertyIcon
+                                            name="linkedin"
+                                            $color={
+                                                nextData.linkedIn ? '#0077b5' : undefined
+                                            }
+                                        />
+                                    }
+                                    value={nextData.linkedIn}
+                                />
+                            </li>
+                        </PropertyDropdownList>
                     </AboutOperatorField>
                     <AboutOperatorField>
                         <Label $wrap>Operator Avatar</Label>
@@ -479,6 +741,10 @@ const AboutOperator = styled.div`
 
 const AboutOperatorField = styled.div`
     margin-top: 16px;
+
+    ${PropertyDropdownList} {
+        margin-top: 16px;
+    }
 `
 
 const AvatarField = styled.div`

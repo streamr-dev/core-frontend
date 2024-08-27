@@ -1,17 +1,17 @@
+import SearchIcon from '@atlaskit/icon/glyph/search'
 import { useQuery } from '@tanstack/react-query'
 import React, { InputHTMLAttributes, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useDebounce } from 'use-debounce'
-import SearchIcon from '@atlaskit/icon/glyph/search'
 import {
-    SimpleDropdown,
     SimpleDropdownMenu as PrestyledSimpleDropdownMenu,
+    SimpleDropdown,
     SimpleListDropdownMenu,
 } from '~/components/SimpleDropdown'
+import Spinner from '~/components/Spinner'
 import { OrderDirection, Stream_OrderBy } from '~/generated/gql/network'
 import { FieldWrap, IconWrapAppendix, TextInput } from '~/modals/FormModal'
 import { getPagedStreams } from '~/services/streams'
-import Spinner from '~/components/Spinner'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { parseStreamId, truncate } from '~/shared/utils/text'
 import { useCurrentChainId } from '~/utils/chains'
@@ -37,6 +37,7 @@ export function StreamIdDropdown({
     ...props
 }: Props) {
     const wallet = useWalletAccount()
+
     const currentChainId = useCurrentChainId()
 
     const inputRef = useRef<HTMLInputElement>(null)
@@ -47,13 +48,13 @@ export function StreamIdDropdown({
 
     const { data: streamIds = [], isLoading } = useQuery({
         queryKey: ['StreamIdDropdown.streamIds', currentChainId, queryValue],
-        async queryFn({ pageParam }) {
+        queryFn: async () => {
             try {
                 return (
                     await getPagedStreams(
                         currentChainId,
                         20,
-                        pageParam,
+                        undefined,
                         undefined,
                         queryValue,
                         Stream_OrderBy.Id,
