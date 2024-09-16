@@ -2,11 +2,16 @@ import '@ibm/plex/css/ibm-plex.css'
 import { NavProvider } from '@streamr/streamr-layout'
 import { QueryClientProvider } from '@tanstack/react-query'
 import React, { ReactNode } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import {
+    createBrowserRouter,
+    Navigate,
+    Route,
+    RouterProvider,
+    Routes,
+} from 'react-router-dom'
 import styled from 'styled-components'
 import { Container } from 'toasterhea'
 import '~/analytics'
-import { HubRouter } from '~/consts'
 import GenericErrorPage from '~/pages/GenericErrorPage'
 import { NetworkOverviewPage } from '~/pages/NetworkOverviewPage'
 import NotFoundPage from '~/pages/NotFoundPage'
@@ -45,8 +50,8 @@ import { Route as R } from '~/utils/routes'
 import '~/utils/setupSnippets'
 import ProjectEditorPage from './pages/ProjectPage/ProjectEditorPage'
 
-const App = () => (
-    <Root>
+const Root = () => (
+    <Providers>
         <Globals />
         <Routes>
             <Route errorElement={<GenericErrorPage />}>
@@ -152,7 +157,7 @@ const App = () => (
         </Routes>
         <ModalContainer id={Layer.Modal} />
         <ToastContainer id={Layer.Toast} />
-    </Root>
+    </Providers>
 )
 
 export default App
@@ -172,18 +177,22 @@ const ToastContainer = styled(Container)`
     z-index: 12;
 `
 
-function Root({ children }: { children: ReactNode }) {
+function Providers({ children }: { children: ReactNode }) {
     return (
-        <HubRouter>
-            <QueryClientProvider client={getQueryClient()}>
-                <NavProvider>
-                    <StreamrClientProvider>
-                        <ModalPortalProvider>
-                            <ModalProvider>{children}</ModalProvider>
-                        </ModalPortalProvider>
-                    </StreamrClientProvider>
-                </NavProvider>
-            </QueryClientProvider>
-        </HubRouter>
+        <QueryClientProvider client={getQueryClient()}>
+            <NavProvider>
+                <StreamrClientProvider>
+                    <ModalPortalProvider>
+                        <ModalProvider>{children}</ModalProvider>
+                    </ModalPortalProvider>
+                </StreamrClientProvider>
+            </NavProvider>
+        </QueryClientProvider>
     )
+}
+
+const router = createBrowserRouter([{ path: '*', element: <Root /> }])
+
+function App() {
+    return <RouterProvider router={router} />
 }

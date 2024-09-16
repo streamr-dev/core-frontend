@@ -2,7 +2,7 @@ import { QueryClient } from '@tanstack/react-query'
 import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import { StreamGptApiUrl, history } from '~/consts'
+import { StreamGptApiUrl } from '~/consts'
 import { getProjectRegistryContract } from '~/getters'
 import {
     invalidateActiveOperatorByIdQueries,
@@ -168,7 +168,7 @@ export function goBack(options: { onBeforeNavigate?: () => void } = {}) {
 
     options.onBeforeNavigate?.()
 
-    history.back()
+    window.history.back()
 }
 
 let queryClient: QueryClient | undefined
