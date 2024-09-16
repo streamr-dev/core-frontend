@@ -179,20 +179,24 @@ const ToastContainer = styled(Container)`
 
 function Providers({ children }: { children: ReactNode }) {
     return (
-        <QueryClientProvider client={getQueryClient()}>
-            <NavProvider>
-                <StreamrClientProvider>
-                    <ModalPortalProvider>
-                        <ModalProvider>{children}</ModalProvider>
-                    </ModalPortalProvider>
-                </StreamrClientProvider>
-            </NavProvider>
-        </QueryClientProvider>
+        <NavProvider>
+            <StreamrClientProvider>
+                <ModalPortalProvider>
+                    <ModalProvider>{children}</ModalProvider>
+                </ModalPortalProvider>
+            </StreamrClientProvider>
+        </NavProvider>
     )
 }
 
-const router = createBrowserRouter([{ path: '*', element: <Root /> }])
+const router = createBrowserRouter([
+    { path: '*', element: <Root />, errorElement: <GenericErrorPage /> },
+])
 
 function App() {
-    return <RouterProvider router={router} />
+    return (
+        <QueryClientProvider client={getQueryClient()}>
+            <RouterProvider router={router} />
+        </QueryClientProvider>
+    )
 }
