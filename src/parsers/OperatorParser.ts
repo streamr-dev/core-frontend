@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ParseError } from '~/errors'
 import {
     OperatorMetadataPreparser,
     parseOperatorMetadata,
@@ -137,24 +138,34 @@ interface ParseOperatorOptions {
 export function parseOperator(value: unknown, options: ParseOperatorOptions) {
     const { chainId } = options
 
-    return OperatorParser.transform(
-        ({
-            operatorsCutFraction,
-            metadataJsonString: metadata,
-            exchangeRate,
-            delegations,
-            ...rest
-        }) => ({
-            ...rest,
-            exchangeRate,
-            metadata: parseOperatorMetadata(metadata, { chainId }),
-            operatorsCut: toFloat(operatorsCutFraction, 18n).multipliedBy(100).toNumber(),
-            delegations: delegations.map((d) => ({
-                ...d,
-                amount: toBigInt(
-                    toBN(d.operatorTokenBalanceWei).multipliedBy(exchangeRate),
-                ),
-            })),
-        }),
-    ).parse(value)
+    try {
+        return OperatorParser.transform(
+            ({
+                operatorsCutFraction,
+                metadataJsonString: metadata,
+                exchangeRate,
+                delegations,
+                ...rest
+            }) => ({
+                ...rest,
+                exchangeRate,
+                metadata: parseOperatorMetadata(metadata, { chainId }),
+                operatorsCut: toFloat(operatorsCutFraction, 18n)
+                    .multipliedBy(100)
+                    .toNumber(),
+                delegations: delegations.map((d) => ({
+                    ...d,
+                    amount: toBigInt(
+                        toBN(d.operatorTokenBalanceWei).multipliedBy(exchangeRate),
+                    ),
+                })),
+            }),
+        ).parse(value)
+    } catch (e) {
+        if (e instanceof z.ZodError) {
+            throw new ParseError(value, e)
+        }
+
+        throw e
+    }
 }

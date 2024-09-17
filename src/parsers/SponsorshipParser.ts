@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ParseError } from '~/errors'
 import { getConfigValueFromChain } from '~/getters/getConfigValueFromChain'
 import { toBigInt } from '~/utils/bn'
 import {
@@ -59,52 +60,61 @@ interface ParseSponsorshipOptions {
     chainId: number
 }
 
-export function parseSponsorship(value: unknown, options: ParseSponsorshipOptions) {
+export async function parseSponsorship(value: unknown, options: ParseSponsorshipOptions) {
     const { chainId } = options
 
-    return SponsorshipParser.transform(
-        async ({
-            projectedInsolvency: projectedInsolvencyAt,
-            remainingWei,
-            remainingWeiUpdateTimestamp,
-            stakes,
-            stream,
-            totalPayoutWeiPerSec,
-            isRunning,
-            ...rest
-        }) => {
-            const minimumStakeWei = await getConfigValueFromChain(
-                chainId,
-                'minimumStakeWei',
-            )
-
-            const timeCorrectedRemainingBalance = ((value) => (value < 0n ? 0n : value))(
-                remainingWei -
-                    toBigInt(Date.now() / 1000 - remainingWeiUpdateTimestamp) *
-                        totalPayoutWeiPerSec,
-            )
-
-            return {
-                ...rest,
-                minimumStakeWei,
-                payoutPerSec: totalPayoutWeiPerSec,
-                payoutPerDay: totalPayoutWeiPerSec * 86400n,
-                projectedInsolvencyAt,
-                remainingBalanceWei: remainingWei,
+    try {
+        return await SponsorshipParser.transform(
+            async ({
+                projectedInsolvency: projectedInsolvencyAt,
+                remainingWei,
                 remainingWeiUpdateTimestamp,
-                timeCorrectedRemainingBalance:
-                    timeCorrectedRemainingBalance > 0n && isRunning
-                        ? timeCorrectedRemainingBalance
-                        : remainingWei,
-                stakes: stakes.map(({ metadata, ...stake }) => ({
-                    ...stake,
-                    metadata: parseOperatorMetadata(metadata, { chainId }),
-                })),
-                streamId: stream?.id,
+                stakes,
+                stream,
+                totalPayoutWeiPerSec,
                 isRunning,
-            }
-        },
-    ).parseAsync(value)
+                ...rest
+            }) => {
+                const minimumStakeWei = await getConfigValueFromChain(
+                    chainId,
+                    'minimumStakeWei',
+                )
+
+                const timeCorrectedRemainingBalance = ((value) =>
+                    value < 0n ? 0n : value)(
+                    remainingWei -
+                        toBigInt(Date.now() / 1000 - remainingWeiUpdateTimestamp) *
+                            totalPayoutWeiPerSec,
+                )
+
+                return {
+                    ...rest,
+                    minimumStakeWei,
+                    payoutPerSec: totalPayoutWeiPerSec,
+                    payoutPerDay: totalPayoutWeiPerSec * 86400n,
+                    projectedInsolvencyAt,
+                    remainingBalanceWei: remainingWei,
+                    remainingWeiUpdateTimestamp,
+                    timeCorrectedRemainingBalance:
+                        timeCorrectedRemainingBalance > 0n && isRunning
+                            ? timeCorrectedRemainingBalance
+                            : remainingWei,
+                    stakes: stakes.map(({ metadata, ...stake }) => ({
+                        ...stake,
+                        metadata: parseOperatorMetadata(metadata, { chainId }),
+                    })),
+                    streamId: stream?.id,
+                    isRunning,
+                }
+            },
+        ).parseAsync(value)
+    } catch (e) {
+        if (e instanceof z.ZodError) {
+            throw new ParseError(value, e)
+        }
+
+        throw e
+    }
 }
 
 export type ParsedSponsorship = Awaited<ReturnType<typeof parseSponsorship>>

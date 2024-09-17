@@ -42,37 +42,14 @@ async function getSponsorshipsAndParse(
 ) {
     const sponsorships: ParsedSponsorship[] = []
 
-    let preparsedCount = 0
+    const rawSponsorships = await getter()
 
-    try {
-        const rawSponsorships = await getter()
-
-        preparsedCount = rawSponsorships.length
-
-        for (let i = 0; i < rawSponsorships.length; i++) {
-            try {
-                sponsorships.push(
-                    await parseSponsorship(rawSponsorships[i], {
-                        chainId,
-                    }),
-                )
-            } catch (e) {
-                console.warn('Failed to parse a sponsorship', e)
-            }
-        }
-    } catch (e) {
-        console.warn('Could not fetch the sponsorships', e)
-
-        errorToast({ title: 'Could not fetch sponsorships' })
-    }
-
-    if (preparsedCount !== sponsorships.length) {
-        errorToast({
-            title: 'Failed to parse',
-            desc: `${
-                preparsedCount - sponsorships.length
-            } out of ${preparsedCount} sponsorships could not be parsed.`,
-        })
+    for (const raw of rawSponsorships) {
+        sponsorships.push(
+            await parseSponsorship(raw, {
+                chainId,
+            }),
+        )
     }
 
     return sponsorships

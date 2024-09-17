@@ -3,6 +3,7 @@ import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
 import { StreamGptApiUrl } from '~/consts'
+import { ParseError } from '~/errors'
 import { getProjectRegistryContract } from '~/getters'
 import {
     invalidateActiveOperatorByIdQueries,
@@ -178,7 +179,13 @@ let queryClient: QueryClient | undefined
  */
 export function getQueryClient() {
     if (!queryClient) {
-        queryClient = new QueryClient()
+        queryClient = new QueryClient({
+            defaultOptions: {
+                queries: {
+                    throwOnError: (error) => error instanceof ParseError,
+                },
+            },
+        })
     }
 
     return queryClient

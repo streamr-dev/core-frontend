@@ -1,15 +1,22 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useRouteError } from 'react-router-dom'
 import styled from 'styled-components'
+import { Button } from '~/components/Button'
 import { EmptyState } from '~/components/EmptyState'
 import Layout from '~/components/Layout'
+import { ParseError } from '~/errors'
 import appCrashedImage from '~/shared/assets/images/app_crashed.png'
 import appCrashedImage2x from '~/shared/assets/images/app_crashed@2x.png'
-import { Button } from '~/components/Button'
-import { Route as R, routeOptions } from '~/utils/routes'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
 
 export default function GenericErrorPage() {
+    const error = useRouteError()
+
+    if (error instanceof ParseError) {
+        return <ParseErrorPage />
+    }
+
     return (
         <Layout rootBackgroundColor="#EFEFEF">
             <GenericErrorPageContent />
@@ -17,9 +24,45 @@ export default function GenericErrorPage() {
     )
 }
 
+function ParseErrorPage() {
+    return (
+        <Layout rootBackgroundColor="#EFEFEF">
+            <Root>
+                <EmptyState
+                    image={
+                        <img
+                            src={appCrashedImage}
+                            srcSet={`${appCrashedImage2x} 2x`}
+                            alt="App crashed"
+                        />
+                    }
+                    link={
+                        <Button
+                            kind="special"
+                            as={Link}
+                            to="https://streamr.network/"
+                            className="d-none d-md-flex"
+                        >
+                            Go to public site
+                        </Button>
+                    }
+                    linkOnMobile
+                >
+                    <p>The Hub is temporarily unavailable.</p>
+                    <SecondaryP>
+                        Our connection to the Subgraph indexing the Streamr Smart
+                        Contracts
+                        <br />
+                        is currently unavailable. Please try again in a few minutes.
+                    </SecondaryP>
+                </EmptyState>
+            </Root>
+        </Layout>
+    )
+}
+
 export function GenericErrorPageContent() {
     const chainName = useCurrentChainSymbolicName()
-
     return (
         <Root>
             <EmptyState
@@ -53,6 +96,11 @@ export function GenericErrorPageContent() {
         </Root>
     )
 }
+
+const SecondaryP = styled.p`
+    font-size: 0.8em;
+    margin-top: 1em;
+`
 
 const Root = styled.div`
     text-align: center;

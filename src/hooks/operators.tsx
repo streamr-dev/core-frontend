@@ -2,7 +2,6 @@ import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-qu
 import React, { useCallback, useEffect, useState } from 'react'
 import { toaster } from 'toasterhea'
 import { isAddress } from 'web3-validator'
-import { z } from 'zod'
 import { Minute } from '~/consts'
 import { Operator, Operator_OrderBy, OrderDirection } from '~/generated/gql/network'
 import {
@@ -42,7 +41,7 @@ import { useCurrentChainId } from '~/utils/chains'
 import { getContractAddress } from '~/utils/contracts'
 import { Break, FlagBusy } from '~/utils/errors'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
-import { errorToast, successToast } from '~/utils/toast'
+import { successToast } from '~/utils/toast'
 
 export function useOperatorForWalletQuery(address = '') {
     const currentChainId = useCurrentChainId()
@@ -101,15 +100,7 @@ export function useOperatorByIdQuery(operatorId = '') {
             })
 
             if (operator) {
-                try {
-                    return parseOperator(operator, { chainId: currentChainId })
-                } catch (e) {
-                    if (!(e instanceof z.ZodError)) {
-                        throw e
-                    }
-
-                    console.warn('Failed to parse an operator', operator, e)
-                }
+                return parseOperator(operator, { chainId: currentChainId })
             }
 
             return null
@@ -204,14 +195,6 @@ export function useDelegationsStats(address = '') {
                     chainId,
                     mapper(operator) {
                         return toDelegationForWallet(operator, addr)
-                    },
-                    onBeforeComplete(total, parsed) {
-                        if (total !== parsed) {
-                            errorToast({
-                                title: 'Warning',
-                                desc: `Delegation stats are calculated using ${parsed} out of ${total} available operators due to parsing issues.`,
-                            })
-                        }
                     },
                 },
             )
@@ -332,16 +315,6 @@ export function useDelegationsForWalletQuery({
                     mapper(operator) {
                         return toDelegationForWallet(operator, address)
                     },
-                    onBeforeComplete(total, parsed) {
-                        if (total !== parsed) {
-                            errorToast({
-                                title: 'Failed to parse',
-                                desc: `${
-                                    total - parsed
-                                } out of ${total} operators could not be parsed.`,
-                            })
-                        }
-                    },
                 },
             )
 
@@ -413,16 +386,6 @@ export function useAllOperatorsQuery({
                 },
                 {
                     chainId: currentChainId,
-                    onBeforeComplete(total, parsed) {
-                        if (total !== parsed) {
-                            errorToast({
-                                title: 'Failed to parse',
-                                desc: `${
-                                    total - parsed
-                                } out of ${total} operators could not be parsed.`,
-                            })
-                        }
-                    },
                 },
             )
 

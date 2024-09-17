@@ -406,18 +406,10 @@ export async function getParsedSponsorshipById(
         errorToast({ title: 'Could not fetch Sponsorship details' })
     }
 
-    if (!rawSponsorship) {
-        return null
-    }
-
-    try {
+    if (rawSponsorship) {
         return parseSponsorship(rawSponsorship, {
             chainId,
         })
-    } catch (e) {
-        console.warn('Failed to parse a Sponsorship', e)
-
-        errorToast({ title: 'Could not parse Sponsorship details' })
     }
 
     return null
@@ -735,15 +727,7 @@ export async function getParsedOperatorByOwnerAddress(
     }
 
     if (operator) {
-        try {
-            return parseOperator(operator, { chainId })
-        } catch (e) {
-            if (!(e instanceof z.ZodError)) {
-                throw e
-            }
-
-            console.warn('Failed to parse an operator', operator, e)
-        }
+        return parseOperator(operator, { chainId })
     }
 
     return null
@@ -780,18 +764,9 @@ export async function getParsedOperatorsByOwnerOrControllerAddress(
 
     const result: ParsedOperator[] = []
 
-    queryResult.map((operator) => {
-        try {
-            const parsedOperator = parseOperator(operator, { chainId })
-            result.push(parsedOperator)
-        } catch (e) {
-            if (!(e instanceof z.ZodError)) {
-                throw e
-            }
-
-            console.warn('Failed to parse an operator', operator, e)
-        }
-    })
+    for (const operator of queryResult) {
+        result.push(parseOperator(operator, { chainId }))
+    }
 
     return result
 }
@@ -837,8 +812,6 @@ export async function getStreamDescription(
 interface GetParsedOperatorsOptions<Mapper> {
     chainId: number
     mapper?: Mapper
-    onParseError?: (operator: Operator, error: unknown) => void
-    onBeforeComplete?: (total: number, parsed: number) => void
 }
 
 /**
@@ -846,9 +819,6 @@ interface GetParsedOperatorsOptions<Mapper> {
  * @param getter Callback that "gets" raw Operator objects.
  * @param options.mapper A mapping function that translates `ParsedOperator` instances into
  * something different.
- * @param options.onParseError Callback triggered for *each* parser failure (see `OperatorParser`).
- * @param options.onBeforeComplete Callback triggered just before returning the result. It carries
- * a total number of found operators and the number of successfully parsed operators.
  */
 export async function getParsedOperators<
     Mapper extends (operator: ParsedOperator) => any = (
@@ -858,29 +828,17 @@ export async function getParsedOperators<
     getter: () => Operator[] | Promise<Operator[]>,
     options: GetParsedOperatorsOptions<Mapper>,
 ): Promise<ReturnType<Mapper>[]> {
-    const { chainId, mapper, onParseError, onBeforeComplete } = options
+    const { chainId } = options
 
     const rawOperators = await getter()
 
     const operators: ReturnType<Mapper>[] = []
 
-    const preparsedCount = rawOperators.length
+    const mapper = options.mapper || ((x) => x)
 
-    for (let i = 0; i < preparsedCount; i++) {
-        const rawOperator = rawOperators[i]
-
-        try {
-            const operator = parseOperator(rawOperator, { chainId })
-
-            operators.push(mapper ? mapper(operator) : operator)
-        } catch (e) {
-            onParseError
-                ? onParseError(rawOperator as Operator, e)
-                : console.warn('Failed to parse an operator', rawOperator, e)
-        }
+    for (const raw of rawOperators) {
+        operators.push(mapper(parseOperator(raw, { chainId })))
     }
-
-    onBeforeComplete?.(preparsedCount, operators.length)
 
     return operators
 }
