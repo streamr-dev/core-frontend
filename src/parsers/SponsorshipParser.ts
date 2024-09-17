@@ -8,7 +8,7 @@ import {
 } from './OperatorMetadataParser'
 
 const SponsorshipParser = z.object({
-    cumulativeSponsoring: z.string().transform((v) => toBigInt(v)),
+    cumulativeSponsoring: z.string().transform((v) => toBigInt(v || 0)),
     id: z.string(),
     isRunning: z.boolean(),
     minOperators: z.number(),
