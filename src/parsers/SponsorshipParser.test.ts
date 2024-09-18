@@ -5,8 +5,11 @@ jest.mock('~/getters/getConfigValueFromChain', () => ({
     getConfigValueFromChain: () => 0n,
 }))
 
+const now = Math.floor(Date.now() / 1000)
+
 const options = {
     chainId: 137,
+    now: Math.floor(now * 1000),
 }
 
 const valid = {
@@ -17,9 +20,9 @@ const valid = {
     maxOperators: 2,
     minimumStakingPeriodSeconds: 63,
     operatorCount: 42,
-    projectedInsolvency: `${60 * 60 * 24.5}`, // 2nd Jan 1970 00:30
+    projectedInsolvency: `${now}`,
     remainingWei: '101',
-    remainingWeiUpdateTimestamp: 60 * 60 * 24 + 60, // 2nd Jan 1970 00:01
+    remainingWeiUpdateTimestamp: `${now - 2}`,
     spotAPY: 0.12,
     stream: {
         id: 'STREAM_ID',
@@ -55,13 +58,13 @@ describe('parseSponsorship', () => {
 
         expect(result.payoutPerDay).toEqual(86400n)
 
-        expect(result.projectedInsolvencyAt).toEqual(60 * 60 * 24.5)
+        expect(result.projectedInsolvencyAt).toEqual(now)
 
         expect(result.remainingBalanceWei).toEqual(101n)
 
-        expect(result.remainingWeiUpdateTimestamp).toEqual(60 * 60 * 24 + 60)
+        expect(result.remainingWeiUpdateTimestamp).toEqual(now - 2)
 
-        expect(result.timeCorrectedRemainingBalance).toEqual(101n)
+        expect(result.timeCorrectedRemainingBalance).toEqual(99n)
 
         expect(result.stakes).toMatchObject([])
 
@@ -70,7 +73,7 @@ describe('parseSponsorship', () => {
         expect(result.isRunning).toEqual(true)
     })
 
-    describe('parsing issues', () => {
+    describe('parsing', () => {
         it('throws on invalid id', async () => {
             const { id: _, ...rest } = valid
 
@@ -233,30 +236,407 @@ describe('parseSponsorship', () => {
             })
         })
 
-        it('throws on invalid operatorCount', async () => {})
+        it('throws on invalid operatorCount', async () => {
+            const { operatorCount: _, ...rest } = valid
 
-        it('throws on invalid spotAPY', async () => {})
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
 
-        it('throws on invalid totalStakedWei', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, operatorCount: '' }, options),
+            ).rejects.toThrow(/failed to parse/i)
 
-        it('throws on invalid minimumStakeWei', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, operatorCount: '1' }, options),
+            ).rejects.toThrow(/failed to parse/i)
 
-        it('throws on invalid payoutPerSec', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, operatorCount: true }, options),
+            ).rejects.toThrow(/failed to parse/i)
 
-        it('throws on invalid payoutPerDay', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, operatorCount: false }, options),
+            ).rejects.toThrow(/failed to parse/i)
 
-        it('throws on invalid projectedInsolvencyAt', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, operatorCount: null }, options),
+            ).rejects.toThrow(/failed to parse/i)
 
-        it('throws on invalid remainingBalanceWei', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, operatorCount: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
 
-        it('throws on invalid remainingWeiUpdateTimestamp', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, operatorCount: -1 }, options),
+            ).resolves.toMatchObject({
+                operatorCount: -1,
+            })
+        })
 
-        it('throws on invalid timeCorrectedRemainingBalance', async () => {})
+        it('throws on invalid spotAPY', async () => {
+            const { spotAPY: _, ...rest } = valid
 
-        it('throws on invalid stakes', async () => {})
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
 
-        it('throws on invalid streamId', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, spotAPY: '' }, options),
+            ).resolves.toMatchObject({
+                spotAPY: 0,
+            })
 
-        it('throws on invalid isRunning', async () => {})
+            await expect(
+                parseSponsorship({ ...rest, spotAPY: '0.3' }, options),
+            ).resolves.toMatchObject({
+                spotAPY: 0.3,
+            })
+
+            await expect(
+                parseSponsorship({ ...rest, spotAPY: null }, options),
+            ).resolves.toMatchObject({
+                spotAPY: 0,
+            })
+
+            await expect(
+                parseSponsorship({ ...rest, spotAPY: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, spotAPY: true }, options),
+            ).resolves.toMatchObject({
+                spotAPY: 1,
+            })
+
+            await expect(
+                parseSponsorship({ ...rest, spotAPY: false }, options),
+            ).resolves.toMatchObject({
+                spotAPY: 0,
+            })
+        })
+
+        it('throws on invalid totalStakedWei', async () => {
+            const { totalStakedWei: _, ...rest } = valid
+
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
+
+            await expect(
+                parseSponsorship({ ...rest, totalStakedWei: '' }, options),
+            ).resolves.toMatchObject({
+                totalStakedWei: 0n,
+            })
+
+            await expect(
+                parseSponsorship({ ...rest, totalStakedWei: '1' }, options),
+            ).resolves.toMatchObject({
+                totalStakedWei: 1n,
+            })
+
+            await expect(
+                parseSponsorship({ ...rest, totalStakedWei: null }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, totalStakedWei: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, totalStakedWei: 1 }, options),
+            ).rejects.toThrow(/failed to parse/i)
+        })
+
+        it('throws on invalid totalPayoutWeiPerSec', async () => {
+            const { totalPayoutWeiPerSec: _, ...rest } = valid
+
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
+
+            await expect(
+                parseSponsorship({ ...rest, totalPayoutWeiPerSec: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, totalPayoutWeiPerSec: null }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, totalPayoutWeiPerSec: 1 }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, totalPayoutWeiPerSec: '' }, options),
+            ).resolves.toMatchObject({
+                payoutPerSec: 0n,
+                payoutPerDay: 0n,
+            })
+        })
+
+        it('throws on invalid projectedInsolvency', async () => {
+            const { projectedInsolvency: _, ...rest } = valid
+
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
+
+            await expect(
+                parseSponsorship({ ...rest, projectedInsolvency: 'abc' }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, projectedInsolvency: 1 }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, projectedInsolvency: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, projectedInsolvency: true }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, projectedInsolvency: false }, options),
+            ).rejects.toThrow(/failed to parse/i)
+        })
+
+        it('throws on invalid remainingWei', async () => {
+            const { remainingWei: _, ...rest } = valid
+
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
+
+            await expect(
+                parseSponsorship({ ...rest, remainingWei: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, remainingWei: null }, options),
+            ).rejects.toThrow(/failed to parse/i)
+        })
+
+        it('throws on invalid remainingWeiUpdateTimestamp', async () => {
+            const { remainingWeiUpdateTimestamp: _, ...rest } = valid
+
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
+
+            await expect(
+                parseSponsorship(
+                    { ...rest, remainingWeiUpdateTimestamp: 'abc' },
+                    options,
+                ),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, remainingWeiUpdateTimestamp: 13 }, options),
+            ).resolves.toMatchObject({
+                remainingWeiUpdateTimestamp: 13,
+            })
+
+            await expect(
+                parseSponsorship(
+                    { ...rest, remainingWeiUpdateTimestamp: undefined },
+                    options,
+                ),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, remainingWeiUpdateTimestamp: true }, options),
+            ).resolves.toMatchObject({
+                remainingWeiUpdateTimestamp: 1,
+            })
+
+            await expect(
+                parseSponsorship(
+                    { ...rest, remainingWeiUpdateTimestamp: false },
+                    options,
+                ),
+            ).resolves.toMatchObject({
+                remainingWeiUpdateTimestamp: 0,
+            })
+        })
+
+        it('throws on invalid stakes', async () => {
+            const { stakes: _, ...rest } = valid
+
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
+
+            await expect(
+                parseSponsorship({ ...rest, stakes: {} }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, stakes: null }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, stakes: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, stakes: '' }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            const { stakes: validStakes } = await parseSponsorship(
+                {
+                    ...rest,
+                    stakes: [
+                        {
+                            operator: {
+                                id: 'OPERATOR_ID',
+                                metadataJsonString: '{}',
+                            },
+                            amountWei: '200',
+                            lockedWei: '100',
+                            joinTimestamp: '1',
+                        },
+                    ],
+                },
+                options,
+            )
+
+            const [stake] = validStakes
+
+            expect(stake.operatorId).toEqual('OPERATOR_ID')
+
+            expect(stake.metadata).toMatchObject({
+                name: '',
+                description: '',
+                url: '',
+                email: '',
+                twitter: '',
+                x: '',
+                telegram: '',
+                reddit: '',
+                linkedIn: '',
+                imageUrl: undefined,
+                imageIpfsCid: undefined,
+            })
+
+            expect(stake.metadata).not.toHaveProperty('redundancyFactor')
+
+            expect(stake.amountWei).toEqual(200n)
+
+            expect(stake.lockedWei).toEqual(100n)
+
+            expect(stake.joinTimestamp).toEqual(1)
+        })
+
+        it('throws on invalid stream', async () => {
+            const { stream: _, ...rest } = valid
+
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
+
+            await expect(
+                parseSponsorship({ ...rest, stream: null }, options),
+            ).resolves.toMatchObject({
+                streamId: undefined,
+            })
+
+            await expect(
+                parseSponsorship({ ...rest, stream: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, stream: '' }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, stream: 'WHATEVER' }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            const { streamId } = await parseSponsorship(
+                {
+                    ...rest,
+                    stream: { id: 'STREAM_ID' },
+                },
+                options,
+            )
+
+            expect(streamId).toEqual('STREAM_ID')
+        })
+
+        it('throws on invalid isRunning', async () => {
+            const { isRunning: _, ...rest } = valid
+
+            await expect(parseSponsorship({ ...rest }, options)).rejects.toThrow(
+                /failed to parse/i,
+            )
+
+            await expect(
+                parseSponsorship({ ...rest, isRunning: '' }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, isRunning: null }, options),
+            ).rejects.toThrow(/failed to parse/i)
+
+            await expect(
+                parseSponsorship({ ...rest, isRunning: undefined }, options),
+            ).rejects.toThrow(/failed to parse/i)
+        })
+    })
+
+    describe('timeCorrectedRemainingBalance calculation', () => {
+        it('correctly substracts the payout from the remaining balance', async () => {
+            expect(
+                await parseSponsorship(
+                    {
+                        ...valid,
+                        remainingWeiUpdateTimestamp: `${now - 7}`,
+                        totalPayoutWeiPerSec: '1',
+                        remainingWei: '1337',
+                        isRunning: true,
+                    },
+                    options,
+                ),
+            ).toMatchObject({
+                timeCorrectedRemainingBalance: 1330n,
+            })
+        })
+
+        it('gives the entire remaining balance if the sponsorship is not running', async () => {
+            expect(
+                await parseSponsorship(
+                    {
+                        ...valid,
+                        remainingWeiUpdateTimestamp: `${now - 7}`,
+                        totalPayoutWeiPerSec: '1',
+                        remainingWei: '1337',
+                        isRunning: false,
+                    },
+                    options,
+                ),
+            ).toMatchObject({
+                timeCorrectedRemainingBalance: 1337n,
+            })
+        })
+
+        it('goes down to zero and not a dime further', async () => {
+            expect(
+                await parseSponsorship(
+                    {
+                        ...valid,
+                        remainingWeiUpdateTimestamp: `${now - 2000}`,
+                        totalPayoutWeiPerSec: '1',
+                        remainingWei: '1337',
+                        isRunning: true,
+                    },
+                    options,
+                ),
+            ).toMatchObject({
+                timeCorrectedRemainingBalance: 0n,
+            })
+        })
     })
 })

@@ -18,9 +18,10 @@ const SponsorshipParser = z.object({
         .transform((v) => v ?? Number.POSITIVE_INFINITY),
     minimumStakingPeriodSeconds: z.coerce.number(),
     operatorCount: z.number(),
-    projectedInsolvency: z
-        .union([z.string(), z.null()])
-        .transform((v) => (v == null ? null : Number(v))),
+    projectedInsolvency: z.union([
+        z.string().transform(Number).pipe(z.number()),
+        z.null(),
+    ]),
     remainingWei: z.string().transform((v) => toBigInt(v)),
     remainingWeiUpdateTimestamp: z.coerce.number(),
     spotAPY: z.coerce.number(),
@@ -52,16 +53,19 @@ const SponsorshipParser = z.object({
                 }),
             ),
     ),
-    totalPayoutWeiPerSec: z.string().transform((v) => toBigInt(v)),
-    totalStakedWei: z.string().transform((v) => toBigInt(v)),
+    totalPayoutWeiPerSec: z.string().transform((v) => toBigInt(v || 0)),
+    totalStakedWei: z.string().transform((v) => toBigInt(v || 0)),
 })
 
 interface ParseSponsorshipOptions {
     chainId: number
+    now?: number
 }
 
 export async function parseSponsorship(value: unknown, options: ParseSponsorshipOptions) {
     const { chainId } = options
+
+    const now = options.now ?? Date.now()
 
     try {
         return await SponsorshipParser.transform(
@@ -83,7 +87,7 @@ export async function parseSponsorship(value: unknown, options: ParseSponsorship
                 const timeCorrectedRemainingBalance = ((value) =>
                     value < 0n ? 0n : value)(
                     remainingWei -
-                        toBigInt(Date.now() / 1000 - remainingWeiUpdateTimestamp) *
+                        toBigInt(now / 1000 - remainingWeiUpdateTimestamp) *
                             totalPayoutWeiPerSec,
                 )
 
@@ -94,11 +98,11 @@ export async function parseSponsorship(value: unknown, options: ParseSponsorship
                     payoutPerDay: totalPayoutWeiPerSec * 86400n,
                     projectedInsolvencyAt,
                     remainingBalanceWei: remainingWei,
+                    // @todo Rename remainingWeiUpdateTimestamp to remainingBalanceUpdatedAt
                     remainingWeiUpdateTimestamp,
-                    timeCorrectedRemainingBalance:
-                        timeCorrectedRemainingBalance > 0n && isRunning
-                            ? timeCorrectedRemainingBalance
-                            : remainingWei,
+                    timeCorrectedRemainingBalance: isRunning
+                        ? timeCorrectedRemainingBalance
+                        : remainingWei,
                     stakes: stakes.map(({ metadata, ...stake }) => ({
                         ...stake,
                         metadata: parseOperatorMetadata(metadata, { chainId }),
