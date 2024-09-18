@@ -7,9 +7,9 @@ import {
 import { toBN, toBigInt, toFloat } from '~/utils/bn'
 
 const OperatorParser = z.object({
-    cumulativeOperatorsCutWei: z.string().transform((v) => toBigInt(v)),
-    cumulativeProfitsWei: z.string().transform((v) => toBigInt(v)),
-    dataTokenBalanceWei: z.string().transform((v) => toBigInt(v)),
+    cumulativeOperatorsCutWei: z.string().transform((v) => toBigInt(v || 0)),
+    cumulativeProfitsWei: z.string().transform((v) => toBigInt(v || 0)),
+    dataTokenBalanceWei: z.string().transform((v) => toBigInt(v || 0)),
     delegatorCount: z.number(),
     delegations: z.array(
         z.object({
@@ -24,7 +24,7 @@ const OperatorParser = z.object({
             earliestUndelegationTimestamp: z.coerce.number(),
         }),
     ),
-    exchangeRate: z.string().transform(toBN),
+    exchangeRate: z.string().transform((v) => toBN(v || 0)),
     id: z.string(),
     metadataJsonString: OperatorMetadataPreparser,
     nodes: z.array(z.string()).transform((nodes) =>
@@ -44,8 +44,8 @@ const OperatorParser = z.object({
     operatorsCutFraction: z.string().transform((v) => toBigInt(v)),
     owner: z.string(),
     contractVersion: z.coerce.number(),
-    operatorTokenTotalSupplyWei: z.string().transform((v) => toBigInt(v)),
-    valueWithoutEarnings: z.string().transform((v) => toBigInt(v)),
+    operatorTokenTotalSupplyWei: z.string().transform((v) => toBigInt(v || 0)),
+    valueWithoutEarnings: z.string().transform((v) => toBigInt(v || 0)),
     valueUpdateBlockNumber: z.coerce.number().optional(),
     valueUpdateTimestamp: z.coerce.number().optional(),
     queueEntries: z.array(
