@@ -45,11 +45,15 @@ const UrlParser = z
     .default('')
 
 export class OperatorMetadata extends Parsable<RawOperatorMetadata> {
+    static parse(raw: unknown, chainId: number): OperatorMetadata {
+        return new OperatorMetadata(raw, chainId)
+    }
+
     protected preparse() {
         return RawOperatorMetadata.parse(this.raw)
     }
 
-    name() {
+    get name() {
         return this.getValue('name', (raw) => {
             return z
                 .string()
@@ -58,7 +62,7 @@ export class OperatorMetadata extends Parsable<RawOperatorMetadata> {
         })
     }
 
-    description() {
+    get description() {
         return this.getValue('description', (raw) => {
             return z
                 .string()
@@ -67,7 +71,7 @@ export class OperatorMetadata extends Parsable<RawOperatorMetadata> {
         })
     }
 
-    imageIpfsCid() {
+    get imageIpfsCid() {
         return this.getValue('imageIpfsCid', (raw) => {
             return z
                 .string()
@@ -79,15 +83,15 @@ export class OperatorMetadata extends Parsable<RawOperatorMetadata> {
         })
     }
 
-    imageUrl() {
-        const { ipfsGatewayUrl } = getChainConfigExtension(this.chainId).ipfs
+    get imageUrl() {
+        const { imageIpfsCid, chainId } = this
 
-        const imageIpfsCid = this.imageIpfsCid()
+        const { ipfsGatewayUrl } = getChainConfigExtension(chainId).ipfs
 
         return imageIpfsCid && `${ipfsGatewayUrl}${imageIpfsCid}`
     }
 
-    redundancyFactor() {
+    get redundancyFactor() {
         return this.getValue('redundancyFactor', (raw) => {
             return z.coerce
                 .number()
@@ -99,13 +103,13 @@ export class OperatorMetadata extends Parsable<RawOperatorMetadata> {
         })
     }
 
-    url() {
+    get url() {
         return this.getValue('url', (raw) => {
             return UrlParser.parse(raw)
         })
     }
 
-    email() {
+    get email() {
         return this.getValue('email', (raw) => {
             return z
                 .string()
@@ -117,31 +121,31 @@ export class OperatorMetadata extends Parsable<RawOperatorMetadata> {
         })
     }
 
-    twitter() {
+    get twitter() {
         return this.getValue('twitter', (raw) => {
             return UrlParser.parse(raw)
         })
     }
 
-    x() {
+    get x() {
         return this.getValue('x', (raw) => {
             return UrlParser.parse(raw)
         })
     }
 
-    telegram() {
+    get telegram() {
         return this.getValue('telegram', (raw) => {
             return UrlParser.parse(raw)
         })
     }
 
-    reddit() {
+    get reddit() {
         return this.getValue('reddit', (raw) => {
             return UrlParser.parse(raw)
         })
     }
 
-    linkedIn() {
+    get linkedIn() {
         return this.getValue('linkedIn', (raw) => {
             return UrlParser.parse(raw)
         })

@@ -27,11 +27,15 @@ const RawSponsorship = z.object({
 type RawSponsorship = z.infer<typeof RawSponsorship>
 
 export class Sponsorship extends Parsable<RawSponsorship> {
+    static parse(raw: unknown, chainId: number): Sponsorship {
+        return new Sponsorship(raw, chainId)
+    }
+
     protected preparse() {
         return RawSponsorship.parse(this.raw)
     }
 
-    cumulativeSponsoring() {
+    get cumulativeSponsoring() {
         return this.getValue('cumulativeSponsoring', (raw) => {
             return z
                 .string()
@@ -41,11 +45,11 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    id() {
+    get id() {
         return this.getValue('id')
     }
 
-    isRunning() {
+    get isRunning() {
         return this.getValue('isRunning', (raw) => {
             return z
                 .boolean()
@@ -54,7 +58,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    minOperators() {
+    get minOperators() {
         return this.getValue('minOperators', (raw) => {
             return z
                 .number()
@@ -65,7 +69,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    maxOperators() {
+    get maxOperators() {
         return this.getValue('maxOperators', (raw) => {
             return z
                 .number()
@@ -77,7 +81,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    minimumStakingPeriodSeconds() {
+    get minimumStakingPeriodSeconds() {
         return this.getValue('minimumStakingPeriodSeconds', (raw) => {
             return z.coerce
                 .number()
@@ -86,7 +90,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    operatorCount() {
+    get operatorCount() {
         return this.getValue('operatorCount', (raw) => {
             return z
                 .number()
@@ -97,7 +101,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    projectedInsolvencyAt() {
+    get projectedInsolvencyAt() {
         return this.getValue('projectedInsolvency', (raw) => {
             return z
                 .union([z.string(), z.null()])
@@ -107,7 +111,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    remainingBalanceWei() {
+    get remainingBalanceWei() {
         return this.getValue('remainingWei', (raw) => {
             return z
                 .string()
@@ -117,7 +121,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    remainingBalanceUpdatedAt() {
+    get remainingBalanceUpdatedAt() {
         return this.getValue('remainingWeiUpdateTimestamp', (raw) => {
             return z
                 .union([z.string(), z.null()])
@@ -127,7 +131,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    spotApy() {
+    get spotApy() {
         return this.getValue('spotAPY', (raw) => {
             return z.coerce
                 .number()
@@ -136,7 +140,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    streamId() {
+    get streamId() {
         return this.getValue('stream', (raw) => {
             return z
                 .union([
@@ -150,7 +154,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    stakes() {
+    get stakes() {
         return this.getValue('stakes', (raw) => {
             return z
                 .array(
@@ -184,7 +188,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    payoutPerSecond() {
+    get payoutPerSecond() {
         return this.getValue('totalPayoutWeiPerSec', (raw) => {
             return z
                 .string()
@@ -194,11 +198,11 @@ export class Sponsorship extends Parsable<RawSponsorship> {
         })
     }
 
-    payoutPerDay() {
-        return this.payoutPerSecond() * 86400n
+    get payoutPerDay() {
+        return this.payoutPerSecond * 86400n
     }
 
-    totalStakedWei() {
+    get totalStakedWei() {
         return this.getValue('totalStakedWei', (raw) => {
             return z
                 .string()
@@ -209,19 +213,19 @@ export class Sponsorship extends Parsable<RawSponsorship> {
     }
 
     timeCorrectedRemainingBalanceWeiAt(timestampInMillis: number) {
-        if (!this.isRunning()) {
-            return this.remainingBalanceWei()
+        if (!this.isRunning) {
+            return this.remainingBalanceWei
         }
 
         const secondsElapsed =
             Math.max(
                 0,
                 timestampInMillis -
-                    (this.remainingBalanceUpdatedAt()?.getTime() ?? timestampInMillis),
+                    (this.remainingBalanceUpdatedAt?.getTime() ?? timestampInMillis),
             ) / 1000
 
         const result =
-            this.remainingBalanceWei() - toBigInt(secondsElapsed) * this.payoutPerSecond()
+            this.remainingBalanceWei - toBigInt(secondsElapsed) * this.payoutPerSecond
 
         return result > 0n ? result : 0n
     }

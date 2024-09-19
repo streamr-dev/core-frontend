@@ -31,17 +31,21 @@ const RawOperator = z.object({
 type RawOperator = z.infer<typeof RawOperator>
 
 export class Operator extends Parsable<RawOperator> {
+    static parse(raw: unknown, chainId: number): Operator {
+        return new Operator(raw, chainId)
+    }
+
     protected preparse() {
         return RawOperator.parse(this.raw)
     }
 
-    contractVersion() {
+    get contractVersion() {
         return this.getValue('contractVersion', (raw) => {
             return z.coerce.number().catch(-1).parse(raw)
         })
     }
 
-    controllers() {
+    get controllers() {
         return this.getValue('controllers', (raw) => {
             return z
                 .array(z.string().catch(''))
@@ -69,7 +73,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    cumulativeOperatorsCutWei() {
+    get cumulativeOperatorsCutWei() {
         return this.getValue('cumulativeOperatorsCutWei', (raw) => {
             return z
                 .string()
@@ -79,7 +83,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    cumulativeProfitsWei() {
+    get cumulativeProfitsWei() {
         return this.getValue('cumulativeProfitsWei', (raw) => {
             return z
                 .string()
@@ -89,7 +93,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    dataTokenBalanceWei() {
+    get dataTokenBalanceWei() {
         return this.getValue('dataTokenBalanceWei', (raw) => {
             return z
                 .string()
@@ -99,7 +103,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    delegations() {
+    get delegations() {
         return this.getValue('delegations', (raw) => {
             return z
                 .array(
@@ -138,7 +142,7 @@ export class Operator extends Parsable<RawOperator> {
                                 delegator: d.delegator.id,
                                 amount: toBigInt(
                                     toBN(d.operatorTokenBalanceWei).multipliedBy(
-                                        this.exchangeRate(),
+                                        this.exchangeRate,
                                     ),
                                 ),
                             })
@@ -151,13 +155,13 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    delegatorCount() {
+    get delegatorCount() {
         return this.getValue('delegatorCount', (raw) => {
             return z.number().catch(0).parse(raw)
         })
     }
 
-    exchangeRate() {
+    get exchangeRate() {
         return this.getValue('exchangeRate', (raw) => {
             return z
                 .string()
@@ -167,17 +171,17 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    id() {
+    get id() {
         return this.getValue('id')
     }
 
-    metadata() {
+    get metadata() {
         return this.getValue('metadataJsonString', (raw) => {
             return new OperatorMetadata(raw, this.chainId)
         })
     }
 
-    nodes() {
+    get nodes() {
         return this.getValue('nodes', (raw) => {
             return z
                 .array(z.string().catch(''))
@@ -205,7 +209,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    operatorsCut() {
+    get operatorsCut() {
         return this.getValue('operatorsCutFraction', (raw) => {
             return z
                 .string()
@@ -219,7 +223,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    operatorTokenTotalSupplyWei() {
+    get operatorTokenTotalSupplyWei() {
         return this.getValue('operatorTokenTotalSupplyWei', (raw) => {
             return z
                 .string()
@@ -229,13 +233,13 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    owner() {
+    get owner() {
         return this.getValue('owner', (raw) => {
             return z.string().catch(ZeroAddress).parse(raw)
         })
     }
 
-    queueEntries() {
+    get queueEntries() {
         return this.getValue('queueEntries', (raw) => {
             return z
                 .array(
@@ -275,7 +279,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    slashingEvents() {
+    get slashingEvents() {
         return this.getValue('slashingEvents', (raw) => {
             return z
                 .array(
@@ -322,7 +326,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    stakes() {
+    get stakes() {
         return this.getValue('stakes', (raw) => {
             return z
                 .array(
@@ -421,7 +425,7 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    totalStakeInSponsorshipsWei() {
+    get totalStakeInSponsorshipsWei() {
         return this.getValue('totalStakeInSponsorshipsWei', (raw) => {
             return z
                 .string()
@@ -431,19 +435,19 @@ export class Operator extends Parsable<RawOperator> {
         })
     }
 
-    valueUpdateBlockNumber() {
+    get valueUpdateBlockNumber() {
         return this.getValue('valueUpdateBlockNumber', (raw) => {
             return z.coerce.number().optional().catch(undefined).parse(raw)
         })
     }
 
-    valueUpdateTimestamp() {
+    get valueUpdateTimestamp() {
         return this.getValue('valueUpdateTimestamp', (raw) => {
             return z.coerce.number().optional().catch(undefined).parse(raw)
         })
     }
 
-    valueWithoutEarnings() {
+    get valueWithoutEarnings() {
         return this.getValue('valueWithoutEarnings', (raw) => {
             return z
                 .string()
