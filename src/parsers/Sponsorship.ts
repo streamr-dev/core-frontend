@@ -1,10 +1,9 @@
 import { z } from 'zod'
+import { ParseError } from '~/errors'
+import { OperatorMetadata } from '~/parsers/OperatorMetadata'
 import { Parsable } from '~/parsers/Parsable'
 import { toBigInt } from '~/utils/bn'
-import {
-    OperatorMetadataPreparser,
-    parseOperatorMetadata,
-} from './OperatorMetadataParser'
+import { OperatorMetadataPreparser } from './OperatorMetadataParser'
 
 const RawSponsorship = z.object({
     cumulativeSponsoring: z.unknown(),
@@ -28,7 +27,15 @@ type RawSponsorship = z.infer<typeof RawSponsorship>
 
 export class Sponsorship extends Parsable<RawSponsorship> {
     static parse(raw: unknown, chainId: number): Sponsorship {
-        return new Sponsorship(raw, chainId)
+        try {
+            return new Sponsorship(raw, chainId)
+        } catch (e) {
+            if (e instanceof z.ZodError) {
+                throw new ParseError(raw, e)
+            }
+
+            throw e
+        }
     }
 
     protected preparse() {
@@ -38,9 +45,9 @@ export class Sponsorship extends Parsable<RawSponsorship> {
     get cumulativeSponsoring() {
         return this.getValue('cumulativeSponsoring', (raw) => {
             return z
-                .string()
-                .transform((v) => toBigInt(v))
-                .catch(() => 0n)
+                .union([z.string(), z.number().int().min(0)])
+                .transform((v) => toBigInt(v || 0))
+                .catch(0n)
                 .parse(raw)
         })
     }
@@ -51,61 +58,49 @@ export class Sponsorship extends Parsable<RawSponsorship> {
 
     get isRunning() {
         return this.getValue('isRunning', (raw) => {
-            return z
-                .boolean()
-                .catch(() => false)
-                .parse(raw)
+            return z.boolean().catch(false).parse(raw)
         })
     }
 
     get minOperators() {
         return this.getValue('minOperators', (raw) => {
-            return z
-                .number()
-                .int()
-                .min(0)
-                .catch(() => 0)
-                .parse(raw)
+            return z.coerce.number().int().min(0).catch(0).parse(raw)
         })
     }
 
     get maxOperators() {
         return this.getValue('maxOperators', (raw) => {
-            return z
+            return z.coerce
                 .number()
                 .int()
                 .min(0)
                 .default(Infinity)
-                .catch(() => Infinity)
+                .catch(Infinity)
                 .parse(raw)
         })
     }
 
     get minimumStakingPeriodSeconds() {
         return this.getValue('minimumStakingPeriodSeconds', (raw) => {
-            return z.coerce
-                .number()
-                .catch(() => 0)
-                .parse(raw)
+            return z.coerce.number().min(0).catch(0).parse(raw)
         })
     }
 
     get operatorCount() {
         return this.getValue('operatorCount', (raw) => {
-            return z
-                .number()
-                .int()
-                .min(0)
-                .catch(() => 0)
-                .parse(raw)
+            return z.coerce.number().int().min(0).catch(0).parse(raw)
         })
     }
 
     get projectedInsolvencyAt() {
         return this.getValue('projectedInsolvency', (raw) => {
             return z
-                .union([z.string(), z.null()])
-                .catch(() => null)
+                .union([
+                    z.string().transform(Number).pipe(z.number()),
+                    z.number(),
+                    z.null(),
+                ])
+                .catch(null)
                 .transform((v) => (v === null ? null : new Date(Number(v) * 1000)))
                 .parse(raw)
         })
@@ -114,9 +109,9 @@ export class Sponsorship extends Parsable<RawSponsorship> {
     get remainingBalanceWei() {
         return this.getValue('remainingWei', (raw) => {
             return z
-                .string()
-                .transform((v) => toBigInt(v))
-                .catch(() => 0n)
+                .union([z.string(), z.number().int().min(0)])
+                .transform((v) => toBigInt(v || 0))
+                .catch(0n)
                 .parse(raw)
         })
     }
@@ -124,8 +119,12 @@ export class Sponsorship extends Parsable<RawSponsorship> {
     get remainingBalanceUpdatedAt() {
         return this.getValue('remainingWeiUpdateTimestamp', (raw) => {
             return z
-                .union([z.string(), z.null()])
-                .catch(() => null)
+                .union([
+                    z.string().transform(Number).pipe(z.number()),
+                    z.number(),
+                    z.null(),
+                ])
+                .catch(null)
                 .transform((v) => (v === null ? null : new Date(Number(v) * 1000)))
                 .parse(raw)
         })
@@ -133,10 +132,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
 
     get spotApy() {
         return this.getValue('spotAPY', (raw) => {
-            return z.coerce
-                .number()
-                .catch(() => 0)
-                .parse(raw)
+            return z.coerce.number().catch(0).parse(raw)
         })
     }
 
@@ -149,7 +145,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
                         id: z.string(),
                     }),
                 ])
-                .catch(() => null)
+                .catch(null)
                 .parse(raw)?.id
         })
     }
@@ -173,17 +169,15 @@ export class Sponsorship extends Parsable<RawSponsorship> {
 
                             return {
                                 ...rest,
-                                operator: {
-                                    id: operator.id,
-                                    metadata: parseOperatorMetadata(
-                                        operator.metadataJsonString,
-                                        { chainId: this.chainId },
-                                    ),
-                                },
+                                operatorId: operator.id,
+                                metadata: OperatorMetadata.parse(
+                                    operator.metadataJsonString,
+                                    this.chainId,
+                                ),
                             }
                         }),
                 )
-                .catch(() => [])
+                .catch([])
                 .parse(raw)
         })
     }
@@ -191,9 +185,9 @@ export class Sponsorship extends Parsable<RawSponsorship> {
     get payoutPerSecond() {
         return this.getValue('totalPayoutWeiPerSec', (raw) => {
             return z
-                .string()
-                .transform((v) => toBigInt(v))
-                .catch(() => 0n)
+                .union([z.string(), z.number().int().min(0)])
+                .transform((v) => toBigInt(v || 0))
+                .catch(0n)
                 .parse(raw)
         })
     }
@@ -205,24 +199,22 @@ export class Sponsorship extends Parsable<RawSponsorship> {
     get totalStakedWei() {
         return this.getValue('totalStakedWei', (raw) => {
             return z
-                .string()
-                .transform((v) => toBigInt(v))
-                .catch(() => 0n)
+                .union([z.string(), z.number().int().min(0)])
+                .transform((v) => toBigInt(v || 0))
+                .catch(0n)
                 .parse(raw)
         })
     }
 
     timeCorrectedRemainingBalanceWeiAt(timestampInMillis: number) {
+        const time = timestampInMillis - (timestampInMillis % 1000)
+
         if (!this.isRunning) {
             return this.remainingBalanceWei
         }
 
         const secondsElapsed =
-            Math.max(
-                0,
-                timestampInMillis -
-                    (this.remainingBalanceUpdatedAt?.getTime() ?? timestampInMillis),
-            ) / 1000
+            Math.max(0, time - (this.remainingBalanceUpdatedAt?.getTime() ?? time)) / 1000
 
         const result =
             this.remainingBalanceWei - toBigInt(secondsElapsed) * this.payoutPerSecond

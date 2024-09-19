@@ -2,7 +2,7 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "module": "esnext",
-        "strict": false,
+        "strict": true,
         "isolatedModules": false,
         "noImplicitAny": false,
         "paths": {

@@ -1,38 +1,39 @@
 import { z } from 'zod'
+import { ParseError } from '~/errors'
 import { Parsable } from '~/parsers/Parsable'
 import { getChainConfigExtension } from '~/utils/chains'
 
 const RawOperatorMetadata = z
-    .string()
-    .default('{}')
-    .transform((value) => {
-        try {
-            return JSON.parse(value)
-        } catch (e) {
-            if (e instanceof SyntaxError) {
-                return {}
-            }
+    .union([
+        z.string().transform((value) => {
+            try {
+                return JSON.parse(value)
+            } catch (e) {
+                if (e instanceof SyntaxError) {
+                    return {}
+                }
 
-            throw e
-        }
-    })
+                throw e
+            }
+        }),
+        z.record(z.string(), z.unknown()),
+    ])
+    .default({})
+    .catch({})
     .pipe(
-        z.record(
-            z.union([
-                z.literal('name'),
-                z.literal('description'),
-                z.literal('imageIpfsCid'),
-                z.literal('redundancyFactor'),
-                z.literal('url'),
-                z.literal('email'),
-                z.literal('twitter'),
-                z.literal('x'),
-                z.literal('telegram'),
-                z.literal('reddit'),
-                z.literal('linkedIn'),
-            ]),
-            z.unknown(),
-        ),
+        z.object({
+            name: z.unknown(),
+            description: z.unknown(),
+            imageIpfsCid: z.unknown(),
+            redundancyFactor: z.unknown(),
+            url: z.unknown(),
+            email: z.unknown(),
+            twitter: z.unknown(),
+            x: z.unknown(),
+            telegram: z.unknown(),
+            reddit: z.unknown(),
+            linkedIn: z.unknown(),
+        }),
     )
 
 type RawOperatorMetadata = z.infer<typeof RawOperatorMetadata>
@@ -41,12 +42,20 @@ const UrlParser = z
     .string()
     .url()
     .optional()
-    .catch(() => undefined)
+    .catch(() => '')
     .default('')
 
 export class OperatorMetadata extends Parsable<RawOperatorMetadata> {
     static parse(raw: unknown, chainId: number): OperatorMetadata {
-        return new OperatorMetadata(raw, chainId)
+        try {
+            return new OperatorMetadata(raw, chainId)
+        } catch (e) {
+            if (e instanceof z.ZodError) {
+                throw new ParseError(raw, e)
+            }
+
+            throw e
+        }
     }
 
     protected preparse() {
@@ -115,7 +124,7 @@ export class OperatorMetadata extends Parsable<RawOperatorMetadata> {
                 .string()
                 .email()
                 .optional()
-                .catch(() => undefined)
+                .catch(() => '')
                 .default('')
                 .parse(raw)
         })

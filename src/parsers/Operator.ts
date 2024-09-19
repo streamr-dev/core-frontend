@@ -1,5 +1,6 @@
 import { ZeroAddress } from 'ethers'
 import { z } from 'zod'
+import { ParseError } from '~/errors'
 import { OperatorMetadata } from '~/parsers/OperatorMetadata'
 import { Parsable } from '~/parsers/Parsable'
 import { BN, toBigInt, toBN, toFloat } from '~/utils/bn'
@@ -32,7 +33,15 @@ type RawOperator = z.infer<typeof RawOperator>
 
 export class Operator extends Parsable<RawOperator> {
     static parse(raw: unknown, chainId: number): Operator {
-        return new Operator(raw, chainId)
+        try {
+            return new Operator(raw, chainId)
+        } catch (e) {
+            if (e instanceof z.ZodError) {
+                throw new ParseError(raw, e)
+            }
+
+            throw e
+        }
     }
 
     protected preparse() {
@@ -41,7 +50,10 @@ export class Operator extends Parsable<RawOperator> {
 
     get contractVersion() {
         return this.getValue('contractVersion', (raw) => {
-            return z.coerce.number().catch(-1).parse(raw)
+            return z
+                .union([z.number(), z.string().transform(Number).pipe(z.number())])
+                .catch(-1)
+                .parse(raw)
         })
     }
 
@@ -59,12 +71,14 @@ export class Operator extends Parsable<RawOperator> {
 
                     for (const addr of value) {
                         if (!addr) {
-                            result.push({
-                                address: addr.toLowerCase(),
-                                enabled: true,
-                                persisted: true,
-                            })
+                            continue
                         }
+
+                        result.push({
+                            address: addr.toLowerCase(),
+                            enabled: true,
+                            persisted: true,
+                        })
                     }
 
                     return result
@@ -76,7 +90,7 @@ export class Operator extends Parsable<RawOperator> {
     get cumulativeOperatorsCutWei() {
         return this.getValue('cumulativeOperatorsCutWei', (raw) => {
             return z
-                .string()
+                .union([z.string(), z.number().int().min(0)])
                 .transform((v) => toBigInt(v || 0))
                 .catch(0n)
                 .parse(raw)
@@ -86,7 +100,7 @@ export class Operator extends Parsable<RawOperator> {
     get cumulativeProfitsWei() {
         return this.getValue('cumulativeProfitsWei', (raw) => {
             return z
-                .string()
+                .union([z.string(), z.number().int().min(0)])
                 .transform((v) => toBigInt(v || 0))
                 .catch(0n)
                 .parse(raw)
@@ -96,7 +110,7 @@ export class Operator extends Parsable<RawOperator> {
     get dataTokenBalanceWei() {
         return this.getValue('dataTokenBalanceWei', (raw) => {
             return z
-                .string()
+                .union([z.string(), z.number().int().min(0)])
                 .transform((v) => toBigInt(v || 0))
                 .catch(0n)
                 .parse(raw)
@@ -164,7 +178,7 @@ export class Operator extends Parsable<RawOperator> {
     get exchangeRate() {
         return this.getValue('exchangeRate', (raw) => {
             return z
-                .string()
+                .union([z.string(), z.number().min(0)])
                 .transform((v) => toBN(v || 0))
                 .catch(toBN(0))
                 .parse(raw)
@@ -195,12 +209,14 @@ export class Operator extends Parsable<RawOperator> {
 
                     for (const addr of value) {
                         if (!addr) {
-                            result.push({
-                                address: addr.toLowerCase(),
-                                enabled: true,
-                                persisted: true,
-                            })
+                            continue
                         }
+
+                        result.push({
+                            address: addr.toLowerCase(),
+                            enabled: true,
+                            persisted: true,
+                        })
                     }
 
                     return result
@@ -226,7 +242,7 @@ export class Operator extends Parsable<RawOperator> {
     get operatorTokenTotalSupplyWei() {
         return this.getValue('operatorTokenTotalSupplyWei', (raw) => {
             return z
-                .string()
+                .union([z.string(), z.number().int().min(0)])
                 .transform((v) => toBigInt(v || 0))
                 .catch(0n)
                 .parse(raw)
@@ -428,7 +444,7 @@ export class Operator extends Parsable<RawOperator> {
     get totalStakeInSponsorshipsWei() {
         return this.getValue('totalStakeInSponsorshipsWei', (raw) => {
             return z
-                .string()
+                .union([z.string(), z.number().int().min(0)])
                 .transform((v) => toBigInt(v || 0))
                 .catch(0n)
                 .parse(raw)
@@ -450,7 +466,7 @@ export class Operator extends Parsable<RawOperator> {
     get valueWithoutEarnings() {
         return this.getValue('valueWithoutEarnings', (raw) => {
             return z
-                .string()
+                .union([z.string(), z.number().int().min(0)])
                 .transform((v) => toBigInt(v || 0))
                 .catch(0n)
                 .parse(raw)
