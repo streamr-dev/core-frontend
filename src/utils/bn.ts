@@ -5,7 +5,7 @@ export type BNish = number | string | BN | BigNumberish
 
 export { BN }
 
-export function toBN(value: BNish) {
+export function toBN(value: BNish): BN {
     return typeof value === 'bigint' ? toBN(value.toString()) : new BN(value)
 }
 
