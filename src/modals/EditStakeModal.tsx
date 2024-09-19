@@ -22,8 +22,8 @@ import FormModal, {
     TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Operator } from '~/parsers/Operator'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import {
     forceUnstakeFromSponsorship,
     reduceStakeOnSponsorship,
@@ -44,8 +44,8 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     chainId: number
     leavePenalty: bigint
     onResolve?: () => void
-    operator: ParsedOperator
-    sponsorship: ParsedSponsorship
+    operator: Operator
+    sponsorship: Sponsorship
 }
 
 function EditStakeModal({
@@ -54,15 +54,17 @@ function EditStakeModal({
     onResolve,
     onReject,
     operator: { dataTokenBalanceWei: availableBalance, id: operatorId, queueEntries },
-    sponsorship: { id: sponsorshipId, stakes, minimumStakingPeriodSeconds },
+    sponsorship,
     ...props
 }: Props) {
+    const { id: sponsorshipId, stakes, minimumStakingPeriodSeconds } = sponsorship
+
     const [busy, setBusy] = useState(false)
 
     const { decimals = 18n } = useSponsorshipTokenInfo() || {}
 
     const stake = useMemo(
-        () => getSponsorshipStakeForOperator(stakes, operatorId),
+        () => getSponsorshipStakeForOperator(sponsorship, operatorId),
         [stakes, operatorId],
     )
 
@@ -81,7 +83,7 @@ function EditStakeModal({
         lockedStake,
     )
 
-    const { joinTimestamp = 0, amountWei: currentAmount = 0n } = stake || {}
+    const { joinedAt = new Date(0), amountWei: currentAmount = 0n } = stake || {}
 
     const [rawAmount, setRawAmount] = useState(
         toFloat(currentAmount, decimals).toString(),
@@ -91,9 +93,9 @@ function EditStakeModal({
         setRawAmount(toFloat(currentAmount, decimals).toString())
     }, [currentAmount, decimals])
 
-    const minLeaveDate = moment(joinTimestamp + minimumStakingPeriodSeconds, 'X').format(
-        'YYYY-MM-DD HH:mm',
-    )
+    const minLeaveDate = moment(
+        joinedAt.getTime() + minimumStakingPeriodSeconds * 1000,
+    ).format('YYYY-MM-DD HH:mm')
 
     const hasUndelegationQueue = queueEntries.length > 0
 

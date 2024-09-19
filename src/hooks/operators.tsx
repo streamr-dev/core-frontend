@@ -3,17 +3,19 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { toaster } from 'toasterhea'
 import { isAddress } from 'web3-validator'
 import { Minute } from '~/consts'
-import { Operator, Operator_OrderBy, OrderDirection } from '~/generated/gql/network'
+import {
+    Operator as GraphOperator,
+    Operator_OrderBy,
+    OrderDirection,
+} from '~/generated/gql/network'
 import {
     getAllOperators,
-    getDelegatedAmountForWallet,
     getOperatorById,
     getOperatorsByDelegation,
     getOperatorsByDelegationAndId,
     getOperatorsByDelegationAndMetadata,
     getParsedOperators,
     getParsedOperatorsByOwnerOrControllerAddress,
-    getSpotApy,
     searchOperatorsByMetadata,
 } from '~/getters'
 import { confirm } from '~/getters/confirm'
@@ -23,7 +25,7 @@ import { invalidateSponsorshipQueries } from '~/hooks/sponsorships'
 import DelegateFundsModal from '~/modals/DelegateFundsModal'
 import { forceUndelegateModal } from '~/modals/ForceUndelegateModal'
 import { undelegateFundsModal } from '~/modals/UndelegateFundsModal'
-import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import {
     getOperatorDelegationAmount,
     processOperatorUndelegationQueue,
@@ -33,7 +35,7 @@ import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { useUncollectedEarningsStore } from '~/shared/stores/uncollectedEarnings'
 import { getSigner } from '~/shared/stores/wallet'
 import { truncate } from '~/shared/utils/text'
-import { Delegation, DelegationsStats } from '~/types'
+import { DelegationsStats } from '~/types'
 import { getQueryClient, waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { getBalance } from '~/utils/balance'
@@ -100,7 +102,7 @@ export function useOperatorByIdQuery(operatorId = '') {
             })
 
             if (operator) {
-                return parseOperator(operator, { chainId: currentChainId })
+                return Operator.parse(operator, currentChainId)
             }
 
             return null
@@ -150,14 +152,6 @@ export function useOperatorStatsForWallet(address = '') {
     }
 }
 
-function toDelegationForWallet(operator: ParsedOperator, wallet: string): Delegation {
-    return {
-        ...operator,
-        apy: getSpotApy(operator),
-        myShare: getDelegatedAmountForWallet(wallet, operator),
-    }
-}
-
 /**
  * @todo Refactor using `useQuery`.
  */
@@ -190,12 +184,9 @@ export function useDelegationsStats(address = '') {
                         chainId,
                         first: 1000,
                         address: addr,
-                    }) as Promise<Operator[]>,
+                    }) as Promise<GraphOperator[]>,
                 {
                     chainId,
-                    mapper(operator) {
-                        return toDelegationForWallet(operator, addr)
-                    },
                 },
             )
 
@@ -222,7 +213,10 @@ export function useDelegationsStats(address = '') {
                 maxApy = Math.max(maxApy, apy)
             })
 
-            const value = operators.reduce((sum, { myShare }) => sum + myShare, 0n)
+            const value = operators.reduce(
+                (sum, operator) => sum + operator.share(addr),
+                0n,
+            )
 
             setStats({
                 value,
@@ -276,7 +270,7 @@ export function useDelegationsForWalletQuery({
             pageSize,
         ],
         async queryFn({ pageParam: skip }) {
-            const elements: Delegation[] = await getParsedOperators(
+            const elements = await getParsedOperators(
                 () => {
                     const params = {
                         chainId: currentChainId,
@@ -292,7 +286,9 @@ export function useDelegationsForWalletQuery({
                         /**
                          * Empty search = look for all operators.
                          */
-                        return getOperatorsByDelegation(params) as Promise<Operator[]>
+                        return getOperatorsByDelegation(params) as Promise<
+                            GraphOperator[]
+                        >
                     }
 
                     if (isAddress(searchQuery)) {
@@ -302,19 +298,16 @@ export function useDelegationsForWalletQuery({
                         return getOperatorsByDelegationAndId({
                             ...params,
                             operatorId: searchQuery,
-                        }) as Promise<Operator[]>
+                        }) as Promise<GraphOperator[]>
                     }
 
                     return getOperatorsByDelegationAndMetadata({
                         ...params,
                         searchQuery,
-                    }) as Promise<Operator[]>
+                    }) as Promise<GraphOperator[]>
                 },
                 {
                     chainId: currentChainId,
-                    mapper(operator) {
-                        return toDelegationForWallet(operator, address)
-                    },
                 },
             )
 
@@ -376,13 +369,13 @@ export function useAllOperatorsQuery({
                     }
 
                     if (!searchQuery) {
-                        return getAllOperators(params) as Promise<Operator[]>
+                        return getAllOperators(params) as Promise<GraphOperator[]>
                     }
 
                     return searchOperatorsByMetadata({
                         ...params,
                         searchQuery,
-                    }) as Promise<Operator[]>
+                    }) as Promise<GraphOperator[]>
                 },
                 {
                     chainId: currentChainId,
@@ -428,7 +421,7 @@ export function useDelegateFunds() {
         }: {
             chainId: number
             onDone?: () => void
-            operator: ParsedOperator
+            operator: Operator
             wallet: string | undefined
         }) => {
             if (!wallet) {
@@ -511,7 +504,7 @@ export function useUndelegateFunds() {
         }: {
             chainId: number
             onDone?: () => void
-            operator: ParsedOperator
+            operator: Operator
             wallet: string | undefined
         }) => {
             if (!wallet) {
@@ -657,7 +650,7 @@ export function useCollectEarnings() {
  * Returns a callback that takes the user through force-undelegation process.
  */
 export function useForceUndelegate() {
-    return useCallback((chainId: number, operator: ParsedOperator, amount: bigint) => {
+    return useCallback((chainId: number, operator: Operator, amount: bigint) => {
         void (async () => {
             try {
                 const wallet = await (await getSigner()).getAddress()

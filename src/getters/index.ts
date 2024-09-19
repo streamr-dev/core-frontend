@@ -59,13 +59,13 @@ import {
     GetStreamByIdDocument,
     GetStreamByIdQuery,
     GetStreamByIdQueryVariables,
-    Operator,
+    Operator as GraphOperator,
+    Sponsorship as GraphSponsorship,
     Operator_OrderBy,
     OrderDirection,
     SearchOperatorsByMetadataDocument,
     SearchOperatorsByMetadataQuery,
     SearchOperatorsByMetadataQueryVariables,
-    Sponsorship,
     Sponsorship_Filter,
     Sponsorship_OrderBy,
 } from '~/generated/gql/network'
@@ -75,8 +75,8 @@ import {
 } from '~/generated/types/hub'
 import { Token as TokenContract } from '~/generated/types/local'
 import { getGraphClient } from '~/getters/getGraphClient'
-import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
-import { parseSponsorship } from '~/parsers/SponsorshipParser'
+import { Operator } from '~/parsers/Operator'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
 import { ChartPeriod } from '~/types'
@@ -382,7 +382,7 @@ export async function getParsedSponsorshipById(
     sponsorshipId: string,
     { force = false, minBlockNumber = 0 } = {},
 ) {
-    let rawSponsorship: Sponsorship | undefined | null
+    let rawSponsorship: GraphSponsorship | undefined | null
 
     try {
         const { data } = await getGraphClient(chainId).query<
@@ -397,7 +397,7 @@ export async function getParsedSponsorshipById(
             fetchPolicy: force ? 'network-only' : void 0,
         })
 
-        rawSponsorship = (data.sponsorship || null) as Sponsorship | null
+        rawSponsorship = (data.sponsorship || null) as GraphSponsorship | null
     } catch (e) {
         prehandleBehindBlockError(e, minBlockNumber)
 
@@ -407,9 +407,7 @@ export async function getParsedSponsorshipById(
     }
 
     if (rawSponsorship) {
-        return parseSponsorship(rawSponsorship, {
-            chainId,
-        })
+        return Sponsorship.parse(rawSponsorship, chainId)
     }
 
     return null
@@ -701,7 +699,7 @@ export async function getParsedOperatorByOwnerAddress(
     chainId: number,
     address: string,
     { force = false, minBlockNumber = 0 } = {},
-): Promise<ParsedOperator | null> {
+): Promise<Operator | null> {
     let operator: GetOperatorByOwnerAddressQuery['operators'][0] | null = null
 
     try {
@@ -727,7 +725,7 @@ export async function getParsedOperatorByOwnerAddress(
     }
 
     if (operator) {
-        return parseOperator(operator, { chainId })
+        return Operator.parse(operator, chainId)
     }
 
     return null
@@ -737,7 +735,7 @@ export async function getParsedOperatorsByOwnerOrControllerAddress(
     chainId: number,
     address: string,
     { force = false, minBlockNumber = 0 } = {},
-): Promise<ParsedOperator[]> {
+): Promise<Operator[]> {
     let queryResult: GetOperatorsByOwnerOrControllerAddressQuery['operators'] = []
 
     try {
@@ -762,10 +760,10 @@ export async function getParsedOperatorsByOwnerOrControllerAddress(
         throw e
     }
 
-    const result: ParsedOperator[] = []
+    const result: Operator[] = []
 
     for (const operator of queryResult) {
-        result.push(parseOperator(operator, { chainId }))
+        result.push(Operator.parse(operator, chainId))
     }
 
     return result
@@ -817,15 +815,13 @@ interface GetParsedOperatorsOptions<Mapper> {
 /**
  * Gets a collection of parsed Operators.
  * @param getter Callback that "gets" raw Operator objects.
- * @param options.mapper A mapping function that translates `ParsedOperator` instances into
+ * @param options.mapper A mapping function that translates `Operator` instances into
  * something different.
  */
 export async function getParsedOperators<
-    Mapper extends (operator: ParsedOperator) => any = (
-        operator: ParsedOperator,
-    ) => ParsedOperator,
+    Mapper extends (operator: Operator) => any = (operator: Operator) => Operator,
 >(
-    getter: () => Operator[] | Promise<Operator[]>,
+    getter: () => GraphOperator[] | Promise<GraphOperator[]>,
     options: GetParsedOperatorsOptions<Mapper>,
 ): Promise<ReturnType<Mapper>[]> {
     const { chainId } = options
@@ -837,7 +833,7 @@ export async function getParsedOperators<
     const mapper = options.mapper || ((x) => x)
 
     for (const raw of rawOperators) {
-        operators.push(mapper(parseOperator(raw, { chainId })))
+        operators.push(mapper(Operator.parse(raw, chainId)))
     }
 
     return operators
@@ -849,9 +845,9 @@ export async function getParsedOperators<
  * @param operator.stakes Collection of basic stake information (amount, spot apy, projected insolvency date).
  * @returns Number representing the APY factor (0.01 is 1%).
  */
-export function getSpotApy<
-    T extends Pick<ParsedOperator, 'valueWithoutEarnings' | 'stakes'>,
->({ valueWithoutEarnings, stakes }: T): number {
+export function getSpotApy(operator: Operator): number {
+    const { valueWithoutEarnings, stakes } = operator
+
     if (valueWithoutEarnings === 0n) {
         return 0
     }
@@ -862,7 +858,7 @@ export function getSpotApy<
         (sum, { spotAPY, projectedInsolvencyAt, amountWei, isSponsorshipPaying }) => {
             if (
                 projectedInsolvencyAt == null ||
-                projectedInsolvencyAt * 1000 < now ||
+                projectedInsolvencyAt.getTime() < now ||
                 !isSponsorshipPaying
             ) {
                 /**
@@ -888,7 +884,7 @@ export function getSpotApy<
  */
 export function getDelegatedAmountForWallet(
     address: string,
-    { delegations }: ParsedOperator,
+    { delegations }: Operator,
 ): bigint {
     const addr = address.toLowerCase()
 
@@ -901,7 +897,7 @@ export function getDelegatedAmountForWallet(
 /**
  * Sums amounts delegated to given operator by its owner.
  */
-export function getSelfDelegatedAmount(operator: ParsedOperator): bigint {
+export function getSelfDelegatedAmount(operator: Operator): bigint {
     return getDelegatedAmountForWallet(operator.owner, operator)
 }
 
@@ -911,7 +907,7 @@ export function getSelfDelegatedAmount(operator: ParsedOperator): bigint {
  */
 export function getDelegationFractionForWallet(
     address: string,
-    operator: ParsedOperator,
+    operator: Operator,
     { offset = 0n }: { offset?: bigint } = {},
 ): BN {
     const total = operator.valueWithoutEarnings + offset
@@ -926,7 +922,7 @@ export function getDelegationFractionForWallet(
 /**
  * Calculates the amount of DATA needed to payout undelegation queue in full.
  */
-export function calculateUndelegationQueueSize(operator: ParsedOperator): bigint {
+export function calculateUndelegationQueueSize(operator: Operator): bigint {
     const lookup: Record<string, bigint> = {}
 
     // Sum up queue by addresses
@@ -957,7 +953,7 @@ export function calculateUndelegationQueueSize(operator: ParsedOperator): bigint
  * modded with `offset`.
  */
 export function getSelfDelegationFraction(
-    operator: ParsedOperator,
+    operator: Operator,
     { offset = 0n }: { offset?: bigint } = {},
 ): BN {
     return getDelegationFractionForWallet(operator.owner, operator, { offset })

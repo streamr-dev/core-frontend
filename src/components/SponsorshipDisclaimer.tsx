@@ -4,15 +4,15 @@ import styled from 'styled-components'
 import { Alert } from '~/components/Alert'
 import { useOperatorForWalletQuery } from '~/hooks/operators'
 import { useJoinSponsorshipAsOperator } from '~/hooks/sponsorships'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import Checkbox from '~/shared/components/Checkbox'
-import { useCurrentChainId } from '~/utils/chains'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'
+import { useCurrentChainId } from '~/utils/chains'
 
 interface Props {
     onResolve?: () => void
-    sponsorship?: ParsedSponsorship
+    sponsorship?: Sponsorship
     checkboxState: boolean
     onCheckboxStateChange: (value: boolean) => void
 }

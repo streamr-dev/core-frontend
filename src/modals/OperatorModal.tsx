@@ -26,7 +26,7 @@ import FormModal, {
     TextareaInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import { createOperator, updateOperator } from '~/services/operators'
 import AvatarImage from '~/shared/components/AvatarImage'
 import SvgIcon from '~/shared/components/SvgIcon'
@@ -44,7 +44,7 @@ import {
 interface Props extends Pick<FormModalProps, 'onReject'> {
     chainId: number
     onResolve?: (params: { operatorId: string; blockNumber: number }) => void
-    operator: ParsedOperator | undefined
+    operator: Operator | undefined
 }
 
 const cropModal = toaster(CropImageModal, Layer.Modal)

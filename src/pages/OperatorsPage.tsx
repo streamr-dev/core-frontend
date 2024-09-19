@@ -16,11 +16,11 @@ import {
     useOperatorForWalletQuery,
 } from '~/hooks/operators'
 import { useTableOrder } from '~/hooks/useTableOrder'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { Delegation, OrderDirection } from '~/types'
+import { OrderDirection } from '~/types'
 import { saveOperator } from '~/utils'
 import {
     useCurrentChainFullName,
@@ -190,7 +190,7 @@ export const OperatorsPage = () => {
 function DelegationsTable({
     query,
 }: {
-    query: UseInfiniteQueryResult<InfiniteData<{ skip: number; elements: Delegation[] }>>
+    query: UseInfiniteQueryResult<InfiniteData<{ skip: number; elements: Operator[] }>>
 }) {
     // We want to hide delegations to broken operator contract version 1
     // as we cannot get rid of them otherwise
@@ -202,6 +202,8 @@ function DelegationsTable({
     const chainName = useCurrentChainSymbolicName()
 
     const chainFullName = useCurrentChainFullName()
+
+    const wallet = useWalletAccount()
 
     return (
         <ScrollTableCore
@@ -224,7 +226,10 @@ function DelegationsTable({
                 {
                     displayName: 'My delegation',
                     valueMapper: (element) => (
-                        <SponsorshipDecimals abbr amount={element.myShare} />
+                        <SponsorshipDecimals
+                            abbr
+                            amount={wallet ? element.share(wallet) : 0n}
+                        />
                     ),
                     align: 'start',
                     isSticky: false,
@@ -273,9 +278,7 @@ function OperatorsTable({
     orderDirection,
     onOrderChange,
 }: {
-    query: UseInfiniteQueryResult<
-        InfiniteData<{ skip: number; elements: ParsedOperator[] }>
-    >
+    query: UseInfiniteQueryResult<InfiniteData<{ skip: number; elements: Operator[] }>>
     orderBy?: string
     orderDirection?: OrderDirection
     onOrderChange: (columnKey: string) => void

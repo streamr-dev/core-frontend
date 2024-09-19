@@ -13,7 +13,7 @@ import {
 import { Separator } from '~/components/Separator'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { Tooltip } from '~/components/Tooltip'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import Identicon from '~/shared/components/AvatarImage/Identicon'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, DESKTOP, MEDIUM, TABLET } from '~/shared/utils/styled'
@@ -22,7 +22,7 @@ import { saveOperator } from '~/utils'
 import { useCurrentChainId } from '~/utils/chains'
 
 interface OperatorDetailsProps {
-    operator: ParsedOperator
+    operator: Operator
 }
 
 export function OperatorDetails({ operator }: OperatorDetailsProps) {

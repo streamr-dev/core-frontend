@@ -1,6 +1,10 @@
 import { Contract, parseEther } from 'ethers'
-import { ERC677, Operator, OperatorFactory } from 'network-contracts-ethers6'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import {
+    ERC677,
+    Operator as OperatorContract,
+    OperatorFactory,
+} from 'network-contracts-ethers6'
+import { Operator } from '~/parsers/Operator'
 import { postImage } from '~/services/images'
 import { getSigner } from '~/shared/stores/wallet'
 import { Operation } from '~/shared/toasts/TransactionListToast'
@@ -104,7 +108,7 @@ export async function createOperator(
 
 export async function updateOperator(
     chainId: number,
-    operator: ParsedOperator,
+    operator: Operator,
     mods: {
         name: string
         redundancyFactor: number
@@ -183,7 +187,7 @@ export async function updateOperator(
                 operator.id,
                 getContractAbi('operator'),
                 await getSigner(),
-            ) as unknown as Operator
+            ) as unknown as OperatorContract
 
             await call(operatorContract, 'updateOperatorsCutFraction', {
                 args: [parseEther(toBN(cut).toString()) / 100n],
@@ -206,7 +210,7 @@ export async function updateOperator(
                 operator.id,
                 getContractAbi('operator'),
                 await getSigner(),
-            ) as unknown as Operator
+            ) as unknown as OperatorContract
 
             const imageIpfsCid = imageToUpload
                 ? await postImage(chainId, imageToUpload)
@@ -276,7 +280,7 @@ export async function undelegateFromOperator(
         operatorId,
         getContractAbi('operator'),
         signer,
-    ) as unknown as Operator
+    ) as unknown as OperatorContract
 
     await toastedOperation('Undelegate from operator', async () => {
         await call(operatorContract, 'undelegate', {
@@ -297,7 +301,7 @@ export async function getOperatorDelegationAmount(
         operatorId,
         getContractAbi('operator'),
         provider,
-    ) as unknown as Operator
+    ) as unknown as OperatorContract
 
     return operatorContract.balanceInData(address)
 }
@@ -316,7 +320,7 @@ export async function setOperatorNodeAddresses(
         operatorId,
         getContractAbi('operator'),
         signer,
-    ) as unknown as Operator
+    ) as unknown as OperatorContract
 
     await toastedOperation('Save node addresses', async () => {
         await call(operatorContract, 'setNodeAddresses', {
@@ -340,7 +344,7 @@ export async function addOperatorControllerAddress(
         operatorId,
         getContractAbi('operator'),
         signer,
-    ) as unknown as Operator
+    ) as unknown as OperatorContract
 
     await toastedOperation('Authorise staking agent', async () => {
         await call(operatorContract, 'grantRole', {
@@ -364,7 +368,7 @@ export async function removeOperatorControllerAddress(
         operatorId,
         getContractAbi('operator'),
         signer,
-    ) as unknown as Operator
+    ) as unknown as OperatorContract
 
     await toastedOperation('Revoke staking agent', async () => {
         await call(operatorContract, 'revokeRole', {
@@ -387,7 +391,7 @@ export async function processOperatorUndelegationQueue(
         operatorId,
         getContractAbi('operator'),
         signer,
-    ) as unknown as Operator
+    ) as unknown as OperatorContract
 
     await toastedOperation('Process undelegation queue', async () => {
         await call(operatorContract, 'payOutQueue', {

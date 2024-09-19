@@ -3,7 +3,6 @@ import { ParseError } from '~/errors'
 import { OperatorMetadata } from '~/parsers/OperatorMetadata'
 import { Parsable } from '~/parsers/Parsable'
 import { toBigInt } from '~/utils/bn'
-import { OperatorMetadataPreparser } from './OperatorMetadataParser'
 
 const RawSponsorship = z.object({
     cumulativeSponsoring: z.unknown(),
@@ -155,29 +154,50 @@ export class Sponsorship extends Parsable<RawSponsorship> {
             return z
                 .array(
                     z
-                        .object({
-                            operator: z.object({
-                                id: z.string(),
-                                metadataJsonString: OperatorMetadataPreparser,
+                        .union([
+                            z.null(),
+                            z.object({
+                                operator: z.object({
+                                    id: z.string(),
+                                    metadataJsonString: z.unknown(),
+                                }),
+                                amountWei: z.string().transform((v) => toBigInt(v)),
+                                lockedWei: z.string().transform((v) => toBigInt(v)),
+                                joinTimestamp: z.coerce.number(),
                             }),
-                            amountWei: z.string().transform((v) => toBigInt(v)),
-                            lockedWei: z.string().transform((v) => toBigInt(v)),
-                            joinTimestamp: z.coerce.number(),
-                        })
-                        .transform((stake) => {
-                            const { operator, ...rest } = stake
-
-                            return {
-                                ...rest,
-                                operatorId: operator.id,
-                                metadata: OperatorMetadata.parse(
-                                    operator.metadataJsonString,
-                                    this.chainId,
-                                ),
-                            }
-                        }),
+                        ])
+                        .catch(null),
                 )
                 .catch([])
+                .transform((stakes) => {
+                    const result: {
+                        amountWei: bigint
+                        lockedWei: bigint
+                        joinedAt: Date
+                        operatorId: string
+                        metadata: OperatorMetadata
+                    }[] = []
+
+                    for (const s of stakes) {
+                        if (!s) {
+                            continue
+                        }
+
+                        const { operator, joinTimestamp, ...rest } = s
+
+                        result.push({
+                            ...s,
+                            joinedAt: new Date(joinTimestamp * 1000),
+                            metadata: OperatorMetadata.parse(
+                                operator.metadataJsonString,
+                                this.chainId,
+                            ),
+                            operatorId: operator.id,
+                        })
+                    }
+
+                    return result
+                })
                 .parse(raw)
         })
     }

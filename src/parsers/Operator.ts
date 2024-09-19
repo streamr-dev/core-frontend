@@ -1,6 +1,7 @@
 import { ZeroAddress } from 'ethers'
 import { z } from 'zod'
 import { ParseError } from '~/errors'
+import { getDelegatedAmountForWallet, getSpotApy } from '~/getters'
 import { OperatorMetadata } from '~/parsers/OperatorMetadata'
 import { Parsable } from '~/parsers/Parsable'
 import { BN, toBigInt, toBN, toFloat } from '~/utils/bn'
@@ -471,5 +472,31 @@ export class Operator extends Parsable<RawOperator> {
                 .catch(0n)
                 .parse(raw)
         })
+    }
+
+    private _apy: number | undefined
+
+    get apy() {
+        if (this._apy != null) {
+            return this._apy
+        }
+
+        this._apy = getSpotApy(this)
+
+        return this._apy
+    }
+
+    private _shares: Record<string, bigint | undefined> = {}
+
+    share(wallet: string) {
+        const addr = wallet.toLowerCase()
+
+        if (this._shares[addr] != null) {
+            return this._shares[addr]
+        }
+
+        this._shares[addr] = getDelegatedAmountForWallet(wallet, this)
+
+        return this._shares[addr]
     }
 }

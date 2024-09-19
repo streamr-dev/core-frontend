@@ -2,7 +2,11 @@ import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-qu
 import { useCallback } from 'react'
 import { SponsorshipFilters } from '~/components/SponsorshipFilterButton'
 import { Minute } from '~/consts'
-import { OrderDirection, Sponsorship, Sponsorship_OrderBy } from '~/generated/gql/network'
+import {
+    Sponsorship as GraphSponsorship,
+    OrderDirection,
+    Sponsorship_OrderBy,
+} from '~/generated/gql/network'
 import {
     getAllSponsorships,
     getParsedSponsorshipById,
@@ -20,8 +24,8 @@ import { createSponsorshipModal } from '~/modals/CreateSponsorshipModal'
 import { editStakeModal } from '~/modals/EditStakeModal'
 import { fundSponsorshipModal } from '~/modals/FundSponsorshipModal'
 import { joinSponsorshipModal } from '~/modals/JoinSponsorshipModal'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { ParsedSponsorship, parseSponsorship } from '~/parsers/SponsorshipParser'
+import { Operator } from '~/parsers/Operator'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import { flagKey, useFlagger, useIsFlagged } from '~/shared/stores/flags'
 import { getSigner, useWalletAccount } from '~/shared/stores/wallet'
 import { ChartPeriod } from '~/types'
@@ -38,18 +42,14 @@ import { useRequestedBlockNumber } from '.'
 
 async function getSponsorshipsAndParse(
     chainId: number,
-    getter: () => Promise<Sponsorship[]>,
+    getter: () => Promise<GraphSponsorship[]>,
 ) {
-    const sponsorships: ParsedSponsorship[] = []
+    const sponsorships: Sponsorship[] = []
 
     const rawSponsorships = await getter()
 
     for (const raw of rawSponsorships) {
-        sponsorships.push(
-            await parseSponsorship(raw, {
-                chainId,
-            }),
-        )
+        sponsorships.push(Sponsorship.parse(raw, chainId))
     }
 
     return sponsorships
@@ -131,7 +131,7 @@ export function useSponsorshipsForCreatorQuery(
                         includeExpiredFunding: !filters || filters.expired,
                         includeInactive: !filters || filters.inactive,
                         includeWithoutFunding: !filters || filters.noFunding,
-                    }) as Promise<Sponsorship[]>,
+                    }) as Promise<GraphSponsorship[]>,
             )
 
             return {
@@ -206,7 +206,7 @@ export function useAllSponsorshipsQuery({
                         includeExpiredFunding: filters.expired,
                         includeInactive: filters.inactive,
                         includeWithoutFunding: filters.noFunding,
-                    }) as Promise<Sponsorship[]>,
+                    }) as Promise<GraphSponsorship[]>,
             )
 
             return {
@@ -301,7 +301,7 @@ export function useSponsorshipsByStreamIdQuery({
                         includeExpiredFunding: !filters || filters.expired,
                         includeInactive: !filters || filters.inactive,
                         includeWithoutFunding: !filters || filters.noFunding,
-                    }) as Promise<Sponsorship[]>,
+                    }) as Promise<GraphSponsorship[]>,
             )
 
             return {
@@ -483,7 +483,7 @@ export function useFundSponsorshipCallback() {
     return useCallback(
         (
             chainId: number,
-            sponsorship: ParsedSponsorship,
+            sponsorship: Sponsorship,
             options: { onDone?: (wallet: string) => void } = {},
         ) => {
             void (async () => {
@@ -561,8 +561,8 @@ export function useJoinSponsorshipAsOperator() {
         }: {
             chainId: number
             onJoin?: () => void
-            operator: ParsedOperator
-            sponsorship: ParsedSponsorship
+            operator: Operator
+            sponsorship: Sponsorship
         }) => {
             void (async () => {
                 try {
@@ -630,8 +630,8 @@ export function useEditSponsorshipFunding() {
     return useCallback(
         (params: {
             chainId: number
-            sponsorshipOrSponsorshipId: string | ParsedSponsorship
-            operator: ParsedOperator
+            sponsorshipOrSponsorshipId: string | Sponsorship
+            operator: Operator
         }) => {
             const { chainId, sponsorshipOrSponsorshipId, operator } = params
 

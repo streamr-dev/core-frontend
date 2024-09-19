@@ -1,9 +1,7 @@
-import React from 'react'
 import InfoIcon from '@atlaskit/icon/glyph/info'
-import styled from 'styled-components'
+import React from 'react'
 import { Link as PrestyledLink } from 'react-router-dom'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
-import { DefaultSimpleDropdownMenu } from '~/components/SimpleDropdown'
+import styled from 'styled-components'
 import {
     Address,
     AddressContent,
@@ -11,13 +9,19 @@ import {
     Banner,
     IconWrap,
 } from '~/components/ActionBars/AboutEntity'
-import { truncateStreamName } from '~/shared/utils/text'
-import { ExternalLinkIcon } from '~/icons'
+import { DefaultSimpleDropdownMenu } from '~/components/SimpleDropdown'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
-import { Route as R, routeOptions } from '~/utils/routes'
+import { ExternalLinkIcon } from '~/icons'
+import { Sponsorship } from '~/parsers/Sponsorship'
+import { truncateStreamName } from '~/shared/utils/text'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
 
-export function AboutSponsorship({ sponsorship }: { sponsorship: ParsedSponsorship }) {
+interface AboutSponsorshipProps {
+    sponsorship: Sponsorship
+}
+
+export function AboutSponsorship({ sponsorship }: AboutSponsorshipProps) {
     const { streamId } = sponsorship
 
     const chainName = useCurrentChainSymbolicName()

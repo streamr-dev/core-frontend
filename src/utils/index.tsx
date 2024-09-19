@@ -11,7 +11,7 @@ import {
     invalidateDelegationsForWalletQueries,
 } from '~/hooks/operators'
 import { operatorModal } from '~/modals/OperatorModal'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
@@ -261,7 +261,7 @@ export function abbr(value: BNish, options: AbbrOptions = {}) {
  */
 export function saveOperator(
     chainId: number,
-    operator: ParsedOperator | undefined,
+    operator: Operator | undefined,
     options: {
         onDone?: (operatorId: string, blockNumber: number) => void
         onError?: (error: unknown) => void

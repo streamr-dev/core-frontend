@@ -531,10 +531,11 @@ export const OperatorPage = () => {
                                         displayName: 'Staked',
                                         valueMapper: (element) => {
                                             const minimumStakeReachTime = moment(
-                                                (element.joinTimestamp +
-                                                    element.minimumStakingPeriodSeconds) *
-                                                    1000,
+                                                element.joinedAt.getTime() +
+                                                    element.minimumStakingPeriodSeconds *
+                                                        1000,
                                             )
+
                                             return (
                                                 <>
                                                     <SponsorshipDecimals

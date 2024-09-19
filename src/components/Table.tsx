@@ -7,7 +7,7 @@ import styled, { css } from 'styled-components'
 import { z } from 'zod'
 import { StreamDescription } from '~/components/StreamDescription'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import { HubAvatar, HubImageAvatar } from '~/shared/components/AvatarImage'
 import { COLORS, MEDIUM } from '~/shared/utils/styled'
 import { truncate, truncateStreamName } from '~/shared/utils/text'
@@ -211,11 +211,10 @@ export function FundedUntilCell({
     projectedInsolvencyAt,
     remainingBalance,
 }: {
-    projectedInsolvencyAt: number | null
+    projectedInsolvencyAt: Date | null
     remainingBalance: bigint
 }) {
-    const value =
-        projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt * 1000)
+    const value = projectedInsolvencyAt == null ? null : moment(projectedInsolvencyAt)
 
     return (
         <Iconized>
@@ -287,12 +286,12 @@ export function NumberOfOperatorsCell({
     sponsorship,
     currentOperatorId,
 }: {
-    sponsorship: ParsedSponsorship
+    sponsorship: Sponsorship
     currentOperatorId: string | undefined
 }) {
     const joinedByCurrentOperator =
         !!currentOperatorId &&
-        !!getSponsorshipStakeForOperator(sponsorship.stakes, currentOperatorId)
+        !!getSponsorshipStakeForOperator(sponsorship, currentOperatorId)
 
     return (
         <Iconized>

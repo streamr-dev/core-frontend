@@ -18,7 +18,7 @@ import FormModal, {
     TextAppendix,
     TextInput,
 } from '~/modals/FormModal'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import { fundSponsorship } from '~/services/sponsorships'
 import Label from '~/shared/components/Ui/Label'
 import { waitForIndexedBlock } from '~/utils'
@@ -35,7 +35,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     balance: bigint
     chainId: number
     onResolve?: () => void
-    sponsorship: ParsedSponsorship
+    sponsorship: Sponsorship
 }
 
 function FundSponsorshipModal({
@@ -53,7 +53,7 @@ function FundSponsorshipModal({
 
     const [confirmState, setConfirmState] = useState(false)
 
-    const { payoutPerSec: pricePerSecond } = sponsorship
+    const { payoutPerSecond: pricePerSecond } = sponsorship
 
     const extensionInSeconds = Number(pricePerSecond > 0n ? amount / pricePerSecond : 0n)
 
@@ -105,10 +105,7 @@ function FundSponsorshipModal({
         )} & ${days} ${pluralizeUnit(days, 'day')}`
     }, [extensionDuration])
 
-    const startDate =
-        sponsorship.projectedInsolvencyAt == null
-            ? Date.now()
-            : sponsorship.projectedInsolvencyAt * 1000
+    const startDate = sponsorship.projectedInsolvencyAt?.getTime() ?? Date.now()
 
     const endDate = new Date(startDate + extensionInSeconds * 1000)
 

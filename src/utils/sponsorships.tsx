@@ -1,7 +1,7 @@
 import { Contract } from 'ethers'
-import { Sponsorship } from 'network-contracts-ethers6'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Sponsorship as SponsorshipContract } from 'network-contracts-ethers6'
+import { Operator } from '~/parsers/Operator'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import { toBN } from '~/utils/bn'
 import { getContractAbi } from '~/utils/contracts'
 import { getPublicProvider } from '~/utils/providers'
@@ -10,24 +10,24 @@ import { getPublicProvider } from '~/utils/providers'
  * Scouts for Operator's funding share.
  */
 export function getSponsorshipStakeForOperator(
-    stakes: ParsedSponsorship['stakes'],
+    sponsorship: Sponsorship,
     operatorId: string,
 ) {
-    return stakes.find((stake) => stake.operatorId === operatorId)
+    return sponsorship.stakes.find((stake) => stake.operatorId === operatorId)
 }
 
 /**
  * Checks if a given Operator funds a given Sponsorship.
  */
 export function isSponsorshipFundedByOperator(
-    sponsorship: ParsedSponsorship,
-    operator: ParsedOperator | null,
+    sponsorship: Sponsorship,
+    operator: Operator | null,
 ): boolean {
     if (operator == null) {
         return false
     }
 
-    const operatorStake = getSponsorshipStakeForOperator(sponsorship.stakes, operator.id)
+    const operatorStake = getSponsorshipStakeForOperator(sponsorship, operator.id)
 
     return operatorStake != null && operatorStake.amountWei > 0n
 }
@@ -46,7 +46,7 @@ export async function getSponsorshipLeavePenalty(
         sponsorshipId,
         getContractAbi('sponsorship'),
         provider,
-    ) as unknown as Sponsorship
+    ) as unknown as SponsorshipContract
 
     return contract.getLeavePenalty(operatorId)
 }

@@ -20,8 +20,8 @@ import {
     useIsJoiningSponsorshipAsOperator,
     useJoinSponsorshipAsOperator,
 } from '~/hooks/sponsorships'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Operator } from '~/parsers/Operator'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS } from '~/shared/utils/styled'
@@ -31,29 +31,29 @@ import { Route as R, routeOptions } from '~/utils/routes'
 import { isSponsorshipFundedByOperator } from '~/utils/sponsorships'
 import { AbstractActionBar } from './AbstractActionBar'
 
-export function SponsorshipActionBar({
-    sponsorship,
-}: {
-    sponsorship: ParsedSponsorship
-}) {
+interface SponsorshipActionBarProps {
+    sponsorship: Sponsorship
+}
+
+export function SponsorshipActionBar({ sponsorship }: SponsorshipActionBarProps) {
     const wallet = useWalletAccount()
 
     const { data: operator = null } = useOperatorForWalletQuery(wallet)
 
     const canEditStake = isSponsorshipFundedByOperator(sponsorship, operator)
 
-    const { projectedInsolvencyAt, isRunning, timeCorrectedRemainingBalance } =
-        sponsorship
+    const { projectedInsolvencyAt, isRunning } = sponsorship
 
-    const isPaying = isRunning && timeCorrectedRemainingBalance > 0n
+    const isPaying =
+        isRunning && sponsorship.timeCorrectedRemainingBalanceWeiAt(Date.now()) > 0n
 
     const [fundedUntil, detailedFundedUntil] = useMemo(
         () =>
             projectedInsolvencyAt == null
                 ? [null, null]
                 : [
-                      moment(projectedInsolvencyAt * 1000).format('D MMM YYYY'),
-                      moment(projectedInsolvencyAt * 1000).format('D MMM YYYY, HH:mm'),
+                      moment(projectedInsolvencyAt).format('D MMM YYYY'),
+                      moment(projectedInsolvencyAt).format('D MMM YYYY, HH:mm'),
                   ],
         [projectedInsolvencyAt],
     )
@@ -171,13 +171,12 @@ export function SponsorshipActionBar({
     )
 }
 
-function JoinAsOperatorButton({
-    sponsorship,
-    operator,
-}: {
-    sponsorship: ParsedSponsorship
-    operator: ParsedOperator | null
-}) {
+interface JoinAsOperatorButtonProps {
+    sponsorship: Sponsorship
+    operator: Operator | null
+}
+
+function JoinAsOperatorButton({ sponsorship, operator }: JoinAsOperatorButtonProps) {
     const walletLocked = !useWalletAccount()
 
     const { streamId, operatorCount, maxOperators } = sponsorship

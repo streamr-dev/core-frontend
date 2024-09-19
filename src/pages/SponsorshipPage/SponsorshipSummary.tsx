@@ -6,16 +6,14 @@ import { LayoutColumn } from '~/components/Layout'
 import { SponsorshipPaymentTokenName } from '~/components/SponsorshipPaymentTokenName'
 import { StatCell, StatGrid } from '~/components/StatGrid'
 import { DayInSeconds } from '~/consts'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import { COLORS } from '~/shared/utils/styled'
 
 interface SponsorshipSummaryProps {
-    sponsorship: ParsedSponsorship
+    sponsorship: Sponsorship
 }
 
 export function SponsorshipSummary({ sponsorship }: SponsorshipSummaryProps) {
-    const { timeCorrectedRemainingBalance } = sponsorship
-
     const minimumStakingDays = sponsorship.minimumStakingPeriodSeconds / DayInSeconds
 
     return (
@@ -43,7 +41,9 @@ export function SponsorshipSummary({ sponsorship }: SponsorshipSummaryProps) {
                     <StatCell label="Remaining balance">
                         <SponsorshipDecimals
                             abbr
-                            amount={timeCorrectedRemainingBalance}
+                            amount={sponsorship.timeCorrectedRemainingBalanceWeiAt(
+                                Date.now(),
+                            )}
                         />
                     </StatCell>
                     <StatCell
@@ -71,7 +71,7 @@ export function SponsorshipSummary({ sponsorship }: SponsorshipSummaryProps) {
                             </Hint>
                         }
                     >
-                        {(sponsorship.spotAPY * 100).toFixed(0)}%
+                        {(sponsorship.spotApy * 100).toFixed(0)}%
                     </StatCell>
                     <StatCell
                         label="Total sponsored"
