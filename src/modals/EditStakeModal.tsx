@@ -57,7 +57,7 @@ function EditStakeModal({
     sponsorship,
     ...props
 }: Props) {
-    const { id: sponsorshipId, stakes, minimumStakingPeriodSeconds } = sponsorship
+    const { id: sponsorshipId, minimumStakingPeriodSeconds } = sponsorship
 
     const [busy, setBusy] = useState(false)
 
@@ -65,7 +65,7 @@ function EditStakeModal({
 
     const stake = useMemo(
         () => getSponsorshipStakeForOperator(sponsorship, operatorId),
-        [stakes, operatorId],
+        [sponsorship, operatorId],
     )
 
     const lockedStake = stake?.lockedWei || 0n

@@ -186,7 +186,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
                         const { operator, joinTimestamp, ...rest } = s
 
                         result.push({
-                            ...s,
+                            ...rest,
                             joinedAt: new Date(joinTimestamp * 1000),
                             metadata: OperatorMetadata.parse(
                                 operator.metadataJsonString,
