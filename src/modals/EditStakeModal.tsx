@@ -48,6 +48,11 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     sponsorship: Sponsorship
 }
 
+const EmptyStake = {
+    joinedAt: new Date(0),
+    amountWei: 0n,
+}
+
 function EditStakeModal({
     chainId,
     leavePenalty,
@@ -83,7 +88,7 @@ function EditStakeModal({
         lockedStake,
     )
 
-    const { joinedAt = new Date(0), amountWei: currentAmount = 0n } = stake || {}
+    const { joinedAt, amountWei: currentAmount } = stake || EmptyStake
 
     const [rawAmount, setRawAmount] = useState(
         toFloat(currentAmount, decimals).toString(),
