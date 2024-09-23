@@ -153,11 +153,15 @@ describe('parseOperator', () => {
             expect.arrayContaining([
                 expect.objectContaining({
                     amount: 123n,
-                    date: now - 60 * 60,
+                    queuedAt: expect.any(Date),
                     delegator: '0x33333',
                     id: 'QUEUE_ENTRY_ID',
                 }),
             ]),
+        )
+
+        expect(result.queueEntries?.[0]?.queuedAt.getTime()).toEqual(
+            (now - 60 * 60) * 1000,
         )
 
         expect(result.slashingEvents).toEqual(
@@ -176,14 +180,14 @@ describe('parseOperator', () => {
                 expect.objectContaining({
                     amountWei: 100n,
                     earningsWei: 10n,
-                    joinedAt: expect.anything(),
+                    joinedAt: expect.any(Date),
                     operatorId: 'OPERATOR_ID',
                     sponsorshipId: 'SPONSORSHIP_ID',
                     isSponsorshipPaying: true,
                     remainingWei: 120n,
                     minimumStakingPeriodSeconds: 3600,
                     spotAPY: expect.anything(),
-                    projectedInsolvencyAt: expect.anything(),
+                    projectedInsolvencyAt: expect.any(Date),
                     streamId: 'STREAM_ID',
                 }),
             ]),
