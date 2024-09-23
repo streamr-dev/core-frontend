@@ -276,16 +276,19 @@ export class Operator extends Parsable<RawOperator> {
                 .transform((entries) => {
                     const result: {
                         amount: bigint
-                        date: number
+                        queuedAt: Date
                         delegator: string
                         id: string
                     }[] = []
 
                     for (const e of entries) {
                         if (e) {
+                            const { date, ...rest } = e
+
                             result.push({
-                                ...e,
-                                delegator: e.delegator.id,
+                                ...rest,
+                                queuedAt: new Date(date * 1000),
+                                delegator: rest.delegator.id,
                             })
                         }
                     }
