@@ -19,10 +19,10 @@ import { truncate } from '~/shared/utils/text'
 import { useCurrentChainId } from '~/utils/chains'
 
 function getUndelegationExpirationDate(
-    date: number,
+    queuedAt: Date,
     maxUndelegationQueueSeconds: number | undefined = 0,
 ) {
-    return moment((date + maxUndelegationQueueSeconds) * 1000)
+    return moment(queuedAt.getTime() + maxUndelegationQueueSeconds * 1000)
 }
 
 interface Props {
@@ -111,7 +111,7 @@ export function UndelegationQueue({ operatorId }: Props) {
                     displayName: 'Expiration date',
                     valueMapper: (element) => {
                         const expirationDate = getUndelegationExpirationDate(
-                            element.date,
+                            element.queuedAt,
                             maxUndelegationQueueSeconds,
                         )
                         return (
@@ -143,7 +143,7 @@ export function UndelegationQueue({ operatorId }: Props) {
                     valueMapper: (element) => (
                         <>
                             {getUndelegationExpirationDate(
-                                element.date,
+                                element.queuedAt,
                                 maxUndelegationQueueSeconds,
                             ).isBefore(Date.now()) && (
                                 <Button
