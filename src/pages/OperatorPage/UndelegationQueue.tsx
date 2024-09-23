@@ -139,6 +139,24 @@ export function UndelegationQueue({ operatorId }: Props) {
                     key: 'date',
                 },
                 {
+                    displayName: 'Request date',
+                    valueMapper: (element) => (
+                        <>{moment(element.queuedAt).format('YYYY-MM-DD')}</>
+                    ),
+                    align: 'end',
+                    isSticky: false,
+                    key: 'requestDate',
+                },
+                {
+                    displayName: 'Request time',
+                    valueMapper: (element) => (
+                        <>{moment(element.queuedAt).format('HH:mm')}</>
+                    ),
+                    align: 'end',
+                    isSticky: false,
+                    key: 'requestDate',
+                },
+                {
                     displayName: '',
                     valueMapper: (element) => (
                         <>
