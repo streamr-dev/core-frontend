@@ -466,7 +466,7 @@ describe('parse', () => {
 
         expect(stake.lockedWei).toEqual(100n)
 
-        expect(stake.joinTimestamp).toEqual(1)
+        expect(stake.joinedAt.getTime()).toEqual(1000)
     })
 
     it('parses stream', () => {

@@ -22,7 +22,7 @@ describe('api utils', () => {
                 })
                 expect(request.config.method).toBe('post')
                 expect(request.config.url).toBe('/test-endpoint')
-                expect(request.config.headers['Content-Type']).toBe('application/json')
+                expect(request.config.headers?.['Content-Type']).toBe('application/json')
                 expect(request.config.data).toBe(JSON.stringify(data))
             })
             const result = await all.post({
