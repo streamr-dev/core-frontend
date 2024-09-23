@@ -316,12 +316,12 @@ export async function getEarningsForSponsorships(
                 (s) => s.operatorId.toLowerCase() === operatorAddress.toLowerCase(),
             )?.amountWei || 0n
 
-        const { totalStakedWei, payoutPerSec, isRunning, remainingBalanceWei } =
+        const { totalStakedWei, payoutPerSecond, isRunning, remainingBalanceWei } =
             sponsorship
 
         const isSponsorshipPaying = isRunning && remainingBalanceWei > 0n
 
-        const totalPayoutPerSecond = isSponsorshipPaying ? payoutPerSec : 0n
+        const totalPayoutPerSecond = isSponsorshipPaying ? payoutPerSecond : 0n
 
         const myPayoutPerSecond =
             totalStakedWei > 0n

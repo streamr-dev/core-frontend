@@ -27,8 +27,8 @@ import FormModal, {
     TextInput,
     WingedLabelWrap,
 } from '~/modals/FormModal'
-import { ParsedOperator } from '~/parsers/OperatorParser'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Operator } from '~/parsers/Operator'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import { stakeOnSponsorship } from '~/services/sponsorships'
 import SvgIcon from '~/shared/components/SvgIcon'
 import Label from '~/shared/components/Ui/Label'
@@ -49,8 +49,8 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     amount?: string
     chainId: number
     onResolve?: () => void
-    preselectedOperator: ParsedOperator
-    sponsorship: ParsedSponsorship
+    preselectedOperator: Operator
+    sponsorship: Sponsorship
 }
 
 const limitErrorToaster = toaster(Toast, Layer.Toast)

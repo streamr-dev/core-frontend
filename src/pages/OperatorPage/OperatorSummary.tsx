@@ -11,11 +11,11 @@ import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { getSelfDelegationFraction, getSpotApy } from '~/getters'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import useOperatorLiveNodes from '~/hooks/useOperatorLiveNodes'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import { COLORS } from '~/shared/utils/styled'
 
 interface OperatorSummaryProps {
-    operator: ParsedOperator
+    operator: Operator
 }
 
 export function OperatorSummary({ operator }: OperatorSummaryProps) {

@@ -2,7 +2,8 @@ import { QueryClient } from '@tanstack/react-query'
 import React from 'react'
 import { toaster } from 'toasterhea'
 import { z } from 'zod'
-import { StreamGptApiUrl, history } from '~/consts'
+import { StreamGptApiUrl } from '~/consts'
+import { ParseError } from '~/errors'
 import { getProjectRegistryContract } from '~/getters'
 import {
     invalidateActiveOperatorByIdQueries,
@@ -10,7 +11,7 @@ import {
     invalidateDelegationsForWalletQueries,
 } from '~/hooks/operators'
 import { operatorModal } from '~/modals/OperatorModal'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import InsufficientFundsError from '~/shared/errors/InsufficientFundsError'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
@@ -168,7 +169,7 @@ export function goBack(options: { onBeforeNavigate?: () => void } = {}) {
 
     options.onBeforeNavigate?.()
 
-    history.back()
+    window.history.back()
 }
 
 let queryClient: QueryClient | undefined
@@ -178,7 +179,13 @@ let queryClient: QueryClient | undefined
  */
 export function getQueryClient() {
     if (!queryClient) {
-        queryClient = new QueryClient()
+        queryClient = new QueryClient({
+            defaultOptions: {
+                queries: {
+                    throwOnError: (error) => error instanceof ParseError,
+                },
+            },
+        })
     }
 
     return queryClient
@@ -254,7 +261,7 @@ export function abbr(value: BNish, options: AbbrOptions = {}) {
  */
 export function saveOperator(
     chainId: number,
-    operator: ParsedOperator | undefined,
+    operator: Operator | undefined,
     options: {
         onDone?: (operatorId: string, blockNumber: number) => void
         onError?: (error: unknown) => void

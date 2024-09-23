@@ -13,7 +13,7 @@ import FormModal, {
     FormModalRoot,
     SectionHeadline,
 } from '~/modals/FormModal'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import { forceUnstakeFromSponsorship } from '~/services/sponsorships'
 import { Radio } from '~/shared/components/Radio'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -21,13 +21,13 @@ import { waitForIndexedBlock } from '~/utils'
 import { Layer } from '~/utils/Layer'
 import { isRejectionReason, isTransactionRejection } from '~/utils/exceptions'
 
-type OperatorStake = ParsedOperator['stakes'][0]
+type OperatorStake = Operator['stakes'][0]
 
 interface Props extends Pick<FormModalProps, 'onReject'> {
     amount: bigint
     chainId: number
     onResolve?: (sponsorshipId: string) => void
-    operator: ParsedOperator
+    operator: Operator
 }
 
 function getOptimalStake(
@@ -37,14 +37,14 @@ function getOptimalStake(
     return (
         stakes.find(
             (s) =>
-                isStakedLongEnough(s.joinTimestamp, s.minimumStakingPeriodSeconds) &&
+                isStakedLongEnough(s.joinedAt, s.minimumStakingPeriodSeconds) &&
                 s.amountWei >= requestedAmount,
         ) || stakes[0]
     )
 }
 
-function isStakedLongEnough(joinTimestamp: number, minimumStakingPeriodSeconds: number) {
-    return (joinTimestamp + minimumStakingPeriodSeconds) * 1000 < Date.now()
+function isStakedLongEnough(joinedAt: Date, minimumStakingPeriodSeconds: number) {
+    return joinedAt.getTime() + minimumStakingPeriodSeconds * 1000 < Date.now()
 }
 
 function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }: Props) {
@@ -67,7 +67,7 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
     const willSlash =
         !!selectedSponsorship &&
         !isStakedLongEnough(
-            selectedSponsorship.joinTimestamp,
+            selectedSponsorship.joinedAt,
             selectedSponsorship.minimumStakingPeriodSeconds,
         )
 
@@ -165,11 +165,9 @@ function ForceUndelegateModal({ amount, onResolve, operator, chainId, ...props }
                                 displayName: 'Joined',
                                 valueMapper: (element) => (
                                     <WarningCell>
-                                        {moment(element.joinTimestamp * 1000).format(
-                                            'YYYY-MM-DD',
-                                        )}
+                                        {moment(element.joinedAt).format('YYYY-MM-DD')}
                                         {!isStakedLongEnough(
-                                            element.joinTimestamp,
+                                            element.joinedAt,
                                             element.minimumStakingPeriodSeconds,
                                         ) && (
                                             <Tooltip

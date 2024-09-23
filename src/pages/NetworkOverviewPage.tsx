@@ -424,8 +424,13 @@ function MyDelegations() {
                                 },
                                 {
                                     displayName: 'My delegation',
-                                    valueMapper: ({ myShare }) => (
-                                        <SponsorshipDecimals abbr amount={myShare} />
+                                    valueMapper: (sponsorship) => (
+                                        <SponsorshipDecimals
+                                            abbr
+                                            amount={
+                                                wallet ? sponsorship.share(wallet) : 0n
+                                            }
+                                        />
                                     ),
                                     align: 'start',
                                     isSticky: false,

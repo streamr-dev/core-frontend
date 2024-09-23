@@ -59,13 +59,13 @@ import {
     GetStreamByIdDocument,
     GetStreamByIdQuery,
     GetStreamByIdQueryVariables,
-    Operator,
+    Operator as GraphOperator,
+    Sponsorship as GraphSponsorship,
     Operator_OrderBy,
     OrderDirection,
     SearchOperatorsByMetadataDocument,
     SearchOperatorsByMetadataQuery,
     SearchOperatorsByMetadataQueryVariables,
-    Sponsorship,
     Sponsorship_Filter,
     Sponsorship_OrderBy,
 } from '~/generated/gql/network'
@@ -75,8 +75,8 @@ import {
 } from '~/generated/types/hub'
 import { Token as TokenContract } from '~/generated/types/local'
 import { getGraphClient } from '~/getters/getGraphClient'
-import { ParsedOperator, parseOperator } from '~/parsers/OperatorParser'
-import { parseSponsorship } from '~/parsers/SponsorshipParser'
+import { Operator } from '~/parsers/Operator'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import Toast, { ToastType } from '~/shared/toasts/Toast'
 import { ProjectType } from '~/shared/types'
 import { ChartPeriod } from '~/types'
@@ -382,7 +382,7 @@ export async function getParsedSponsorshipById(
     sponsorshipId: string,
     { force = false, minBlockNumber = 0 } = {},
 ) {
-    let rawSponsorship: Sponsorship | undefined | null
+    let rawSponsorship: GraphSponsorship | undefined | null
 
     try {
         const { data } = await getGraphClient(chainId).query<
@@ -397,7 +397,7 @@ export async function getParsedSponsorshipById(
             fetchPolicy: force ? 'network-only' : void 0,
         })
 
-        rawSponsorship = (data.sponsorship || null) as Sponsorship | null
+        rawSponsorship = (data.sponsorship || null) as GraphSponsorship | null
     } catch (e) {
         prehandleBehindBlockError(e, minBlockNumber)
 
@@ -406,18 +406,8 @@ export async function getParsedSponsorshipById(
         errorToast({ title: 'Could not fetch Sponsorship details' })
     }
 
-    if (!rawSponsorship) {
-        return null
-    }
-
-    try {
-        return parseSponsorship(rawSponsorship, {
-            chainId,
-        })
-    } catch (e) {
-        console.warn('Failed to parse a Sponsorship', e)
-
-        errorToast({ title: 'Could not parse Sponsorship details' })
+    if (rawSponsorship) {
+        return Sponsorship.parse(rawSponsorship, chainId)
     }
 
     return null
@@ -709,7 +699,7 @@ export async function getParsedOperatorByOwnerAddress(
     chainId: number,
     address: string,
     { force = false, minBlockNumber = 0 } = {},
-): Promise<ParsedOperator | null> {
+): Promise<Operator | null> {
     let operator: GetOperatorByOwnerAddressQuery['operators'][0] | null = null
 
     try {
@@ -735,15 +725,7 @@ export async function getParsedOperatorByOwnerAddress(
     }
 
     if (operator) {
-        try {
-            return parseOperator(operator, { chainId })
-        } catch (e) {
-            if (!(e instanceof z.ZodError)) {
-                throw e
-            }
-
-            console.warn('Failed to parse an operator', operator, e)
-        }
+        return Operator.parse(operator, chainId)
     }
 
     return null
@@ -753,7 +735,7 @@ export async function getParsedOperatorsByOwnerOrControllerAddress(
     chainId: number,
     address: string,
     { force = false, minBlockNumber = 0 } = {},
-): Promise<ParsedOperator[]> {
+): Promise<Operator[]> {
     let queryResult: GetOperatorsByOwnerOrControllerAddressQuery['operators'] = []
 
     try {
@@ -778,20 +760,11 @@ export async function getParsedOperatorsByOwnerOrControllerAddress(
         throw e
     }
 
-    const result: ParsedOperator[] = []
+    const result: Operator[] = []
 
-    queryResult.map((operator) => {
-        try {
-            const parsedOperator = parseOperator(operator, { chainId })
-            result.push(parsedOperator)
-        } catch (e) {
-            if (!(e instanceof z.ZodError)) {
-                throw e
-            }
-
-            console.warn('Failed to parse an operator', operator, e)
-        }
-    })
+    for (const operator of queryResult) {
+        result.push(Operator.parse(operator, chainId))
+    }
 
     return result
 }
@@ -837,50 +810,31 @@ export async function getStreamDescription(
 interface GetParsedOperatorsOptions<Mapper> {
     chainId: number
     mapper?: Mapper
-    onParseError?: (operator: Operator, error: unknown) => void
-    onBeforeComplete?: (total: number, parsed: number) => void
 }
 
 /**
  * Gets a collection of parsed Operators.
  * @param getter Callback that "gets" raw Operator objects.
- * @param options.mapper A mapping function that translates `ParsedOperator` instances into
+ * @param options.mapper A mapping function that translates `Operator` instances into
  * something different.
- * @param options.onParseError Callback triggered for *each* parser failure (see `OperatorParser`).
- * @param options.onBeforeComplete Callback triggered just before returning the result. It carries
- * a total number of found operators and the number of successfully parsed operators.
  */
 export async function getParsedOperators<
-    Mapper extends (operator: ParsedOperator) => any = (
-        operator: ParsedOperator,
-    ) => ParsedOperator,
+    Mapper extends (operator: Operator) => any = (operator: Operator) => Operator,
 >(
-    getter: () => Operator[] | Promise<Operator[]>,
+    getter: () => GraphOperator[] | Promise<GraphOperator[]>,
     options: GetParsedOperatorsOptions<Mapper>,
 ): Promise<ReturnType<Mapper>[]> {
-    const { chainId, mapper, onParseError, onBeforeComplete } = options
+    const { chainId } = options
 
     const rawOperators = await getter()
 
     const operators: ReturnType<Mapper>[] = []
 
-    const preparsedCount = rawOperators.length
+    const mapper = options.mapper || ((x) => x)
 
-    for (let i = 0; i < preparsedCount; i++) {
-        const rawOperator = rawOperators[i]
-
-        try {
-            const operator = parseOperator(rawOperator, { chainId })
-
-            operators.push(mapper ? mapper(operator) : operator)
-        } catch (e) {
-            onParseError
-                ? onParseError(rawOperator as Operator, e)
-                : console.warn('Failed to parse an operator', rawOperator, e)
-        }
+    for (const raw of rawOperators) {
+        operators.push(mapper(Operator.parse(raw, chainId)))
     }
-
-    onBeforeComplete?.(preparsedCount, operators.length)
 
     return operators
 }
@@ -891,9 +845,9 @@ export async function getParsedOperators<
  * @param operator.stakes Collection of basic stake information (amount, spot apy, projected insolvency date).
  * @returns Number representing the APY factor (0.01 is 1%).
  */
-export function getSpotApy<
-    T extends Pick<ParsedOperator, 'valueWithoutEarnings' | 'stakes'>,
->({ valueWithoutEarnings, stakes }: T): number {
+export function getSpotApy(operator: Operator): number {
+    const { valueWithoutEarnings, stakes } = operator
+
     if (valueWithoutEarnings === 0n) {
         return 0
     }
@@ -904,7 +858,7 @@ export function getSpotApy<
         (sum, { spotAPY, projectedInsolvencyAt, amountWei, isSponsorshipPaying }) => {
             if (
                 projectedInsolvencyAt == null ||
-                projectedInsolvencyAt * 1000 < now ||
+                projectedInsolvencyAt.getTime() < now ||
                 !isSponsorshipPaying
             ) {
                 /**
@@ -930,7 +884,7 @@ export function getSpotApy<
  */
 export function getDelegatedAmountForWallet(
     address: string,
-    { delegations }: ParsedOperator,
+    { delegations }: Operator,
 ): bigint {
     const addr = address.toLowerCase()
 
@@ -943,7 +897,7 @@ export function getDelegatedAmountForWallet(
 /**
  * Sums amounts delegated to given operator by its owner.
  */
-export function getSelfDelegatedAmount(operator: ParsedOperator): bigint {
+export function getSelfDelegatedAmount(operator: Operator): bigint {
     return getDelegatedAmountForWallet(operator.owner, operator)
 }
 
@@ -953,7 +907,7 @@ export function getSelfDelegatedAmount(operator: ParsedOperator): bigint {
  */
 export function getDelegationFractionForWallet(
     address: string,
-    operator: ParsedOperator,
+    operator: Operator,
     { offset = 0n }: { offset?: bigint } = {},
 ): BN {
     const total = operator.valueWithoutEarnings + offset
@@ -968,7 +922,7 @@ export function getDelegationFractionForWallet(
 /**
  * Calculates the amount of DATA needed to payout undelegation queue in full.
  */
-export function calculateUndelegationQueueSize(operator: ParsedOperator): bigint {
+export function calculateUndelegationQueueSize(operator: Operator): bigint {
     const lookup: Record<string, bigint> = {}
 
     // Sum up queue by addresses
@@ -999,7 +953,7 @@ export function calculateUndelegationQueueSize(operator: ParsedOperator): bigint
  * modded with `offset`.
  */
 export function getSelfDelegationFraction(
-    operator: ParsedOperator,
+    operator: Operator,
     { offset = 0n }: { offset?: bigint } = {},
 ): BN {
     return getDelegationFractionForWallet(operator.owner, operator, { offset })

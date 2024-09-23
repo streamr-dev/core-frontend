@@ -15,7 +15,7 @@ import {
     useIsUndelegatingFundsToOperator,
     useUndelegateFunds,
 } from '~/hooks/operators'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import { getOperatorDelegationAmount } from '~/services/operators'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, DESKTOP, TABLET } from '~/shared/utils/styled'
@@ -23,7 +23,11 @@ import { goBack } from '~/utils'
 import { useCurrentChainId, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 
-export function OperatorActionBar({ operator }: { operator: ParsedOperator }) {
+interface OperatorActionBarProps {
+    operator: Operator
+}
+
+export function OperatorActionBar({ operator }: OperatorActionBarProps) {
     const walletAddress = useWalletAccount()
 
     const isDelegatingFunds = useIsDelegatingFundsToOperator(operator.id, walletAddress)

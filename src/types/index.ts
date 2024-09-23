@@ -1,20 +1,10 @@
 import { config as configs } from '@streamr/config'
 import { MessageID } from '@streamr/sdk'
-import { ParsedOperator } from '~/parsers/OperatorParser'
 import { TheGraph } from '~/shared/types'
 
 export interface ProjectFilter {
     search: string
     type?: TheGraph.ProjectType | undefined
-}
-
-/**
- * `ParsedOperator` enhanced with `apy` and `myShare`. It is *not* Delegation
- * structure coming from the Graph directly in any way.
- */
-export interface Delegation extends ParsedOperator {
-    apy: number
-    myShare: bigint
 }
 
 export interface DelegationsStats {

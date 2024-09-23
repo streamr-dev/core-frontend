@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 export class DraftValidationError<T extends string = string> extends Error {
     name = 'DraftValidationError'
 
@@ -23,5 +25,19 @@ export class ValidationError extends Error {
         }
 
         Object.setPrototypeOf(this, ValidationError.prototype)
+    }
+}
+
+export class ParseError extends Error {
+    name = 'ParseError'
+
+    constructor(readonly entity: unknown, readonly error: z.ZodError) {
+        super('Failed to parse')
+
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, ParseError)
+        }
+
+        Object.setPrototypeOf(this, ParseError.prototype)
     }
 }

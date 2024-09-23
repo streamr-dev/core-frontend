@@ -23,7 +23,7 @@ import FormModal, {
     TextAppendix,
     TextInput,
 } from '~/modals/FormModal'
-import { ParsedOperator } from '~/parsers/OperatorParser'
+import { Operator } from '~/parsers/Operator'
 import { undelegateFromOperator } from '~/services/operators'
 import Label from '~/shared/components/Ui/Label'
 import { useWalletAccount } from '~/shared/stores/wallet'
@@ -41,7 +41,7 @@ interface Props extends Pick<FormModalProps, 'onReject'> {
     chainId: number
     delegatedTotal: bigint
     onResolve?: () => void
-    operator: ParsedOperator
+    operator: Operator
 }
 
 function UndelegateFundsModal({

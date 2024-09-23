@@ -16,7 +16,7 @@ import {
     useJoinSponsorshipAsOperator,
     useSponsorshipTokenInfo,
 } from '~/hooks/sponsorships'
-import { ParsedSponsorship } from '~/parsers/SponsorshipParser'
+import { Sponsorship } from '~/parsers/Sponsorship'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection } from '~/types'
@@ -31,7 +31,7 @@ interface Props {
     orderDirection?: OrderDirection
     onOrderChange?: (columnKey: string) => void
     query: UseInfiniteQueryResult<
-        InfiniteData<{ skip: number; sponsorships: ParsedSponsorship[] }>
+        InfiniteData<{ skip: number; sponsorships: Sponsorship[] }>
     >
     hideStreamId?: boolean
 }
@@ -112,7 +112,9 @@ export function QueriedSponsorshipsTable({
                         valueMapper: (element) => (
                             <Decimals
                                 abbr
-                                amount={element.timeCorrectedRemainingBalance}
+                                amount={element.timeCorrectedRemainingBalanceWeiAt(
+                                    Date.now(),
+                                )}
                                 decimals={decimals}
                             />
                         ),
@@ -148,7 +150,7 @@ export function QueriedSponsorshipsTable({
                         displayName: 'APY',
                         valueMapper: (element) => (
                             <SponsorshipApyCell
-                                spotAPY={element.spotAPY}
+                                spotAPY={element.spotApy}
                                 isRunning={element.isRunning}
                             />
                         ),

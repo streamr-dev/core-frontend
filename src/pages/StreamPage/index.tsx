@@ -1,11 +1,5 @@
 import { StreamPermission } from '@streamr/sdk'
-import React, {
-    MutableRefObject,
-    ReactNode,
-    RefCallback,
-    useCallback,
-    useEffect,
-} from 'react'
+import React, { MutableRefObject, ReactNode, RefCallback, useEffect } from 'react'
 import {
     Link,
     Navigate,
@@ -32,7 +26,6 @@ import { StreamConnect } from '~/shared/components/StreamConnect'
 import { StreamPreview } from '~/shared/components/StreamPreview'
 import Tabs, { Tab } from '~/shared/components/Tabs'
 import StreamNotFoundError from '~/shared/errors/StreamNotFoundError'
-import usePreventNavigatingAway from '~/shared/hooks/usePreventNavigatingAway'
 import {
     useCurrentStreamAbility,
     useInvalidateStreamAbilities,
@@ -272,8 +265,6 @@ function StreamEntityForm(props: StreamEntityFormProps) {
 
     const canSubmit = useCanSubmit()
 
-    usePreventDataLossEffect()
-
     const navigate = useNavigate()
 
     const account = useWalletAccount()?.toLowerCase()
@@ -336,41 +327,6 @@ function StreamEntityForm(props: StreamEntityFormProps) {
             </FloatingToolbar>
         </form>
     )
-}
-
-function usePreventDataLossEffect() {
-    const clean = StreamDraft.useIsDraftClean()
-
-    const busy = StreamDraft.useIsDraftBusy()
-
-    const { id } = StreamDraft.useEntity() || {}
-
-    const chainName = useCurrentChainSymbolicName()
-
-    usePreventNavigatingAway({
-        isDirty: useCallback(
-            (dest?: string) => {
-                if (id) {
-                    switch (dest) {
-                        case R.streamOverview(id, routeOptions(chainName)):
-                        case R.streamConnect(id, routeOptions(chainName)):
-                        case R.streamLiveData(id, routeOptions(chainName)):
-                            return false
-                    }
-                }
-
-                /**
-                 * Undefined `dest` means it's a full URL change that's happening outside of the
-                 * router, or it's a refresh. We block such things here only if the state is dirty.
-                 *
-                 * Internal route changes are allowed w/o questions as long as modifications to the
-                 * current draft are being persisted (see `busy`).
-                 */
-                return !clean && (typeof dest === 'undefined' || !busy)
-            },
-            [clean, busy, id, chainName],
-        ),
-    })
 }
 
 function useCanSubmit() {

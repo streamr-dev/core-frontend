@@ -1,5 +1,5 @@
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React, { forwardRef } from 'react'
-import { cleanup, screen, render, fireEvent } from '@testing-library/react'
 import { sleep } from '~/utils'
 
 jest.mock('~/hooks/operators', () => ({
@@ -35,7 +35,8 @@ jest.doMock('react-avatar-editor', () => ({
 }))
 
 class FakeImg {
-    onload: () => void
+    onload: () => void = () => {}
+
     constructor(public width: number, public height: number) {
         setTimeout(() => {
             this.callOnLoad()
