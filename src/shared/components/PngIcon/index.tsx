@@ -1,23 +1,22 @@
 import React, { HTMLProps } from 'react'
-import { $Keys } from 'utility-types'
 import BrowserNotSupportedPng from '~/shared/assets/images/browser_not_supported.png'
 import BrowserNotSupportedPng2x from '~/shared/assets/images/browser_not_supported@2x.png'
 import DiscardChangesPng from '~/shared/assets/images/discard_changes.png'
 import DiscardChangesPng2x from '~/shared/assets/images/discard_changes@2x.png'
-import MetamaskPng from '~/shared/assets/images/metamask.png'
-import MetamaskPng2x from '~/shared/assets/images/metamask@2x.png'
-import PublishFailedPng2x from '~/shared/assets/images/publish_failed@2x.png'
-import PublishFailedPng from '~/shared/assets/images/publish_failed.png'
 import ImageUploadPng from '~/shared/assets/images/imgupload.png'
 import ImageUploadPng2x from '~/shared/assets/images/imgupload@2x.png'
+import MetamaskPng from '~/shared/assets/images/metamask.png'
+import MetamaskPng2x from '~/shared/assets/images/metamask@2x.png'
+import PublishFailedPng from '~/shared/assets/images/publish_failed.png'
+import PublishFailedPng2x from '~/shared/assets/images/publish_failed@2x.png'
 import WalletPng from '~/shared/assets/images/wallet.png'
 import WalletPng2x from '~/shared/assets/images/wallet@2x.png'
+import WalletErrorPng from '~/shared/assets/images/wallet_error.png'
+import WalletErrorPng2x from '~/shared/assets/images/wallet_error@2x.png'
 import WalletNoDataPng from '~/shared/assets/images/wallet_no_data.png'
 import WalletNoDataPng2x from '~/shared/assets/images/wallet_no_data@2x.png'
 import WalletNoEthPng from '~/shared/assets/images/wallet_no_eth.png'
 import WalletNoEthPng2x from '~/shared/assets/images/wallet_no_eth@2x.png'
-import WalletErrorPng from '~/shared/assets/images/wallet_error.png'
-import WalletErrorPng2x from '~/shared/assets/images/wallet_error@2x.png'
 const sources = {
     browserNotSupported: (
         <img
@@ -40,7 +39,7 @@ const sources = {
     walletError: <img src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt="" />,
     txFailed: <img src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt="" />,
 }
-export type PngIconName = $Keys<typeof sources>
+export type PngIconName = keyof typeof sources
 type Props = Omit<HTMLProps<HTMLImageElement>, 'name'> & {
     name: PngIconName
 }

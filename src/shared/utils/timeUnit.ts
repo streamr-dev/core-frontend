@@ -1,4 +1,4 @@
-import { $Values } from 'utility-types'
+import { Values } from '~/types'
 
 export const timeUnits = {
     second: 'second',
@@ -9,7 +9,7 @@ export const timeUnits = {
     month: 'month',
 } as const
 
-export type TimeUnit = $Values<typeof timeUnits>
+export type TimeUnit = Values<typeof timeUnits>
 
 export const timeUnitSecondsMultiplierMap = new Map<TimeUnit, number>([
     ['second', 1],

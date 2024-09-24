@@ -1,6 +1,5 @@
 import React, { ComponentType } from 'react'
 import styled from 'styled-components'
-import { $Keys } from 'utility-types'
 import { CheckmarkIcon } from './CheckmarkIcon'
 import * as MapIcons from './MapIcons'
 import * as SocialIcons from './SocialIcons'
@@ -1346,7 +1345,7 @@ const sources = {
     web: <SocialIcons.Web />,
     xCom: <SocialIcons.X />,
 }
-export type IconName = $Keys<typeof sources>
+export type IconName = keyof typeof sources
 export type SvgIconProps = {
     name: IconName
     className?: string

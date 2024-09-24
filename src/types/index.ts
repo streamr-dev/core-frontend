@@ -90,3 +90,5 @@ export type FundingEvent = {
     sponsor: string
     date: string
 }
+
+export type Values<T> = T extends Record<string, infer R> ? R : never
