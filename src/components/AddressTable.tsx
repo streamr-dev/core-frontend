@@ -87,8 +87,8 @@ export function AddressTable({
                     key: 'id',
                 },
                 {
-                    displayName: 'MATIC balance',
-                    valueMapper: (element) => <MaticBalance address={element.address} />,
+                    displayName: 'POL balance',
+                    valueMapper: (element) => <PolBalance address={element.address} />,
                     align: 'start',
                     isSticky: false,
                     key: 'balance',
@@ -203,7 +203,7 @@ const Footer = styled.div`
 
 const LowBalanceThreshold = toBigInt(0.1, 18n)
 
-function MaticBalance({ address }: { address: string }) {
+function PolBalance({ address }: { address: string }) {
     const [balance, setBalance] = useState<bigint>()
 
     const currentChainId = useCurrentChainId()
@@ -235,10 +235,10 @@ function MaticBalance({ address }: { address: string }) {
     const lowBalance = balance != null && balance < LowBalanceThreshold
 
     return balance != null ? (
-        <MaticBalanceRoot>
+        <PolBalanceRoot>
             <div>{toFloat(balance, 18n).toFixed(2)}</div>
             {lowBalance && (
-                <Tooltip content="Low MATIC">
+                <Tooltip content="Low POL">
                     <TooltipIconWrap
                         className="ml-1"
                         $color="#ff5c00"
@@ -248,13 +248,13 @@ function MaticBalance({ address }: { address: string }) {
                     </TooltipIconWrap>
                 </Tooltip>
             )}
-        </MaticBalanceRoot>
+        </PolBalanceRoot>
     ) : (
         <Spinner color="blue" />
     )
 }
 
-const MaticBalanceRoot = styled.div`
+const PolBalanceRoot = styled.div`
     align-items: center;
     display: flex;
     gap: 8px;
