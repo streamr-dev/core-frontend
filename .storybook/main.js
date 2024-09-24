@@ -13,6 +13,8 @@ module.exports = {
         '@storybook/addon-actions',
         '@storybook/addon-viewport',
         '@storybook/addon-controls',
+        '@storybook/addon-webpack5-compiler-babel',
+        '@chromatic-com/storybook'
     ],
     webpackFinal: async (config) => {
         config.resolve = appWebpackConfig.resolve
