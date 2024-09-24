@@ -747,7 +747,7 @@ export const OperatorPage = () => {
                                                 </p>
                                                 <p>
                                                     Each node address should be supplied
-                                                    with some MATIC on Polygon chain
+                                                    with some POL on Polygon chain
                                                     for&nbsp;gas.
                                                 </p>
                                             </Hint>

@@ -63,9 +63,9 @@ export function OperatorChecklist({ operatorId }: { operatorId: string | undefin
                     <>
                         <p>
                             The Operator&apos;s node address(es) must each have at least
-                            0.1 MATIC tokens.
+                            0.1 POL tokens.
                         </p>
-                        <p>This alert triggers if a balance is less than 0.1 MATIC.</p>
+                        <p>This alert triggers if a balance is less than 0.1 POL.</p>
                     </>
                 }
             >
