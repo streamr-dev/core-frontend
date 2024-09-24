@@ -97,11 +97,6 @@ const GlobalStyles = createGlobalStyle`
         font-weight: 500;
     }
 
-    .react-loading-skeleton {
-        animation: none !important;
-        background: #adadad none;
-    }
-
     a {
         color: #0324FF;
         font-weight: inherit;
