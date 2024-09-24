@@ -109,7 +109,7 @@
         "toasterhea": "^1.0.4",
         "toml": "^3.0.0",
         "use-debounce": "^10.0.3",
-        "utility-types": "^3.10.0",
+        "utility-types": "^3.11.0",
         "uuid": "^9.0.0",
         "web3-utils": "^4.3.1",
         "web3-validator": "^1.0.1",
