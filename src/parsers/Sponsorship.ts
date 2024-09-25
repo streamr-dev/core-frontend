@@ -69,13 +69,7 @@ export class Sponsorship extends Parsable<RawSponsorship> {
 
     get maxOperators() {
         return this.getValue('maxOperators', (raw) => {
-            return z.coerce
-                .number()
-                .int()
-                .min(0)
-                .default(Infinity)
-                .catch(Infinity)
-                .parse(raw)
+            return z.number().int().min(0).default(Infinity).catch(Infinity).parse(raw)
         })
     }
 

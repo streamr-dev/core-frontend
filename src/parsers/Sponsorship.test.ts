@@ -145,11 +145,11 @@ describe('parse', () => {
         })
 
         expect(parse({ ...rest, maxOperators: '1' })).toMatchObject({
-            maxOperators: 1,
+            maxOperators: Infinity,
         })
 
         expect(parse({ ...rest, maxOperators: '' })).toMatchObject({
-            maxOperators: 0,
+            maxOperators: Infinity,
         })
 
         expect(parse({ ...rest, maxOperators: -1 })).toMatchObject({
@@ -157,7 +157,7 @@ describe('parse', () => {
         })
 
         expect(parse({ ...rest, maxOperators: null })).toMatchObject({
-            maxOperators: 0,
+            maxOperators: Infinity,
         })
 
         expect(parse({ ...rest, maxOperators: undefined })).toMatchObject({
