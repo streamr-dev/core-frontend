@@ -48,6 +48,9 @@ export default async function networkPreflight(expectedChainId: number) {
                     chainName: chainConfig.name,
                     rpcUrls: chainConfig.rpcEndpoints.map(({ url }) => url),
                     nativeCurrency: chainConfig.nativeCurrency,
+                    blockExplorerUrls: [chainConfig.blockExplorerUrl].filter(
+                        Boolean,
+                    ) as string[],
                 },
             ],
         })
