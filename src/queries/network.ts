@@ -394,7 +394,7 @@ gql`
             canGrant
             canEdit
             canDelete
-            userAddress
+            userId
             subscribeExpiration
             publishExpiration
         }

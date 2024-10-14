@@ -5324,14 +5324,14 @@ export type GetProjectSubscriptionsQueryVariables = Exact<{
 
 export type GetProjectSubscriptionsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }> } | null };
 
-export type StreamFieldsFragment = { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress?: any | null, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null };
+export type StreamFieldsFragment = { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userId: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null };
 
 export type GetStreamByIdQueryVariables = Exact<{
   streamId: Scalars['ID']['input'];
 }>;
 
 
-export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress?: any | null, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null } | null };
+export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userId: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null } | null };
 
 export type GetPagedStreamsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -5341,7 +5341,7 @@ export type GetPagedStreamsQueryVariables = Exact<{
 }>;
 
 
-export type GetPagedStreamsQuery = { __typename?: 'Query', streams: Array<{ __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress?: any | null, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null }> };
+export type GetPagedStreamsQuery = { __typename?: 'Query', streams: Array<{ __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userId: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null }> };
 
 export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency?: any | null, spotAPY: any, totalStakedWei: any, remainingWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
 
@@ -5534,7 +5534,7 @@ export const StreamFieldsFragmentDoc = gql`
     canGrant
     canEdit
     canDelete
-    userAddress
+    userId
     subscribeExpiration
     publishExpiration
   }
