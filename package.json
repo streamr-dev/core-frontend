@@ -20,7 +20,7 @@
     "clean-cache": "rm -rf node_modules/.cache; rm -rf .cache; rm -rf dist; jest --clearCache",
     "cloc": "npx cloc --exclude-dir=node_modules,coverage,package-lock.json .",
     "prettier": "pretty-quick --staged",
-    "prepare": "husky install",
+    "prepare": "husky",
     "codegen": "graphql-codegen --config codegen.ts",
     "typechain": "npx typechain --target=ethers-v6 --out-dir=src/generated/types/local src/shared/web3/abis/*.json",
     "typechain-hub": "npx typechain --target=ethers-v6 --out-dir=src/generated/types/hub ./node_modules/@streamr/hub-contracts/dist/**/*.json"
