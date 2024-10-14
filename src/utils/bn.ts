@@ -16,7 +16,7 @@ export function toBigInt(value: Exclude<BNish, bigint>, decimals = 0n): bigint {
                 .multipliedBy(toBN(10n ** decimals))
                 .toFixed(0),
         )
-    } catch (e) {
+    } catch (_) {
         console.warn('Failed to convert BigNumberish value to BigInt. Using 0n.', value)
     }
 

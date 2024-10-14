@@ -1,13 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
-import { SelectField2 } from '~/marketplace/components/SelectField2'
-import Tabs, { Tab } from '~/shared/components/Tabs'
-import { TheGraph } from '~/shared/types'
-import { ProjectFilter } from '~/types'
-import { useWalletAccount } from '~/shared/stores/wallet'
-import { Button } from '~/components/Button'
+import styled from 'styled-components'
 import Faders from '~/assets/Faders.svg'
 import {
     ActionBarContainer,
@@ -19,9 +12,16 @@ import {
     MobileFilterWrap,
     SelectFieldWrap,
 } from '~/components/ActionBar.styles'
+import { Button } from '~/components/Button'
+import { SelectField2 } from '~/marketplace/components/SelectField2'
 import { projectTypeFilterModal } from '~/modals/ProjectTypeFilter'
-import { Route as R, routeOptions } from '~/utils/routes'
+import SearchBar, { SearchBarWrap } from '~/shared/components/SearchBar'
+import Tabs, { Tab } from '~/shared/components/Tabs'
+import { useWalletAccount } from '~/shared/stores/wallet'
+import { TheGraph } from '~/shared/types'
+import { ProjectFilter } from '~/types'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
+import { Route as R, routeOptions } from '~/utils/routes'
 
 enum TabOption {
     Any = 'all',
@@ -140,7 +140,7 @@ const UnstyledActionBar = ({
                                         ...filter,
                                         type,
                                     })
-                                } catch (e) {}
+                                } catch (_) {}
                             }}
                             kind="secondary"
                         >

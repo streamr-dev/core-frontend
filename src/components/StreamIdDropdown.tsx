@@ -89,7 +89,7 @@ export function StreamIdDropdown({
                                             parseStreamId(streamId)
 
                                         return `${truncate(owner)}${pathname}`
-                                    } catch (e) {}
+                                    } catch (_) {}
 
                                     return streamId
                                 })()
@@ -129,7 +129,7 @@ export function StreamIdDropdown({
                                                 e.preventDefault()
                                             }
                                         }}
-                                        onKeyDownToPrevButton={(e, button) => {
+                                        onKeyDownToPrevButton={(_, button) => {
                                             if (button) {
                                                 return void button.focus()
                                             }

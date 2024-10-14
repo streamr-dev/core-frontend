@@ -3,10 +3,10 @@ import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { toaster } from 'toasterhea'
 import LightModal from '~/modals/LightModal'
-import { Route as R } from '~/utils/routes'
 import SvgIcon from '~/shared/components/SvgIcon'
 import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
+import { Route as R } from '~/utils/routes'
 
 export const DisclaimerBar = () => {
     const { pathname } = useLocation()
@@ -52,7 +52,7 @@ export const DisclaimerBar = () => {
                                     </p>
                                 ),
                             })
-                        } catch (e) {}
+                        } catch (_) {}
                     }}
                 >
                     Learn more

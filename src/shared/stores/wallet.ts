@@ -148,7 +148,7 @@ export async function getWalletAccount({
     setTimeout(async () => {
         try {
             await promise
-        } catch (e) {
+        } catch (_) {
             // Do nothing.
         } finally {
             promiseMap.delete(provider)

@@ -14,7 +14,6 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 const { sentryWebpackPlugin } = require('@sentry/webpack-plugin')
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const createStyledComponentsTransformer =
     require('typescript-plugin-styled-components').default

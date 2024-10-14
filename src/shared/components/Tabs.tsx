@@ -1,3 +1,4 @@
+import throttle from 'lodash/throttle'
 import React, {
     ComponentProps,
     HTMLAttributes,
@@ -11,9 +12,8 @@ import React, {
     useState,
 } from 'react'
 import styled, { css } from 'styled-components'
-import throttle from 'lodash/throttle'
-import isPreventable from '~/utils/isPreventable'
 import { TABLET } from '~/shared/utils/styled'
+import isPreventable from '~/utils/isPreventable'
 
 interface InternalTabProps<P = unknown> {
     id: string
@@ -336,7 +336,7 @@ export default function Tabs({
          *  Use `windowWidth` here to avoid ignoring the `react-hooks/exhaustive-deps`
          * rule. It's safer this way. Plus, pretty much costs nothing.
          */
-        windowWidth
+        ;((_) => {})(windowWidth)
 
         let width = 0
 

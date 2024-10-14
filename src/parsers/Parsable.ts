@@ -1,4 +1,4 @@
-export class Parsable<P extends Record<string, unknown> = {}> {
+export class Parsable<P extends Record<string, unknown> = Record<string, never>> {
     private cache = {} as P
 
     private preparsed = {} as P

@@ -1,7 +1,12 @@
 const path = require('path')
 
 module.exports = {
-    extends: ['plugin:react/recommended', 'streamr-ts', 'plugin:cypress/recommended', 'prettier'],
+    extends: [
+        'plugin:react/recommended',
+        'streamr-ts',
+        'plugin:cypress/recommended',
+        'prettier',
+    ],
     parser: '@typescript-eslint/parser',
     settings: {
         'import/resolver': {
@@ -16,7 +21,18 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
         'no-unused-vars': 'off', // as we prefer the typescript version of this rule
-        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-unused-vars': [
+            'warn',
+            {
+                args: 'all',
+                argsIgnorePattern: '^_',
+                caughtErrors: 'all',
+                caughtErrorsIgnorePattern: '^_',
+                destructuredArrayIgnorePattern: '^_',
+                varsIgnorePattern: '^_',
+                ignoreRestSiblings: true,
+            },
+        ],
         '@typescript-eslint/ban-ts-comment': 'warn',
         'no-multiple-empty-lines': 'warn',
         'jsx-a11y/no-noninteractive-tabindex': 'warn',
@@ -32,12 +48,20 @@ module.exports = {
         'promise/always-return': 'off',
         'require-atomic-updates': 'off',
         'react/sort-comp': 0,
-        "react/no-unknown-property": ['error', { ignore: ['css'] }],
+        'react/no-unknown-property': ['error', { ignore: ['css'] }],
         'import/extensions': 'off',
         'import/order': [
             'warn',
             {
-                groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object'],
+                groups: [
+                    'builtin',
+                    'external',
+                    'internal',
+                    'parent',
+                    'sibling',
+                    'index',
+                    'object',
+                ],
                 pathGroups: [
                     {
                         pattern: '$*/**',
@@ -53,7 +77,7 @@ module.exports = {
                         pattern: '~/**',
                         group: 'internal',
                         position: 'after',
-                    }
+                    },
                 ],
             },
         ],
@@ -64,16 +88,8 @@ module.exports = {
                 allowArgumentsExplicitlyTypedAsAny: true,
             },
         ],
-        "@typescript-eslint/no-namespace": "off",
-        "no-underscore-dangle": "off",
-        "@typescript-eslint/ban-types": [
-            "error",
-            {
-                "types": {
-                    "{}": false,
-                },
-            },
-        ],
+        '@typescript-eslint/no-namespace': 'off',
+        'no-underscore-dangle': 'off',
     },
     overrides: [
         {

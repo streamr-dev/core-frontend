@@ -49,7 +49,7 @@ export const useSponsorshipFundingHistoryQuery = (
                     skippedElements: ctx.pageParam || 0,
                     events,
                 }
-            } catch (e) {
+            } catch (_) {
                 errorToast({ title: "Could not load the sponsorship's funding history" })
                 return {
                     skippedElements: 0,

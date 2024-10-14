@@ -140,7 +140,7 @@ export async function getStreamsFromIndexer(
                       })
 
                       return result.map(({ id }) => id)
-                  } catch (e) {
+                  } catch (_) {
                       return []
                   }
               })()

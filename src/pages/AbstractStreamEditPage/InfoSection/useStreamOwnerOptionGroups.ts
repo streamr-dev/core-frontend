@@ -40,7 +40,7 @@ export default function useStreamOwnerOptionGroups(
             const domains = await (async () => {
                 try {
                     return await getENSDomainsForWallet(account)
-                } catch (e) {
+                } catch (_) {
                     return []
                 }
             })()
