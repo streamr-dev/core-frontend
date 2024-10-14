@@ -18,7 +18,7 @@ import { getGraphClient } from '~/getters/getGraphClient'
 import { OrderDirection } from '~/types'
 
 export type TheGraphStreamPermission = {
-    userAddress: string
+    userId: string
     canEdit: boolean
     canGrant: boolean
     canDelete: boolean
@@ -51,7 +51,7 @@ const calculatePubSubCount = (permissions: StreamPermission[]) => {
     permissions.forEach((perm) => {
         // If stream has public permissions (zero address), return null for counts which means that anyone can
         // publish or subscribe
-        if (perm.userAddress === address0) {
+        if (perm.userId === address0) {
             if (perm.subscribeExpiration >= Math.round(Date.now() / 1000)) {
                 subscriberCount = null
             }
@@ -145,7 +145,7 @@ export const getPagedStreams = async (
     let where: Stream_Filter = {
         permissions_: {
             stream_contains_nocase: search,
-            userAddress: owner,
+            userId: owner,
         },
         [`id_${orderOperator}`]: lastId,
     }
@@ -219,7 +219,7 @@ export const getStreamsOwnedBy = async (
         result = result.filter(
             (s) =>
                 s.permissions.find(
-                    (p) => p.userAddress.toLowerCase() === address0.toLowerCase(),
+                    (p) => p.userId.toLowerCase() === address0.toLowerCase(),
                 ) != null,
         )
     }

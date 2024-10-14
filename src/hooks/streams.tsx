@@ -117,7 +117,7 @@ export async function getStreamsFromIndexer(
                       const where: Stream_Filter = {
                           permissions_: {
                               stream_contains_nocase: search,
-                              userAddress: owner,
+                              userId: owner,
                           },
                       }
 
@@ -221,7 +221,7 @@ async function getStreamsFromGraph(
     const where: Stream_Filter = {
         permissions_: {
             stream_contains_nocase: search,
-            userAddress: owner,
+            userId: owner,
         },
         [`id_${orderOperator}`]: lastId,
         id_in: streamIds,
@@ -231,8 +231,8 @@ async function getStreamsFromGraph(
         delete where.permissions_?.stream_contains_nocase
     }
 
-    if (!where.permissions_?.userAddress) {
-        delete where.permissions_?.userAddress
+    if (!where.permissions_?.userId) {
+        delete where.permissions_?.userId
     }
 
     if (Object.keys(where.permissions_ || {}).length === 0) {
@@ -369,7 +369,7 @@ function getStatsFromPermissions(
     let publisherCount: number | undefined = 0
 
     permissions.forEach((perm) => {
-        if (perm.userAddress === address0) {
+        if (perm.userId === address0) {
             /**
              * If stream has public permissions (zero address), return `undefined`
              * for counts. It means anyone can publish and subscribe.
