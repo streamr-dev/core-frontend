@@ -4306,8 +4306,10 @@ export type StreamPermission = {
   stream?: Maybe<Stream>;
   /** subscribeExpires timestamp tells until what time this address may subscribe to the stream */
   subscribeExpiration?: Maybe<Scalars['BigInt']['output']>;
-  /** Ethereum address, owner of this permission */
-  userAddress: Scalars['Bytes']['output'];
+  /** [DEPRECATED] Ethereum address, owner of this permission; only if permission granting didn't use *forUserId functions */
+  userAddress?: Maybe<Scalars['Bytes']['output']>;
+  /** Ethereum address or other ID, owner of this permission */
+  userId: Scalars['Bytes']['output'];
 };
 
 export type StreamPermission_Filter = {
@@ -4382,6 +4384,16 @@ export type StreamPermission_Filter = {
   userAddress_not?: InputMaybe<Scalars['Bytes']['input']>;
   userAddress_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
   userAddress_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  userId?: InputMaybe<Scalars['Bytes']['input']>;
+  userId_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  userId_gt?: InputMaybe<Scalars['Bytes']['input']>;
+  userId_gte?: InputMaybe<Scalars['Bytes']['input']>;
+  userId_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
+  userId_lt?: InputMaybe<Scalars['Bytes']['input']>;
+  userId_lte?: InputMaybe<Scalars['Bytes']['input']>;
+  userId_not?: InputMaybe<Scalars['Bytes']['input']>;
+  userId_not_contains?: InputMaybe<Scalars['Bytes']['input']>;
+  userId_not_in?: InputMaybe<Array<Scalars['Bytes']['input']>>;
 };
 
 export enum StreamPermission_OrderBy {
@@ -4396,7 +4408,8 @@ export enum StreamPermission_OrderBy {
   StreamMetadata = 'stream__metadata',
   StreamUpdatedAt = 'stream__updatedAt',
   SubscribeExpiration = 'subscribeExpiration',
-  UserAddress = 'userAddress'
+  UserAddress = 'userAddress',
+  UserId = 'userId'
 }
 
 export type Stream_Filter = {
@@ -5311,14 +5324,14 @@ export type GetProjectSubscriptionsQueryVariables = Exact<{
 
 export type GetProjectSubscriptionsQuery = { __typename?: 'Query', project?: { __typename?: 'Project', subscriptions: Array<{ __typename?: 'ProjectSubscription', userAddress: any, endTimestamp?: any | null }> } | null };
 
-export type StreamFieldsFragment = { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null };
+export type StreamFieldsFragment = { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress?: any | null, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null };
 
 export type GetStreamByIdQueryVariables = Exact<{
   streamId: Scalars['ID']['input'];
 }>;
 
 
-export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null } | null };
+export type GetStreamByIdQuery = { __typename?: 'Query', stream?: { __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress?: any | null, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null } | null };
 
 export type GetPagedStreamsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -5328,7 +5341,7 @@ export type GetPagedStreamsQueryVariables = Exact<{
 }>;
 
 
-export type GetPagedStreamsQuery = { __typename?: 'Query', streams: Array<{ __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress: any, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null }> };
+export type GetPagedStreamsQuery = { __typename?: 'Query', streams: Array<{ __typename?: 'Stream', id: string, metadata: string, permissions?: Array<{ __typename?: 'StreamPermission', id: string, canGrant?: boolean | null, canEdit?: boolean | null, canDelete?: boolean | null, userAddress?: any | null, subscribeExpiration?: any | null, publishExpiration?: any | null }> | null }> };
 
 export type SponsorshipDailyBucketFieldsFragment = { __typename?: 'SponsorshipDailyBucket', id: string, operatorCount: number, projectedInsolvency?: any | null, spotAPY: any, totalStakedWei: any, remainingWei: any, date: any, sponsorship: { __typename?: 'Sponsorship', id: string } };
 
