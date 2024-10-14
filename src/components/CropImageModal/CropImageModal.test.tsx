@@ -24,7 +24,7 @@ const mockGetCroppingRect = jest.fn(() => ({
 jest.doMock('react-avatar-editor', () => ({
     __esModule: true,
     // eslint-disable-next-line react/display-name
-    default: forwardRef((props, ref: any) => {
+    default: forwardRef((_, ref: any) => {
         // eslint-disable-next-line no-param-reassign
         ref.current = {
             getImage: mockGetImage,

@@ -1,6 +1,6 @@
+import { Meta } from '@storybook/react'
 import React, { useRef } from 'react'
 import { Container, toaster } from 'toasterhea'
-import { Meta } from '@storybook/react'
 import { COLORS } from '~/shared/utils/styled'
 import { Layer } from '~/utils/Layer'
 import CropImageModal from './CropImageModal'
@@ -28,7 +28,7 @@ const Story = () => {
                                 imageUrl: URL.createObjectURL(e.target.files[0]),
                                 mask: 'round',
                             })
-                        } catch (e) {
+                        } catch (_) {
                             // Ignore.
                         }
                     })()

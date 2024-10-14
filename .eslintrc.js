@@ -34,6 +34,7 @@ module.exports = {
             },
         ],
         '@typescript-eslint/ban-ts-comment': 'warn',
+        '@typescript-eslint/no-require-imports': 'off',
         'no-multiple-empty-lines': 'warn',
         'jsx-a11y/no-noninteractive-tabindex': 'warn',
         'react/jsx-indent': 'warn',
