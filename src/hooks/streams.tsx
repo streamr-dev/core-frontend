@@ -243,6 +243,10 @@ async function getStreamsFromGraph(
         delete where[`id_${orderOperator}`]
     }
 
+    if (where.id_lt === '0') {
+        delete where.id_lt
+    }
+
     if (!where.id_in) {
         delete where.id_in
     }
