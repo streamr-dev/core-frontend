@@ -192,7 +192,7 @@ export default function SalePointTokenSelector({
                                          * `getTokenInfo` explode. `useTokenInfo` won't tell.
                                          */
                                         await getTokenInfo(customTokenAddress, chainId)
-                                    } catch (e) {
+                                    } catch (_) {
                                         errorToast({
                                             title: 'Invalid token contract address',
                                             desc: 'This is not an ERC-20 token contract',

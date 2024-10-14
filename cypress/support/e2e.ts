@@ -17,7 +17,7 @@ import './commands'
 
 declare global {
     namespace Cypress {
-        // eslint-disable-next-line @typescript-eslint/no-empty-interface
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
         interface Chainable {
             // Def types for your custom commands here, sir (or maddam).
         }

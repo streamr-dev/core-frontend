@@ -1,13 +1,13 @@
+import { Auth, LoadingIndicator, Logo, SignInMethod } from '@streamr/streamr-layout'
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { useDiscardableEffect, defer, Deferral, toaster } from 'toasterhea'
 import { Link as PrestyledLink } from 'react-router-dom'
-import { Logo, Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
-import { MEDIUM, TABLET } from '~/shared/utils/styled'
+import styled from 'styled-components'
+import { defer, Deferral, toaster, useDiscardableEffect } from 'toasterhea'
 import { Button } from '~/components/Button'
-import useIsMounted from '~/shared/hooks/useIsMounted'
 import TimeoutError from '~/shared/errors/TimeoutError'
+import useIsMounted from '~/shared/hooks/useIsMounted'
 import { getWalletAccount, useWalletAccount } from '~/shared/stores/wallet'
+import { MEDIUM, TABLET } from '~/shared/utils/styled'
 import { isCodedError, RejectionReason } from '~/utils/exceptions'
 import { Layer } from '~/utils/Layer'
 import { Route as R } from '~/utils/routes'
@@ -176,7 +176,7 @@ function ConnectModal({ onReject, onResolve }: Props) {
                                 }),
                                 deferral.promise,
                                 new Promise<string | undefined>(
-                                    (resolve, reject) =>
+                                    (_resolve, reject) =>
                                         void setTimeout(
                                             () => void reject(new TimeoutError()),
                                             120000,

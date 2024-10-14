@@ -993,7 +993,7 @@ function parseNetworkStats(stats: GetNetworkStatsQuery) {
                 operatorsCount: z.number(),
             })
             .parse(stats.networks[0])
-    } catch (e) {
+    } catch (_) {
         return undefined
     }
 }
@@ -1214,7 +1214,7 @@ export function getDescription(streamalike: { metadata: string }) {
                 }),
             )
             .parse(streamalike.metadata).description
-    } catch (e) {
+    } catch (_) {
         return ''
     }
 }

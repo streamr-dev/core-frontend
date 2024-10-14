@@ -314,7 +314,7 @@ function useGotAnyStreams() {
                         )
                     ).streams.length > 0
                 )
-            } catch (e) {}
+            } catch (_) {}
 
             return false
         },

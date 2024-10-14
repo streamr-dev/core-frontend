@@ -66,7 +66,7 @@ export function useInfoToastEffect() {
                         ),
                         okLabel: 'Dismiss',
                     })
-                } catch (e) {
+                } catch (_) {
                     // Ignore.
                 }
             }, 1500)

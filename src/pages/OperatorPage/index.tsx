@@ -165,7 +165,7 @@ export const OperatorPage = () => {
                     selectedDataSource,
                     { force: true, ignoreToday: false },
                 )
-            } catch (e) {
+            } catch (_) {
                 errorToast({ title: 'Could not load operator chart data' })
                 return []
             }
@@ -271,7 +271,7 @@ export const OperatorPage = () => {
                         })
                     },
                 })
-            } catch (e) {}
+            } catch (_) {}
         },
         [currentChainId, operatorId, saveNodeAddresses, setBlockDependency],
     )
@@ -328,7 +328,7 @@ export const OperatorPage = () => {
                         })
                     },
                 })
-            } catch (e) {}
+            } catch (_) {}
         },
         [currentChainId, operatorId, saveControllers, setBlockDependency],
     )

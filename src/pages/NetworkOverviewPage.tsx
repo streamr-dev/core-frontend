@@ -311,7 +311,7 @@ function MyDelegationsSummary() {
                         ignoreToday: false,
                     },
                 )
-            } catch (e) {
+            } catch (_) {
                 errorToast({ title: 'Could not load my delegations chart data' })
                 return []
             }

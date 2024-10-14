@@ -3,7 +3,7 @@ import { ConfirmationModalProps, confirmationModal } from '~/modals/Confirmation
 export async function confirm(props: ConfirmationModalProps): Promise<boolean> {
     try {
         return await confirmationModal.pop(props)
-    } catch (e) {}
+    } catch (_) {}
 
     return false
 }
