@@ -585,8 +585,8 @@ export function useCollectEarnings() {
     const { fetch: fetchUncollectedEarnings } = useUncollectedEarningsStore()
 
     return useCallback(
-        (params: { chainId: number; sponsorshipId: string; operatorId: string }) => {
-            const { chainId, sponsorshipId, operatorId } = params
+        (params: { chainId: number; sponsorshipIds: string[]; operatorId: string }) => {
+            const { chainId, sponsorshipIds, operatorId } = params
 
             void (async () => {
                 try {
@@ -606,7 +606,7 @@ export function useCollectEarnings() {
                         return
                     }
 
-                    await collectEarnings(chainId, sponsorshipId, operatorId, {
+                    await collectEarnings(chainId, sponsorshipIds, operatorId, {
                         onReceipt: ({ blockNumber }) =>
                             waitForIndexedBlock(chainId, blockNumber),
                     })

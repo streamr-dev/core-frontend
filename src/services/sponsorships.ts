@@ -343,7 +343,7 @@ export async function getEarningsForSponsorships(
 
 export async function collectEarnings(
     chainId: number,
-    sponsorshipId: string,
+    sponsorshipIds: string[],
     operatorAddress: string,
     { onReceipt }: CallableOptions = {},
 ): Promise<void> {
@@ -359,21 +359,8 @@ export async function collectEarnings(
 
     await toastedOperation('Collect earnings', async () => {
         await call(contract, 'withdrawEarningsFromSponsorships', {
-            args: [[sponsorshipId]],
+            args: [sponsorshipIds],
             onReceipt,
         })
-
-        /**
-         * @todo The following rate updating logic does not belong here! Move
-         * it outside and call after `collectEarnings` (this util) calls.
-         */
-
-        /**
-         * Update uncollected earnings because the rate of change will change
-         * along with stake amount.
-         */
-        const { fetch: updateEarnings } = useUncollectedEarningsStore.getState()
-
-        await updateEarnings(chainId, operatorAddress)
     })
 }
