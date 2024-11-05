@@ -19,6 +19,13 @@ import { Separator } from '~/components/Separator'
 import { StatCell, StatGrid } from '~/components/StatGrid'
 import { OperatorIdCell } from '~/components/Table'
 import WalletPass from '~/components/WalletPass'
+import {
+    GetStreamsDocument as GetIndexerStreamsDocument,
+    GetStreamsQuery as GetIndexerStreamsQuery,
+    GetStreamsQueryVariables as GetIndexerStreamsQueryVariables,
+    StreamOrderBy as IndexerOrderBy,
+    OrderDirection as IndexerOrderDirection,
+} from '~/generated/gql/indexer'
 import { OperatorDailyBucket } from '~/generated/gql/network'
 import {
     getNetworkStats,
@@ -26,6 +33,7 @@ import {
     getTimestampForChartPeriod,
 } from '~/getters'
 import { getDelegationStats } from '~/getters/getDelegationStats'
+import { getIndexerClient } from '~/getters/getGraphClient'
 import { getSponsorshipTokenInfo } from '~/getters/getSponsorshipTokenInfo'
 import {
     useDelegationsForWalletQuery,
@@ -71,28 +79,123 @@ export function NetworkOverviewPage() {
 function NetworkStats() {
     const currentChainId = useCurrentChainId()
 
-    const { data } = useQuery({
+    const statsQuery = useQuery({
         queryKey: ['networkStats', currentChainId],
         async queryFn() {
             return getNetworkStats(currentChainId)
         },
     })
 
+    const operatorCountQuery = useActiveOperatorCountQuery()
+
     return (
         <NetworkPageSegment title="Network stats">
             <Pad>
                 <StatGrid>
                     <StatCell label="Total stake">
-                        {data && (
-                            <SponsorshipDecimals abbr amount={data.totalStake} tooltip />
+                        {statsQuery.isLoading ? (
+                            <>&zwnj;</>
+                        ) : (
+                            <>
+                                {statsQuery.data ? (
+                                    <SponsorshipDecimals
+                                        abbr
+                                        amount={statsQuery.data.totalStake}
+                                        tooltip
+                                    />
+                                ) : (
+                                    <>N/A</>
+                                )}
+                            </>
                         )}
                     </StatCell>
-                    <StatCell label="Sponsorships">{data?.sponsorshipsCount}</StatCell>
-                    <StatCell label="Operators">{data?.operatorsCount}</StatCell>
+                    <StatCell label="Sponsorships">
+                        {statsQuery.isLoading ? (
+                            <>&zwnj;</>
+                        ) : (
+                            statsQuery.data?.sponsorshipsCount ?? <>N/A</>
+                        )}
+                    </StatCell>
+                    <StatCell label="Active Operators">
+                        {operatorCountQuery.isLoading ? (
+                            <>&zwnj;</>
+                        ) : (
+                            operatorCountQuery.data ?? <>N/A</>
+                        )}
+                    </StatCell>
                 </StatGrid>
             </Pad>
         </NetworkPageSegment>
     )
+}
+
+function useActiveOperatorCountQuery() {
+    const chainId = useCurrentChainId()
+
+    return useQuery({
+        queryKey: ['useActiveOperatorCountQuery', chainId],
+        queryFn: async () => {
+            let cursor = '0'
+
+            const uniquenessGate: Record<string, true | undefined> = {}
+
+            let count = 0
+
+            const client = getIndexerClient(chainId)
+
+            if (!client) {
+                return 0
+            }
+
+            for (;;) {
+                const {
+                    data: { streams },
+                } = await client.query<
+                    GetIndexerStreamsQuery,
+                    GetIndexerStreamsQueryVariables
+                >({
+                    fetchPolicy: 'network-only',
+                    query: GetIndexerStreamsDocument,
+                    variables: {
+                        first: 500,
+                        orderBy: IndexerOrderBy.MessagesPerSecond,
+                        orderDirection: IndexerOrderDirection.Desc,
+                        cursor,
+                    },
+                })
+
+                const breakEarly = (() => {
+                    for (const item of streams.items) {
+                        if (!item.messagesPerSecond) {
+                            /**
+                             * Make the whole stream fetching skip streams that have no
+                             * data flowing through them.
+                             */
+                            return true
+                        }
+
+                        if (!uniquenessGate[item.id]) {
+                            if (/^[^/]+\/operator\/coordination$/.test(item.id)) {
+                                count += 1
+                            }
+                        }
+
+                        uniquenessGate[item.id] = true
+                    }
+
+                    return false
+                })()
+
+                if (!streams.cursor || breakEarly) {
+                    break
+                }
+
+                cursor = streams.cursor
+            }
+
+            return count
+        },
+    })
 }
 
 function MyOperatorSummary() {
