@@ -295,6 +295,10 @@ function JoinSponsorshipModal({
                     </li>
                 </PropList>
             </Section>
+            <StyledAlert type="notice" title="Node version check">
+                Node versions 100.2.3 and below are vulnerable to slashing. Ensure that
+                all of your nodes are not running an outdated version.
+            </StyledAlert>
             {isBelowSelfFundingLimit && (
                 <StyledAlert type="error" title="Low self-funding">
                     You cannot stake on Sponsorships because your Operator is below the
