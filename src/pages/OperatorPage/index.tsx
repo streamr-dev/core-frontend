@@ -24,9 +24,8 @@ import NetworkPageSegment, {
     TitleBar,
 } from '~/components/NetworkPageSegment'
 import { Separator } from '~/components/Separator'
-import Spinner from '~/components/Spinner'
 import { StatCellContent, StatCellLabel } from '~/components/StatGrid'
-import { FundedUntilCell, StreamIdCell } from '~/components/Table'
+import { StreamIdCell } from '~/components/Table'
 import { Tooltip, TooltipIconWrap } from '~/components/Tooltip'
 import { getDelegatedAmountForWallet, getDelegationFractionForWallet } from '~/getters'
 import { getOperatorStats } from '~/getters/getOperatorStats'
@@ -38,10 +37,9 @@ import {
 } from '~/hooks'
 import {
     invalidateActiveOperatorByIdQueries,
-    useCollectEarnings,
     useOperatorByIdQuery,
 } from '~/hooks/operators'
-import { useEditSponsorshipFunding, useSponsorshipTokenInfo } from '~/hooks/sponsorships'
+import { useSponsorshipTokenInfo } from '~/hooks/sponsorships'
 import { useInterceptHeartbeats } from '~/hooks/useInterceptHeartbeats'
 import { LiveNodesTable } from '~/pages/OperatorPage/LiveNodesTable'
 import { OperatorActionBar } from '~/pages/OperatorPage/OperatorActionBar'
@@ -49,6 +47,7 @@ import { OperatorChecklist } from '~/pages/OperatorPage/OperatorChecklist'
 import { OperatorDetails } from '~/pages/OperatorPage/OperatorDetails'
 import { OperatorSummary } from '~/pages/OperatorPage/OperatorSummary'
 import { UndelegationQueue } from '~/pages/OperatorPage/UndelegationQueue'
+import { SponsorshipTable } from '~/pages/OperatorPage/SponsorshipTable'
 import LoadingIndicator from '~/shared/components/LoadingIndicator'
 import { NoData } from '~/shared/components/NoData'
 import { ScrollTable } from '~/shared/components/ScrollTable/ScrollTable'
@@ -59,10 +58,6 @@ import {
     formatLongDate,
     formatShortDate,
 } from '~/shared/components/TimeSeriesGraph/chartUtils'
-import {
-    useCanCollectEarningsCallback,
-    useUncollectedEarnings,
-} from '~/shared/stores/uncollectedEarnings'
 import { useWalletAccount } from '~/shared/stores/wallet'
 import { LAPTOP, MAX_BODY_WIDTH, TABLET } from '~/shared/utils/styled'
 import { useSetBlockDependency } from '~/stores/blockNumberDependencies'
@@ -122,11 +117,7 @@ export const OperatorPage = () => {
             (c) => c.address.toLowerCase() === walletAddress.toLowerCase(),
         )
 
-    const canCollect = useCanCollectEarningsCallback()
-
     const { symbol: tokenSymbol = 'DATA' } = useSponsorshipTokenInfo() || {}
-
-    const editSponsorshipFunding = useEditSponsorshipFunding()
 
     const [selectedDataSource, setSelectedDataSource] = useState<
         'totalValue' | 'cumulativeEarnings'
@@ -216,8 +207,6 @@ export const OperatorPage = () => {
     const setBlockDependency = useSetBlockDependency()
 
     const heartbeats = useInterceptHeartbeats(operator?.id)
-
-    const collectEarnings = useCollectEarnings()
 
     const saveNodeAddressesCb = useCallback(
         async (addresses: string[]) => {
@@ -515,142 +504,9 @@ export const OperatorPage = () => {
                                 </TitleBar>
                             }
                         >
-                            <ScrollTable
-                                elements={operator.stakes}
-                                columns={[
-                                    {
-                                        displayName: 'Stream ID',
-                                        valueMapper: ({ streamId }) => (
-                                            <StreamIdCell streamId={streamId} />
-                                        ),
-                                        align: 'start',
-                                        isSticky: true,
-                                        key: 'streamId',
-                                    },
-                                    {
-                                        displayName: 'Staked',
-                                        valueMapper: (element) => {
-                                            const minimumStakeReachTime = moment(
-                                                element.joinedAt.getTime() +
-                                                    element.minimumStakingPeriodSeconds *
-                                                        1000,
-                                            )
-
-                                            return (
-                                                <>
-                                                    <SponsorshipDecimals
-                                                        abbr
-                                                        amount={element.amountWei}
-                                                    />
-                                                    {minimumStakeReachTime.isAfter(
-                                                        Date.now(),
-                                                    ) && (
-                                                        <Tooltip
-                                                            content={
-                                                                <>
-                                                                    Minimum stake period:{' '}
-                                                                    {minimumStakeReachTime.fromNow(
-                                                                        true,
-                                                                    )}{' '}
-                                                                    left
-                                                                </>
-                                                            }
-                                                        >
-                                                            <TooltipIconWrap
-                                                                className="ml-1"
-                                                                $color="#ADADAD"
-                                                                $svgSize={{
-                                                                    width: '18px',
-                                                                    height: '18px',
-                                                                }}
-                                                            >
-                                                                <SvgIcon name="lockClosed" />
-                                                            </TooltipIconWrap>
-                                                        </Tooltip>
-                                                    )}
-                                                </>
-                                            )
-                                        },
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'staked',
-                                    },
-                                    {
-                                        displayName: 'APY',
-                                        valueMapper: (element) =>
-                                            `${element.spotAPY
-                                                .multipliedBy(100)
-                                                .toFixed(0)}%`,
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'apy',
-                                    },
-                                    {
-                                        displayName: 'Funded until',
-                                        valueMapper: (element) => (
-                                            <FundedUntilCell
-                                                projectedInsolvencyAt={
-                                                    element.projectedInsolvencyAt
-                                                }
-                                                remainingBalance={element.remainingWei}
-                                            />
-                                        ),
-                                        align: 'start',
-                                        isSticky: false,
-                                        key: 'fundedUntil',
-                                    },
-                                    {
-                                        displayName: 'Uncollected earnings',
-                                        valueMapper: (element) => (
-                                            <UncollectedEarnings
-                                                operatorId={operatorId}
-                                                sponsorshipId={element.sponsorshipId}
-                                            />
-                                        ),
-                                        align: 'end',
-                                        isSticky: false,
-                                        key: 'earnings',
-                                    },
-                                ]}
-                                linkMapper={({ sponsorshipId: id }) =>
-                                    R.sponsorship(id, routeOptions(chainName))
-                                }
-                                actions={[
-                                    (element) => ({
-                                        displayName: 'Edit',
-                                        disabled: !isController,
-                                        async callback() {
-                                            if (!operator) {
-                                                return
-                                            }
-
-                                            editSponsorshipFunding({
-                                                chainId: currentChainId,
-                                                sponsorshipOrSponsorshipId:
-                                                    element.sponsorshipId,
-                                                operator,
-                                            })
-                                        },
-                                    }),
-                                    (element) => ({
-                                        displayName: 'Collect earnings',
-                                        callback() {
-                                            if (!operatorId) {
-                                                return
-                                            }
-
-                                            collectEarnings({
-                                                chainId: currentChainId,
-                                                operatorId,
-                                                sponsorshipId: element.sponsorshipId,
-                                            })
-                                        },
-                                        disabled: !canCollect(
-                                            operatorId || '',
-                                            element.sponsorshipId,
-                                        ),
-                                    }),
-                                ]}
+                            <SponsorshipTable
+                                operator={operator}
+                                isController={isController}
                             />
                         </NetworkPageSegment>
                         <NetworkPageSegment title="Undelegation queue">
@@ -902,22 +758,6 @@ const SlashingHistoryTableContainer = styled.div`
         max-height: 575px;
     }
 `
-
-function UncollectedEarnings({
-    operatorId,
-    sponsorshipId,
-}: {
-    operatorId: string | undefined
-    sponsorshipId: string
-}) {
-    const value = useUncollectedEarnings(operatorId, sponsorshipId)
-
-    return typeof value !== 'undefined' ? (
-        <SponsorshipDecimals abbr amount={value?.uncollectedEarnings || 0n} />
-    ) : (
-        <Spinner color="blue" />
-    )
-}
 
 interface OperatorVersionNoticeProps {
     version: number
