@@ -160,6 +160,7 @@ export function SponsorshipTable({
                 }),
             ]}
             footerComponent={
+                allSponsorshipIds.length > 0 &&
                 canCollectAllEarnings && (
                     <Footer>
                         <Button
