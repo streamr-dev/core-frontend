@@ -19,7 +19,7 @@ import { useTableOrder } from '~/hooks/useTableOrder'
 import { Operator } from '~/parsers/Operator'
 import { ScrollTableCore } from '~/shared/components/ScrollTable/ScrollTable'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { useWalletAccount } from '~/shared/stores/wallet'
+import { useIsWalletLoading, useWalletAccount } from '~/shared/stores/wallet'
 import { OrderDirection } from '~/types'
 import { saveOperator } from '~/utils'
 import {
@@ -28,33 +28,54 @@ import {
     useCurrentChainSymbolicName,
 } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-
-const PAGE_SIZE = 20
+import { useUrlParams } from '~/hooks/useUrlParams'
 
 enum TabOption {
     AllOperators = 'all',
     MyDelegations = 'my',
 }
 
+const PAGE_SIZE = 20
+const DEFAULT_ORDER_BY = 'totalValue'
+const DEFAULT_ORDER_DIRECTION = 'desc'
+const DEFAULT_TAB = TabOption.AllOperators
+
 function isTabOption(value: unknown): value is TabOption {
     return value === TabOption.AllOperators || value === TabOption.MyDelegations
 }
 
 export const OperatorsPage = () => {
-    const [params] = useSearchParams()
-
-    const tab = params.get('tab')
-
-    const selectedTab = isTabOption(tab) ? tab : TabOption.AllOperators
-
     const [searchQuery, setSearchQuery] = useState('')
 
     const wallet = useWalletAccount()
+    const isWalletLoading = useIsWalletLoading()
 
     const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
-        orderBy: 'totalValue',
-        orderDirection: 'desc',
+        orderBy: DEFAULT_ORDER_BY,
+        orderDirection: DEFAULT_ORDER_DIRECTION,
     })
+
+    const [params] = useSearchParams()
+    const tab = params.get('tab')
+    const selectedTab = isTabOption(tab) ? tab : DEFAULT_TAB
+
+    useUrlParams([
+        {
+            param: 'tab',
+            value: selectedTab,
+            defaultValue: DEFAULT_TAB,
+        },
+        {
+            param: 'orderBy',
+            value: orderBy,
+            defaultValue: DEFAULT_ORDER_BY,
+        },
+        {
+            param: 'orderDir',
+            value: orderDirection,
+            defaultValue: DEFAULT_ORDER_DIRECTION,
+        },
+    ])
 
     const allOperatorsQuery = useAllOperatorsQuery({
         batchSize: PAGE_SIZE,
@@ -83,7 +104,7 @@ export const OperatorsPage = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!wallet) {
+        if (!wallet && !isWalletLoading) {
             navigate(
                 R.operators(
                     routeOptions(chainName, {
@@ -92,7 +113,7 @@ export const OperatorsPage = () => {
                 ),
             )
         }
-    }, [wallet, navigate, chainName])
+    }, [wallet, isWalletLoading, navigate, chainName])
 
     return (
         <Layout>

@@ -20,42 +20,63 @@ import {
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { useWalletAccount } from '~/shared/stores/wallet'
+import { useWalletAccount, useIsWalletLoading } from '~/shared/stores/wallet'
 import {
     useCurrentChainFullName,
     useCurrentChainId,
     useCurrentChainSymbolicName,
 } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-
-const PAGE_SIZE = 20
+import { useUrlParams } from '~/hooks/useUrlParams'
 
 enum TabOption {
     AllSponsorships = 'all',
     MySponsorships = 'my',
 }
 
+const PAGE_SIZE = 20
+const DEFAULT_ORDER_BY = 'remainingWei'
+const DEFAULT_ORDER_DIRECTION = 'desc'
+const DEFAULT_TAB = TabOption.AllSponsorships
+
 function isTabOption(value: unknown): value is TabOption {
     return value === TabOption.AllSponsorships || value === TabOption.MySponsorships
 }
 
 export const SponsorshipsPage = () => {
-    const [params] = useSearchParams()
-
-    const tab = params.get('tab')
-
-    const selectedTab = isTabOption(tab) ? tab : TabOption.AllSponsorships
-
     const [searchQuery, setSearchQuery] = useState('')
 
     const [filters, setFilters] = useState<SponsorshipFilters>(defaultFilters)
 
     const wallet = useWalletAccount()
+    const isWalletLoading = useIsWalletLoading()
 
     const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
-        orderBy: 'remainingWei',
-        orderDirection: 'desc',
+        orderBy: DEFAULT_ORDER_BY,
+        orderDirection: DEFAULT_ORDER_DIRECTION,
     })
+
+    const [params] = useSearchParams()
+    const tab = params.get('tab')
+    const selectedTab = isTabOption(tab) ? tab : DEFAULT_TAB
+
+    useUrlParams([
+        {
+            param: 'tab',
+            value: selectedTab,
+            defaultValue: DEFAULT_TAB,
+        },
+        {
+            param: 'orderBy',
+            value: orderBy,
+            defaultValue: DEFAULT_ORDER_BY,
+        },
+        {
+            param: 'orderDir',
+            value: orderDirection,
+            defaultValue: DEFAULT_ORDER_DIRECTION,
+        },
+    ])
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery({
         pageSize: PAGE_SIZE,
@@ -78,7 +99,7 @@ export const SponsorshipsPage = () => {
     const chainName = useCurrentChainSymbolicName()
 
     useEffect(() => {
-        if (!wallet) {
+        if (!wallet && !isWalletLoading) {
             navigate(
                 R.sponsorships(
                     routeOptions(chainName, {
@@ -87,7 +108,7 @@ export const SponsorshipsPage = () => {
                 ),
             )
         }
-    }, [wallet, navigate, chainName])
+    }, [wallet, navigate, chainName, isWalletLoading])
 
     const createSponsorship = useCreateSponsorship()
 
