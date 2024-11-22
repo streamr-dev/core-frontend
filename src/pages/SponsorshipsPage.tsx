@@ -44,9 +44,18 @@ function isTabOption(value: unknown): value is TabOption {
 }
 
 export const SponsorshipsPage = () => {
-    const [searchQuery, setSearchQuery] = useState('')
+    const [params] = useSearchParams()
+    const initialFilters = {
+        ...defaultFilters,
+        ...Object.keys(defaultFilters).reduce((acc, key) => {
+            if (params.has(key)) {
+                return { ...acc, [key]: params.get(key) === 'true' }
+            }
+            return acc
+        }, {}),
+    }
 
-    const [filters, setFilters] = useState<SponsorshipFilters>(defaultFilters)
+    const [filters, setFilters] = useState<SponsorshipFilters>(initialFilters)
 
     const wallet = useWalletAccount()
     const isWalletLoading = useIsWalletLoading()
@@ -56,9 +65,10 @@ export const SponsorshipsPage = () => {
         orderDirection: DEFAULT_ORDER_DIRECTION,
     })
 
-    const [params] = useSearchParams()
     const tab = params.get('tab')
     const selectedTab = isTabOption(tab) ? tab : DEFAULT_TAB
+
+    const [searchQuery, setSearchQuery] = useState(params.get('search') || '')
 
     useUrlParams([
         {
@@ -76,6 +86,16 @@ export const SponsorshipsPage = () => {
             value: orderDirection,
             defaultValue: DEFAULT_ORDER_DIRECTION,
         },
+        {
+            param: 'search',
+            value: searchQuery,
+            defaultValue: '',
+        },
+        ...Object.entries(defaultFilters).map(([key, value]) => ({
+            param: key,
+            value: filters[key as keyof SponsorshipFilters].toString(),
+            defaultValue: value.toString(),
+        })),
     ])
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery({
@@ -123,6 +143,7 @@ export const SponsorshipsPage = () => {
             <NetworkHelmet title="Sponsorships" />
             <NetworkActionBar
                 searchEnabled
+                searchValue={searchQuery}
                 onSearch={setSearchQuery}
                 leftSideContent={
                     <Tabs

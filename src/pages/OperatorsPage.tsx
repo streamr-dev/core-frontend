@@ -45,8 +45,6 @@ function isTabOption(value: unknown): value is TabOption {
 }
 
 export const OperatorsPage = () => {
-    const [searchQuery, setSearchQuery] = useState('')
-
     const wallet = useWalletAccount()
     const isWalletLoading = useIsWalletLoading()
 
@@ -58,6 +56,7 @@ export const OperatorsPage = () => {
     const [params] = useSearchParams()
     const tab = params.get('tab')
     const selectedTab = isTabOption(tab) ? tab : DEFAULT_TAB
+    const [searchQuery, setSearchQuery] = useState(params.get('search') || '')
 
     useUrlParams([
         {
@@ -74,6 +73,11 @@ export const OperatorsPage = () => {
             param: 'orderDir',
             value: orderDirection,
             defaultValue: DEFAULT_ORDER_DIRECTION,
+        },
+        {
+            param: 'search',
+            value: searchQuery,
+            defaultValue: '',
         },
     ])
 
@@ -120,6 +124,7 @@ export const OperatorsPage = () => {
             <NetworkHelmet title="Operators" />
             <NetworkActionBar
                 searchEnabled={true}
+                searchValue={searchQuery}
                 onSearch={setSearchQuery}
                 leftSideContent={
                     <Tabs
