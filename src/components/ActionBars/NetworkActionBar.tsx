@@ -56,6 +56,7 @@ type Props = {
     searchEnabled: boolean
     placeholder?: string
     onSearch?: (term: string) => void
+    searchValue?: string
     leftSideContent?: ReactNode
     rightSideContent?: ReactNode
 }
@@ -63,6 +64,7 @@ type Props = {
 export const NetworkActionBar: FunctionComponent<Props> = ({
     searchEnabled,
     onSearch,
+    searchValue,
     placeholder,
     leftSideContent,
     rightSideContent,
@@ -72,7 +74,11 @@ export const NetworkActionBar: FunctionComponent<Props> = ({
             <div
                 className={'search-bar-wrap ' + (!searchEnabled ? 'search-disabled' : '')}
             >
-                <SearchBar onChange={onSearch} placeholder={placeholder} />
+                <SearchBar
+                    onChange={onSearch}
+                    placeholder={placeholder}
+                    value={searchValue}
+                />
             </div>
             {(leftSideContent || rightSideContent) && (
                 <div className="action-content-wrap">

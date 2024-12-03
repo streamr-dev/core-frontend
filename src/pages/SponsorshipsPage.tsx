@@ -20,20 +20,24 @@ import {
 } from '~/hooks/sponsorships'
 import { useTableOrder } from '~/hooks/useTableOrder'
 import Tabs, { Tab } from '~/shared/components/Tabs'
-import { useWalletAccount } from '~/shared/stores/wallet'
+import { useWalletAccount, useIsWalletLoading } from '~/shared/stores/wallet'
 import {
     useCurrentChainFullName,
     useCurrentChainId,
     useCurrentChainSymbolicName,
 } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
-
-const PAGE_SIZE = 20
+import { useUrlParams } from '~/hooks/useUrlParams'
 
 enum TabOption {
     AllSponsorships = 'all',
     MySponsorships = 'my',
 }
+
+const PAGE_SIZE = 20
+const DEFAULT_ORDER_BY = 'remainingWei'
+const DEFAULT_ORDER_DIRECTION = 'desc'
+const DEFAULT_TAB = TabOption.AllSponsorships
 
 function isTabOption(value: unknown): value is TabOption {
     return value === TabOption.AllSponsorships || value === TabOption.MySponsorships
@@ -41,21 +45,58 @@ function isTabOption(value: unknown): value is TabOption {
 
 export const SponsorshipsPage = () => {
     const [params] = useSearchParams()
+    const initialFilters = {
+        ...defaultFilters,
+        ...Object.keys(defaultFilters).reduce((acc, key) => {
+            if (params.has(key)) {
+                return { ...acc, [key]: params.get(key) === 'true' }
+            }
+            return acc
+        }, {}),
+    }
 
-    const tab = params.get('tab')
-
-    const selectedTab = isTabOption(tab) ? tab : TabOption.AllSponsorships
-
-    const [searchQuery, setSearchQuery] = useState('')
-
-    const [filters, setFilters] = useState<SponsorshipFilters>(defaultFilters)
+    const [filters, setFilters] = useState<SponsorshipFilters>(initialFilters)
 
     const wallet = useWalletAccount()
+    const isWalletLoading = useIsWalletLoading()
 
     const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
-        orderBy: 'remainingWei',
-        orderDirection: 'desc',
+        orderBy: DEFAULT_ORDER_BY,
+        orderDirection: DEFAULT_ORDER_DIRECTION,
     })
+
+    const tab = params.get('tab')
+    const selectedTab = isTabOption(tab) ? tab : DEFAULT_TAB
+
+    const [searchQuery, setSearchQuery] = useState(params.get('search') || '')
+
+    useUrlParams([
+        {
+            param: 'tab',
+            value: selectedTab,
+            defaultValue: DEFAULT_TAB,
+        },
+        {
+            param: 'orderBy',
+            value: orderBy,
+            defaultValue: DEFAULT_ORDER_BY,
+        },
+        {
+            param: 'orderDir',
+            value: orderDirection,
+            defaultValue: DEFAULT_ORDER_DIRECTION,
+        },
+        {
+            param: 'search',
+            value: searchQuery,
+            defaultValue: '',
+        },
+        ...Object.entries(defaultFilters).map(([key, value]) => ({
+            param: key,
+            value: filters[key as keyof SponsorshipFilters].toString(),
+            defaultValue: value.toString(),
+        })),
+    ])
 
     const allSponsorshipsQuery = useAllSponsorshipsQuery({
         pageSize: PAGE_SIZE,
@@ -78,7 +119,7 @@ export const SponsorshipsPage = () => {
     const chainName = useCurrentChainSymbolicName()
 
     useEffect(() => {
-        if (!wallet) {
+        if (!wallet && !isWalletLoading) {
             navigate(
                 R.sponsorships(
                     routeOptions(chainName, {
@@ -87,7 +128,7 @@ export const SponsorshipsPage = () => {
                 ),
             )
         }
-    }, [wallet, navigate, chainName])
+    }, [wallet, navigate, chainName, isWalletLoading])
 
     const createSponsorship = useCreateSponsorship()
 
@@ -102,6 +143,7 @@ export const SponsorshipsPage = () => {
             <NetworkHelmet title="Sponsorships" />
             <NetworkActionBar
                 searchEnabled
+                searchValue={searchQuery}
                 onSearch={setSearchQuery}
                 leftSideContent={
                     <Tabs

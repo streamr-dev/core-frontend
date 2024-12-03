@@ -161,6 +161,7 @@ export async function getWalletAccount({
 interface WalletStore {
     account: string | undefined
     ens: Record<string, string | undefined>
+    isLoading: boolean
 }
 
 const useWalletStore = create<WalletStore>((set, get) => {
@@ -219,6 +220,12 @@ const useWalletStore = create<WalletStore>((set, get) => {
             onAccountsChange(accounts)
         } catch (e) {
             console.warn('Provider setup failed', e)
+        } finally {
+            set((current) =>
+                produce(current, (next) => {
+                    next.isLoading = false
+                }),
+            )
         }
     })
 
@@ -226,6 +233,7 @@ const useWalletStore = create<WalletStore>((set, get) => {
         account: undefined,
 
         ens: {},
+        isLoading: true,
     }
 })
 
@@ -236,6 +244,14 @@ const useWalletStore = create<WalletStore>((set, get) => {
  */
 export function useWalletAccount() {
     return useWalletStore().account
+}
+
+/**
+ * A hook that gives you the loading state of the wallet.
+ * @returns a boolean value indicating whether the wallet is loading.
+ */
+export function useIsWalletLoading() {
+    return useWalletStore().isLoading
 }
 
 /**
