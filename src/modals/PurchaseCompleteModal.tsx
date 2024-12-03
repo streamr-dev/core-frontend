@@ -10,7 +10,8 @@ const Box = styled.div`
     border-radius: 8px;
     padding: 32px 24px;
     margin: 0 auto;
-    width: 408px;
+    width: 100%;
+    max-width: 408px;
 
     h2 {
         font-size: 24px;

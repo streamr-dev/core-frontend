@@ -8,8 +8,9 @@ import { Footer } from './BaseModal'
 
 const Content = styled.div`
     margin: 0 auto;
-    padding: 48px 0 56px;
-    width: 448px;
+    padding: 48px 24px 56px;
+    max-width: 448px;
+    width: 100%;
 
     p {
         margin: 0 0 16px;

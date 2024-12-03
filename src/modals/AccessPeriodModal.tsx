@@ -31,6 +31,11 @@ const PeriodContainer = styled.div`
     border-radius: 8px;
     gap: 16px;
     padding: 32px 24px;
+    position: relative;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
 `
 
 const DetailsContainer = styled.div`
