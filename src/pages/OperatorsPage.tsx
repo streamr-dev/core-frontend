@@ -48,15 +48,16 @@ export const OperatorsPage = () => {
     const wallet = useWalletAccount()
     const isWalletLoading = useIsWalletLoading()
 
-    const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
-        orderBy: DEFAULT_ORDER_BY,
-        orderDirection: DEFAULT_ORDER_DIRECTION,
-    })
-
     const [params] = useSearchParams()
     const tab = params.get('tab')
     const selectedTab = isTabOption(tab) ? tab : DEFAULT_TAB
     const [searchQuery, setSearchQuery] = useState(params.get('search') || '')
+
+    const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
+        orderBy: params.get('orderBy') || DEFAULT_ORDER_BY,
+        orderDirection:
+            (params.get('orderDir') as OrderDirection) || DEFAULT_ORDER_DIRECTION,
+    })
 
     useUrlParams([
         {

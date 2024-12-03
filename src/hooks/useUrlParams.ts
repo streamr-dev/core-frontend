@@ -32,8 +32,10 @@ export function useUrlParams<T extends string>(params: UrlParamConfig<T>[]) {
                 const newParams = new URLSearchParams(prevParams)
 
                 params.forEach(({ param, value, defaultValue }) => {
-                    if (value !== defaultValue) {
-                        newParams.set(param, value || defaultValue)
+                    if (value === '' || value === undefined) {
+                        newParams.delete(param)
+                    } else if (value !== defaultValue) {
+                        newParams.set(param, value)
                     } else {
                         newParams.delete(param)
                     }

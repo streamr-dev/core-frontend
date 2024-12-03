@@ -27,15 +27,22 @@ import { useWalletAccount } from '~/shared/stores/wallet'
 import { COLORS, TABLET } from '~/shared/utils/styled'
 import { useCurrentChainFullName, useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
+import { useUrlParams } from '~/hooks/useUrlParams'
+import { OrderDirection } from '~/types'
+
+const DEFAULT_ORDER_BY = 'peerCount'
+const DEFAULT_ORDER_DIRECTION = 'desc'
+const DEFAULT_TAB = StreamsTabOption.All
+const DEFAULT_SEARCH = ''
 
 export function StreamsPage() {
-    const [search, setSearch] = useState('')
-
     const [params] = useSearchParams()
+
+    const [search, setSearch] = useState(params.get('search') || DEFAULT_SEARCH)
 
     const tabParam = params.get('tab')
 
-    const tab = isStreamsTabOption(tabParam) ? tabParam : StreamsTabOption.All
+    const tab = isStreamsTabOption(tabParam) ? tabParam : DEFAULT_TAB
 
     const navigate = useNavigate()
 
@@ -55,10 +62,37 @@ export function StreamsPage() {
     )
 
     const {
-        orderBy = 'peerCount',
-        orderDirection = 'desc',
+        orderBy = DEFAULT_ORDER_BY,
+        orderDirection = DEFAULT_ORDER_DIRECTION,
         setOrder,
-    } = useTableOrder<StreamsOrderBy>()
+    } = useTableOrder<StreamsOrderBy>({
+        orderBy: (params.get('orderBy') as StreamsOrderBy) || DEFAULT_ORDER_BY,
+        orderDirection:
+            (params.get('orderDir') as OrderDirection) || DEFAULT_ORDER_DIRECTION,
+    })
+
+    useUrlParams([
+        {
+            param: 'tab',
+            value: tab,
+            defaultValue: DEFAULT_TAB,
+        },
+        {
+            param: 'search',
+            value: search,
+            defaultValue: DEFAULT_SEARCH,
+        },
+        {
+            param: 'orderBy',
+            value: orderBy,
+            defaultValue: DEFAULT_ORDER_BY,
+        },
+        {
+            param: 'orderDir',
+            value: orderDirection,
+            defaultValue: DEFAULT_ORDER_DIRECTION,
+        },
+    ])
 
     const streamsQuery = useStreamsQuery({
         orderBy,

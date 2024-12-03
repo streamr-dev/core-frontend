@@ -23,7 +23,7 @@ import { ProjectFilter } from '~/types'
 import { useCurrentChainSymbolicName } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 
-enum TabOption {
+export enum TabOption {
     Any = 'all',
     Owned = 'my',
 }
@@ -32,7 +32,7 @@ export function isOwnedTabOption(value: unknown) {
     return value === TabOption.Owned
 }
 
-function isTabOption(value: unknown): value is TabOption {
+export function isTabOption(value: unknown): value is TabOption {
     return value === TabOption.Any || value === TabOption.Owned
 }
 

@@ -28,6 +28,7 @@ import {
 } from '~/utils/chains'
 import { Route as R, routeOptions } from '~/utils/routes'
 import { useUrlParams } from '~/hooks/useUrlParams'
+import { OrderDirection } from '~/types'
 
 enum TabOption {
     AllSponsorships = 'all',
@@ -61,8 +62,9 @@ export const SponsorshipsPage = () => {
     const isWalletLoading = useIsWalletLoading()
 
     const { orderBy, orderDirection, setOrder } = useTableOrder<string>({
-        orderBy: DEFAULT_ORDER_BY,
-        orderDirection: DEFAULT_ORDER_DIRECTION,
+        orderBy: params.get('orderBy') || DEFAULT_ORDER_BY,
+        orderDirection:
+            (params.get('orderDir') as OrderDirection) || DEFAULT_ORDER_DIRECTION,
     })
 
     const tab = params.get('tab')
