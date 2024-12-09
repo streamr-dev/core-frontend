@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { StreamPermission } from '@streamr/sdk'
 import styled from 'styled-components'
 import { address0 } from '~/consts'
@@ -7,8 +7,9 @@ import { MEDIUM } from '~/shared/utils/styled'
 import { StreamDraft } from '~/stores/streamDraft'
 
 enum StreamType {
-    Public = 'public',
+    PublicSubscribe = 'publicSubscribe',
     Private = 'private',
+    PublicPubSub = 'publicPubSub',
 }
 
 type Props = {
@@ -20,17 +21,30 @@ export function StreamTypeSelector({ disabled }: Props) {
 
     const bits = StreamDraft.useEntity({ hot: true })?.permissions[address0] ?? null
 
-    const streamType = bits ? StreamType.Public : StreamType.Private
+    const streamType = useMemo(() => {
+        if (!bits) {
+            return StreamType.Private
+        }
+
+        switch (bits) {
+            case Bits[StreamPermission.SUBSCRIBE]:
+                return StreamType.PublicSubscribe
+            case Bits[StreamPermission.SUBSCRIBE] | Bits[StreamPermission.PUBLISH]:
+                return StreamType.PublicPubSub
+            default:
+                return StreamType.Private
+        }
+    }, [bits])
 
     return (
         <Container>
             <Item>
-                <RadioContainer htmlFor="public">
+                <RadioContainer htmlFor="publicSubscribe">
                     <Radio
-                        id="public"
+                        id="publicSubscribe"
                         type="radio"
                         name="streamType"
-                        checked={streamType === StreamType.Public}
+                        checked={streamType === StreamType.PublicSubscribe}
                         onChange={() => {
                             update((entity) => {
                                 entity.permissions[address0] =
@@ -40,8 +54,8 @@ export function StreamTypeSelector({ disabled }: Props) {
                         disabled={disabled}
                     />
                     <div>
-                        <Title>Public stream</Title>
-                        <Description>Anyone can subscribe to the stream</Description>
+                        <Title>Public subscribe</Title>
+                        <Description>Anyone can read/subscribe to the stream</Description>
                     </div>
                 </RadioContainer>
             </Item>
@@ -64,11 +78,33 @@ export function StreamTypeSelector({ disabled }: Props) {
                         disabled={disabled}
                     />
                     <div>
-                        <Title>Private stream</Title>
+                        <Title>Private subscribe</Title>
                         <Description>
-                            Only Ethereum accounts listed below can subscribe to the
+                            Only Ethereum accounts listed below can read/subscribe to the
                             stream.
                         </Description>
+                    </div>
+                </RadioContainer>
+            </Item>
+            <Item>
+                <RadioContainer htmlFor="publicPubSub">
+                    <Radio
+                        id="publicPubSub"
+                        type="radio"
+                        name="streamType"
+                        checked={streamType === StreamType.PublicPubSub}
+                        onChange={() => {
+                            update((entity) => {
+                                entity.permissions[address0] =
+                                    Bits[StreamPermission.SUBSCRIBE] |
+                                    Bits[StreamPermission.PUBLISH]
+                            })
+                        }}
+                        disabled={disabled}
+                    />
+                    <div>
+                        <Title>Public publish & subscribe</Title>
+                        <Description>Anyone can write/publish to the stream</Description>
                     </div>
                 </RadioContainer>
             </Item>
