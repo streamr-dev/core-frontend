@@ -15,7 +15,6 @@ Although the frontend consists of a single app, the code is structured into diff
 -   `utils` contains commonly used utilities, used throughout the App.
 -   `stories` storybook stories.
 -   `test` App unit tests.
--   `travis_scripts` Deployment scripts.
 
 ## Getting Started
 
@@ -49,8 +48,6 @@ Optional config values:
 | STORYBOOK_BASE_PATH  | Build path for Storybook stories                                                               |
 | PLATFORM_PUBLIC_PATH | Public path for Webpack config. If not defined, relative paths are used.                       |
 
-Use `.travis.yml` to set the production values.
-
 ### Backend
 
 To run the app locally, you must install and start the development environment running on Docker.
@@ -76,7 +73,7 @@ npm version patch # This will get you a tag, too, e.g. v3.1.15.
 git push master
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is `3.1.15`,
+At this point it's a good idea to check that GitHub Actions confirms all tests are passing. Then, for example if the new version is `3.1.15`,
 
 ```
 git push v3.1.15
@@ -94,7 +91,7 @@ npm version patch
 git push master
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is `3.1.15`,
+At this point it's a good idea to check that GitHub Actions confirms all tests are passing. Then, for example if the new version is `3.1.15`,
 
 ```
 git push v3.1.15
@@ -103,15 +100,6 @@ git push v3.1.15
 ### Storybook
 
 The project contains a Storybook including stories from the main components. The Storybook can be run with `npm run storybook` and built with `npm run build-storybook`. Storybook should be accessible after running `npm run storybook` at http://localhost:6006 or on your network at http://10.200.10.1:6006
-
-## Deployment
-
--   When production builds:
-    -   Webpack creates `.map`-file in `dist` -directory with bundled JS
-    -   Travis has a script container (Runs when deploying in production)
-        -   Creates a new release in Sentry by `TRAVIS_TAG`
-        -   Pushes source map -file from `dist` into Sentry with tagged release
-        -   Removes the `.map`-file so it doesn't end up in production
 
 ### Sentry
 
