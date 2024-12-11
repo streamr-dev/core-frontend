@@ -13,38 +13,6 @@ global.streamr = Object.assign(global.streamr || {}, {
             streamrClientVersion,
         }
 
-        if (process.env.TRAVIS_TAG) {
-            // If the current build is for a git tag
-            // - TRAVIS_TAG is set to the tag’s name
-            // - TRAVIS_COMMIT is the commit that the current build is testing
-            return {
-                ...info,
-                branch: '',
-                version: process.env.TRAVIS_TAG,
-                hash: String(process.env.TRAVIS_COMMIT).substr(0, 8),
-            }
-        } else if (process.env.TRAVIS_PULL_REQUEST_BRANCH) {
-            // if the current job is a pull request:
-            // - TRAVIS_PULL_REQUEST_BRANCH is the name of the branch from which the PR originated
-            // - TRAVIS_PULL_REQUEST_SHA is the commit SHA of the HEAD commit of the PR.
-            return {
-                ...info,
-                branch: process.env.TRAVIS_PULL_REQUEST_BRANCH,
-                version: '',
-                hash: String(process.env.TRAVIS_PULL_REQUEST_SHA).substr(0, 8),
-            }
-        } else if (process.env.TRAVIS_BRANCH) {
-            // for push builds, or builds not triggered by a pull request
-            // - TRAVIS_BRANCH is the name of the branch.
-            // - TRAVIS_COMMIT is the commit that the current build is testing
-            return {
-                ...info,
-                branch: process.env.TRAVIS_BRANCH,
-                version: '',
-                hash: String(process.env.TRAVIS_COMMIT).substr(0, 8),
-            }
-        }
-
         const version = process.env.GIT_VERSION || ''
         const branch = process.env.GIT_BRANCH || ''
         const isMaster = branch === 'master'
