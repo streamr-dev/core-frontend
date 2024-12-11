@@ -31,7 +31,6 @@ import {
     useInvalidateStreamAbilities,
 } from '~/shared/stores/streamAbilities'
 import { useWalletAccount } from '~/shared/stores/wallet'
-import { DESKTOP, TABLET } from '~/shared/utils/styled'
 import { truncateStreamName } from '~/shared/utils/text'
 import {
     StreamDraft,
@@ -79,7 +78,7 @@ export function StreamEditPage({
             {streamId ? <StreamSummary streamId={streamId} /> : <></>}
             <LoadingIndicator loading={isLoading} />
             <LayoutColumn>
-                <Footerless>
+                <>
                     <SegmentGrid>
                         <ColoredBox>
                             <Pad>
@@ -112,7 +111,7 @@ export function StreamEditPage({
                             {canGrant && <CreateProjectHint streamId={streamId} />}
                         </>
                     )}
-                </Footerless>
+                </>
             </LayoutColumn>
         </>
     )
@@ -154,7 +153,7 @@ export function StreamConnectPage() {
             <LoadingIndicator loading={isLoading} />
             <LayoutColumn>
                 {streamId != null && (
-                    <Footerless>
+                    <>
                         <SegmentGrid>
                             <ColoredBox>
                                 <Pad>
@@ -163,7 +162,7 @@ export function StreamConnectPage() {
                             </ColoredBox>
                         </SegmentGrid>
                         <RelatedProjects streamId={streamId} />
-                    </Footerless>
+                    </>
                 )}
             </LayoutColumn>
         </>
@@ -316,7 +315,7 @@ function StreamEntityForm(props: StreamEntityFormProps) {
                 }
             }}
         >
-            <Layout footer={null}>
+            <Layout>
                 <Header saveButtonRef={attach} />
                 {typeof children === 'function' ? children(attach, ready) : children}
             </Layout>
@@ -454,18 +453,6 @@ const Asterisk = styled.span`
 const SaveButton = styled(Button)`
     width: fit-content;
     justify-self: right;
-`
-
-const Footerless = styled.div`
-    padding-bottom: 80px;
-
-    @media ${TABLET} {
-        padding-bottom: 92px;
-    }
-
-    @media ${DESKTOP} {
-        padding-bottom: 128px;
-    }
 `
 
 const Wings = styled.div`
