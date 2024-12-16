@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import Link from '~/shared/components/Link'
+import { useMultipleStreamStatsQuery } from '~/hooks/useStreamStats'
 
 const SingleBadge = styled.div`
     display: flex;
@@ -26,6 +27,7 @@ const SingleBadge = styled.div`
         margin-left: 8px;
     }
 `
+
 type BadgeContainerProps = {
     children: ReactNode
     top?: boolean
@@ -134,4 +136,53 @@ const DataUnionBadge = ({
 
 const BadgeLink = ({ ...props }) => <Link {...props} />
 
-export { DataUnionBadge }
+const StatsBadge = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    gap: 10px;
+    background: rgba(245, 245, 247, 0.6);
+    backdrop-filter: blur(13.3871px);
+    border-radius: 8px;
+
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #525252;
+
+    a,
+    a:link,
+    a:active,
+    a:focus,
+    a:hover,
+    a:visited {
+        color: white !important;
+    }
+
+    > * + * {
+        margin-left: 8px;
+    }
+`
+
+interface StreamStatsBadgeProps extends Omit<BadgeContainerProps, 'children'> {
+    streamIds: string[]
+}
+
+const StreamStatsBadge = ({ streamIds, ...props }: StreamStatsBadgeProps) => {
+    const stats = useMultipleStreamStatsQuery(streamIds)
+
+    return (
+        <BadgeContainer {...props}>
+            <StatsBadge>
+                <span>
+                    {streamIds.length} {streamIds.length === 1 ? 'stream' : 'streams'}
+                </span>
+                <span>{stats.data?.messagesPerSecond.toFixed(1) ?? 'N/A'} msg/s</span>
+            </StatsBadge>
+        </BadgeContainer>
+    )
+}
+
+export { DataUnionBadge, StreamStatsBadge }
