@@ -145,8 +145,6 @@ const StatsBadge = styled.div`
     backdrop-filter: blur(13.3871px);
     border-radius: 8px;
 
-    font-family: 'IBM Plex Sans';
-    font-style: normal;
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
@@ -171,7 +169,15 @@ interface StreamStatsBadgeProps extends Omit<BadgeContainerProps, 'children'> {
 }
 
 const StreamStatsBadge = ({ streamIds, ...props }: StreamStatsBadgeProps) => {
-    const stats = useMultipleStreamStatsQuery(streamIds)
+    const { data: stats, isLoading, error } = useMultipleStreamStatsQuery(streamIds)
+
+    if (error || isLoading) {
+        return null
+    }
+
+    const messagesPerSecond = stats?.messagesPerSecond
+    const formattedMsgRate =
+        typeof messagesPerSecond === 'number' ? messagesPerSecond.toFixed(1) : 'N/A'
 
     return (
         <BadgeContainer {...props}>
@@ -179,7 +185,7 @@ const StreamStatsBadge = ({ streamIds, ...props }: StreamStatsBadgeProps) => {
                 <span>
                     {streamIds.length} {streamIds.length === 1 ? 'stream' : 'streams'}
                 </span>
-                <span>{stats.data?.messagesPerSecond.toFixed(1) ?? 'N/A'} msg/s</span>
+                <span>{formattedMsgRate} msg/s</span>
             </StatsBadge>
         </BadgeContainer>
     )
